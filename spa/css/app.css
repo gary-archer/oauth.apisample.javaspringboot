@@ -1,0 +1,86 @@
+a
+{
+    cursor: pointer;
+}
+.btn
+{
+    margin-top:10px;
+    width:150px;
+}
+.panel {
+    border: 0;
+}
+.vertical-padding
+{
+    margin-top: 20px;
+}
+.link
+{
+    color: blue;
+}
+.amount
+{
+    font-weight: bold;
+    color:green;
+}
+.logintext
+{
+    text-align:right;
+    font-weight: bold;
+}
+.error
+{
+    color:red;
+}
+.trace
+{
+    color:blue;
+}
+.hide
+{
+    display:none;
+}
+
+@media all and (max-width: 768px) {
+    body {
+        font-size: 0.8em;
+    }
+    .text-heading {
+        font-size: 2.5em;
+    }
+    .btn {
+        margin-top:10px;
+        width:100px;
+        font-size: 0.9em;
+    }
+    .vertical-padding
+    {
+        margin-top: 20px;
+    }
+}
+
+@media all and (max-width: 480px) {
+    body {
+        font-size: 0.5em;
+    }
+    .text-heading {
+        font-size: 2.0em;
+    }
+    .btn {
+        margin-top:5px;
+        width:75px;
+        font-size: 0.9em;
+    }
+    .listcontainer
+    {
+        margin-top: 5px;
+    }
+    .vertical-padding
+    {
+        margin-top: 20px;
+    }
+    .hide-mobile
+    {
+        display:none;
+    }
+}
