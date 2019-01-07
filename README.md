@@ -18,7 +18,7 @@
 ### Middleware Used
 
 * The [Oidc-Client Library](https://github.com/IdentityModel/oidc-client-js) is used to implement the Implicit Flow
-* The [MitreId Open Id Connect Client](https://github.com/mitreid-connect/OpenID-Connect-Java-Spring-Server/tree/master/openid-connect-client) is used to introspect tokens and to cache API claims in memory
+* The [Connect2Id SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk) is used to introspect tokens and to cache API claims in memory
 * Tomcat is used to host both the API and the SPA's static web content
 * Okta is used for the Authorization Server
 * OpenSSL is used for SSL certificate handling

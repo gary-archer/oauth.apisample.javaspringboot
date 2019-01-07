@@ -6,6 +6,8 @@ import com.mycompany.api.basicapi.plumbing.errors.ClientError;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,15 @@ public class CompaniesController
     @GetMapping(value="")
     public CompletableFuture<Company[]> GetCompanyList()
     {
+
+        System.out.println("*** DEBUG: In controller");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println("*** DEBUG: Name is " + currentPrincipalName);
+
+        Object details = authentication.getDetails();
+        System.out.println("*** DEBUG: Details is " + details);
+
         return this.repository.GetCompanyList();
     }
 

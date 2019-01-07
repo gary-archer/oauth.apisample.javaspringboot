@@ -1,7 +1,7 @@
 package com.mycompany.api.basicapi.plumbing.oauth;
 
-import org.mitre.oauth2.introspectingfilter.IntrospectingTokenService;
 import org.mitre.oauth2.introspectingfilter.service.impl.StaticIntrospectionConfigurationService;
+import org.mitre.oauth2.model.ClientDetailsEntity;
 import org.mitre.oauth2.model.RegisteredClient;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,9 +38,25 @@ public class ApiSecurityConfiguration extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 
-        // Async article
+        // TODO: Does Spring support async?
         // https://github.com/spring-projects/spring-security-oauth/issues/736
-
+        //
+        // Using generated security password
+        // Non thread safe hashmap
+        // Does not receive Okta scopes
+        // Inject configuration properly
+        // HttpClient and proxy
+        // Inject the SecurityContextHolder
+        //
+        // Look at TokenEnhancer to get other stuff
+        // https://www.baeldung.com/spring-security-oauth-jwt
+        //
+        // Connect2id looks like a much better option, via maven
+        // https://bitbucket.org/connect2id/oauth-2.0-sdk-with-openid-connect-extensions
+        // Introspect is in OAuth library as opposed to OIDC library
+        // https://static.javadoc.io/com.nimbusds/oauth2-oidc-sdk/5.0/com/nimbusds/oauth2/sdk/TokenIntrospectionRequest.html
+        //
+        // https://mvnrepository.com/artifact/com.nimbusds/oauth2-oidc-sdk
 
         // Get the OAuth token from the authorization bearer header
         resources.tokenExtractor(new BearerTokenExtractor());
@@ -53,9 +69,10 @@ public class ApiSecurityConfiguration extends ResourceServerConfigurerAdapter {
         RegisteredClient client = new RegisteredClient();
         client.setClientId("0oac5s69rjXE0HcZO0h7");
         client.setClientSecret("VEEe9m9WDneeUSUJUOMKZiso_X6xwKvAqRInT2kg");
-        // client.setTokenEndpointAuthMethod(AuthMethod.NONE);
+        introspectConfig.setClientConfiguration(client);
+        client.setTokenEndpointAuthMethod(ClientDetailsEntity.AuthMethod.SECRET_BASIC);
 
-        // Return the Spring Boot service
+        // Return the introspection handler
         IntrospectingTokenService introspectTokenService = new IntrospectingTokenService();
         introspectTokenService.setIntrospectionConfigurationService(introspectConfig);
         resources.tokenServices(introspectTokenService);
