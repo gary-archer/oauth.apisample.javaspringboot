@@ -29,6 +29,9 @@ public class ApplicationInitializer implements ApplicationContextInitializer<Con
         map.put("server.ssl.key-store", String.format("certs/%s", configuration.app.sslCertificateFileName));
         map.put("server.ssl.key-store-password", configuration.app.sslCertificatePassword);
 
+        map.put("https.proxyHost", "127.0.0.1");
+        map.put("https.proxyPort", "8888");
+
         // Set the properties against the environment
         MutablePropertySources propertySources = context.getEnvironment().getPropertySources();
         propertySources.addFirst(new MapPropertySource("runtimeProperties", map));
