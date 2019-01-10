@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.1.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.mycompany.api</groupId>
 	<artifactId>basicapi</artifactId>
@@ -20,6 +20,7 @@
 	</properties>
 
 	<dependencies>
+		 <!-- Base Spring Boot API support -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -30,6 +31,8 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>2.1.1.RELEASE</version>
 		</dependency>
+
+	    <!-- Java 11 requires the jaxb library -->
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
@@ -40,11 +43,15 @@
 			<artifactId>jaxb-runtime</artifactId>
 			<version>2.3.1</version>
 		</dependency>
+
+		<!-- JSON handling -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.9.8</version>
 		</dependency>
+		
+		<!-- Async support and asyn file reading -->
 		<dependency>
 			<groupId>com.ea.async</groupId>
 			<artifactId>ea-async</artifactId>
@@ -55,6 +62,8 @@
 			<artifactId>AsyncFileRw</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+
+		<!-- Simpler getters and setters -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
