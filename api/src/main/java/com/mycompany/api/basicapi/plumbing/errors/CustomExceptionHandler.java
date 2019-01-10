@@ -67,7 +67,7 @@ public class CustomExceptionHandler {
             return ex;
         }
 
-        // Also handle completion exceptions, which contain the original error
+        // Also handle async completion exceptions, which contain the original error as a throwable
         if (ex instanceof CompletionException) {
 
             // Get the throwable
