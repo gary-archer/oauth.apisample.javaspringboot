@@ -33,7 +33,6 @@ public class ApiSecurityConfiguration extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 
-        // Return the claims handler
         resources.tokenServices(new ClaimsService());
     }
 }

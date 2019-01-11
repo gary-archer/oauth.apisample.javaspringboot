@@ -38,12 +38,8 @@ public class CompaniesController
     @GetMapping(value="")
     public CompletableFuture<Company[]> GetCompanyList()
     {
-        System.out.println("*** DEBUG: In controller");
-
+        // Generic properties that we should ensure are set correctly
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-
-        System.out.println("*** DEBUG: Name is " + currentPrincipalName);
         System.out.println("*** DEBUG: Is authenticated: " + authentication.isAuthenticated());
         System.out.println("*** DEBUG: Identity name: " + authentication.getName());
         System.out.println("*** DEBUG: Principal: " + authentication.getPrincipal());

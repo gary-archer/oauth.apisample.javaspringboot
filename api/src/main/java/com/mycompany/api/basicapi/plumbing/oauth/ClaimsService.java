@@ -1,6 +1,8 @@
 package com.mycompany.api.basicapi.plumbing.oauth;
 
-import org.springframework.security.core.Authentication;
+import com.mycompany.api.basicapi.entities.ApiClaims;
+import com.mycompany.api.basicapi.entities.UserInfoClaims;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -10,7 +12,6 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import java.util.*;
 
 /*
@@ -19,54 +20,59 @@ import java.util.*;
 public class ClaimsService implements ResourceServerTokenServices {
 
     /*
-     * Load the credentials for the specified access token
+     * Handle claims lookup and authentication
      */
     @Override
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
 
-        System.out.println("*** Started loadAuthentication handling");
+        /* Use of Connect2Id will replace the below hard coded item */
 
-        // Hard code these for now
-        String clientId = "0oac5m78icnW3C06L0h7";
-        String userId = "00uc5txme5djp51gG0h7";
+        // Hard code our claims object for now
+        ApiClaims claims = new ApiClaims("00uc5txme5djp51gG0h7", "0oac5m78icnW3C06L0h7", "openid email profile");
+        claims.setUserInfo(new UserInfoClaims("Guest", "User", "guestuser@authguidance.com"));
+        claims.setUserCompanyIds(new Integer[]{1, 2, 3});
 
-        // Set authorities
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_API");
-        authorities.add(new SimpleGrantedAuthority("OAUTH_SCOPE_" + "openid"));
-        authorities.add(new SimpleGrantedAuthority("OAUTH_SCOPE_" + "email"));
-        authorities.add(new SimpleGrantedAuthority("OAUTH_SCOPE_" + "profile"));
-
-        // Create the principal and indicate that the user is authenticated
-        Authentication authentication = new PreAuthenticatedAuthenticationToken(userId, accessToken, authorities);
-        authentication.setAuthenticated(true);
-
-        // Set hard coded scopes
-        Set<String> scopes = new HashSet();
-        scopes.add("openid");
-        scopes.add("email");
-        scopes.add("profile");
-
-        // Create the stored request
-        Map<String, String> parameters = new HashMap();
-        parameters.put("client_id", clientId);
-        parameters.put("scope", "openid email profile");
-        OAuth2Request storedRequest = new OAuth2Request(parameters, clientId, (Collection)null, true, scopes, (Set)null, (String)null, (Set)null, (Map)null);
-
-        System.out.println("*** Finished loadAuthentication handling");
-
-        // Return the authentication object
-        return new OAuth2Authentication(storedRequest, authentication);
+        // Then give Spring Boot what it needs
+        return this.createOAuth2Authentication(claims);
     }
 
     /*
-     * Retrieve full claims details from just the token value
+     * It seems to be standard to do this
      */
     @Override
     public OAuth2AccessToken readAccessToken(String accessToken) {
+        throw new UnsupportedOperationException("The readAccessToken was called unexpectedly");
+    }
 
-        // This is never called - under what circumstances is it used?
-        System.out.println("*** Reading access token and returning claims");
+    /*
+     * Plumbing to update Spring Boot's confusing security objects
+     */
+    private OAuth2Authentication createOAuth2Authentication(ApiClaims claims)
+    {
+        System.out.println("*** Started loadAuthentication handling");
 
-        return new ApiClaims(accessToken);
+        // Create authorities
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_API");
+        for(String scope: claims.getScopes()) {
+            authorities.add(new SimpleGrantedAuthority("OAUTH_SCOPE_" + scope));
+        }
+
+        // Create this plumbing object which Spring Boot requires
+        OAuth2Request request = new OAuth2Request(
+                null,
+                claims.getCallingApplicationId(),
+                authorities,
+                true,
+                claims.getScopes(),
+                null,
+                null,
+                null,
+                null);
+
+        // Create the token object
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(claims, null, authorities);
+
+        System.out.println("*** Ended loadAuthentication handling");
+        return new OAuth2Authentication(request, token);
     }
 }

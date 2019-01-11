@@ -1,25 +1,15 @@
 M1: Get claims passed through to controllers and logic completed
 ----------------------------------------------------------------
 
-1. Understand ResourceServerTokenServices interface better
-   What are the roles of the 2 methods?
-   Typically what goes into a principal object and other similar objects?
-   What type of AuthenticationToken should I return?
-   https://www.baeldung.com/spring-security-oauth-jwt
+1. Understand how to inject stuff created from the SecurityContextHolder
+   Inject API claims into the Company Repository and the User Info Controller
+   Apply claims authorization to deny access to company 4
 
-2. Implement ClaimsService and understand it better
-   What is the effect of setting each field - try to find some documentation?
-   First deliverable should be a hard coded solution to pass claims to the controllers
-
-     https://github.com/jirutka/spring-security-oauth-samples/blob/master/sparklr/src/main/java/org/springframework/security/oauth/examples/sparklr/oauth/RemoteTokenServices.java
-     https://stackoverflow.com/questions/43148552/how-to-configure-spring-boot-security-oauth2-for-adfs
-
-3. PrincipalExtractor and AuthoritiesExtractor use the following library - do I need it?
-        <dependency>
-			<groupId>org.springframework.security.oauth.boot</groupId>
-			<artifactId>spring-security-oauth2-autoconfigure</artifactId>
-			<version>2.1.1.RELEASE</version>
-		</dependency>
+2. Set security context properly
+   User Id is: 00uc5txme5djp51gG0h7
+   Identity name and Principal strings should be equal to this user id
+   Instead they are set to com.mycompany.api.basicapi.entities.ApiClaims@5884ead6
+   I need to set Granted Authority better
 
 M2: Java polish up and learning
 -------------------------------
@@ -28,7 +18,7 @@ M2: Java polish up and learning
 
 2. I need to try to inject my JSON configuration into ApiSecurityConfiguration
    Also inject SecurityContextHolder into API operations
-   These may have request scoper, which I don't properly understand
+   These may have request scope, which I don't properly understand
 
 3. Claims Service fires twice for async requests
    I need to control when it runs via security.filter-dispatcher-types=REQUEST, ERROR
@@ -36,7 +26,7 @@ M2: Java polish up and learning
    Alternatively I may need to create a FilterRegistrationBean
    https://github.com/spring-projects/spring-security-oauth/issues/736
 
-M3: Integrate a certified library
+M3: Integrate the certified library
 ---------------------------------
 1. Get calls to OAuth server working, along with Fiddler debugging
      https://bitbucket.org/connect2id/oauth-2.0-sdk-with-openid-connect-extensions
