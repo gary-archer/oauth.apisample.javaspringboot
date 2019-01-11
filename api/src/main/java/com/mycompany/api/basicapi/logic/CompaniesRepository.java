@@ -3,6 +3,7 @@ package com.mycompany.api.basicapi.logic;
 import com.mycompany.api.basicapi.entities.Company;
 import com.mycompany.api.basicapi.entities.CompanyTransactions;
 import com.mycompany.api.basicapi.plumbing.errors.ClientError;
+import com.mycompany.api.basicapi.plumbing.oauth.ApiClaimsProvider;
 import com.mycompany.api.basicapi.plumbing.utilities.JsonFileReader;
 import java.util.Arrays;
 import java.util.Optional;
@@ -21,13 +22,18 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CompaniesRepository {
 
+    /*
+     * Injected dependencies
+     */
+    private final ApiClaimsProvider claimsProvider;
     private final JsonFileReader jsonReader;
 
     /*
      * Receive dependencies
      */
-    public CompaniesRepository(JsonFileReader jsonReader)
+    public CompaniesRepository(ApiClaimsProvider claimsProvider, JsonFileReader jsonReader)
     {
+        this.claimsProvider = claimsProvider;
         this.jsonReader = jsonReader;
     }
 
@@ -36,7 +42,10 @@ public class CompaniesRepository {
      */
     public CompletableFuture<Company[]> GetCompanyList()
     {
-        return this.jsonReader.ReadFile("/data/CompanyList.json", Company[].class);
+        Company[] companies = await(this.jsonReader.ReadFile("/data/CompanyList.json", Company[].class));
+        Company[] authorizedCompanies = Arrays.stream(companies).filter(c -> this.isUserAuthorizedForCompany(c.id)).toArray(Company[]::new);
+
+        return completedFuture(authorizedCompanies);
     }
 
     /*
@@ -44,6 +53,12 @@ public class CompaniesRepository {
      */
     public CompletableFuture<CompanyTransactions> GetCompanyTransactions(Integer companyId) throws ClientError
     {
+        // If the user is not authorized indicate not found for user
+        if(!this.isUserAuthorizedForCompany(companyId)) {
+            String message = String.format("Transactions for company %d were not found for this user", companyId);
+            throw new ClientError(404, "DataAccess", message);
+        }
+
         // First read companies data
         Company[] companies = await(this.jsonReader.ReadFile("/data/companyList.json", Company[].class));
 
@@ -68,5 +83,14 @@ public class CompaniesRepository {
         // Indicate not found for this user
         String message = String.format("Transactions for company %d were not found for this user", companyId);
         throw new ClientError(404, "DataAccess", message);
+    }
+
+    /*
+     * Apply claims that were read when the access token was first validated
+     */
+    private Boolean isUserAuthorizedForCompany(Integer companyId) {
+
+        Integer[] companies = this.claimsProvider.getApiClaims().getUserCompanyIds();
+        return Arrays.stream(companies).anyMatch(c -> c == companyId);
     }
 }
