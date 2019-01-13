@@ -36,6 +36,8 @@ public class ApiClaims {
     public ApiClaims(String userId, String callingApplicationId, String scope) {
         this.userId = userId;
         this.callingApplicationId = callingApplicationId;
-        this.scopes = Set.of(scope.split(" "));
+
+        // TODO - try after a full reget
+        // this.scopes = Set.of(scope.split(" "));
     }
 }

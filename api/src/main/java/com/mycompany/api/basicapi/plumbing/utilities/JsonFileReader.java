@@ -21,11 +21,21 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 @RequestScope
 public class JsonFileReader {
 
+    public JsonFileReader() {
+        System.out.println("***** CREATE FILE READER");
+    }
+
+    public void SayHello(String message) {
+        System.out.println("*** JSON file reader: " + message);
+    }
+
     /*
      * Read data from a file into objects
      */
     public <T> CompletableFuture<T> ReadFile(String resourcePath, Class<T> runtimeType)
     {
+        System.out.println("***** IN READ FILE");
+
         ObjectMapper mapper = this.CreateObjectMapper();
         String json = await(this.ReadJsonFromFile(resourcePath));
 

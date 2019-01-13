@@ -32,7 +32,7 @@
 			<version>2.1.1.RELEASE</version>
 		</dependency>
 
-	    <!-- Java 11 requires the jaxb library -->
+	    <!-- Java 11 requires the jaxb library when using the security library -->
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>

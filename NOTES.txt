@@ -4,6 +4,28 @@ M1: Cross cutting concerns still not right
    I cannot get customizing the ThreadPoolTaskExecutor to work in the context of a Spring Boot API
 
 2. I would also like to inject my JSON configuration into ApiSecurityConfiguration
+=======
+M1: Get understanding of cross cutting concerns in place
+--------------------------------------------------------
+1. Request scope not working on async completion thread
+   JSON file reader not found leading to transactions error
+   Get security async handling working
+   https://www.baeldung.com/spring-security-async-principal-propagation
+   https://www.baeldung.com/spring-mvc-async-security
+
+2. User Id is: 00uc5txme5djp51gG0h7
+   Identity name and Principal strings should be equal to this user id
+   Instead they are set to com.mycompany.api.basicapi.entities.ApiClaims@5884ead6
+   I also need to understand what Granted Authority means
+
+M2: Java polish up and learning
+-------------------------------
+1. Where does this debug message come from?
+   'Using generated security password'
+
+2. I need to try to inject my JSON configuration into ApiSecurityConfiguration
+   Also inject SecurityContextHolder into API operations
+   These may have request scope, which I don't properly understand
 
 3. Claims Service fires twice for async requests
    I need to control when it runs via security.filter-dispatcher-types=REQUEST, ERROR
@@ -44,6 +66,9 @@ M3: Integrate the certified library
 
 M4: Blog Write Up Links
 -----------------------
+=======
+M4: Blog Write Up
+-----------------
 1. Use of async code
    http://humansreadcode.com/spring-boot-completablefuture/
 
