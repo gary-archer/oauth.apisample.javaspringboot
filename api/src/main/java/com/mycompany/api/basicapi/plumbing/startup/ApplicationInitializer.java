@@ -1,6 +1,8 @@
 package com.mycompany.api.basicapi.plumbing.startup;
 
 import com.mycompany.api.basicapi.configuration.Configuration;
+import com.mycompany.api.basicapi.plumbing.threading.AsyncRequestTaskDecorator;
+import com.mycompany.api.basicapi.plumbing.threading.AsyncRequestThreadPoolTaskExecutor;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.*;
@@ -8,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 /*
  * Override startup to customize behaviour
@@ -28,9 +31,6 @@ public class ApplicationInitializer implements ApplicationContextInitializer<Con
         map.put("server.port", this.getSslPortNumber(configuration));
         map.put("server.ssl.key-store", String.format("certs/%s", configuration.app.sslCertificateFileName));
         map.put("server.ssl.key-store-password", configuration.app.sslCertificatePassword);
-
-        map.put("https.proxyHost", "127.0.0.1");
-        map.put("https.proxyPort", "8888");
 
         // Set the properties against the environment
         MutablePropertySources propertySources = context.getEnvironment().getPropertySources();

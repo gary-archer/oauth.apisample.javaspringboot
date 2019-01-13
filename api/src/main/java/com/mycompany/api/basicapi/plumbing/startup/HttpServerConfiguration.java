@@ -1,11 +1,11 @@
 package com.mycompany.api.basicapi.plumbing.startup;
 
+import com.ea.async.Async;
+import com.mycompany.api.basicapi.plumbing.threading.AsyncRequestTaskDecorator;
+import com.mycompany.api.basicapi.plumbing.threading.AsyncRequestThreadPoolTaskExecutor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.web.servlet.config.annotation.CorsRegistration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
 /*
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
  *
  */
 @Configuration
-public class HttpServerConfiguration implements WebMvcConfigurer {
+public class HttpServerConfiguration extends WebMvcConfigurationSupport {
 
     /*
      * The injected configuration
@@ -29,11 +29,36 @@ public class HttpServerConfiguration implements WebMvcConfigurer {
     }
 
     /*
-     * Configure our API to allow CORS requests from our SPA
+     * Custom configuration to allow request scope objects to be accessed during async completion
+     * https://jira.spring.io/browse/SPR-6873
+     * https://stackoverflow.com/questions/23732089/how-to-enable-request-scope-in-async-task-executor/33337838#33337838
+     */
+    @Override
+    protected void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+
+        /// This gets called but it seems to be too late and may need to happen before the web server starts
+        System.out.println("**** ASYNC STARTUP");
+
+        // Now initialise the EA async await library
+        System.out.println("*** MAIN: Starting EA async");
+        Async.init();
+
+        AsyncRequestThreadPoolTaskExecutor executor = new AsyncRequestThreadPoolTaskExecutor();
+        executor.setTaskDecorator(new AsyncRequestTaskDecorator());
+        executor.initialize();
+
+        // Return the executor
+        configurer.setTaskExecutor(executor);
+        // configurer.registerCallableInterceptors().setTaskExecutor(executor);
+    }
+
+    /*
+     * Configure our API to allow cross origin requests from our SPA
      */
     @Override
     public void addCorsMappings(CorsRegistry registry)
     {
+        System.out.println("**** CORS STARTUP");
         CorsRegistration registration = registry.addMapping("/api/**");
 
         String[] trustedOrigins = this.configuration.app.trustedOrigins;
@@ -49,10 +74,14 @@ public class HttpServerConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
+        System.out.println("**** WEB SERVER STARTUP");
+
+        // Point to the root 'spa' folder and its static content
         registry.addResourceHandler("/**/*.js", "/**/*.css", "/**/*.svg", "/**/*.json")
                 .setCachePeriod(0)
                 .addResourceLocations("file:../spa");
 
+        // Point to 'spa' folder and its index.html file
         registry.addResourceHandler("spa", "spa/")
                 .setCachePeriod(0)
                 .addResourceLocations("file:../spa/index.html")
