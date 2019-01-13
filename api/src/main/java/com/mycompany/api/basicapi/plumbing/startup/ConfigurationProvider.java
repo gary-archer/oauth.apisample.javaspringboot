@@ -9,7 +9,7 @@ import com.mycompany.api.basicapi.plumbing.utilities.JsonFileReader;
 public class ConfigurationProvider {
 
     /*
-     * Read the JSON configuration file into objects - and wait for the promise to complete synchronously
+     * Read the JSON configuration file into objects, waiting for the reader's future to complete synchronously
      */
     public Configuration Load()
     {

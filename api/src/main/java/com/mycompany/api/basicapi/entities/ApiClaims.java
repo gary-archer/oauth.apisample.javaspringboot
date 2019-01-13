@@ -2,6 +2,7 @@ package com.mycompany.api.basicapi.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Set;
 
 /*

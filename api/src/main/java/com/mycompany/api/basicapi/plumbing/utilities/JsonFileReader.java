@@ -2,10 +2,8 @@ package com.mycompany.api.basicapi.plumbing.utilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.javaync.io.AsyncFiles;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,7 +18,7 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
  * A utility class to read the contents of a file into objects
  */
 @Repository
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
+@RequestScope
 public class JsonFileReader {
 
     /*

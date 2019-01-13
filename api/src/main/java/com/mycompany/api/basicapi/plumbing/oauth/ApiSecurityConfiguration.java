@@ -21,10 +21,12 @@ public class ApiSecurityConfiguration extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
 
+        System.out.println("*** SECURITY STARTUP");
         http.authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
             .antMatchers("/api/**")
             .authenticated();
+
     }
 
     /*

@@ -1,25 +1,9 @@
-M1: Get claims passed through to controllers and logic completed
-----------------------------------------------------------------
+M1: Cross cutting concerns still not right
+------------------------------------------
+1. Unable to pass request scoped its to async completion thread, leading to a transactions error
+   I cannot get customizing the ThreadPoolTaskExecutor to work in the context of a Spring Boot API
 
-1. OAuth errors do not have CORS permissions
-   UI errors not retryable when Home is clicked after an exception in Repository
-   Problems injecting API claims into repository
-   https://www.baeldung.com/get-user-in-spring-security
-
-2. Set security context properly
-   User Id is: 00uc5txme5djp51gG0h7
-   Identity name and Principal strings should be equal to this user id
-   Instead they are set to com.mycompany.api.basicapi.entities.ApiClaims@5884ead6
-   I need to set Granted Authority better
-
-M2: Java polish up and learning
--------------------------------
-1. Where does this debug message come from?
-   'Using generated security password'
-
-2. I need to try to inject my JSON configuration into ApiSecurityConfiguration
-   Also inject SecurityContextHolder into API operations
-   These may have request scope, which I don't properly understand
+2. I would also like to inject my JSON configuration into ApiSecurityConfiguration
 
 3. Claims Service fires twice for async requests
    I need to control when it runs via security.filter-dispatcher-types=REQUEST, ERROR
@@ -27,18 +11,42 @@ M2: Java polish up and learning
    Alternatively I may need to create a FilterRegistrationBean
    https://github.com/spring-projects/spring-security-oauth/issues/736
 
-4. Java best practice such as dispose
+4. Still don't understand Spring security well enough
+   User Id is: 00uc5txme5djp51gG0h7
+   Identity name and Principal strings should be equal to this user id
+   Instead they are set to com.mycompany.api.basicapi.entities.ApiClaims@5884ead6
+   I also need to understand what Granted Authority means
+   https://www.baeldung.com/spring-security-async-principal-propagation
+   https://www.baeldung.com/spring-mvc-async-security
 
-5. Exception logging that is more readable
+5. Where does this debug message come from?
+   'Using generated security password'
+
+M2: Java polish up and learning
+-------------------------------
+1. Java linting
+
+2. Any disposable objects?
 
 M3: Integrate the certified library
 ---------------------------------
-1. Get calls to OAuth server working, along with Fiddler debugging
+1. Get calls to OAuth server working
      https://bitbucket.org/connect2id/oauth-2.0-sdk-with-openid-connect-extensions
      
      // Introspect is in OAuth library as opposed to OIDC library
      https://static.javadoc.io/com.nimbusds/oauth2-oidc-sdk/5.0/com/nimbusds/oauth2/sdk/TokenIntrospectionRequest.html
      https://mvnrepository.com/artifact/com.nimbusds/oauth2-oidc-sdk
 
-M4: Blog Write Up
------------------
+2. Fiddler debugging to set against the Connect2Id HTTP client
+   Alternatively it could be set in our app initializer like this:
+        //map.put("https.proxyHost", "127.0.0.1");
+        //map.put("https.proxyPort", "8888");
+
+M4: Blog Write Up Links
+-----------------------
+1. Use of async code
+   http://humansreadcode.com/spring-boot-completablefuture/
+
+2. Some metrics on async performance under load:
+   http://callistaenterprise.se/blogg/teknik/2014/04/22/c10k-developing-non-blocking-rest-services-with-spring-mvc/
+
