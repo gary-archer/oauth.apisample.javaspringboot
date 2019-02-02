@@ -58,9 +58,6 @@ public class ApiError extends RuntimeException {
         serviceError.put("errorCode", this.errorCode);
         serviceError.put("details", this.details);
         error.set("serviceError", serviceError);
-
-        // TODO: Stack trace
-
         return error;
     }
 

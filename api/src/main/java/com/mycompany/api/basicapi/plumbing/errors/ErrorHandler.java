@@ -128,7 +128,10 @@ public class ErrorHandler {
 
         // Create a new API error so that we have structured error data
         var error = new ApiError("general_exception", "An unexpected exception occurred in the API");
+
+        // Set details, including the stack trace of the original exception
         error.setDetails(getExceptionDetails(ex));
+        error.setStackTrace(ex.getStackTrace());
         return error;
     }
 
