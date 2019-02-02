@@ -49,7 +49,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     public void configure(HttpSecurity http) throws Exception {
 
         // Create a Spring security filter and give it our singleton objects
-        // We and a supplier method for creating our concrete type of claims
+        // We use a supplier method for creating our custom claims in common code
         var authorizationFilter = new AuthorizationFilter(this.configuration, this.metadata, this.cache, () -> new BasicApiClaims());
 
         // Indicate that API requests use the filter
