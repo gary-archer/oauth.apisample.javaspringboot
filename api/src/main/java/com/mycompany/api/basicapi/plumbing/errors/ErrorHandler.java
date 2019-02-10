@@ -208,7 +208,7 @@ public class ErrorHandler {
      */
     public static ApiError fromMissingClaim(String claimName) {
 
-        var apiError = new ApiError("claims_failure", "Authorization Data Not Found");
+        var apiError = new ApiError("claims_failure", "Authorization data not found");
         apiError.setDetails(String.format("An empty value was found for the expected claim %s", claimName));
         return apiError;
     }
