@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.resource.PathResourceResolver;
@@ -53,7 +54,10 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         var authorizationFilter = new AuthorizationFilter(this.configuration, this.metadata, this.cache, () -> new BasicApiClaims());
 
         // Indicate that API requests use the filter
-        http.antMatcher("/api/**")
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .antMatcher("/api/**")
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated()

@@ -20,8 +20,6 @@ import org.javatuples.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
-import java.util.Set;
-
 /*
  * The class from which OAuth calls are initiated
  */
@@ -34,7 +32,7 @@ public class Authenticator {
     private final IssuerMetadata metadata;
 
     /*
-     * Receive the configuration
+     * Receive dependencies
      */
     public Authenticator(OauthConfiguration configuration, IssuerMetadata metadata) {
         this.configuration = configuration;

@@ -40,7 +40,7 @@ public class ClaimsMiddleware {
         }
 
         // Bypass validation and use cached results if they exist
-        var cacheSuccess = cache.getClaimsForToken(accessToken, claims);
+        var cacheSuccess = this.cache.getClaimsForToken(accessToken, claims);
         if (cacheSuccess) {
             this.logger.info("Claims Middleware: Existing claims returned from cache");
             return true;
