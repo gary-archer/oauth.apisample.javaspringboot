@@ -1,6 +1,8 @@
 package com.mycompany.api.basicapi.startup;
 
 import com.mycompany.api.basicapi.entities.BasicApiClaims;
+import com.mycompany.api.basicapi.entities.BasicApiClaimsProvider;
+import com.mycompany.api.basicapi.plumbing.oauth.AuthenticationBuilder;
 import com.mycompany.api.basicapi.plumbing.oauth.AuthorizationFilter;
 import com.mycompany.api.basicapi.plumbing.oauth.ClaimsCache;
 import com.mycompany.api.basicapi.plumbing.oauth.IssuerMetadata;
@@ -48,6 +50,12 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
      */
     @Override
     public void configure(HttpSecurity http) throws Exception {
+
+        // The type of builder code I'd like to write
+        var builder = new AuthenticationBuilder<BasicApiClaims>(this.configuration.getOauth())
+                .WithCustomClaimsProvider(BasicApiClaimsProvider.class);
+
+        // TODO: Experiment further
 
         // Create a Spring security filter and give it our singleton objects
         // We use a supplier method for creating our custom claims in common code

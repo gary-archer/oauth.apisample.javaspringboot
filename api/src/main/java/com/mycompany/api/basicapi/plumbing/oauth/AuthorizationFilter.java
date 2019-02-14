@@ -1,7 +1,6 @@
 package com.mycompany.api.basicapi.plumbing.oauth;
 
 import com.mycompany.api.basicapi.configuration.Configuration;
-import com.mycompany.api.basicapi.entities.BasicApiClaims;
 import com.mycompany.api.basicapi.logic.AuthorizationRulesRepository;
 import com.mycompany.api.basicapi.plumbing.errors.ErrorHandler;
 import com.mycompany.api.basicapi.plumbing.utilities.ResponseWriter;
@@ -16,7 +15,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /*

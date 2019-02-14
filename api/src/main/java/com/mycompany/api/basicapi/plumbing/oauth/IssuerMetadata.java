@@ -1,7 +1,6 @@
 package com.mycompany.api.basicapi.plumbing.oauth;
 
 import com.mycompany.api.basicapi.configuration.Configuration;
-import com.mycompany.api.basicapi.configuration.OauthConfiguration;
 import com.mycompany.api.basicapi.plumbing.errors.ErrorHandler;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.Issuer;

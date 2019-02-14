@@ -3,7 +3,6 @@ package com.mycompany.api.basicapi.plumbing.oauth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.api.basicapi.configuration.Configuration;
-import com.mycompany.api.basicapi.configuration.OauthConfiguration;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
