@@ -1,6 +1,7 @@
-package com.mycompany.api.basicapi.plumbing.utilities;
+package com.mycompany.api.basicapi.utilities;
 
 import com.mycompany.api.basicapi.configuration.Configuration;
+import com.mycompany.api.basicapi.utilities.JsonFileReader;
 
 /*
  * Manage loading our configuration from a JSON file

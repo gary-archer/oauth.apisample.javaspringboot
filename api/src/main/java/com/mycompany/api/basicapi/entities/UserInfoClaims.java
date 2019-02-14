@@ -1,4 +1,4 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.entities;
 
 import lombok.Getter;
 

@@ -1,6 +1,5 @@
 package com.mycompany.api.basicapi.plumbing.utilities;
 
-import com.mycompany.api.basicapi.configuration.Configuration;
 import com.mycompany.api.basicapi.plumbing.errors.ClientError;
 import org.springframework.http.HttpStatus;
 import javax.servlet.http.HttpServletResponse;
@@ -14,13 +13,13 @@ public class ResponseWriter {
     /*
      * Injected dependencies
      */
-    private final Configuration configuration;
+    private final String[] trustedOrigins;
 
     /*
      * Initialize from configuration
      */
-    public ResponseWriter(Configuration configuration) {
-        this.configuration = configuration;
+    public ResponseWriter(String[] trustedOrigins) {
+        this.trustedOrigins = trustedOrigins;
     }
 
     /*
@@ -59,7 +58,7 @@ public class ResponseWriter {
 
         // Including CORS headers so that a browser client can read the error response
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-        for (String trustedOrigin : configuration.getApp().getTrustedOrigins()) {
+        for (String trustedOrigin : this.trustedOrigins) {
             response.setHeader("Access-Control-Allow-Origin", trustedOrigin);
         }
     }

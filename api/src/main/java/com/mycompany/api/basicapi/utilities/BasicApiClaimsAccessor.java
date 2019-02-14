@@ -1,4 +1,4 @@
-package com.mycompany.api.basicapi.entities;
+package com.mycompany.api.basicapi.utilities;
 
 import com.mycompany.api.basicapi.entities.BasicApiClaims;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +10,7 @@ import org.springframework.web.context.annotation.RequestScope;
  */
 @Component
 @RequestScope
-public class BasicApiClaimsProvider {
+public class BasicApiClaimsAccessor {
 
     /*
      * Return the API claims set by the security handler

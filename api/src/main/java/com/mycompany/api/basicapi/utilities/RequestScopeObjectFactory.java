@@ -1,5 +1,6 @@
-package com.mycompany.api.basicapi.plumbing.utilities;
+package com.mycompany.api.basicapi.utilities;
 
+import com.mycompany.api.basicapi.utilities.JsonFileReader;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

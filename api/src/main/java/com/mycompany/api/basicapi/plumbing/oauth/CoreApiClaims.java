@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import org.springframework.security.core.AuthenticatedPrincipal;
-import java.util.HashSet;
 
 /*
  * A base class for API claims
@@ -24,8 +23,13 @@ public class CoreApiClaims implements AuthenticatedPrincipal {
     private String[] scopes;
 
     // User info fields
+    @Getter
     private String givenName;
+
+    @Getter
     private String familyName;
+
+    @Getter
     private String email;
 
     // We return the immutable user id from the access token as the user name, which is not a display value
@@ -50,13 +54,6 @@ public class CoreApiClaims implements AuthenticatedPrincipal {
         this.givenName = givenName;
         this.familyName = familyName;
         this.email = email;
-    }
-
-    /*
-     * Return user info fields as an entity
-     */
-    public UserInfoClaims getCentralUserInfo() {
-        return new UserInfoClaims(this.givenName, this.familyName, this.email);
     }
 
     /*

@@ -2,7 +2,7 @@ package com.mycompany.api.basicapi.startup;
 
 import com.mycompany.api.basicapi.configuration.AppConfiguration;
 import com.mycompany.api.basicapi.configuration.Configuration;
-import com.mycompany.api.basicapi.plumbing.utilities.ConfigurationProvider;
+import com.mycompany.api.basicapi.utilities.ConfigurationProvider;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.*;

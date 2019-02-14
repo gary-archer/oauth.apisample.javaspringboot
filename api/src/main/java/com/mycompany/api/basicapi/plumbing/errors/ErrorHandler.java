@@ -49,13 +49,13 @@ public class ErrorHandler {
     /*
      * The entry point for exceptions in filters
      */
-    public void handleFilterException(HttpServletResponse response, Exception ex, Configuration configuration) {
+    public void handleFilterException(HttpServletResponse response, Exception ex, String[] trustedOrigins) {
 
         // Get the data
         var responseData = this.handleExceptionInternal(ex);
 
         // Write the response
-        var writer = new ResponseWriter(configuration);
+        var writer = new ResponseWriter(trustedOrigins);
         writer.writeFilterExceptionResponse(response, responseData.getValue0(), responseData.getValue1());
     }
 

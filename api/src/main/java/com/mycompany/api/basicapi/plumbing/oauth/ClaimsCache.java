@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class ClaimsCache {
+public class ClaimsCache<TClaims extends CoreApiClaims> {
 
     /*
      * The injected configuration
@@ -60,7 +60,7 @@ public class ClaimsCache {
      * Add claims to the cache mapped to this token's hash, until the token's expiry time, which is a UTC value
      * Almost simultaneous requests from the same user could call put so the cache must be thread safe
      */
-    public void addClaimsForToken(String accessToken, long tokenUtcExpirySeconds, CoreApiClaims claims) {
+    public void addClaimsForToken(String accessToken, long tokenUtcExpirySeconds, TClaims claims) {
 
         // Convert to JSON
         var tokenHash = DigestUtils.sha256Hex(accessToken);
@@ -77,7 +77,7 @@ public class ClaimsCache {
      * Get claims from the cache for this token's hash, or return null if not found
      * Almost simultaneous requests from the same user could return null for the same token
      */
-    public boolean getClaimsForToken(String accessToken, CoreApiClaims claims) {
+    public TClaims getClaimsForToken(String accessToken) {
 
 
         var tokenHash = DigestUtils.sha256Hex(accessToken);
@@ -85,12 +85,12 @@ public class ClaimsCache {
 
         // Indicate that a claims lookup is needed
         if(claimsJson == null) {
-            return false;
+            return null;
         }
 
         // Let the claims object deserialize its fields
-        claims.fromJson(this.deserializeClaimsJson(claimsJson));
-        return true;
+        // claims.fromJson(this.deserializeClaimsJson(claimsJson));
+        return null;
     }
 
     /*

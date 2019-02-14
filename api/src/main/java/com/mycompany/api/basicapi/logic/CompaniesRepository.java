@@ -3,13 +3,13 @@ package com.mycompany.api.basicapi.logic;
 import com.mycompany.api.basicapi.entities.BasicApiClaims;
 import com.mycompany.api.basicapi.entities.Company;
 import com.mycompany.api.basicapi.entities.CompanyTransactions;
-import com.mycompany.api.basicapi.entities.BasicApiClaimsProvider;
+import com.mycompany.api.basicapi.utilities.BasicApiClaimsAccessor;
 import com.mycompany.api.basicapi.plumbing.errors.ClientError;
-import com.mycompany.api.basicapi.plumbing.utilities.JsonFileReader;
+import com.mycompany.api.basicapi.utilities.JsonFileReader;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import com.mycompany.api.basicapi.plumbing.utilities.RequestScopeObjectFactory;
+import com.mycompany.api.basicapi.utilities.RequestScopeObjectFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
@@ -32,9 +32,9 @@ public class CompaniesRepository {
     /*
      * Receive dependencies
      */
-    public CompaniesRepository(BasicApiClaimsProvider claimsProvider, RequestScopeObjectFactory factory)
+    public CompaniesRepository(BasicApiClaimsAccessor claimsAccessor, RequestScopeObjectFactory factory)
     {
-        this.claims = claimsProvider.getApiClaims();
+        this.claims = claimsAccessor.getApiClaims();
         this.jsonReader = factory.createJsonFileReader();
     }
 

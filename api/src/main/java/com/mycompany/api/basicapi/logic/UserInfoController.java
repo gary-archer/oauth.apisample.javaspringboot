@@ -1,8 +1,8 @@
 package com.mycompany.api.basicapi.logic;
 
 import com.mycompany.api.basicapi.entities.BasicApiClaims;
-import com.mycompany.api.basicapi.entities.BasicApiClaimsProvider;
-import com.mycompany.api.basicapi.plumbing.oauth.UserInfoClaims;
+import com.mycompany.api.basicapi.utilities.BasicApiClaimsAccessor;
+import com.mycompany.api.basicapi.entities.UserInfoClaims;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +27,8 @@ public class UserInfoController {
     /*
      * Receive claims from the security context
      */
-    public UserInfoController(BasicApiClaimsProvider claimsProvider) {
-        this.claims = claimsProvider.getApiClaims();
+    public UserInfoController(BasicApiClaimsAccessor claimsAccessor) {
+        this.claims = claimsAccessor.getApiClaims();
     }
 
     /*
@@ -37,6 +37,7 @@ public class UserInfoController {
     @GetMapping(value="current")
     public CompletableFuture<UserInfoClaims> getUserClaims()
     {
-        return CompletableFuture.completedFuture(this.claims.getCentralUserInfo());
+        var userInfo = new UserInfoClaims(this.claims.getGivenName(), this.claims.getFamilyName(), this.claims.getEmail());
+        return CompletableFuture.completedFuture(userInfo);
     }
 }
