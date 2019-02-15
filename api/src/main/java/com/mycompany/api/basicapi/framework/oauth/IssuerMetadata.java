@@ -1,6 +1,6 @@
 package com.mycompany.api.basicapi.framework.oauth;
 
-import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.errors.OAuthErrorHandler;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderConfigurationRequest;
@@ -47,8 +47,9 @@ public class IssuerMetadata {
 
         } catch(Exception e) {
 
-            // Report errors
-            throw ErrorHandler.fromMetadataError(e, this.configuration.getAuthority());
+            // Throw an understandable error
+            var errorHandler = new OAuthErrorHandler();
+            throw errorHandler.fromMetadataError(e, this.configuration.getAuthority());
         }
     }
 }

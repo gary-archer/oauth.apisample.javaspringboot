@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 /*
  * An error entity to return to the caller
  */
-public class ClientError extends RuntimeException {
+public class ClientError extends RuntimeException implements IClientError {
 
     @Getter
     private final HttpStatus statusCode;
@@ -61,18 +61,6 @@ public class ClientError extends RuntimeException {
             error.put("utcTime", this.utcTime);
         }
 
-        return error;
-    }
-
-    /*
-     * Similar to the above but includes the status code
-     */
-    public ObjectNode ToLogFormat()
-    {
-        var mapper = new ObjectMapper();
-        var error = mapper.createObjectNode();
-        error.put("statusCode", this.statusCode.value());
-        error.set("body", this.toResponseFormat());
         return error;
     }
 }

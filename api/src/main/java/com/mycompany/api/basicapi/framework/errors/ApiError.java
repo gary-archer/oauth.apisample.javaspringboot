@@ -11,15 +11,11 @@ import java.time.Instant;
  */
 public class ApiError extends RuntimeException {
 
-    /*
-     * A range for generated instance ids
-     */
+    // A range for generated instance ids
     private static final int MIN_ERROR_ID = 10000;
     private static final int MAX_ERROR_ID = 99999;
 
-    /*
-     * Error properties to log
-     */
+    // Error properties to log
     private HttpStatus statusCode;
     private String errorCode;
     private final String area;
@@ -30,7 +26,7 @@ public class ApiError extends RuntimeException {
     private String details;
 
     /*
-     * Construction
+     * Construct from an error code and user message
      */
     public ApiError(String errorCode, String userMessage)
     {

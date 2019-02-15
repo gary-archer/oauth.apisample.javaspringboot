@@ -1,7 +1,7 @@
 package com.mycompany.api.basicapi;
 
 import com.ea.async.Async;
-import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
+import com.mycompany.api.basicapi.errors.UnhandledExceptionHandler;
 import com.mycompany.api.basicapi.startup.ApplicationInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -28,7 +28,8 @@ public class BasicapiApplication
 		}
 		catch(Exception ex) {
 
-			var errorHandler = new ErrorHandler();
+			// Report startup errors
+			var errorHandler = new UnhandledExceptionHandler();
 			errorHandler.handleStartupException(ex);
 		}
 	}

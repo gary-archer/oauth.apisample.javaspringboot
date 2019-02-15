@@ -1,6 +1,6 @@
 package com.mycompany.api.basicapi.framework.oauth;
 
-import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.errors.OAuthErrorHandler;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
@@ -56,11 +56,12 @@ public class Authenticator {
                     .toHTTPRequest()
                     .send();
 
-            // Handle errors returned in the response body
+            // Handle errors returned in the response body and return an understandable error
             var introspectionResponse = TokenIntrospectionResponse.parse(httpResponse);
             if (!introspectionResponse.indicatesSuccess()) {
                 var errorResponse = TokenIntrospectionErrorResponse.parse(httpResponse);
-                throw ErrorHandler.fromIntrospectionError(errorResponse.getErrorObject(), url.toString());
+                var errorHandler = new OAuthErrorHandler();
+                throw errorHandler.fromIntrospectionError(errorResponse.getErrorObject(), url.toString());
             }
 
             // Get token claims from the response
@@ -84,7 +85,8 @@ public class Authenticator {
         catch(Exception e) {
 
             // Report errors
-           throw ErrorHandler.fromIntrospectionError(e, url.toString());
+            var errorHandler = new OAuthErrorHandler();
+            throw errorHandler.fromIntrospectionError(e, url.toString());
         }
     }
 
@@ -110,7 +112,8 @@ public class Authenticator {
             var userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (!userInfoResponse.indicatesSuccess()) {
                 var errorResponse = UserInfoErrorResponse.parse(httpResponse);
-                throw ErrorHandler.fromUserInfoError(errorResponse.getErrorObject(), url.toString());
+                var errorHandler = new OAuthErrorHandler();
+                throw errorHandler.fromUserInfoError(errorResponse.getErrorObject(), url.toString());
             }
 
             // Get token claims from the response
@@ -126,7 +129,8 @@ public class Authenticator {
         catch(Exception e) {
 
             // Report errors
-            throw ErrorHandler.fromUserInfoError(e, url.toString());
+            var errorHandler = new OAuthErrorHandler();
+            throw errorHandler.fromUserInfoError(e, url.toString());
         }
     }
 
@@ -137,7 +141,8 @@ public class Authenticator {
 
         var claim = claims.getStringParameter(name);
         if(StringUtils.isEmpty(claim)) {
-            throw ErrorHandler.fromMissingClaim(name);
+            var errorHandler = new OAuthErrorHandler();
+            throw errorHandler.fromMissingClaim(name);
         }
 
         return claim;
@@ -150,7 +155,8 @@ public class Authenticator {
 
         var claim = claims.getNumberParameter(name);
         if(claim == null) {
-            throw ErrorHandler.fromMissingClaim(name);
+            var errorHandler = new OAuthErrorHandler();
+            throw errorHandler.fromMissingClaim(name);
         }
 
         return claim.intValue();
@@ -163,7 +169,8 @@ public class Authenticator {
 
         var claim = claims.getClaim(name, String.class);
         if(StringUtils.isEmpty(claim)) {
-            throw ErrorHandler.fromMissingClaim(name);
+            var errorHandler = new OAuthErrorHandler();
+            throw errorHandler.fromMissingClaim(name);
         }
 
         return claim;

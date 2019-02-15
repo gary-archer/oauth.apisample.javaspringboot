@@ -1,8 +1,9 @@
 package com.mycompany.api.basicapi.framework.oauth;
 
-import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.errors.OAuthErrorHandler;
 import com.mycompany.api.basicapi.framework.utilities.ClaimsFactory;
 import com.mycompany.api.basicapi.framework.utilities.ResponseWriter;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +27,7 @@ public class AuthorizationFilter<TClaims extends CoreApiClaims> extends OncePerR
     private final OauthConfiguration configuration;
     private final IssuerMetadata metadata;
     private final ClaimsCache cache;
-    private final ClaimsFactory claimsFactory;
+    private final ClaimsFactory<TClaims> claimsFactory;
     private final String[] trustedOrigins;
 
     /*
@@ -36,7 +37,7 @@ public class AuthorizationFilter<TClaims extends CoreApiClaims> extends OncePerR
             OauthConfiguration configuration,
             IssuerMetadata metadata,
             ClaimsCache cache,
-            ClaimsFactory claimsFactory,
+            ClaimsFactory<TClaims> claimsFactory,
             String[] trustedOrigins)
     {
         this.configuration = configuration;
@@ -79,8 +80,9 @@ public class AuthorizationFilter<TClaims extends CoreApiClaims> extends OncePerR
         } catch(Exception ex) {
 
             // Any failures will be thrown as exceptions and will result in a 500 response
-            var handler = new ErrorHandler();
-            handler.handleFilterException(response, ex, this.trustedOrigins);
+            var handler = new OAuthErrorHandler();
+            var logger = LoggerFactory.getLogger(AuthorizationFilter.class);
+            handler.handleFilterException(response, ex, logger, this.trustedOrigins);
         }
     }
 
