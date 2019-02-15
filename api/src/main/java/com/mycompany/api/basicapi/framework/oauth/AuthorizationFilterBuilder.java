@@ -46,7 +46,10 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
      */
     public AuthorizationFilter<TClaims> Build() {
 
-        // TODO: Validate and create defaults
+        // Verify that we have the required dependencies
+        if(this.claimsFactory == null) {
+            throw new RuntimeException("A claims factory is required in order to create an AuthorizationFilter");
+        }
 
         // Load metadata
         var metadata = new IssuerMetadata(this.configuration);

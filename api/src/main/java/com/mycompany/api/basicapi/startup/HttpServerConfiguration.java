@@ -2,7 +2,6 @@ package com.mycompany.api.basicapi.startup;
 
 import com.mycompany.api.basicapi.entities.BasicApiClaims;
 import com.mycompany.api.basicapi.framework.oauth.ClaimsCache;
-import com.mycompany.api.basicapi.framework.oauth.CustomClaimsProvider;
 import com.mycompany.api.basicapi.framework.utilities.ClaimsFactory;
 import com.mycompany.api.basicapi.logic.BasicApiClaimsProvider;
 import com.mycompany.api.basicapi.framework.oauth.AuthorizationFilterBuilder;

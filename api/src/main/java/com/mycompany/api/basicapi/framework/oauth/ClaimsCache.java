@@ -4,6 +4,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -51,13 +52,15 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
      */
     public void addClaimsForToken(String accessToken, long tokenUtcExpirySeconds, TClaims claims) {
 
-        // TODO: Avoid exceeding the default cache time as for .Net
-
-        // Convert to JSON
+        // Get the hash
         var tokenHash = DigestUtils.sha256Hex(accessToken);
 
+        // Ensure that we do not exceed the configured expiry
+        var maxExpirySeconds = Instant.now().getEpochSecond() + this.configuration.getDefaultTokenCacheMinutes() * 60;
+        var itemExpirySeconds = Math.min(tokenUtcExpirySeconds, maxExpirySeconds);
+
         // Add to the cache
-        cache.invoke(tokenHash, e -> e.setValue(claims).setExpiryTime(tokenUtcExpirySeconds * 1000));
+        cache.invoke(tokenHash, e -> e.setValue(claims).setExpiryTime(itemExpirySeconds * 1000));
     }
 
     /*
