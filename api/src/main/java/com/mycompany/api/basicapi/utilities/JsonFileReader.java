@@ -10,7 +10,7 @@ import static com.ea.async.Async.await;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 /*
- * A utility class to read the contents of a file into objects
+ * A utility class to manage async reading of JSON text file data into objects
  */
 public class JsonFileReader {
 

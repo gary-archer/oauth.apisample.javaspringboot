@@ -2,9 +2,9 @@ package com.mycompany.api.basicapi.startup;
 
 import com.mycompany.api.basicapi.entities.BasicApiClaims;
 import com.mycompany.api.basicapi.logic.BasicApiClaimsProvider;
-import com.mycompany.api.basicapi.plumbing.oauth.AuthorizationFilterBuilder;
-import com.mycompany.api.basicapi.plumbing.oauth.ClaimsCache;
-import com.mycompany.api.basicapi.plumbing.oauth.IssuerMetadata;
+import com.mycompany.api.basicapi.framework.oauth.AuthorizationFilterBuilder;
+import com.mycompany.api.basicapi.framework.oauth.ClaimsCache;
+import com.mycompany.api.basicapi.framework.oauth.IssuerMetadata;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
@@ -15,8 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.resource.PathResourceResolver;
-
-import java.util.function.Supplier;
 
 /*
  * A class to manage HTTP configuration for our server
@@ -50,25 +48,17 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
      * This is due to problems where the latter fires again when a CompletableFuture moves to the ASYNC / completed stage
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void configure(HttpSecurity http) throws Exception {
 
         // Create our authorization filter and give it the parameters it needs
-        Supplier<BasicApiClaims> claimsSupplier = BasicApiClaims::new;
-        var builder =
-                new AuthorizationFilterBuilder<BasicApiClaims>(this.configuration.getOauth())
-                        .WithIssuerMetadata(this.metadata)
-                        .WithClaimsCache(this.cache)
-                        .WithTrustedOrigins(this.configuration.getApp().getTrustedOrigins());
-
-        builder.WithClaimsSupplier(() -> new BasicApiClaims());
-
-                //.WithClaimsSupplier(() -> new BasicApiClaims()
-                //.WithCustomClaimsProvider(() -> new BasicApiClaimsProvider())
-                //.Build();
-
-        // Create a Spring security filter and give it our singleton objects
-        // We use a supplier method for creating our custom claims in common code
-        // var authorizationFilter = new AuthorizationFilter(this.configuration, this.metadata, this.cache, () -> new BasicApiClaims());
+        var authorizationFilter = new AuthorizationFilterBuilder<BasicApiClaims>(this.configuration.getOauth())
+                                        .WithIssuerMetadata(this.metadata)
+                                        .WithClaimsCache(this.cache)
+                                        .WithTrustedOrigins(this.configuration.getApp().getTrustedOrigins())
+                                        .WithClaimsSupplier(BasicApiClaims::new)
+                                        .WithCustomClaimsProvider(BasicApiClaimsProvider::new)
+                                        .Build();
 
         // Indicate that API requests use the filter
         http.sessionManagement()

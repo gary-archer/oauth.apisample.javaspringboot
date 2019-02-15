@@ -1,6 +1,6 @@
-package com.mycompany.api.basicapi.plumbing.utilities;
+package com.mycompany.api.basicapi.framework.utilities;
 
-import com.mycompany.api.basicapi.plumbing.errors.ClientError;
+import com.mycompany.api.basicapi.framework.errors.ClientError;
 import org.springframework.http.HttpStatus;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

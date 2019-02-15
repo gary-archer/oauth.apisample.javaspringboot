@@ -1,4 +1,4 @@
-package com.mycompany.api.basicapi.plumbing.errors;
+package com.mycompany.api.basicapi.framework.errors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

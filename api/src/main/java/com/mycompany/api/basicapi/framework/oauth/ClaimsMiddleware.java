@@ -1,4 +1,4 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.framework.oauth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

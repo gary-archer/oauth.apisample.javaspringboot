@@ -1,7 +1,5 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.framework.oauth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.api.basicapi.configuration.Configuration;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.cache2k.Cache;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -36,7 +33,7 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
     /*
      * The singleton cache
      */
-    private Cache<String, String> cache;
+    private Cache<String, TClaims> cache;
 
     /*
      * Create the cache at application startup
@@ -45,11 +42,11 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
     public void init() {
 
         // Output expiry debug messages here if required
-        var listener = (CacheEntryExpiredListener<String, String>) (cache, cacheEntry) -> {
+        var listener = (CacheEntryExpiredListener<String, TClaims>) (cache, cacheEntry) -> {
         };
 
         // Create the cache with a default token expiry time
-        this.cache = new Cache2kBuilder<String, String>() {}
+        this.cache = new Cache2kBuilder<String, TClaims>() {}
                 .name("claims")
                 .expireAfterWrite(this.configuration.getDefaultTokenCacheMinutes(), TimeUnit.MINUTES)
                 .addListener(listener)
@@ -64,13 +61,9 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
 
         // Convert to JSON
         var tokenHash = DigestUtils.sha256Hex(accessToken);
-        var claimsJson = claims.toJson().toString();
 
         // Add to the cache
-        cache.invoke(
-                tokenHash,
-                e -> e.setValue(claimsJson)
-                        .setExpiryTime(tokenUtcExpirySeconds * 1000));
+        cache.invoke(tokenHash, e -> e.setValue(claims).setExpiryTime(tokenUtcExpirySeconds * 1000));
     }
 
     /*
@@ -79,31 +72,16 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
      */
     public TClaims getClaimsForToken(String accessToken) {
 
-
+        // Get the token hash and try to find existing claims
         var tokenHash = DigestUtils.sha256Hex(accessToken);
-        var claimsJson = cache.get(tokenHash);
+        var claims = cache.get(tokenHash);
 
-        // Indicate that a claims lookup is needed
-        if(claimsJson == null) {
+        // Indicate not found amd that a claims lookup is needed for the new token
+        if(claims == null) {
             return null;
         }
 
-        // Let the claims object deserialize its fields
-        // claims.fromJson(this.deserializeClaimsJson(claimsJson));
-        return null;
-    }
-
-    /*
-     * Deserialize into a dynamic object
-     */
-    private ObjectNode deserializeClaimsJson(String claimsJson) {
-
-        try {
-            var mapper = new ObjectMapper();
-            return (ObjectNode) mapper.readTree(claimsJson);
-        }
-        catch(IOException ex) {
-            throw new RuntimeException("IOException parsing JSON into an object", ex);
-        }
+        // Return the claims object
+        return claims;
     }
 }

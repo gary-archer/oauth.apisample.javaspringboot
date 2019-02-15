@@ -1,6 +1,6 @@
 package com.mycompany.api.basicapi.configuration;
 
-import com.mycompany.api.basicapi.plumbing.oauth.OauthConfiguration;
+import com.mycompany.api.basicapi.framework.oauth.OauthConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 

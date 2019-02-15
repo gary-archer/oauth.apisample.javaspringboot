@@ -4,7 +4,7 @@ import com.mycompany.api.basicapi.entities.BasicApiClaims;
 import com.mycompany.api.basicapi.entities.Company;
 import com.mycompany.api.basicapi.entities.CompanyTransactions;
 import com.mycompany.api.basicapi.utilities.BasicApiClaimsAccessor;
-import com.mycompany.api.basicapi.plumbing.errors.ClientError;
+import com.mycompany.api.basicapi.framework.errors.ClientError;
 import com.mycompany.api.basicapi.utilities.JsonFileReader;
 import java.util.Arrays;
 import java.util.Optional;

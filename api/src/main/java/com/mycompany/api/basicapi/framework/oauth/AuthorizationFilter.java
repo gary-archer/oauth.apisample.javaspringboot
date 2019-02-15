@@ -1,7 +1,7 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.framework.oauth;
 
-import com.mycompany.api.basicapi.plumbing.errors.ErrorHandler;
-import com.mycompany.api.basicapi.plumbing.utilities.ResponseWriter;
+import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.utilities.ResponseWriter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,6 +1,6 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.framework.oauth;
 
-import com.mycompany.api.basicapi.plumbing.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;

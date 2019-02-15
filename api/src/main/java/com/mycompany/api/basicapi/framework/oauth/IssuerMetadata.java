@@ -1,7 +1,7 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.framework.oauth;
 
 import com.mycompany.api.basicapi.configuration.Configuration;
-import com.mycompany.api.basicapi.plumbing.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderConfigurationRequest;

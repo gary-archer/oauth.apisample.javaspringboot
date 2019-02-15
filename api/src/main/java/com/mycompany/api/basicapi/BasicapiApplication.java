@@ -1,7 +1,7 @@
 package com.mycompany.api.basicapi;
 
 import com.ea.async.Async;
-import com.mycompany.api.basicapi.plumbing.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
 import com.mycompany.api.basicapi.startup.ApplicationInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

@@ -1,7 +1,6 @@
-package com.mycompany.api.basicapi.plumbing.errors;
+package com.mycompany.api.basicapi.framework.errors;
 
-import com.mycompany.api.basicapi.configuration.Configuration;
-import com.mycompany.api.basicapi.plumbing.utilities.ResponseWriter;
+import com.mycompany.api.basicapi.framework.utilities.ResponseWriter;
 import com.nimbusds.oauth2.sdk.ErrorObject;
 import org.javatuples.Pair;
 import org.slf4j.LoggerFactory;

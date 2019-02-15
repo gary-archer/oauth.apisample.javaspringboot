@@ -1,4 +1,4 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.framework.oauth;
 
 import java.util.function.Supplier;
 
@@ -16,22 +16,25 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
     // The claims cache
     private ClaimsCache<TClaims> cache;
 
+    // An object to create a new empty claims object when required
+    private Supplier<TClaims> claimsSupplier;
+
     // The custom claims provider
     private Supplier<CustomClaimsProvider<TClaims>> customClaimsProvider;
-
-    // An object to create empty claims when required
-    private Supplier<TClaims> claimsSupplier;
 
     // Trusted origins used with error responses
     private String[] trustedOrigins;
 
     /*
-     * Create our builder and receive configuration
+     * Receive configuration and initialize our data
      */
     public AuthorizationFilterBuilder(OauthConfiguration configuration) {
         this.configuration = configuration;
         this.metadata = null;
         this.cache = null;
+        this.claimsSupplier = null;
+        this.customClaimsProvider = null;
+        this.trustedOrigins = new String[] {};
     }
 
     /*
@@ -53,7 +56,7 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
     /*
      * Set the claims supplier
      */
-    public AuthorizationFilterBuilder<TClaims> WithClaimsSupplier(Supplier<TClaims> claimsSupplier, Class runtimeType) {
+    public AuthorizationFilterBuilder<TClaims> WithClaimsSupplier(Supplier<TClaims> claimsSupplier) {
         this.claimsSupplier = claimsSupplier;
         return this;
     }
@@ -62,7 +65,7 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
      * Set an object to create the type of custom claims provider needed
      */
     public <TProvider extends Supplier<CustomClaimsProvider<TClaims>>>
-    AuthorizationFilterBuilder<TClaims> WithCustomClaimsProvider(TProvider provider) {
+           AuthorizationFilterBuilder<TClaims> WithCustomClaimsProvider(TProvider provider) {
 
         this.customClaimsProvider = provider;
         return this;
@@ -80,6 +83,10 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
      * Build the authorization filter
      */
     public AuthorizationFilter<TClaims> Build() {
+
+        // TODO: Validate and create defaults
+
+        // Create the filter
         return new AuthorizationFilter<TClaims>(
                 this.configuration,
                 this.metadata,

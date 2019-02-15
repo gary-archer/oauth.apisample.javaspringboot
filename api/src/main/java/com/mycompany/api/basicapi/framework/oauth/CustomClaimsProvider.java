@@ -1,4 +1,4 @@
-package com.mycompany.api.basicapi.plumbing.oauth;
+package com.mycompany.api.basicapi.framework.oauth;
 
 /*
  * The base class for providing custom claims

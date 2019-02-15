@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 /*
- * A helper to enable claims to be injected, which could be abstracted behind an interface
+ * A helper to enable claims to be injected, which could be abstracted behind an interface for testing
  */
 @Component
 @RequestScope
