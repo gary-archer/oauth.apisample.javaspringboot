@@ -1,10 +1,11 @@
 package com.mycompany.api.basicapi.startup;
 
 import com.mycompany.api.basicapi.entities.BasicApiClaims;
+import com.mycompany.api.basicapi.framework.oauth.ClaimsCache;
+import com.mycompany.api.basicapi.framework.oauth.CustomClaimsProvider;
+import com.mycompany.api.basicapi.framework.utilities.ClaimsFactory;
 import com.mycompany.api.basicapi.logic.BasicApiClaimsProvider;
 import com.mycompany.api.basicapi.framework.oauth.AuthorizationFilterBuilder;
-import com.mycompany.api.basicapi.framework.oauth.ClaimsCache;
-import com.mycompany.api.basicapi.framework.oauth.IssuerMetadata;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
@@ -26,20 +27,13 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
      * Injected dependencies
      */
     private final com.mycompany.api.basicapi.configuration.Configuration configuration;
-    private final IssuerMetadata metadata;
-    private final ClaimsCache cache;
 
     /*
      * Receive dependencies
      */
-    public HttpServerConfiguration(
-            com.mycompany.api.basicapi.configuration.Configuration configuration,
-            IssuerMetadata metadata,
-            ClaimsCache cache)
+    public HttpServerConfiguration(com.mycompany.api.basicapi.configuration.Configuration configuration)
     {
         this.configuration = configuration;
-        this.metadata = metadata;
-        this.cache = cache;
     }
 
     /*
@@ -48,16 +42,32 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
      * This is due to problems where the latter fires again when a CompletableFuture moves to the ASYNC / completed stage
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void configure(HttpSecurity http) throws Exception {
 
+        // Due to Java type erasure we have to create concrete generic types outside the framework
+        var oauthConfig = this.configuration.getOauth();
+        var factory = new ClaimsFactory<BasicApiClaims>() {
+
+            @Override
+            public BasicApiClaims CreateEmptyClaims() {
+                return new BasicApiClaims();
+            }
+
+            @Override
+            public ClaimsCache<BasicApiClaims> CreateClaimsCache() {
+                return new ClaimsCache<BasicApiClaims>(oauthConfig);
+            }
+
+            @Override
+            public BasicApiClaimsProvider CreateCustomClaimsProvider() {
+                return new BasicApiClaimsProvider();
+            }
+        };
+
         // Create our authorization filter and give it the parameters it needs
-        var authorizationFilter = new AuthorizationFilterBuilder<BasicApiClaims>(this.configuration.getOauth())
-                                        .WithIssuerMetadata(this.metadata)
-                                        .WithClaimsCache(this.cache)
+        var authorizationFilter = new AuthorizationFilterBuilder<BasicApiClaims>(oauthConfig)
+                                        .WithClaimsFactory(factory)
                                         .WithTrustedOrigins(this.configuration.getApp().getTrustedOrigins())
-                                        .WithClaimsSupplier(BasicApiClaims::new)
-                                        .WithCustomClaimsProvider(BasicApiClaimsProvider::new)
                                         .Build();
 
         // Indicate that API requests use the filter

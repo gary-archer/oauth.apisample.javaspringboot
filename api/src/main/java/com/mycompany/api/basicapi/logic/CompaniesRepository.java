@@ -45,7 +45,6 @@ public class CompaniesRepository {
     {
         var companies = await(this.jsonReader.readFile("/data/CompanyList.json", Company[].class));
         var authorizedCompanies = Arrays.stream(companies).filter(c -> this.isUserAuthorizedForCompany(c.getId())).toArray(Company[]::new);
-
         return completedFuture(authorizedCompanies);
     }
 

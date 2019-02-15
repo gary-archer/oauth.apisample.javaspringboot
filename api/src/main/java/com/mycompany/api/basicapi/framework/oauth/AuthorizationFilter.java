@@ -1,6 +1,7 @@
 package com.mycompany.api.basicapi.framework.oauth;
 
 import com.mycompany.api.basicapi.framework.errors.ErrorHandler;
+import com.mycompany.api.basicapi.framework.utilities.ClaimsFactory;
 import com.mycompany.api.basicapi.framework.utilities.ResponseWriter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -13,7 +14,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /*
  * The Spring entry point for handling token validation and claims lookup
@@ -26,8 +26,7 @@ public class AuthorizationFilter<TClaims extends CoreApiClaims> extends OncePerR
     private final OauthConfiguration configuration;
     private final IssuerMetadata metadata;
     private final ClaimsCache cache;
-    private final Supplier<TClaims> claimsSupplier;
-    private final Supplier<CustomClaimsProvider<TClaims>> customClaimsProvider;
+    private final ClaimsFactory claimsFactory;
     private final String[] trustedOrigins;
 
     /*
@@ -37,15 +36,13 @@ public class AuthorizationFilter<TClaims extends CoreApiClaims> extends OncePerR
             OauthConfiguration configuration,
             IssuerMetadata metadata,
             ClaimsCache cache,
-            Supplier<TClaims> claimsSupplier,
-            Supplier<CustomClaimsProvider<TClaims>> customClaimsProvider,
+            ClaimsFactory claimsFactory,
             String[] trustedOrigins)
     {
         this.configuration = configuration;
         this.metadata = metadata;
         this.cache = cache;
-        this.claimsSupplier = claimsSupplier;
-        this.customClaimsProvider = customClaimsProvider;
+        this.claimsFactory = claimsFactory;
         this.trustedOrigins = trustedOrigins;
     }
 
@@ -59,14 +56,13 @@ public class AuthorizationFilter<TClaims extends CoreApiClaims> extends OncePerR
 
             // Create authorization related classes on every API request
             var authenticator = new Authenticator(this.configuration, this.metadata);
-            var customClaimsProvider = this.customClaimsProvider.get();
-            var claimsMiddleware = new ClaimsMiddleware(this.cache, authenticator, customClaimsProvider);
+            var claimsMiddleware = new ClaimsMiddleware(this.cache, authenticator, this.claimsFactory);
 
             // Try to get the access token and create empty claims
             String accessToken = this.readToken(request);
 
             // Try to process the token and get claims
-            var claims = claimsMiddleware.authorizeRequestAndGetClaims(accessToken, this.claimsSupplier);
+            var claims = claimsMiddleware.authorizeRequestAndGetClaims(accessToken);
             if(claims != null) {
 
                 // Update the Spring security context with claims and move on to business logic

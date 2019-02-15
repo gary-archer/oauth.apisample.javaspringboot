@@ -1,8 +1,8 @@
 package com.mycompany.api.basicapi.framework.oauth;
 
+import com.mycompany.api.basicapi.framework.utilities.ClaimsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.function.Supplier;
 
 /*
  * The entry point for the processing to validate tokens and return claims
@@ -16,23 +16,23 @@ public class ClaimsMiddleware<TClaims extends CoreApiClaims> {
      */
     private final ClaimsCache<TClaims> cache;
     private final Authenticator authenticator;
-    private final CustomClaimsProvider<TClaims> customClaimsProvider;
+    private final ClaimsFactory<TClaims> claimsFactory;
     private final Logger logger;
 
     /*
      * Receive dependencies
      */
-    public ClaimsMiddleware(ClaimsCache<TClaims> cache, Authenticator authenticator, CustomClaimsProvider<TClaims> customClaimsProvider) {
+    public ClaimsMiddleware(ClaimsCache<TClaims> cache, Authenticator authenticator, ClaimsFactory<TClaims> claimsFactory) {
         this.cache = cache;
         this.authenticator = authenticator;
-        this.customClaimsProvider = customClaimsProvider;
+        this.claimsFactory = claimsFactory;
         this.logger = LoggerFactory.getLogger(ClaimsMiddleware.class);
     }
 
     /*
      * The entry point function
      */
-    public TClaims authorizeRequestAndGetClaims(String accessToken, Supplier<TClaims> claimsSupplier) {
+    public TClaims authorizeRequestAndGetClaims(String accessToken) {
 
         // First report missing tokens
         if (accessToken == null) {
@@ -47,7 +47,7 @@ public class ClaimsMiddleware<TClaims extends CoreApiClaims> {
         }
 
         // Otherwise create new claims which we will populate
-        var claims = claimsSupplier.get();
+        var claims = claimsFactory.CreateEmptyClaims();
 
         // Otherwise start by introspecting the token
         var result = this.authenticator.validateTokenAndSetClaims(accessToken, claims);
@@ -66,7 +66,8 @@ public class ClaimsMiddleware<TClaims extends CoreApiClaims> {
         }
 
         // Add any custom product specific custom claims if required
-        this.customClaimsProvider.addCustomClaims(accessToken, claims);
+        var customClaimsProvider = this.claimsFactory.CreateCustomClaimsProvider();
+        customClaimsProvider.addCustomClaims(accessToken, claims);
 
         // Cache the claims against the token hash until the token's expiry time
         // The next time the API is called, all of the above results can be quickly looked up

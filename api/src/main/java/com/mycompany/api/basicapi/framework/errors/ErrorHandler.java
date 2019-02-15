@@ -19,6 +19,8 @@ import java.util.Arrays;
 @RestControllerAdvice
 public class ErrorHandler {
 
+    // TODO: Separate framework and non framework as for .Net
+
     /*
      * The entry point for exceptions on application startup
      */

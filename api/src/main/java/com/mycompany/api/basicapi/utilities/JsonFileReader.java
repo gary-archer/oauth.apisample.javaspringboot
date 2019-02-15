@@ -23,7 +23,8 @@ public class JsonFileReader {
         var json = await(this.readJsonFromFile(resourcePath));
 
         try {
-            return completedFuture(mapper.readValue(json, runtimeType));
+            var data = mapper.readValue(json, runtimeType);
+            return completedFuture(data);
         }
         catch(IOException ex) {
             throw new RuntimeException("IOException parsing JSON into an object", ex);

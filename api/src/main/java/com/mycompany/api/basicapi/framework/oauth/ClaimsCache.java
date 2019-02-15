@@ -1,21 +1,14 @@
 package com.mycompany.api.basicapi.framework.oauth;
 
-import com.mycompany.api.basicapi.configuration.Configuration;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
 /*
  * A singleton in memory claims cache for our API
  */
-@Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ClaimsCache<TClaims extends CoreApiClaims> {
 
     /*
@@ -26,27 +19,26 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
     /*
      * Receive dependencies
      */
-    public ClaimsCache(Configuration configuration) {
-        this.configuration = configuration.getOauth();
+    public ClaimsCache(OauthConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     /*
      * The singleton cache
      */
-    private Cache<String, TClaims> cache;
+    private Cache<String, Object> cache;
 
     /*
-     * Create the cache at application startup
+     * Create the cache on demand
      */
-    @PostConstruct
-    public void init() {
+    public void initialize() {
 
         // Output expiry debug messages here if required
-        var listener = (CacheEntryExpiredListener<String, TClaims>) (cache, cacheEntry) -> {
+        var listener = (CacheEntryExpiredListener<String, Object>) (cache, cacheEntry) -> {
         };
 
         // Create the cache with a default token expiry time
-        this.cache = new Cache2kBuilder<String, TClaims>() {}
+        this.cache = new Cache2kBuilder<String, Object>() {}
                 .name("claims")
                 .expireAfterWrite(this.configuration.getDefaultTokenCacheMinutes(), TimeUnit.MINUTES)
                 .addListener(listener)
@@ -58,6 +50,8 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
      * Almost simultaneous requests from the same user could call put so the cache must be thread safe
      */
     public void addClaimsForToken(String accessToken, long tokenUtcExpirySeconds, TClaims claims) {
+
+        // TODO: Avoid exceeding the default cache time as for .Net
 
         // Convert to JSON
         var tokenHash = DigestUtils.sha256Hex(accessToken);
@@ -72,16 +66,16 @@ public class ClaimsCache<TClaims extends CoreApiClaims> {
      */
     public TClaims getClaimsForToken(String accessToken) {
 
-        // Get the token hash and try to find existing claims
+        // Get the token hash
         var tokenHash = DigestUtils.sha256Hex(accessToken);
-        var claims = cache.get(tokenHash);
 
-        // Indicate not found amd that a claims lookup is needed for the new token
-        if(claims == null) {
-            return null;
+        // Return the cached claims if they exist
+        var data = cache.get(tokenHash);
+        if(data != null) {
+            return (TClaims)data;
         }
 
-        // Return the claims object
-        return claims;
+        // Indicate not found amd that a claims lookup is needed for the new token
+        return null;
     }
 }

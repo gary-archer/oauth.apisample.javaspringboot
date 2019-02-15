@@ -1,6 +1,6 @@
 package com.mycompany.api.basicapi.framework.oauth;
 
-import java.util.function.Supplier;
+import com.mycompany.api.basicapi.framework.utilities.ClaimsFactory;
 
 /*
  * A class to manage building and initializing our authorization filter
@@ -10,17 +10,8 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
     // Our OAuth configuration
     private final OauthConfiguration configuration;
 
-    // The issuer metadata
-    private IssuerMetadata metadata;
-
-    // The claims cache
-    private ClaimsCache<TClaims> cache;
-
-    // An object to create a new empty claims object when required
-    private Supplier<TClaims> claimsSupplier;
-
-    // The custom claims provider
-    private Supplier<CustomClaimsProvider<TClaims>> customClaimsProvider;
+    // A utility object to work around Java type erasure
+    private ClaimsFactory<TClaims> claimsFactory;
 
     // Trusted origins used with error responses
     private String[] trustedOrigins;
@@ -30,44 +21,15 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
      */
     public AuthorizationFilterBuilder(OauthConfiguration configuration) {
         this.configuration = configuration;
-        this.metadata = null;
-        this.cache = null;
-        this.claimsSupplier = null;
-        this.customClaimsProvider = null;
+        this.claimsFactory = null;
         this.trustedOrigins = new String[] {};
     }
 
     /*
-     * Set the metadata
+     * Set the factory used for creating objects
      */
-    public AuthorizationFilterBuilder<TClaims> WithIssuerMetadata(IssuerMetadata metadata) {
-        this.metadata = metadata;
-        return this;
-    }
-
-    /*
-     * Set the cache
-     */
-    public AuthorizationFilterBuilder<TClaims> WithClaimsCache(ClaimsCache<TClaims> cache) {
-        this.cache = cache;
-        return this;
-    }
-
-    /*
-     * Set the claims supplier
-     */
-    public AuthorizationFilterBuilder<TClaims> WithClaimsSupplier(Supplier<TClaims> claimsSupplier) {
-        this.claimsSupplier = claimsSupplier;
-        return this;
-    }
-
-    /*
-     * Set an object to create the type of custom claims provider needed
-     */
-    public <TProvider extends Supplier<CustomClaimsProvider<TClaims>>>
-           AuthorizationFilterBuilder<TClaims> WithCustomClaimsProvider(TProvider provider) {
-
-        this.customClaimsProvider = provider;
+    public AuthorizationFilterBuilder<TClaims> WithClaimsFactory(ClaimsFactory<TClaims> factory) {
+        this.claimsFactory = factory;
         return this;
     }
 
@@ -86,13 +48,20 @@ public class AuthorizationFilterBuilder<TClaims extends CoreApiClaims> {
 
         // TODO: Validate and create defaults
 
+        // Load metadata
+        var metadata = new IssuerMetadata(this.configuration);
+        metadata.initialize();
+
+        // Create and initialize the claims cache
+        var cache = this.claimsFactory.CreateClaimsCache();
+        cache.initialize();
+
         // Create the filter
         return new AuthorizationFilter<TClaims>(
                 this.configuration,
-                this.metadata,
-                this.cache,
-                this.claimsSupplier,
-                this.customClaimsProvider,
+                metadata,
+                cache,
+                this.claimsFactory,
                 this.trustedOrigins);
     }
 }
