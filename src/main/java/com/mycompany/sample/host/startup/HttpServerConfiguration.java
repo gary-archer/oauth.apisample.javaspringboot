@@ -108,7 +108,8 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
 
         // Projects that own static content should be built in a parallel folder to this API
         var webRootLocation = "file:../authguidance.websample.final/spa";
-        var desktopRootLocation = "file:../authguidance.desktopsample1/web";
+        var loopbackRootLocation = "file:../authguidance.desktopsample1/web";
+        var desktopRootLocation = "file:../authguidance.desktopsample.final/web";
         var mobileRootLocation = "file:../authguidance.mobilesample.android/web";
 
         // Add the resolvers
@@ -118,6 +119,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                 .resourceChain(true)
                 .addResolver(new WebStaticContentFileResolver(
                         webRootLocation,
+                        loopbackRootLocation,
                         desktopRootLocation,
                         mobileRootLocation));
     }
