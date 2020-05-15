@@ -44,7 +44,7 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> extends BaseAu
         // Otherwise create new claims which we will populate
         var claims = claimsSupplier.createEmptyClaims();
 
-        // Do the authentication work to get claims, which in our case means OAuth processing
+        // Add OAuth claims from introspection and user info lookup
         var expiry = authenticator.authenticateAndSetClaims(accessToken, request, claims);
 
         // Add any custom product specific custom claims if required
