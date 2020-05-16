@@ -12,18 +12,21 @@ public final class WebStaticContentFileResolver extends PathResourceResolver {
     private String spaRootLocation;
     private String loopbackRootLocation;
     private String desktopRootLocation;
-    private String mobileRootLocation;
+    private String androidRootLocation;
+    private String iosRootLocation;
 
     public WebStaticContentFileResolver(
             final String spaRootLocation,
             final String loopbackRootLocation,
             final String desktopRootLocation,
-            final String mobileRootLocation) {
+            final String androidRootLocation,
+            final String iosRootLocation) {
 
         this.spaRootLocation = spaRootLocation;
         this.loopbackRootLocation = loopbackRootLocation;
         this.desktopRootLocation = desktopRootLocation;
-        this.mobileRootLocation = mobileRootLocation;
+        this.androidRootLocation = androidRootLocation;
+        this.iosRootLocation = iosRootLocation;
     }
 
     /*
@@ -44,8 +47,12 @@ public final class WebStaticContentFileResolver extends PathResourceResolver {
             return this.getDesktopResource(resourcePath, location);
         }
 
-        if (resourcePath.toLowerCase().startsWith("mobile")) {
+        if (resourcePath.toLowerCase().startsWith("android")) {
             return this.getAndroidResource(resourcePath, location);
+        }
+
+        if (resourcePath.toLowerCase().startsWith("ios")) {
+            return this.getIosResource(resourcePath, location);
         }
 
         if (resourcePath.toLowerCase().equals("favicon.ico")) {
@@ -123,22 +130,45 @@ public final class WebStaticContentFileResolver extends PathResourceResolver {
     }
 
     /*
-     * Serve HTML for our Android sample's post login and post logout pages
+     * Serve HTML for our Android sample's interstitial pages
      */
     protected Resource getAndroidResource(final String resourcePath, final Resource location) {
 
         // Serve the post login page from the path 'file:../authguidance.mobilesample.android/web/postlogin.html'
-        if (resourcePath.toLowerCase().contains("mobile/postlogin.html")) {
+        if (resourcePath.toLowerCase().contains("android/postlogin.html")) {
 
-            var loginPhysicalPath = String.format("%s/postlogin.html", this.mobileRootLocation);
+            var loginPhysicalPath = String.format("%s/postlogin.html", this.androidRootLocation);
             return this.getResourceFromPhysicalPath(loginPhysicalPath, location);
         }
 
         // Serve the post logout page from the path 'file:../authguidance.mobilesample.android/web/postlogout.html'
-        if (resourcePath.toLowerCase().contains("mobile/postlogout.html")) {
+        if (resourcePath.toLowerCase().contains("android/postlogout.html")) {
 
             // Serve it from the web folder of the mobile sample
-            var logoutPhysicalPath = String.format("%s/postlogout.html", this.mobileRootLocation);
+            var logoutPhysicalPath = String.format("%s/postlogout.html", this.androidRootLocation);
+            return this.getResourceFromPhysicalPath(logoutPhysicalPath, location);
+        }
+
+        return null;
+    }
+
+    /*
+     * Serve HTML for our iOS sample's interstitial pages
+     */
+    protected Resource getIosResource(final String resourcePath, final Resource location) {
+
+        // Serve the post login page from the path 'file:../authguidance.mobilesample.ios/web/postlogin.html'
+        if (resourcePath.toLowerCase().contains("ios/postlogin.html")) {
+
+            var loginPhysicalPath = String.format("%s/postlogin.html", this.androidRootLocation);
+            return this.getResourceFromPhysicalPath(loginPhysicalPath, location);
+        }
+
+        // Serve the post logout page from the path 'file:../authguidance.mobilesample.ios/web/postlogout.html'
+        if (resourcePath.toLowerCase().contains("ios/postlogout.html")) {
+
+            // Serve it from the web folder of the mobile sample
+            var logoutPhysicalPath = String.format("%s/postlogout.html", this.androidRootLocation);
             return this.getResourceFromPhysicalPath(logoutPhysicalPath, location);
         }
 

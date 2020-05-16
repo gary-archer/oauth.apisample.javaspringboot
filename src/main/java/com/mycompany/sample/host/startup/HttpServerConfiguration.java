@@ -110,7 +110,8 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         var webRootLocation = "file:../authguidance.websample.final/spa";
         var loopbackRootLocation = "file:../authguidance.desktopsample1/web";
         var desktopRootLocation = "file:../authguidance.desktopsample.final/web";
-        var mobileRootLocation = "file:../authguidance.mobilesample.android/web";
+        var androidRootLocation = "file:../authguidance.mobilesample.android/web";
+        var iosRootLocation = "file:../authguidance.mobilesample.ios/web";
 
         // Add the resolvers
         registry.addResourceHandler("**/*")
@@ -121,6 +122,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                         webRootLocation,
                         loopbackRootLocation,
                         desktopRootLocation,
-                        mobileRootLocation));
+                        androidRootLocation,
+                        iosRootLocation));
     }
 }
