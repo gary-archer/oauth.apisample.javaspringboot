@@ -19,6 +19,9 @@ public class UserInfoController {
 
     private final SampleApiClaims claims;
 
+    /*
+     * The claims object is injected into the controller or other classes after OAuth processing
+     */
     public UserInfoController(final SampleApiClaims claims) {
         this.claims = claims;
     }

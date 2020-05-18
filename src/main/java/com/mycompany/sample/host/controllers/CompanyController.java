@@ -28,6 +28,9 @@ public class CompanyController {
     private final CompanyService service;
     private final SampleApiClaims claims;
 
+    /*
+     * The claims object is injected into the controller or other classes after OAuth processing
+     */
     public CompanyController(final CompanyService service, final SampleApiClaims claims) {
         this.service = service;
         this.claims = claims;
