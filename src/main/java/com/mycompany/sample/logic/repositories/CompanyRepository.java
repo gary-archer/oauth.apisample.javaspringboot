@@ -1,6 +1,6 @@
 package com.mycompany.sample.logic.repositories;
 
-import com.mycompany.sample.framework.base.LogEntry;
+import com.mycompany.sample.host.plumbing.logging.LogEntry;
 import com.mycompany.sample.logic.utilities.CGLib;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;

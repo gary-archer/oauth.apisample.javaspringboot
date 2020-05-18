@@ -8,8 +8,14 @@
     "proxyUrl": "http://127.0.0.1:8888",
     "useProxy": false
   },
+  "oauth": {
+    "authority":    "https://dev-843469.oktapreview.com/oauth2/default",
+    "clientId":     "0oac5s69rjXE0HcZO0h7",
+    "clientSecret": "VEEe9m9WDneeUSUJUOMKZiso_X6xwKvAqRInT2kg",
+    "maxClaimsCacheMinutes": 60
+  },
   "framework": {
-    "apiName":  "SampleApi",
+    "apiName": "SampleApi",
     "logging": {
       "development": {
         "level": "info",
@@ -40,11 +46,5 @@
         }
       }
     }
-  },
-  "oauth": {
-    "authority":    "https://dev-843469.oktapreview.com/oauth2/default",
-    "clientId":     "0oac5s69rjXE0HcZO0h7",
-    "clientSecret": "VEEe9m9WDneeUSUJUOMKZiso_X6xwKvAqRInT2kg",
-    "maxClaimsCacheMinutes": 60
   }
 }

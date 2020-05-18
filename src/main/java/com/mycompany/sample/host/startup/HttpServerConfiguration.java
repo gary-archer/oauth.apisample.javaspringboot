@@ -1,10 +1,9 @@
 package com.mycompany.sample.host.startup;
 
 import com.mycompany.sample.host.configuration.ApiConfiguration;
-import com.mycompany.sample.framework.api.base.configuration.FrameworkConfiguration;
-import com.mycompany.sample.framework.api.base.logging.LoggerFactory;
-import com.mycompany.sample.framework.api.base.startup.FrameworkBuilder;
-import com.mycompany.sample.host.utilities.WebStaticContentFileResolver;
+import com.mycompany.sample.host.configuration.FrameworkConfiguration;
+import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
+import com.mycompany.sample.host.plumbing.utilities.WebStaticContentFileResolver;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;

@@ -1,0 +1,12 @@
+1. Remove framework configuration and rename it to logging configuration
+   Move apiName to ApiConfiguration
+
+2. Review classes and remove unnecessary abstractions
+
+3. Remove framework builder classes and get host startup feeling right
+
+4. Remove ExtendedRuntimeException and use ApiError
+
+5. Move onto .Net Core, NodeJS and Serverless
+
+6. Remove CoreApiClaims and use ApiClaims

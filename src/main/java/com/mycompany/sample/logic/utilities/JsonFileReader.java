@@ -1,7 +1,7 @@
 package com.mycompany.sample.logic.utilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mycompany.sample.framework.base.ExtendedRuntimeException;
+import com.mycompany.sample.host.plumbing.errors.ExtendedRuntimeException;
 import com.mycompany.sample.logic.errors.ErrorCodes;
 import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

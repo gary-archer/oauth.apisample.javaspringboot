@@ -1,7 +1,7 @@
 package com.mycompany.sample.host.controllers;
 
 import com.google.common.primitives.Ints;
-import com.mycompany.sample.framework.api.base.errors.ErrorFactory;
+import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.host.claims.SampleApiClaims;

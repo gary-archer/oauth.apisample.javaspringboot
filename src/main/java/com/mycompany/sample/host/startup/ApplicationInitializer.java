@@ -1,13 +1,11 @@
 package com.mycompany.sample.host.startup;
 
-import com.mycompany.sample.framework.api.base.logging.LoggerFactory;
+import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.host.claims.SampleApiClaims;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
-import com.mycompany.sample.framework.api.base.startup.FrameworkBuilder;
-import com.mycompany.sample.framework.api.oauth.startup.OAuthAuthorizerBuilder;
 import com.mycompany.sample.host.authorization.SampleApiClaimsProvider;
-import com.mycompany.sample.host.errors.RestErrorTranslator;
+import com.mycompany.sample.host.plumbing.errors.RestErrorTranslator;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;

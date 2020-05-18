@@ -15,7 +15,7 @@
     <name>sampleapi</name>
     <description>Demo Spring Boot API</description>
 
-    <!-- Use Java 13, the latest version supported by Spring Boot -->
+    <!-- Use Java 13, the latest version supported by our dependencies -->
     <properties>
         <java.version>13</java.version>
     </properties>
@@ -117,8 +117,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>13</source>
-                    <target>13</target>
+                    <release>13</release>
                 </configuration>
             </plugin>
         </plugins>

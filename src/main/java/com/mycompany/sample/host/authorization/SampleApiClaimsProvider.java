@@ -1,7 +1,7 @@
 package com.mycompany.sample.host.authorization;
 
 import com.mycompany.sample.host.claims.SampleApiClaims;
-import com.mycompany.sample.framework.api.oauth.claims.CustomClaimsProvider;
+import com.mycompany.sample.host.claims.CustomClaimsProvider;
 import javax.servlet.http.HttpServletRequest;
 
 /*
