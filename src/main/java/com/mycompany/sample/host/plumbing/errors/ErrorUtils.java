@@ -6,11 +6,49 @@ import org.javatuples.Pair;
 import org.springframework.util.StringUtils;
 
 /*
- * A class for handling exceptions, logging them and returning an error to the caller
+ * A class for managing error translation into a loggable form
  */
 public final class ErrorUtils {
 
     private ErrorUtils() {
+    }
+
+    /*
+     * Return a known error from a general exception
+     */
+    public static Object fromException(final Throwable exception) {
+
+        var apiError = ErrorUtils.tryConvertToApiError(exception);
+        if (apiError != null) {
+            return apiError;
+        }
+
+        var clientError = ErrorUtils.tryConvertToClientError(exception);
+        if (clientError != null) {
+            return clientError;
+        }
+
+        return ErrorUtils.createApiError(exception, null, null);
+    }
+
+    /*
+     * Create an error from an exception
+     */
+    public static ApiError createApiError(final Throwable exception, final String errorCode, final String message) {
+
+        var defaultErrorCode = ErrorCodes.SERVER_ERROR;
+        var defaultMessage = "An unexpected exception occurred in the API";
+
+        // Create a default error and set a default technical message
+        // To customise details instead, application code should use error translation and throw an ApiError
+        var error = ErrorFactory.createApiError(
+                errorCode == null ? defaultErrorCode : errorCode,
+                message == null ? defaultMessage : message,
+                exception);
+
+        // Extract details from the original exception
+        error.setDetails(new TextNode(getExceptionDetailsMessage(exception)));
+        return error;
     }
 
     /*
@@ -19,7 +57,7 @@ public final class ErrorUtils {
     public static ApiError fromMetadataError(final Throwable ex, final String url) {
 
         var apiError = ErrorFactory.createApiError(
-                OAuthErrorCodes.METADATA_LOOKUP_FAILURE,
+                ErrorCodes.METADATA_LOOKUP_FAILURE,
                 "Metadata lookup failed", ex);
         ErrorUtils.setErrorDetails(apiError, null, ex, url);
         return apiError;
@@ -33,7 +71,7 @@ public final class ErrorUtils {
         // Create the error
         var oauthError = ErrorUtils.readOAuthErrorResponse(errorObject);
         var apiError = createOAuthApiError(
-                OAuthErrorCodes.INTROSPECTION_FAILURE,
+                ErrorCodes.INTROSPECTION_FAILURE,
                 "Token validation failed",
                 oauthError.getValue0());
 
@@ -58,7 +96,7 @@ public final class ErrorUtils {
         }
 
         var apiError = ErrorFactory.createApiError(
-                OAuthErrorCodes.INTROSPECTION_FAILURE,
+                ErrorCodes.INTROSPECTION_FAILURE,
                 "Token validation failed", ex);
         ErrorUtils.setErrorDetails(apiError, null, ex, url);
         return apiError;
@@ -72,7 +110,7 @@ public final class ErrorUtils {
         // Create the error
         var oauthError = ErrorUtils.readOAuthErrorResponse(errorObject);
         var apiError = createOAuthApiError(
-                OAuthErrorCodes.USERINFO_FAILURE,
+                ErrorCodes.USERINFO_FAILURE,
                 "User info lookup failed", oauthError.getValue0());
 
         // Set technical details
@@ -95,7 +133,7 @@ public final class ErrorUtils {
             throw (ClientError) ex;
         }
 
-        var apiError = ErrorFactory.createApiError(OAuthErrorCodes.USERINFO_FAILURE, "User info lookup failed", ex);
+        var apiError = ErrorFactory.createApiError(ErrorCodes.USERINFO_FAILURE, "User info lookup failed", ex);
         ErrorUtils.setErrorDetails(apiError, null, ex, url);
         return apiError;
     }
@@ -105,10 +143,59 @@ public final class ErrorUtils {
      */
     public static ApiError fromMissingClaim(final String claimName) {
 
-        var apiError = ErrorFactory.createApiError(BaseErrorCodes.CLAIMS_FAILURE, "Authorization data not found");
+        var apiError = ErrorFactory.createApiError(ErrorCodes.CLAIMS_FAILURE, "Authorization data not found");
         var message = String.format("An empty value was found for the expected claim %s", claimName);
         apiError.setDetails(new TextNode(message));
         return apiError;
+    }
+
+    /*
+     * Get the error as an API error if applicable
+     */
+    private static ApiError tryConvertToApiError(final Throwable ex) {
+
+        // Already handled 500 errors
+        if (ex instanceof ApiError) {
+            return (ApiError) ex;
+        }
+
+        // Check inner exceptions contained in async exceptions or bean creation exceptions
+        var throwable = ex.getCause();
+        while (throwable != null) {
+
+            // Already handled 500 errors
+            if (throwable instanceof ApiError) {
+                return (ApiError) throwable;
+            }
+
+            // Move to next
+            throwable = throwable.getCause();
+        }
+
+        return null;
+    }
+
+    /*
+     * Get the error as an IClientError derived error if applicable
+     */
+    private static ClientError tryConvertToClientError(final Throwable ex) {
+
+        // Already handled 500 errors
+        if (ex instanceof ClientError) {
+            return (ClientError) ex;
+        }
+
+        // Handle nested exceptions, including those during the async completion phase or application startup errors
+        var throwable = ex.getCause();
+        if (throwable != null) {
+
+            // Already handled 500 errors
+            if (throwable instanceof ClientError) {
+                return (ClientError) throwable;
+            }
+        }
+
+        return null;
     }
 
     /*

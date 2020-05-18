@@ -1,10 +1,10 @@
-package com.mycompany.sample.host.claims;
+package com.mycompany.sample.host.plumbing.claims;
 
 import lombok.Getter;
 import org.springframework.security.core.AuthenticatedPrincipal;
 
 /*
- * A base class for claims from an OAuth token
+ * Claims common to all APIs
  */
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CoreApiClaims implements AuthenticatedPrincipal {

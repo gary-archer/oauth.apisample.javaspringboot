@@ -1,37 +1,38 @@
 package com.mycompany.sample.host.startup;
 
-import com.mycompany.sample.host.claims.CoreApiClaims;
-import com.mycompany.sample.host.claims.ClaimsSupplier;
-import com.mycompany.sample.host.claims.CustomClaimsProvider;
-import com.mycompany.sample.host.configuration.OAuthConfiguration;
+import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.host.plumbing.claims.ClaimsSupplier;
+import com.mycompany.sample.host.plumbing.claims.CustomClaimsProvider;
+import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.plumbing.oauth.IssuerMetadata;
 import com.mycompany.sample.host.plumbing.oauth.OAuthAuthorizer;
 import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
-import com.mycompany.sample.host.claims.ClaimsCache;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.web.filter.OncePerRequestFilter;
+import com.mycompany.sample.host.plumbing.claims.ClaimsCache;
+import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
 import java.util.function.Supplier;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /*
- * Build an authorizer filter for OAuth token validation and claims caching
+ * A helper class to manage dependencies
  */
-public final class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
+public final class CompositionRoot<TClaims extends CoreApiClaims> {
 
-    // Injected properties
+    // Properties to be registered for injection
     private final ConfigurableListableBeanFactory container;
-    private final OAuthConfiguration configuration;
+    private final Configuration configuration;
     private final LoggerFactory loggerFactory;
 
-    // Properties set by builder methods
+    // Properties set via builder methods
+    private String apiBasePath;
     private Supplier<TClaims> claimsSupplier;
     private Supplier<CustomClaimsProvider<TClaims>> customClaimsProviderSupplier;
 
     /*
      * Receive configuration and initialize properties
      */
-    public OAuthAuthorizerBuilder(
+    public CompositionRoot(
             final ConfigurableListableBeanFactory container,
-            final OAuthConfiguration configuration,
+            final Configuration configuration,
             final LoggerFactory loggerFactory) {
 
         this.container = container;
@@ -42,17 +43,30 @@ public final class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
     }
 
     /*
-     * Consumers of the framework must provide a callback for creating claims
+     * Record the API base path
      */
-    public OAuthAuthorizerBuilder<TClaims> withClaimsSupplier(final Supplier<TClaims> claimsSupplier) {
+    public CompositionRoot withApiBasePath(final String apiBasePath) {
+
+        this.apiBasePath = apiBasePath.toLowerCase();
+        if (!this.apiBasePath.endsWith("/")) {
+            this.apiBasePath += '/';
+        }
+
+        return this;
+    }
+
+    /*
+     * Consumers must provide a callback for creating claims
+     */
+    public CompositionRoot<TClaims> withClaimsSupplier(final Supplier<TClaims> claimsSupplier) {
         this.claimsSupplier = claimsSupplier;
         return this;
     }
 
     /*
-     * Consumers of the framework can provide a callback for creating a custom claims provider
+     * Consumers can provide a callback for creating a custom claims provider
      */
-    public OAuthAuthorizerBuilder<TClaims> withCustomClaimsProviderSupplier(
+    public CompositionRoot<TClaims> withCustomClaimsProviderSupplier(
             final Supplier<CustomClaimsProvider<TClaims>> supplier) {
 
         this.customClaimsProviderSupplier = supplier;
@@ -62,9 +76,12 @@ public final class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
     /*
      * Register and return the authorizer
      */
-    public OncePerRequestFilter register() {
+    public void register() {
 
-        // Create an injectable object to enable the framework to create claims objects of a concrete type at runtime
+        // Create an object used to prevent interceptors from processing SPA and OPTIONS requests
+        var requestClassifier = new RequestClassifier(this.apiBasePath);
+
+        // Create an injectable object to allow claims objects of a concrete type to be created at runtime
         var supplier = new ClaimsSupplier<TClaims>() {
 
             @Override
@@ -86,24 +103,31 @@ public final class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
         var cache = new ClaimsCache<TClaims>(this.configuration, this.loggerFactory);
         cache.initialize();
 
-        // Create the authorizer
+        // Create the authorizer, which is a Spring once per request filter
         var authorizer = new OAuthAuthorizer(this.container);
 
-        // Register framework specific dependencies
-        this.registerSingletonDependencies(metadata, authorizer, cache, supplier);
-        return authorizer;
+        // Register these singletons so that they are injectable
+        this.registerSingletonDependencies(
+                requestClassifier,
+                metadata,
+                authorizer,
+                cache,
+                supplier);
     }
 
     /*
-     * Register security dependencies at application startup
+     * Register dependencies at application startup
      */
     private void registerSingletonDependencies(
+            final RequestClassifier requestClassifier,
             final IssuerMetadata metadata,
             final OAuthAuthorizer authorizer,
             final ClaimsCache<TClaims> claims,
             final ClaimsSupplier<TClaims> supplier) {
 
-        this.container.registerSingleton("OAuthConfiguration", this.configuration);
+        this.container.registerSingleton("Configuration", this.configuration);
+        this.container.registerSingleton("LoggerFactory", this.loggerFactory);
+        this.container.registerSingleton("RequestClassifier", requestClassifier);
         this.container.registerSingleton("IssuerMetadata", metadata);
         this.container.registerSingleton("Authorizer", authorizer);
         this.container.registerSingleton("ClaimsCache", claims);

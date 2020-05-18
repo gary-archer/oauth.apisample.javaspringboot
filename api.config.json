@@ -1,5 +1,6 @@
 {
   "api": {
+    "name": "SampleApi",
     "sslCertificateFileName": "mycompany.ssl.pfx",
     "sslCertificatePassword": "SslPassword1",
     "trustedOrigins": [
@@ -14,36 +15,33 @@
     "clientSecret": "VEEe9m9WDneeUSUJUOMKZiso_X6xwKvAqRInT2kg",
     "maxClaimsCacheMinutes": 60
   },
-  "framework": {
-    "apiName": "SampleApi",
-    "logging": {
-      "development": {
-        "level": "info",
-        "namespace": "com.mycompany.sample",
-        "overrideLevels": {
-          "ClaimsCache": "info"
+  "logging": {
+    "production": {
+      "level": "info",
+      "appenders": [
+        {
+          "type": "console"
+        },
+        {
+          "type": "file",
+          "filePrefix": "api",
+          "dirname": "./logs",
+          "totalLogSizeMB": "1024",
+          "maxFiles": "100"
         }
-      },
-      "production": {
-        "level": "info",
-        "appenders": [
-          {
-            "type": "console"
-          },
-          {
-            "type": "file",
-            "filePrefix": "api",
-            "dirname": "./logs",
-            "totalLogSizeMB": "1024",
-            "maxFiles": "100"
-          }
-        ],
-        "performanceThresholdsMilliseconds": {
-          "default": 250,
-          "operationOverrides": {
-            "authorizer": 1000
-          }
+      ],
+      "performanceThresholdsMilliseconds": {
+        "default": 250,
+        "operationOverrides": {
+          "authorizer": 1000
         }
+      }
+    },
+    "development": {
+      "level": "info",
+      "namespace": "com.mycompany.sample",
+      "overrideLevels": {
+        "ClaimsCache": "info"
       }
     }
   }

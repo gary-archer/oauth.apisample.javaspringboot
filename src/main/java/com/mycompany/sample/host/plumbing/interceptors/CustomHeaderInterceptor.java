@@ -1,6 +1,6 @@
 package com.mycompany.sample.host.plumbing.interceptors;
 
-import com.mycompany.sample.host.plumbing.errors.BaseErrorCodes;
+import com.mycompany.sample.host.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
 import org.springframework.beans.factory.BeanFactory;
@@ -39,7 +39,7 @@ public class CustomHeaderInterceptor extends HandlerInterceptorAdapter {
             if (!StringUtils.isEmpty(apiToBreak)) {
                 if (apiToBreak.toLowerCase().equals(this.apiName.toLowerCase())) {
                     throw ErrorFactory.createApiError(
-                        BaseErrorCodes.EXCEPTION_SIMULATION, "An exception was simulated in the API");
+                        ErrorCodes.EXCEPTION_SIMULATION, "An exception was simulated in the API");
 
                 }
             }

@@ -10,9 +10,9 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mycompany.sample.host.configuration.FrameworkConfiguration;
+import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.plumbing.errors.ApiError;
-import com.mycompany.sample.host.plumbing.errors.FrameworkErrorUtils;
+import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
 import org.slf4j.Logger;
 import java.util.ArrayList;
 
@@ -50,22 +50,21 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Configure logging programmatically from our JSON configuration file
      */
-    public void configure(final FrameworkConfiguration configuration) {
+    public void configure(final Configuration configuration) {
 
-        // Initialise behaviour
-        var logConfiguration = configuration.getLogging();
-        this.apiName = configuration.getApiName();
+        // Store the name, which will enable this API's logs to be distinguished from other APIs
+        this.apiName = configuration.getApi().getName();
 
         // Initialise the production logger
-        var prodNode = logConfiguration.get("production");
-        var prodLevelNode = prodNode.get("level");
+        var prodConfiguration = configuration.getLogging().getProduction();
+        var prodLevelNode = prodConfiguration.get("level");
         var productionLevel = Level.toLevel(prodLevelNode.asText().toUpperCase(), Level.INFO);
-        this.configureProductionLogger(productionLevel, prodNode.get("appenders"));
-        this.loadPerformanceThresholds(logConfiguration);
+        this.configureProductionLogger(productionLevel, prodConfiguration.get("appenders"));
+        this.loadPerformanceThresholds(prodConfiguration);
 
         // Initialise any development loggers
-        var devNode = logConfiguration.get("development");
-        this.configureDevelopmentLoggers(devNode);
+        var devConfiguration = configuration.getLogging().getDevelopment();
+        this.configureDevelopmentLoggers(devConfiguration);
 
         // Indicate successful configuration
         this.isInitialized = true;
@@ -83,7 +82,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         }
 
         // Get the error into a loggable format
-        var error = (ApiError) FrameworkErrorUtils.fromException(exception);
+        var error = (ApiError) ErrorUtils.fromException(exception);
 
         // Create a log entry and set error details
         var logEntry = new LogEntryImpl(this.apiName, this.getProductionLogger());
@@ -295,10 +294,10 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Extract performance details from the log configuration, for use later when creating log entries
      */
-    private void loadPerformanceThresholds(final ObjectNode logConfiguration) {
+    private void loadPerformanceThresholds(final ObjectNode prodConfiguration) {
 
         // Read the default performance threshold
-        var thresholds = logConfiguration.get("production").get("performanceThresholdsMilliseconds");
+        var thresholds = prodConfiguration.get("performanceThresholdsMilliseconds");
         this.defaultPerformanceThresholdMilliseconds =
                 thresholds.get("default").asInt(this.defaultPerformanceThresholdMilliseconds);
 

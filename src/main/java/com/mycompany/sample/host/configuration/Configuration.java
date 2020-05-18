@@ -18,5 +18,5 @@ public class Configuration {
 
     @Getter
     @Setter
-    private FrameworkConfiguration framework;
+    private LoggingConfiguration logging;
 }

@@ -1,5 +1,6 @@
-package com.mycompany.sample.host.claims;
+package com.mycompany.sample.host.plumbing.claims;
 
+import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.configuration.OAuthConfiguration;
 import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -18,8 +19,8 @@ public final class ClaimsCache<TClaims extends CoreApiClaims> {
     private final OAuthConfiguration configuration;
     private final Logger debugLogger;
 
-    public ClaimsCache(final OAuthConfiguration configuration, final LoggerFactory loggerFactory) {
-        this.configuration = configuration;
+    public ClaimsCache(final Configuration configuration, final LoggerFactory loggerFactory) {
+        this.configuration = configuration.getOauth();
         this.debugLogger = loggerFactory.getDevelopmentLogger(ClaimsCache.class);
     }
 

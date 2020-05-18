@@ -1,6 +1,6 @@
 package com.mycompany.sample.host.plumbing.utilities;
 
-import com.mycompany.sample.host.claims.CoreApiClaims;
+import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /*

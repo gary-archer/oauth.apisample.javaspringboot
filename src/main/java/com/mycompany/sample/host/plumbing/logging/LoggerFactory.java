@@ -1,15 +1,15 @@
 package com.mycompany.sample.host.plumbing.logging;
 
-import com.mycompany.sample.host.configuration.FrameworkConfiguration;
+import com.mycompany.sample.host.configuration.Configuration;
 import org.slf4j.Logger;
 
 /*
- * An interface to access loggers
+ * An interface to access loggers from application code
  */
 public interface LoggerFactory {
 
     // Called to set up logging based on JSON configuration
-    void configure(FrameworkConfiguration configuration);
+    void configure(Configuration configuration);
 
     // Handle startup errors
     void logStartupError(Throwable exception);

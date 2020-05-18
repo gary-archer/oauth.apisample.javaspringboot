@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /*
- * An interface for errors internal to the API
+ * An interface for processing full API error details
  */
 public abstract class ApiError extends RuntimeException {
 

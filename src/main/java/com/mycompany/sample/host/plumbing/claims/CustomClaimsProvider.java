@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.claims;
+package com.mycompany.sample.host.plumbing.claims;
 
 import javax.servlet.http.HttpServletRequest;
 

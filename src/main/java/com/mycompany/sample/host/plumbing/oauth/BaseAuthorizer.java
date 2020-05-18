@@ -1,6 +1,6 @@
 package com.mycompany.sample.host.plumbing.oauth;
 
-import com.mycompany.sample.host.claims.CoreApiClaims;
+import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
 import com.mycompany.sample.host.plumbing.interceptors.UnhandledExceptionHandler;
 import com.mycompany.sample.host.plumbing.logging.LogEntryImpl;
@@ -14,21 +14,17 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
 
 /*
- * A base authorizer that performs common plumbing
+ * Base authorizer logic related to Spring Boot specific behaviour and logging
  */
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public abstract class BaseAuthorizer extends OncePerRequestFilter {
 
-    /*
-     * Injected dependencies
-     */
     @Getter(AccessLevel.PROTECTED)
     private final BeanFactory container;
 

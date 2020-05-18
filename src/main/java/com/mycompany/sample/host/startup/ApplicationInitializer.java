@@ -4,8 +4,7 @@ import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.host.claims.SampleApiClaims;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
-import com.mycompany.sample.host.authorization.SampleApiClaimsProvider;
-import com.mycompany.sample.host.plumbing.errors.RestErrorTranslator;
+import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -40,29 +39,19 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var configuration = reader.readFile("api.config.json", Configuration.class).join();
 
         // Initialise logging from configuration settings
-        loggerFactory.configure(configuration.getFramework());
+        loggerFactory.configure(configuration);
 
         // Configure the API to listen on SSL and to support proxying requests via an HTTP debugger
         this.configureHttpDebugging(configuration.getApi());
         this.configureSsl(context, configuration);
 
-        // Get the container
+        // Register dependencies at application startup
         var container = context.getBeanFactory();
-
-        // Register base framework dependencies
-        new FrameworkBuilder(container, configuration.getFramework(), loggerFactory)
+        new CompositionRoot<SampleApiClaims>(container, configuration, loggerFactory)
                 .withApiBasePath("/api/")
-                .withApplicationExceptionHandler(new RestErrorTranslator())
-                .register();
-
-        // Register Oauth framework dependencies
-        new OAuthAuthorizerBuilder<SampleApiClaims>(container, configuration.getOauth(), loggerFactory)
                 .withClaimsSupplier(SampleApiClaims::new)
                 .withCustomClaimsProviderSupplier(SampleApiClaimsProvider::new)
                 .register();
-
-        // Register the concrete API's runtime dependencies, and note that most dependencies use annotations
-        container.registerSingleton("AppConfiguration", configuration.getApi());
     }
 
     /*

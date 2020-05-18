@@ -1,9 +1,9 @@
 package com.mycompany.sample.host.plumbing.oauth;
 
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.host.claims.ClaimsCache;
-import com.mycompany.sample.host.claims.ClaimsSupplier;
-import com.mycompany.sample.host.claims.CoreApiClaims;
+import com.mycompany.sample.host.plumbing.claims.ClaimsCache;
+import com.mycompany.sample.host.plumbing.claims.ClaimsSupplier;
+import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor;
 import javax.servlet.http.HttpServletRequest;

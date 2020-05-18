@@ -5,15 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 /*
- * Framework configuration data
+ * Logging configuration data
  */
-public final class FrameworkConfiguration {
+public final class LoggingConfiguration {
 
     @Getter
     @Setter
-    private String apiName;
+    private ObjectNode production;
 
     @Getter
     @Setter
-    private ObjectNode logging;
+    private ObjectNode development;
 }

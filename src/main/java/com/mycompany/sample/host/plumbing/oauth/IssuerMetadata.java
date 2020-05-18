@@ -1,5 +1,6 @@
 package com.mycompany.sample.host.plumbing.oauth;
 
+import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.configuration.OAuthConfiguration;
 import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -18,9 +19,9 @@ public final class IssuerMetadata {
     @Getter
     private OIDCProviderMetadata metadata;
 
-    public IssuerMetadata(final OAuthConfiguration configuration) {
+    public IssuerMetadata(final Configuration configuration) {
 
-        this.configuration = configuration;
+        this.configuration = configuration.getOauth();
     }
 
     /*

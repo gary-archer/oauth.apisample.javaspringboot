@@ -57,7 +57,7 @@ public final class ErrorFactory {
     public static ClientError create401Error(final String reason) {
         var error = new ClientErrorImpl(
                 HttpStatus.UNAUTHORIZED,
-                BaseErrorCodes.UNAUTHORIZED_REQUEST,
+                ErrorCodes.UNAUTHORIZED_REQUEST,
                 "Missing, invalid or expired access token");
         error.setLogContext(new TextNode(reason));
         return error;

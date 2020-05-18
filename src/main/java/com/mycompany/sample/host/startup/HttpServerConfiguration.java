@@ -1,12 +1,12 @@
 package com.mycompany.sample.host.startup;
 
-import com.mycompany.sample.host.configuration.ApiConfiguration;
-import com.mycompany.sample.host.configuration.FrameworkConfiguration;
+import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.plumbing.interceptors.CustomHeaderInterceptor;
+import com.mycompany.sample.host.plumbing.interceptors.LoggingInterceptor;
 import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.host.plumbing.utilities.WebStaticContentFileResolver;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -22,25 +22,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /*
  * A class to manage HTTP configuration for our server
  */
-@Configuration
+@org.springframework.context.annotation.Configuration
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    private final ApiConfiguration apiConfiguration;
-    private final FrameworkConfiguration frameworkConfiguration;
+    private final Configuration configuration;
     private final OncePerRequestFilter authorizer;
     private final LoggerFactory loggerFactory;
     private final ConfigurableApplicationContext context;
 
     public HttpServerConfiguration(
-            final ApiConfiguration apiConfiguration,
-            final FrameworkConfiguration frameworkConfiguration,
+            final Configuration configuration,
             final @Qualifier("Authorizer") OncePerRequestFilter authorizer,
             final LoggerFactory loggerFactory,
             final ConfigurableApplicationContext context) {
 
-        this.apiConfiguration = apiConfiguration;
-        this.frameworkConfiguration = frameworkConfiguration;
+        this.configuration = configuration;
         this.authorizer = authorizer;
         this.loggerFactory = loggerFactory;
         this.context = context;
@@ -71,11 +68,16 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
 
-        var builder = new FrameworkBuilder(
+        // Add the logging interceptor for API requests
+        var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory());
+        registry.addInterceptor(loggingInterceptor)
+                .addPathPatterns("/api/**");
+
+        // Add a custom header interceptor for testing failure scenarios
+        var headerInterceptor = new CustomHeaderInterceptor(
                 this.context.getBeanFactory(),
-                this.frameworkConfiguration,
-                this.loggerFactory);
-        builder.addInterceptors(registry);
+                this.configuration.getApi().getName());
+        registry.addInterceptor(headerInterceptor);
     }
 
     /*
@@ -93,7 +95,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     public void addCorsMappings(final CorsRegistry registry) {
 
         var registration = registry.addMapping("/api/**");
-        var trustedOrigins = this.apiConfiguration.getTrustedOrigins();
+        var trustedOrigins = this.configuration.getApi().getTrustedOrigins();
         for (var trustedOrigin: trustedOrigins) {
             registration.allowedOrigins(trustedOrigin);
         }

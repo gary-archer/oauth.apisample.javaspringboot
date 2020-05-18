@@ -1,10 +1,11 @@
 package com.mycompany.sample.host.plumbing.oauth;
 
+import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.host.configuration.OAuthConfiguration;
 import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.host.plumbing.logging.LogEntry;
-import com.mycompany.sample.host.claims.CoreApiClaims;
+import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
@@ -38,11 +39,11 @@ public class OAuthAuthenticator {
     private final LogEntry logEntry;
 
     public OAuthAuthenticator(
-            final OAuthConfiguration configuration,
+            final Configuration configuration,
             final IssuerMetadata metadata,
             final LogEntry logEntry) {
 
-        this.configuration = configuration;
+        this.configuration = configuration.getOauth();
         this.metadata = metadata;
         this.logEntry = logEntry;
     }
@@ -65,7 +66,7 @@ public class OAuthAuthenticator {
         // It then adds user info claims
         this.setCentralUserInfoClaims(accessToken, claims);
 
-        // Finish logging here, and note that on exception the logging framework disposes the child
+        // Finish logging here, and on exception the child is disposed by logging classes
         authorizationLogEntry.close();
 
         // It then returns the token expiry as a cache time to live

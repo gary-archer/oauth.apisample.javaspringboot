@@ -1,11 +1,14 @@
 package com.mycompany.sample.logic.services;
 
+import com.mycompany.sample.host.plumbing.errors.ClientError;
+import com.mycompany.sample.host.plumbing.errors.ErrorCodes;
+import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
-import com.mycompany.sample.logic.errors.BusinessError;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
@@ -70,9 +73,9 @@ public class CompanyService {
     /*
      * Return 404 for both not found items and also those that are not authorized
      */
-    private BusinessError unauthorizedError(final int companyId) {
+    private ClientError unauthorizedError(final int companyId) {
 
         var message = String.format("Transactions for company %d were not found for this user", companyId);
-        return new BusinessError("company_not_found", message);
+        return ErrorFactory.createClientError(HttpStatus.NOT_FOUND, ErrorCodes.COMPANY_NOT_FOUND, message);
     }
 }

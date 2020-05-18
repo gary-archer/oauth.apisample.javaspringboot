@@ -1,8 +1,7 @@
-package com.mycompany.sample.host.claims;
+package com.mycompany.sample.host.plumbing.claims;
 
 /*
- * This class is injected into framework authentication handling
- * Due to Java type erasure the framework is unable to new up TClaims related items itself
+ * This class is injected into authentication handling
  */
 public interface ClaimsSupplier<TClaims extends CoreApiClaims>  {
 

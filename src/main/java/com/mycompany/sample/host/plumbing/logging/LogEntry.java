@@ -3,7 +3,7 @@ package com.mycompany.sample.host.plumbing.logging;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /*
- * An abstraction that business logic can use to add to the current production log context
+ * An abstraction that logic classes can use to add to the current production log context
  */
 public interface LogEntry {
 

@@ -1,10 +1,9 @@
 package com.mycompany.sample.host.plumbing.interceptors;
 
-import com.mycompany.sample.host.configuration.FrameworkConfiguration;
+import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.plumbing.errors.ApiError;
-import com.mycompany.sample.host.plumbing.errors.ApplicationExceptionHandler;
 import com.mycompany.sample.host.plumbing.errors.ClientError;
-import com.mycompany.sample.host.plumbing.errors.FrameworkErrorUtils;
+import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.host.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.host.plumbing.utilities.ResponseWriter;
 import org.springframework.beans.factory.BeanFactory;
@@ -21,17 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 public final class UnhandledExceptionHandler {
 
     private final BeanFactory container;
-    private final FrameworkConfiguration configuration;
-    private final ApplicationExceptionHandler applicationHandler;
+    private final Configuration configuration;
 
-    public UnhandledExceptionHandler(
-            final BeanFactory container,
-            final FrameworkConfiguration configuration,
-            final ApplicationExceptionHandler applicationHandler) {
+    public UnhandledExceptionHandler(final BeanFactory container, final Configuration configuration) {
 
         this.container = container;
         this.configuration = configuration;
-        this.applicationHandler = applicationHandler;
     }
 
     /*
@@ -40,15 +34,11 @@ public final class UnhandledExceptionHandler {
     @ExceptionHandler(value = Throwable.class)
     public ResponseEntity<String> handleException(final HttpServletRequest request, final Throwable ex) {
 
-        // Allow the application to implement its own error logic first
-        var exceptionToHandle = ex;
-        exceptionToHandle = this.applicationHandler.translate(exceptionToHandle);
-
         // Get the log entry for the current request
         var logEntry = this.container.getBean(LogEntryImpl.class);
 
         // Add error details to logs and get the error to return to the client
-        var clientError = this.handleError(exceptionToHandle, logEntry);
+        var clientError = this.handleError(ex, logEntry);
         return new ResponseEntity<>(clientError.toResponseFormat().toString(), clientError.getStatusCode());
     }
 
@@ -84,14 +74,14 @@ public final class UnhandledExceptionHandler {
     private ClientError handleError(final Throwable ex, final LogEntryImpl logEntry) {
 
         // Get the error into a known object
-        var error = FrameworkErrorUtils.fromException(ex);
+        var error = ErrorUtils.fromException(ex);
 
         if (error instanceof ApiError) {
 
             // Handle 5xx errors
             var apiError = (ApiError) error;
             logEntry.setApiError(apiError);
-            return apiError.toClientError(this.configuration.getApiName());
+            return apiError.toClientError(this.configuration.getApi().getName());
 
         } else {
 

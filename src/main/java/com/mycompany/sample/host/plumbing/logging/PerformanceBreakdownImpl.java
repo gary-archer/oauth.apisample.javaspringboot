@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 
 /*
- * The full implementation class is private to the framework
+ * The full implementation class
  */
 public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
 

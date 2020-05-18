@@ -3,7 +3,7 @@ package com.mycompany.sample.host.plumbing.logging;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kstruct.gethostname4j.Hostname;
 import com.mycompany.sample.host.plumbing.errors.ApiError;
-import com.mycompany.sample.host.claims.CoreApiClaims;
+import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.host.plumbing.errors.ClientError;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;

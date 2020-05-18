@@ -1,7 +1,6 @@
-package com.mycompany.sample.host.authorization;
+package com.mycompany.sample.host.claims;
 
-import com.mycompany.sample.host.claims.SampleApiClaims;
-import com.mycompany.sample.host.claims.CustomClaimsProvider;
+import com.mycompany.sample.host.plumbing.claims.CustomClaimsProvider;
 import javax.servlet.http.HttpServletRequest;
 
 /*
