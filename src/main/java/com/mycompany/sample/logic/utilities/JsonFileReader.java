@@ -2,7 +2,7 @@ package com.mycompany.sample.logic.utilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.mycompany.sample.host.plumbing.errors.ErrorCodes;
+import com.mycompany.sample.host.errors.SampleErrorCodes;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -38,7 +38,7 @@ public class JsonFileReader {
 
             // Report the error including an error code and exception details
             var error = ErrorFactory.createApiError(
-                    ErrorCodes.FILE_READ_ERROR,
+                    SampleErrorCodes.FILE_READ_ERROR,
                     "Problem encountered reading data",
                     ex);
             error.setDetails(new TextNode(ex.getMessage()));

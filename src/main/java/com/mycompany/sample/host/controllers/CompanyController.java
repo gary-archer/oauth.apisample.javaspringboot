@@ -1,7 +1,7 @@
 package com.mycompany.sample.host.controllers;
 
 import com.google.common.primitives.Ints;
-import com.mycompany.sample.host.plumbing.errors.ErrorCodes;
+import com.mycompany.sample.host.errors.SampleErrorCodes;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
@@ -53,7 +53,7 @@ public class CompanyController {
         if (idValue == null || idValue <= 0) {
             throw ErrorFactory.createClientError(
                     HttpStatus.BAD_REQUEST,
-                    ErrorCodes.INVALID_COMPANY_ID,
+                    SampleErrorCodes.INVALID_COMPANY_ID,
                     "The company id must be a positive numeric integer");
         }
 

@@ -1,7 +1,7 @@
 package com.mycompany.sample.logic.services;
 
+import com.mycompany.sample.host.errors.SampleErrorCodes;
 import com.mycompany.sample.host.plumbing.errors.ClientError;
-import com.mycompany.sample.host.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
@@ -76,6 +76,9 @@ public class CompanyService {
     private ClientError unauthorizedError(final int companyId) {
 
         var message = String.format("Transactions for company %d were not found for this user", companyId);
-        return ErrorFactory.createClientError(HttpStatus.NOT_FOUND, ErrorCodes.COMPANY_NOT_FOUND, message);
+        return ErrorFactory.createClientError(
+                HttpStatus.NOT_FOUND,
+                SampleErrorCodes.COMPANY_NOT_FOUND,
+                message);
     }
 }
