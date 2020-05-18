@@ -1,7 +1,7 @@
 package com.mycompany.sample.host.plumbing.errors;
 
 /*
- * The full list of known API error codes
+ * Error codes that could be used by multiple APIs
  */
 public final class ErrorCodes {
 

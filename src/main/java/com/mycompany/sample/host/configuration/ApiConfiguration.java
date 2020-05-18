@@ -2,6 +2,7 @@ package com.mycompany.sample.host.configuration;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 /*
  * API specific properties

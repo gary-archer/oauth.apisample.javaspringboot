@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.configuration;
+package com.mycompany.sample.host.plumbing.configuration;
 
 import lombok.Getter;
 import lombok.Setter;

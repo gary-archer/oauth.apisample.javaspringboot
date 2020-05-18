@@ -1,8 +1,8 @@
-package com.mycompany.sample.host.plumbing.utilities;
+package com.mycompany.sample.host.utilities;
 
+import java.io.IOException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.resource.PathResourceResolver;
-import java.io.IOException;
 
 /*
  * Resolve requests for web static content files
@@ -160,7 +160,7 @@ public final class WebStaticContentFileResolver extends PathResourceResolver {
         // Serve the post login page from the path 'file:../authguidance.mobilesample.ios/web/postlogin.html'
         if (resourcePath.toLowerCase().contains("ios/postlogin.html")) {
 
-            var loginPhysicalPath = String.format("%s/postlogin.html", this.androidRootLocation);
+            var loginPhysicalPath = String.format("%s/postlogin.html", this.iosRootLocation);
             return this.getResourceFromPhysicalPath(loginPhysicalPath, location);
         }
 
@@ -168,7 +168,7 @@ public final class WebStaticContentFileResolver extends PathResourceResolver {
         if (resourcePath.toLowerCase().contains("ios/postlogout.html")) {
 
             // Serve it from the web folder of the mobile sample
-            var logoutPhysicalPath = String.format("%s/postlogout.html", this.androidRootLocation);
+            var logoutPhysicalPath = String.format("%s/postlogout.html", this.iosRootLocation);
             return this.getResourceFromPhysicalPath(logoutPhysicalPath, location);
         }
 

@@ -1,7 +1,7 @@
-package com.mycompany.sample.host.errors;
+package com.mycompany.sample.logic.errors;
 
 /*
- * The full list of known API error codes
+ * Error codes specific to the sample API
  */
 public final class SampleErrorCodes {
 

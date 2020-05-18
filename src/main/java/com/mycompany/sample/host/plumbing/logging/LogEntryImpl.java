@@ -5,16 +5,16 @@ import com.kstruct.gethostname4j.Hostname;
 import com.mycompany.sample.host.plumbing.errors.ApiError;
 import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.host.plumbing.errors.ClientError;
-import org.slf4j.Logger;
-import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /*
  * Each API request writes a structured log entry containing fields we will query by

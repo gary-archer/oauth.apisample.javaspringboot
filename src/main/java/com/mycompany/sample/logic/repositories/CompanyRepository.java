@@ -1,15 +1,15 @@
 package com.mycompany.sample.logic.repositories;
 
 import com.mycompany.sample.host.plumbing.logging.LogEntry;
-import com.mycompany.sample.logic.utilities.CGLib;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
+import com.mycompany.sample.logic.utilities.CGLib;
+import com.mycompany.sample.logic.utilities.JsonFileReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import com.mycompany.sample.logic.utilities.JsonFileReader;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;

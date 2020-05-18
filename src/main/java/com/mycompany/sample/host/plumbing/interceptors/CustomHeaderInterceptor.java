@@ -3,11 +3,11 @@ package com.mycompany.sample.host.plumbing.interceptors;
 import com.mycompany.sample.host.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /*
  * A class to process custom headers to enable testers to control non functional behaviour
@@ -38,7 +38,7 @@ public class CustomHeaderInterceptor extends HandlerInterceptorAdapter {
             var apiToBreak = request.getHeader("x-mycompany-test-exception");
             if (!StringUtils.isEmpty(apiToBreak)) {
                 if (apiToBreak.toLowerCase().equals(this.apiName.toLowerCase())) {
-                    throw ErrorFactory.createApiError(
+                    throw ErrorFactory.createServerError(
                         ErrorCodes.EXCEPTION_SIMULATION, "An exception was simulated in the API");
 
                 }

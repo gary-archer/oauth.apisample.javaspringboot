@@ -1,9 +1,9 @@
 package com.mycompany.sample.host.plumbing.utilities;
 
 import com.mycompany.sample.host.plumbing.errors.ClientError;
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /*
  * A utility class to manage serializing error responses

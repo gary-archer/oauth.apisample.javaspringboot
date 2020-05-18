@@ -10,11 +10,11 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.host.plumbing.errors.ApiError;
 import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
-import org.slf4j.Logger;
 import java.util.ArrayList;
+import org.slf4j.Logger;
 
 /*
  * A custom logger factory to wrap the default one and give us greater control over output
@@ -50,20 +50,20 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Configure logging programmatically from our JSON configuration file
      */
-    public void configure(final Configuration configuration) {
+    public void configure(final LoggingConfiguration configuration, final String apiName) {
 
         // Store the name, which will enable this API's logs to be distinguished from other APIs
-        this.apiName = configuration.getApi().getName();
+        this.apiName = apiName;
 
         // Initialise the production logger
-        var prodConfiguration = configuration.getLogging().getProduction();
+        var prodConfiguration = configuration.getProduction();
         var prodLevelNode = prodConfiguration.get("level");
         var productionLevel = Level.toLevel(prodLevelNode.asText().toUpperCase(), Level.INFO);
         this.configureProductionLogger(productionLevel, prodConfiguration.get("appenders"));
         this.loadPerformanceThresholds(prodConfiguration);
 
         // Initialise any development loggers
-        var devConfiguration = configuration.getLogging().getDevelopment();
+        var devConfiguration = configuration.getDevelopment();
         this.configureDevelopmentLoggers(devConfiguration);
 
         // Indicate successful configuration

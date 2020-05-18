@@ -2,14 +2,14 @@ package com.mycompany.sample.logic.utilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.mycompany.sample.host.errors.SampleErrorCodes;
+import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
+import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
 import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import java.nio.file.Paths;
-import java.util.concurrent.CompletableFuture;
 import static com.ea.async.Async.await;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
@@ -37,7 +37,7 @@ public class JsonFileReader {
         } catch (Throwable ex) {
 
             // Report the error including an error code and exception details
-            var error = ErrorFactory.createApiError(
+            var error = ErrorFactory.createServerError(
                     SampleErrorCodes.FILE_READ_ERROR,
                     "Problem encountered reading data",
                     ex);

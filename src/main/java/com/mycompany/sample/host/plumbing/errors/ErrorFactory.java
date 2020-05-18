@@ -15,14 +15,14 @@ public final class ErrorFactory {
     /*
      * Create an error indicating a server error
      */
-    public static ApiError createApiError(final String errorCode, final String userMessage) {
+    public static ApiError createServerError(final String errorCode, final String userMessage) {
         return new ApiErrorImpl(errorCode, userMessage);
     }
 
     /*
      * Create a server error from a caught exception
      */
-    public static ApiError createApiError(final String errorCode, final String userMessage, final Throwable cause) {
+    public static ApiError createServerError(final String errorCode, final String userMessage, final Throwable cause) {
         return new ApiErrorImpl(errorCode, userMessage, cause);
     }
 

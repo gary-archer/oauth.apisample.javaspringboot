@@ -1,15 +1,14 @@
 package com.mycompany.sample.host.plumbing.claims;
 
-import com.mycompany.sample.host.configuration.Configuration;
-import com.mycompany.sample.host.configuration.OAuthConfiguration;
+import com.mycompany.sample.host.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
 import org.slf4j.Logger;
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 /*
  * A singleton in memory claims cache for our API
@@ -19,8 +18,8 @@ public final class ClaimsCache<TClaims extends CoreApiClaims> {
     private final OAuthConfiguration configuration;
     private final Logger debugLogger;
 
-    public ClaimsCache(final Configuration configuration, final LoggerFactory loggerFactory) {
-        this.configuration = configuration.getOauth();
+    public ClaimsCache(final OAuthConfiguration configuration, final LoggerFactory loggerFactory) {
+        this.configuration = configuration;
         this.debugLogger = loggerFactory.getDevelopmentLogger(ClaimsCache.class);
     }
 

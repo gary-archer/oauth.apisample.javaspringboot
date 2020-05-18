@@ -1,6 +1,7 @@
-package com.mycompany.sample.host.plumbing.utilities;
+package com.mycompany.sample.host.utilities;
 
 import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.host.plumbing.utilities.SecurityContextProvider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;

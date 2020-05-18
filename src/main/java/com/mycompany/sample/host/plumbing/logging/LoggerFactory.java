@@ -1,6 +1,6 @@
 package com.mycompany.sample.host.plumbing.logging;
 
-import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.plumbing.configuration.LoggingConfiguration;
 import org.slf4j.Logger;
 
 /*
@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 public interface LoggerFactory {
 
     // Called to set up logging based on JSON configuration
-    void configure(Configuration configuration);
+    void configure(LoggingConfiguration configuration, String apiName);
 
     // Handle startup errors
     void logStartupError(Throwable exception);

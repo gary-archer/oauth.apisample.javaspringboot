@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.configuration;
+package com.mycompany.sample.host.plumbing.configuration;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;

@@ -4,6 +4,10 @@ import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
 import com.mycompany.sample.host.plumbing.interceptors.UnhandledExceptionHandler;
 import com.mycompany.sample.host.plumbing.logging.LogEntryImpl;
+import java.util.Set;
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.beans.factory.BeanFactory;
@@ -14,10 +18,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 
 /*
  * Base authorizer logic related to Spring Boot specific behaviour and logging

@@ -10,6 +10,8 @@ import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.host.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
 import java.util.function.Supplier;
+
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /*
@@ -96,11 +98,11 @@ public final class CompositionRoot<TClaims extends CoreApiClaims> {
         };
 
         // Load metadata if using OAuth security
-        var metadata = new IssuerMetadata(this.configuration);
+        var metadata = new IssuerMetadata(this.configuration.getOauth());
         metadata.initialize();
 
         // Create and initialize the claims cache
-        var cache = new ClaimsCache<TClaims>(this.configuration, this.loggerFactory);
+        var cache = new ClaimsCache<TClaims>(this.configuration.getOauth(), this.loggerFactory);
         cache.initialize();
 
         // Create the authorizer, which is a Spring once per request filter
@@ -125,9 +127,17 @@ public final class CompositionRoot<TClaims extends CoreApiClaims> {
             final ClaimsCache<TClaims> claims,
             final ClaimsSupplier<TClaims> supplier) {
 
-        this.container.registerSingleton("Configuration", this.configuration);
+        // Configuration objects
+        this.container.registerSingleton("ApiConfiguration", this.configuration.getApi());
+        this.container.registerSingleton("OAuthConfiguration", this.configuration.getOauth());
+        this.container.registerSingleton("LoggingConfiguration", this.configuration.getLogging());
+        this.container.registerSingleton("ApiName", this.configuration.getApi().getName());
+
+        // Logging and REST objects
         this.container.registerSingleton("LoggerFactory", this.loggerFactory);
         this.container.registerSingleton("RequestClassifier", requestClassifier);
+
+        // OAuth objects
         this.container.registerSingleton("IssuerMetadata", metadata);
         this.container.registerSingleton("Authorizer", authorizer);
         this.container.registerSingleton("ClaimsCache", claims);

@@ -1,8 +1,7 @@
 package com.mycompany.sample.host.plumbing.oauth;
 
-import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.host.configuration.OAuthConfiguration;
 import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.host.plumbing.logging.LogEntry;
 import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
@@ -20,11 +19,11 @@ import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.nimbusds.openid.connect.sdk.claims.ClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.annotation.RequestScope;
-import javax.servlet.http.HttpServletRequest;
 
 /*
  * The class from which OAuth calls are initiated
@@ -39,11 +38,11 @@ public class OAuthAuthenticator {
     private final LogEntry logEntry;
 
     public OAuthAuthenticator(
-            final Configuration configuration,
+            final OAuthConfiguration configuration,
             final IssuerMetadata metadata,
             final LogEntry logEntry) {
 
-        this.configuration = configuration.getOauth();
+        this.configuration = configuration;
         this.metadata = metadata;
         this.logEntry = logEntry;
     }

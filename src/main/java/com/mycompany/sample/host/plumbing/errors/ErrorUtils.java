@@ -41,7 +41,7 @@ public final class ErrorUtils {
 
         // Create a default error and set a default technical message
         // To customise details instead, application code should use error translation and throw an ApiError
-        var error = ErrorFactory.createApiError(
+        var error = ErrorFactory.createServerError(
                 errorCode == null ? defaultErrorCode : errorCode,
                 message == null ? defaultMessage : message,
                 exception);
@@ -56,7 +56,7 @@ public final class ErrorUtils {
      */
     public static ApiError fromMetadataError(final Throwable ex, final String url) {
 
-        var apiError = ErrorFactory.createApiError(
+        var apiError = ErrorFactory.createServerError(
                 ErrorCodes.METADATA_LOOKUP_FAILURE,
                 "Metadata lookup failed", ex);
         ErrorUtils.setErrorDetails(apiError, null, ex, url);
@@ -95,7 +95,7 @@ public final class ErrorUtils {
             throw (ClientError) ex;
         }
 
-        var apiError = ErrorFactory.createApiError(
+        var apiError = ErrorFactory.createServerError(
                 ErrorCodes.INTROSPECTION_FAILURE,
                 "Token validation failed", ex);
         ErrorUtils.setErrorDetails(apiError, null, ex, url);
@@ -133,7 +133,7 @@ public final class ErrorUtils {
             throw (ClientError) ex;
         }
 
-        var apiError = ErrorFactory.createApiError(ErrorCodes.USERINFO_FAILURE, "User info lookup failed", ex);
+        var apiError = ErrorFactory.createServerError(ErrorCodes.USERINFO_FAILURE, "User info lookup failed", ex);
         ErrorUtils.setErrorDetails(apiError, null, ex, url);
         return apiError;
     }
@@ -143,7 +143,7 @@ public final class ErrorUtils {
      */
     public static ApiError fromMissingClaim(final String claimName) {
 
-        var apiError = ErrorFactory.createApiError(ErrorCodes.CLAIMS_FAILURE, "Authorization data not found");
+        var apiError = ErrorFactory.createServerError(ErrorCodes.CLAIMS_FAILURE, "Authorization data not found");
         var message = String.format("An empty value was found for the expected claim %s", claimName);
         apiError.setDetails(new TextNode(message));
         return apiError;
@@ -233,7 +233,7 @@ public final class ErrorUtils {
             message += String.format(" : %s", oauthErrorCode);
         }
 
-        return ErrorFactory.createApiError(errorCode, message);
+        return ErrorFactory.createServerError(errorCode, message);
     }
 
     /*

@@ -1,7 +1,7 @@
 package com.mycompany.sample.host.plumbing.logging;
 
-import lombok.Getter;
 import ch.qos.logback.classic.Level;
+import lombok.Getter;
 
 /*
  * A simple log level class

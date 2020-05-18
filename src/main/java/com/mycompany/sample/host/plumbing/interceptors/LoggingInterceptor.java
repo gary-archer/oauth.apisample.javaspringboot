@@ -2,13 +2,13 @@ package com.mycompany.sample.host.plumbing.interceptors;
 
 import com.mycompany.sample.host.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 /*
  * Do custom logging of requests for support purposes

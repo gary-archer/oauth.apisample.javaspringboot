@@ -1,10 +1,10 @@
 package com.mycompany.sample.host.startup;
 
-import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.plumbing.interceptors.CustomHeaderInterceptor;
 import com.mycompany.sample.host.plumbing.interceptors.LoggingInterceptor;
 import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
-import com.mycompany.sample.host.plumbing.utilities.WebStaticContentFileResolver;
+import com.mycompany.sample.host.utilities.WebStaticContentFileResolver;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpMethod;
@@ -26,13 +26,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    private final Configuration configuration;
+    private final ApiConfiguration configuration;
     private final OncePerRequestFilter authorizer;
     private final LoggerFactory loggerFactory;
     private final ConfigurableApplicationContext context;
 
     public HttpServerConfiguration(
-            final Configuration configuration,
+            final ApiConfiguration configuration,
             final @Qualifier("Authorizer") OncePerRequestFilter authorizer,
             final LoggerFactory loggerFactory,
             final ConfigurableApplicationContext context) {
@@ -76,7 +76,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         // Add a custom header interceptor for testing failure scenarios
         var headerInterceptor = new CustomHeaderInterceptor(
                 this.context.getBeanFactory(),
-                this.configuration.getApi().getName());
+                this.configuration.getName());
         registry.addInterceptor(headerInterceptor);
     }
 
@@ -95,7 +95,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     public void addCorsMappings(final CorsRegistry registry) {
 
         var registration = registry.addMapping("/api/**");
-        var trustedOrigins = this.configuration.getApi().getTrustedOrigins();
+        var trustedOrigins = this.configuration.getTrustedOrigins();
         for (var trustedOrigin: trustedOrigins) {
             registration.allowedOrigins(trustedOrigin);
         }

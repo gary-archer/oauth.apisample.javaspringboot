@@ -1,12 +1,12 @@
 package com.mycompany.sample.host.plumbing.oauth;
 
-import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.host.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.host.plumbing.claims.ClaimsSupplier;
 import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor;
-import javax.servlet.http.HttpServletRequest;
 
 /*
  * The Spring entry point for handling token validation and claims lookup

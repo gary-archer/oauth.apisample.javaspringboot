@@ -1,5 +1,7 @@
 package com.mycompany.sample.host.configuration;
 
+import com.mycompany.sample.host.plumbing.configuration.LoggingConfiguration;
+import com.mycompany.sample.host.plumbing.configuration.OAuthConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 

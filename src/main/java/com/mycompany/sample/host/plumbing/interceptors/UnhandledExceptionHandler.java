@@ -1,17 +1,17 @@
 package com.mycompany.sample.host.plumbing.interceptors;
 
-import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.plumbing.errors.ApiError;
 import com.mycompany.sample.host.plumbing.errors.ClientError;
 import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.host.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.host.plumbing.utilities.ResponseWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /*
  * A central point of exception handling
@@ -20,12 +20,17 @@ import javax.servlet.http.HttpServletResponse;
 public final class UnhandledExceptionHandler {
 
     private final BeanFactory container;
-    private final Configuration configuration;
+    private final String apiName;
 
-    public UnhandledExceptionHandler(final BeanFactory container, final Configuration configuration) {
+    /*
+     * The exception handler requires the name of the API
+     */
+    public UnhandledExceptionHandler(
+            final BeanFactory container,
+            @Qualifier("ApiName") final String apiName) {
 
         this.container = container;
-        this.configuration = configuration;
+        this.apiName = apiName;
     }
 
     /*
@@ -81,7 +86,7 @@ public final class UnhandledExceptionHandler {
             // Handle 5xx errors
             var apiError = (ApiError) error;
             logEntry.setApiError(apiError);
-            return apiError.toClientError(this.configuration.getApi().getName());
+            return apiError.toClientError(this.apiName);
 
         } else {
 

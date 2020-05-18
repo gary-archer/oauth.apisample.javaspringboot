@@ -1,18 +1,18 @@
 package com.mycompany.sample.host.startup;
 
-import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.host.claims.SampleApiClaims;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
-import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
+import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.MapPropertySource;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.MapPropertySource;
 
 /*
  * Override startup to customize behaviour
@@ -39,7 +39,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var configuration = reader.readFile("api.config.json", Configuration.class).join();
 
         // Initialise logging from configuration settings
-        loggerFactory.configure(configuration);
+        loggerFactory.configure(configuration.getLogging(), configuration.getApi().getName());
 
         // Configure the API to listen on SSL and to support proxying requests via an HTTP debugger
         this.configureHttpDebugging(configuration.getApi());
