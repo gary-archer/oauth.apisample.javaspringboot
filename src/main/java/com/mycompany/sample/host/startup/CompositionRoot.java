@@ -10,8 +10,6 @@ import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.host.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.host.plumbing.utilities.RequestClassifier;
 import java.util.function.Supplier;
-
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /*
