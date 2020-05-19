@@ -11,6 +11,10 @@ public final class LoggingConfiguration {
 
     @Getter
     @Setter
+    private String apiName;
+
+    @Getter
+    @Setter
     private ObjectNode production;
 
     @Getter

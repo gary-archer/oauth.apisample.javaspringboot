@@ -50,10 +50,10 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Configure logging programmatically from our JSON configuration file
      */
-    public void configure(final LoggingConfiguration configuration, final String apiName) {
+    public void configure(final LoggingConfiguration configuration) {
 
         // Store the name, which will enable this API's logs to be distinguished from other APIs
-        this.apiName = apiName;
+        this.apiName = configuration.getApiName();
 
         // Initialise the production logger
         var prodConfiguration = configuration.getProduction();

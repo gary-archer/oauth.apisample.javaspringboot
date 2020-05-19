@@ -1,5 +1,6 @@
 package com.mycompany.sample.host.plumbing.interceptors;
 
+import com.mycompany.sample.host.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.host.plumbing.errors.ApiError;
 import com.mycompany.sample.host.plumbing.errors.ClientError;
 import com.mycompany.sample.host.plumbing.errors.ErrorUtils;
@@ -8,7 +9,6 @@ import com.mycompany.sample.host.plumbing.utilities.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,10 +27,10 @@ public final class UnhandledExceptionHandler {
      */
     public UnhandledExceptionHandler(
             final BeanFactory container,
-            @Qualifier("ApiName") final String apiName) {
+            LoggingConfiguration configuration) {
 
         this.container = container;
-        this.apiName = apiName;
+        this.apiName = configuration.getApiName();
     }
 
     /*

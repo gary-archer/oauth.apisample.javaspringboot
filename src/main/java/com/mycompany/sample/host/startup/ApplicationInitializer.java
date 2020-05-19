@@ -39,7 +39,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var configuration = reader.readFile("api.config.json", Configuration.class).join();
 
         // Initialise logging from configuration settings
-        loggerFactory.configure(configuration.getLogging(), configuration.getApi().getName());
+        loggerFactory.configure(configuration.getLogging());
 
         // Configure the API to listen on SSL and to support proxying requests via an HTTP debugger
         this.configureHttpDebugging(configuration.getApi());

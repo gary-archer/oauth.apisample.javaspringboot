@@ -129,7 +129,6 @@ public final class CompositionRoot<TClaims extends CoreApiClaims> {
         this.container.registerSingleton("ApiConfiguration", this.configuration.getApi());
         this.container.registerSingleton("OAuthConfiguration", this.configuration.getOauth());
         this.container.registerSingleton("LoggingConfiguration", this.configuration.getLogging());
-        this.container.registerSingleton("ApiName", this.configuration.getApi().getName());
 
         // Logging and REST objects
         this.container.registerSingleton("LoggerFactory", this.loggerFactory);

@@ -10,10 +10,6 @@ public class ApiConfiguration {
 
     @Getter
     @Setter
-    private String name;
-
-    @Getter
-    @Setter
     private String sslCertificateFileName;
 
     @Getter

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 public interface LoggerFactory {
 
     // Called to set up logging based on JSON configuration
-    void configure(LoggingConfiguration configuration, String apiName);
+    void configure(LoggingConfiguration configuration);
 
     // Handle startup errors
     void logStartupError(Throwable exception);

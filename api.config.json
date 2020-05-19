@@ -1,6 +1,5 @@
 {
   "api": {
-    "name": "SampleApi",
     "sslCertificateFileName": "mycompany.ssl.pfx",
     "sslCertificatePassword": "SslPassword1",
     "trustedOrigins": [
@@ -16,6 +15,7 @@
     "maxClaimsCacheMinutes": 60
   },
   "logging": {
+    "apiName": "SampleApi",
     "production": {
       "level": "info",
       "appenders": [
