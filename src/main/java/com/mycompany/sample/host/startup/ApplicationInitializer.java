@@ -4,6 +4,7 @@ import com.mycompany.sample.host.claims.SampleApiClaims;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
 import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.plumbing.dependencies.CompositionRoot;
 import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
 import java.net.MalformedURLException;
@@ -45,13 +46,16 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         this.configureHttpDebugging(configuration.getApi());
         this.configureSsl(context, configuration);
 
-        // Register dependencies at application startup
+        // Register common code dependencies
         var container = context.getBeanFactory();
-        new CompositionRoot<SampleApiClaims>(container, configuration, loggerFactory)
+        new CompositionRoot<SampleApiClaims>(container, configuration.getLogging(), configuration.getOauth(), loggerFactory)
                 .withApiBasePath("/api/")
                 .withClaimsSupplier(SampleApiClaims::new)
                 .withCustomClaimsProviderSupplier(SampleApiClaimsProvider::new)
                 .register();
+
+        // Register this app's specific dependencies
+        container.registerSingleton("ApiConfiguration", configuration.getApi());
     }
 
     /*

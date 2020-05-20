@@ -1,9 +1,10 @@
-package com.mycompany.sample.host.startup;
+package com.mycompany.sample.host.plumbing.dependencies;
 
 import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.host.plumbing.claims.ClaimsSupplier;
 import com.mycompany.sample.host.plumbing.claims.CustomClaimsProvider;
-import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.host.plumbing.configuration.LoggingConfiguration;
+import com.mycompany.sample.host.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.host.plumbing.oauth.IssuerMetadata;
 import com.mycompany.sample.host.plumbing.oauth.OAuthAuthorizer;
 import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
@@ -17,9 +18,12 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  */
 public final class CompositionRoot<TClaims extends CoreApiClaims> {
 
-    // Properties to be registered for injection
+    // The container to update
     private final ConfigurableListableBeanFactory container;
-    private final Configuration configuration;
+
+    // Injected properties
+    private final LoggingConfiguration loggingConfiguration;
+    private final OAuthConfiguration oauthConfiguration;
     private final LoggerFactory loggerFactory;
 
     // Properties set via builder methods
@@ -32,11 +36,13 @@ public final class CompositionRoot<TClaims extends CoreApiClaims> {
      */
     public CompositionRoot(
             final ConfigurableListableBeanFactory container,
-            final Configuration configuration,
+            final LoggingConfiguration loggingConfiguration,
+            final OAuthConfiguration oauthConfiguration,
             final LoggerFactory loggerFactory) {
 
         this.container = container;
-        this.configuration = configuration;
+        this.loggingConfiguration = loggingConfiguration;
+        this.oauthConfiguration = oauthConfiguration;
         this.loggerFactory = loggerFactory;
         this.claimsSupplier = null;
         this.customClaimsProviderSupplier = null;
@@ -96,11 +102,11 @@ public final class CompositionRoot<TClaims extends CoreApiClaims> {
         };
 
         // Load metadata if using OAuth security
-        var metadata = new IssuerMetadata(this.configuration.getOauth());
+        var metadata = new IssuerMetadata(this.oauthConfiguration);
         metadata.initialize();
 
         // Create and initialize the claims cache
-        var cache = new ClaimsCache<TClaims>(this.configuration.getOauth(), this.loggerFactory);
+        var cache = new ClaimsCache<TClaims>(this.oauthConfiguration, this.loggerFactory);
         cache.initialize();
 
         // Create the authorizer, which is a Spring once per request filter
@@ -126,9 +132,8 @@ public final class CompositionRoot<TClaims extends CoreApiClaims> {
             final ClaimsSupplier<TClaims> supplier) {
 
         // Configuration objects
-        this.container.registerSingleton("ApiConfiguration", this.configuration.getApi());
-        this.container.registerSingleton("OAuthConfiguration", this.configuration.getOauth());
-        this.container.registerSingleton("LoggingConfiguration", this.configuration.getLogging());
+        this.container.registerSingleton("LoggingConfiguration", this.loggingConfiguration);
+        this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
 
         // Logging and REST objects
         this.container.registerSingleton("LoggerFactory", this.loggerFactory);

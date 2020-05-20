@@ -28,12 +28,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
+    // Injected properties
     private final ApiConfiguration apiConfiguration;
     private final LoggingConfiguration loggingConfiguration;
     private final OncePerRequestFilter authorizer;
     private final LoggerFactory loggerFactory;
     private final ConfigurableApplicationContext context;
 
+    // Constants
+    private final String apiRequestPaths = "/api/**";
+
+    /*
+     * Construction via the container
+     */
     public HttpServerConfiguration(
             final ApiConfiguration apiConfiguration,
             final LoggingConfiguration loggingConfiguration,
@@ -59,7 +66,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .antMatcher("/api/**")
+                .antMatcher(this.apiRequestPaths)
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated()
@@ -76,7 +83,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         // Add the logging interceptor for API requests
         var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory());
         registry.addInterceptor(loggingInterceptor)
-                .addPathPatterns("/api/**");
+                .addPathPatterns(this.apiRequestPaths);
 
         // Add a custom header interceptor for testing failure scenarios
         var headerInterceptor = new CustomHeaderInterceptor(
@@ -99,7 +106,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
 
-        var registration = registry.addMapping("/api/**");
+        var registration = registry.addMapping(this.apiRequestPaths);
         var trustedOrigins = this.apiConfiguration.getTrustedOrigins();
         for (var trustedOrigin: trustedOrigins) {
             registration.allowedOrigins(trustedOrigin);
