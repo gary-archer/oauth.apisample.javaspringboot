@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /*
- * A helper class to manage dependencies
+ * A class to manage composing core API behaviour
  */
 public final class CompositionRoot<TClaims extends CoreApiClaims> {
 
