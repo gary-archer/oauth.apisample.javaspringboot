@@ -2,7 +2,6 @@ package com.mycompany.sample.plumbing.errors;
 
 import org.javatuples.Pair;
 import org.springframework.util.StringUtils;
-
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.nimbusds.oauth2.sdk.ErrorObject;
 

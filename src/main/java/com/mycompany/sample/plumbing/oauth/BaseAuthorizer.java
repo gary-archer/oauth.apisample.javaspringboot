@@ -1,11 +1,9 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import java.util.Set;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -14,7 +12,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.plumbing.interceptors.UnhandledExceptionHandler;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;

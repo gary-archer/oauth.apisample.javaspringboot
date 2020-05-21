@@ -1,7 +1,6 @@
 package com.mycompany.sample.plumbing.logging;
 
 import org.slf4j.Logger;
-
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 
 /*

@@ -2,11 +2,9 @@ package com.mycompany.sample.plumbing.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
 import com.mycompany.sample.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.utilities.RequestClassifier;

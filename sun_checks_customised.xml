@@ -137,11 +137,11 @@
             <property name="processJavadoc" value="false"/>
         </module>
 
-        <!-- This was pasted in -->
+        <!-- Added by me in line with other tech stacks -->
         <module name="ImportOrder">
             <property name="groups" value="/^java\./,javax,org"/>
             <property name="ordered" value="true"/>
-            <property name="separated" value="true"/>
+            <property name="separated" value="false"/>
             <property name="option" value="above"/>
             <property name="sortStaticImportsAlphabetically" value="true"/>
         </module>

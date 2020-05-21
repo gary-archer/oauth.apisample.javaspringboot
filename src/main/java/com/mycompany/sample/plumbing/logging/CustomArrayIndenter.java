@@ -1,7 +1,6 @@
 package com.mycompany.sample.plumbing.logging;
 
 import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 

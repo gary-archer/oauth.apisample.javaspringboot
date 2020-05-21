@@ -4,11 +4,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.MapPropertySource;
-
 import com.mycompany.sample.host.claims.SampleApiClaims;
 import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
 import com.mycompany.sample.host.configuration.ApiConfiguration;

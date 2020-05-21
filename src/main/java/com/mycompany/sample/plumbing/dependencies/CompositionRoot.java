@@ -1,9 +1,7 @@
 package com.mycompany.sample.plumbing.dependencies;
 
 import java.util.function.Supplier;
-
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;

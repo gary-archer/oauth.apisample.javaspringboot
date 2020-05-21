@@ -1,15 +1,12 @@
 package com.mycompany.sample.plumbing.interceptors;
 
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.utilities.RequestClassifier;
 

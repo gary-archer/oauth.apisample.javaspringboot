@@ -1,12 +1,10 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.annotation.RequestScope;
-
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;

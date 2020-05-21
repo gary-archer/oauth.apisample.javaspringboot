@@ -1,9 +1,7 @@
 package com.mycompany.sample.plumbing.logging;
 
 import java.util.ArrayList;
-
 import org.slf4j.Logger;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;

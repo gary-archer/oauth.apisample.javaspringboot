@@ -2,7 +2,6 @@ package com.mycompany.sample;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-
 import com.ea.async.Async;
 import com.mycompany.sample.host.startup.ApplicationInitializer;
 import com.mycompany.sample.plumbing.logging.LoggerFactoryBuilder;

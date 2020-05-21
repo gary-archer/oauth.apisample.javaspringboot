@@ -1,10 +1,8 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor;
-
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;

@@ -1,7 +1,6 @@
 package com.mycompany.sample.plumbing.claims;
 
 import org.springframework.security.core.AuthenticatedPrincipal;
-
 import lombok.Getter;
 
 /*

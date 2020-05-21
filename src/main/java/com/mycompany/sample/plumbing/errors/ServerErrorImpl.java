@@ -1,9 +1,7 @@
 package com.mycompany.sample.plumbing.errors;
 
 import java.time.Instant;
-
 import org.springframework.http.HttpStatus;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
