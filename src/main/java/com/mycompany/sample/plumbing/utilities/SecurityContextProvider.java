@@ -1,7 +1,8 @@
 package com.mycompany.sample.plumbing.utilities;
 
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 
 /*
  * A utility class to inject the results of OAuth processing into business logic

@@ -1,8 +1,9 @@
 package com.mycompany.sample.logic.entities;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-import java.util.List;
 
 /*
  * A composite entity for a company's transactions

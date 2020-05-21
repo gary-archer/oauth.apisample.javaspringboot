@@ -1,17 +1,19 @@
 package com.mycompany.sample.plumbing.interceptors;
 
-import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.plumbing.errors.ServerError;
-import com.mycompany.sample.plumbing.errors.ClientError;
-import com.mycompany.sample.plumbing.errors.ErrorUtils;
-import com.mycompany.sample.plumbing.logging.LogEntryImpl;
-import com.mycompany.sample.plumbing.utilities.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
+import com.mycompany.sample.plumbing.errors.ClientError;
+import com.mycompany.sample.plumbing.errors.ErrorUtils;
+import com.mycompany.sample.plumbing.errors.ServerError;
+import com.mycompany.sample.plumbing.logging.LogEntryImpl;
+import com.mycompany.sample.plumbing.utilities.ResponseWriter;
 
 /*
  * A central point of exception handling
@@ -27,7 +29,7 @@ public final class UnhandledExceptionHandler {
      */
     public UnhandledExceptionHandler(
             final BeanFactory container,
-            LoggingConfiguration configuration) {
+            final LoggingConfiguration configuration) {
 
         this.container = container;
         this.apiName = configuration.getApiName();

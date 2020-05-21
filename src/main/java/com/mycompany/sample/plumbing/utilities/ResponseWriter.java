@@ -1,9 +1,11 @@
 package com.mycompany.sample.plumbing.utilities;
 
-import com.mycompany.sample.plumbing.errors.ClientError;
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.mycompany.sample.plumbing.errors.ClientError;
 
 /*
  * A utility class to manage serializing error responses

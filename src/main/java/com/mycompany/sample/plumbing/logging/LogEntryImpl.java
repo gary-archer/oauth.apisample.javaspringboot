@@ -1,20 +1,23 @@
 package com.mycompany.sample.plumbing.logging;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.kstruct.gethostname4j.Hostname;
-import com.mycompany.sample.plumbing.errors.ServerError;
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
-import com.mycompany.sample.plumbing.errors.ClientError;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.kstruct.gethostname4j.Hostname;
+import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.errors.ClientError;
+import com.mycompany.sample.plumbing.errors.ServerError;
 
 /*
  * Each API request writes a structured log entry containing fields we will query by

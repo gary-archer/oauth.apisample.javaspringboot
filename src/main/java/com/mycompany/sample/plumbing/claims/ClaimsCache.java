@@ -1,14 +1,16 @@
 package com.mycompany.sample.plumbing.claims;
 
-import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
-import com.mycompany.sample.plumbing.logging.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
 import org.slf4j.Logger;
+
+import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
+import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
  * A singleton in memory claims cache for our API

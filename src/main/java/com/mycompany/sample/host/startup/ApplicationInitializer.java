@@ -1,19 +1,21 @@
 package com.mycompany.sample.host.startup;
 
-import com.mycompany.sample.host.claims.SampleApiClaims;
-import com.mycompany.sample.host.configuration.ApiConfiguration;
-import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
-import com.mycompany.sample.host.configuration.Configuration;
-import com.mycompany.sample.plumbing.dependencies.CompositionRoot;
-import com.mycompany.sample.plumbing.logging.LoggerFactory;
-import com.mycompany.sample.logic.utilities.JsonFileReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.MapPropertySource;
+
+import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
+import com.mycompany.sample.host.configuration.ApiConfiguration;
+import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.logic.utilities.JsonFileReader;
+import com.mycompany.sample.plumbing.dependencies.CompositionRoot;
+import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
  * Override startup to customize behaviour
@@ -48,11 +50,15 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
 
         // Register common code dependencies
         var container = context.getBeanFactory();
-        new CompositionRoot<SampleApiClaims>(container, configuration.getLogging(), configuration.getOauth(), loggerFactory)
-                .withApiBasePath("/api/")
-                .withClaimsSupplier(SampleApiClaims::new)
-                .withCustomClaimsProviderSupplier(SampleApiClaimsProvider::new)
-                .register();
+        new CompositionRoot<SampleApiClaims>(
+                container,
+                configuration.getLogging(),
+                configuration.getOauth(),
+                loggerFactory)
+                    .withApiBasePath("/api/")
+                    .withClaimsSupplier(SampleApiClaims::new)
+                    .withCustomClaimsProviderSupplier(SampleApiClaimsProvider::new)
+                    .register();
 
         // Register this app's specific dependencies
         container.registerSingleton("ApiConfiguration", configuration.getApi());

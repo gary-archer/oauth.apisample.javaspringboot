@@ -1,20 +1,22 @@
 package com.mycompany.sample.logic.repositories;
 
-import com.mycompany.sample.plumbing.logging.LogEntry;
-import com.mycompany.sample.logic.entities.Company;
-import com.mycompany.sample.logic.entities.CompanyTransactions;
-import com.mycompany.sample.logic.utilities.CGLib;
-import com.mycompany.sample.logic.utilities.JsonFileReader;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+
 import static com.ea.async.Async.await;
-import static java.util.concurrent.CompletableFuture.completedFuture;
+import com.mycompany.sample.logic.entities.Company;
+import com.mycompany.sample.logic.entities.CompanyTransactions;
+import com.mycompany.sample.logic.utilities.CGLib;
+import com.mycompany.sample.logic.utilities.JsonFileReader;
+import com.mycompany.sample.plumbing.logging.LogEntry;
 
 /*
  * The repository receives user context to apply authorization rules

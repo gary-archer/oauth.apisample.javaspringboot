@@ -137,6 +137,15 @@
             <property name="processJavadoc" value="false"/>
         </module>
 
+        <!-- This was pasted in -->
+        <module name="ImportOrder">
+            <property name="groups" value="/^java\./,javax,org"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="option" value="above"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+        </module>
+
         <!-- Checks for Size Violations.                    -->
         <!-- See https://checkstyle.org/config_sizes.html -->
         <module name="MethodLength"/>

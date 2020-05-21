@@ -1,21 +1,23 @@
 package com.mycompany.sample.logic.services;
 
-import com.mycompany.sample.plumbing.errors.ClientError;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.logic.entities.Company;
-import com.mycompany.sample.logic.entities.CompanyTransactions;
-import com.mycompany.sample.logic.errors.SampleErrorCodes;
-import com.mycompany.sample.logic.repositories.CompanyRepository;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import static com.ea.async.Async.await;
-import static java.util.concurrent.CompletableFuture.completedFuture;
+import com.mycompany.sample.logic.entities.Company;
+import com.mycompany.sample.logic.entities.CompanyTransactions;
+import com.mycompany.sample.logic.errors.SampleErrorCodes;
+import com.mycompany.sample.logic.repositories.CompanyRepository;
+import com.mycompany.sample.plumbing.errors.ClientError;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
 /*
  * Our service layer class applies business authorization

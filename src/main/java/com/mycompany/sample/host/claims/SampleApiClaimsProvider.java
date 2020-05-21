@@ -1,7 +1,8 @@
 package com.mycompany.sample.host.claims;
 
-import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import javax.servlet.http.HttpServletRequest;
+
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 
 /*
  * Extend our base class to provide custom claims

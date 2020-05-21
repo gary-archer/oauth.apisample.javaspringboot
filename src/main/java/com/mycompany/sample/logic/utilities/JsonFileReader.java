@@ -1,17 +1,19 @@
 package com.mycompany.sample.logic.utilities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.mycompany.sample.logic.errors.SampleErrorCodes;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+
 import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
 import static com.ea.async.Async.await;
-import static java.util.concurrent.CompletableFuture.completedFuture;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.mycompany.sample.logic.errors.SampleErrorCodes;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
 /*
  * A utility class to manage async reading of JSON text file data into objects

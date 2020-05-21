@@ -1,5 +1,9 @@
 package com.mycompany.sample.plumbing.logging;
 
+import java.util.ArrayList;
+
+import org.slf4j.Logger;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -11,10 +15,8 @@ import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.plumbing.errors.ServerError;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
-import java.util.ArrayList;
-import org.slf4j.Logger;
+import com.mycompany.sample.plumbing.errors.ServerError;
 
 /*
  * A custom logger factory to wrap the default one and give us greater control over output

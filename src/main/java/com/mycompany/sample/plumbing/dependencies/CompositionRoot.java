@@ -1,17 +1,19 @@
 package com.mycompany.sample.plumbing.dependencies;
 
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import java.util.function.Supplier;
+
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+
+import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
+import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
+import com.mycompany.sample.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
 import com.mycompany.sample.plumbing.oauth.OAuthAuthorizer;
-import com.mycompany.sample.plumbing.logging.LoggerFactory;
-import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.utilities.RequestClassifier;
-import java.util.function.Supplier;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /*
  * A class to manage composing core API behaviour

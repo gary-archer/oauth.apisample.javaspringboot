@@ -1,6 +1,7 @@
 package com.mycompany.sample.host.utilities;
 
 import java.io.IOException;
+
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 

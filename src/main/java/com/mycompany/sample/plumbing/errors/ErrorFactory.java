@@ -1,8 +1,9 @@
 package com.mycompany.sample.plumbing.errors;
 
+import org.springframework.http.HttpStatus;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.springframework.http.HttpStatus;
 
 /*
  * An error factory class that returns the interface rather than the concrete type
@@ -22,7 +23,11 @@ public final class ErrorFactory {
     /*
      * Create a server error from a caught exception
      */
-    public static ServerError createServerError(final String errorCode, final String userMessage, final Throwable cause) {
+    public static ServerError createServerError(
+            final String errorCode,
+            final String userMessage,
+            final Throwable cause) {
+
         return new ServerErrorImpl(errorCode, userMessage, cause);
     }
 

@@ -1,9 +1,10 @@
 package com.mycompany.sample.plumbing.errors;
 
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.nimbusds.oauth2.sdk.ErrorObject;
 import org.javatuples.Pair;
 import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.nimbusds.oauth2.sdk.ErrorObject;
 
 /*
  * A class for managing error translation into a loggable form
@@ -34,7 +35,10 @@ public final class ErrorUtils {
     /*
      * Create an error from an exception
      */
-    public static ServerError createServerError(final Throwable exception, final String errorCode, final String message) {
+    public static ServerError createServerError(
+            final Throwable exception,
+            final String errorCode,
+            final String message) {
 
         var defaultErrorCode = ErrorCodes.SERVER_ERROR;
         var defaultMessage = "An unexpected exception occurred in the API";

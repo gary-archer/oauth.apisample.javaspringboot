@@ -1,12 +1,14 @@
 package com.mycompany.sample.host.controllers;
 
-import com.mycompany.sample.host.claims.SampleApiClaims;
-import com.mycompany.sample.host.claims.UserInfoClaims;
 import java.util.concurrent.CompletableFuture;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
+
+import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.host.claims.UserInfoClaims;
 
 /*
  * A simple controller to return user info to the caller

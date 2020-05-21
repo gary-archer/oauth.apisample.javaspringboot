@@ -1,7 +1,8 @@
 package com.mycompany.sample.plumbing.errors;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /*
  * An interface for errors returned to the client

@@ -1,7 +1,8 @@
 package com.mycompany.sample.plumbing.claims;
 
-import lombok.Getter;
 import org.springframework.security.core.AuthenticatedPrincipal;
+
+import lombok.Getter;
 
 /*
  * Claims common to all APIs

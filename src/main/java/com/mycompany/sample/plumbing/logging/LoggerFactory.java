@@ -1,7 +1,8 @@
 package com.mycompany.sample.plumbing.logging;
 
-import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import org.slf4j.Logger;
+
+import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 
 /*
  * An interface to access loggers from application code
