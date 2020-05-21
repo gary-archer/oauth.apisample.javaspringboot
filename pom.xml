@@ -33,6 +33,13 @@
             <version>2.3.0.RELEASE</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+            <version>5.3.2.RELEASE</version>
+        </dependency>
+
+        <!-- Spring Security libraries -->
+        <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
             <version>2.4.1.RELEASE</version>

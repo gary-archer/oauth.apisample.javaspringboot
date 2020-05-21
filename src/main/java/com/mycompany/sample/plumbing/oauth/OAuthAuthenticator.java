@@ -41,8 +41,7 @@ public class OAuthAuthenticator {
             final OAuthConfiguration configuration,
             final IssuerMetadata metadata,
             final LogEntry logEntry) {
-
-        this.configuration = configuration;
+       this.configuration = configuration;
         this.metadata = metadata;
         this.logEntry = logEntry;
     }

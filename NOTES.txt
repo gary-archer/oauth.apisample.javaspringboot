@@ -1,1 +1,11 @@
-1.
+1. See if I can use an OpaqueTokenIntrospector and cache results:
+   https://stackoverflow.com/questions/60673828/is-there-a-way-with-spring-security-to-cache-token-introspection-result
+   https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/oauth2/server/resource/introspection/OpaqueTokenIntrospector.html
+
+2. Look into @EnableResourceServer also
+   Make sure I can prevent logic firing for OPTIONS and Web requests
+
+3. Do early checking of error conditions such as missing tokens
+
+4. If I can get everything working then remove all references to this library:
+   spring-security-oauth2
