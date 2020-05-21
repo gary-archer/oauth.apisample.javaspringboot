@@ -7,9 +7,9 @@ import java.time.Instant;
 import org.springframework.http.HttpStatus;
 
 /*
- * The default implementation of an API error
+ * The default implementation of a server error
  */
-public final class ApiErrorImpl extends ApiError {
+public final class ServerErrorImpl extends ServerError {
 
     // A range for generated instance ids
     private static final int MIN_ERROR_ID = 10000;
@@ -24,14 +24,14 @@ public final class ApiErrorImpl extends ApiError {
     /*
      * Construct from an error code and user message
      */
-    public ApiErrorImpl(final String errorCode, final String userMessage) {
+    public ServerErrorImpl(final String errorCode, final String userMessage) {
         this(errorCode, userMessage, null);
     }
 
     /*
      * Construct from an error code and user message
      */
-    public ApiErrorImpl(final String errorCode, final String userMessage, final Throwable cause) {
+    public ServerErrorImpl(final String errorCode, final String userMessage, final Throwable cause) {
         super(userMessage, cause);
 
         this.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -15,15 +15,15 @@ public final class ErrorFactory {
     /*
      * Create an error indicating a server error
      */
-    public static ApiError createServerError(final String errorCode, final String userMessage) {
-        return new ApiErrorImpl(errorCode, userMessage);
+    public static ServerError createServerError(final String errorCode, final String userMessage) {
+        return new ServerErrorImpl(errorCode, userMessage);
     }
 
     /*
      * Create a server error from a caught exception
      */
-    public static ApiError createServerError(final String errorCode, final String userMessage, final Throwable cause) {
-        return new ApiErrorImpl(errorCode, userMessage, cause);
+    public static ServerError createServerError(final String errorCode, final String userMessage, final Throwable cause) {
+        return new ServerErrorImpl(errorCode, userMessage, cause);
     }
 
     /*
@@ -54,7 +54,7 @@ public final class ErrorFactory {
     /*
      * Create a 401 error with the reason
      */
-    public static ClientError create401Error(final String reason) {
+    public static ClientError createClient401Error(final String reason) {
         var error = new ClientErrorImpl(
                 HttpStatus.UNAUTHORIZED,
                 ErrorCodes.UNAUTHORIZED_REQUEST,

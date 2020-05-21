@@ -105,7 +105,7 @@ public class OAuthAuthenticator {
 
             // We will return a 401 if the token is invalid or expired
             if (!tokenClaims.isActive()) {
-                throw ErrorFactory.create401Error("Access token is expired and failed introspection");
+                throw ErrorFactory.createClient401Error("Access token is expired and failed introspection");
             }
 
             // Get token claims and use the immutable user id as the subject claim
@@ -139,7 +139,7 @@ public class OAuthAuthenticator {
 
             // Handle a race condition where the access token expires just after introspection
             if (httpResponse.getStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
-                throw ErrorFactory.create401Error("Expired access token used for user info lookup");
+                throw ErrorFactory.createClient401Error("Expired access token used for user info lookup");
             }
 
             // Handle errors returned in the response body

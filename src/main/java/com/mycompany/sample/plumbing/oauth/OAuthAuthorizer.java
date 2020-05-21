@@ -31,7 +31,7 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> extends BaseAu
         // First read the access token
         String accessToken = this.readAccessToken(request);
         if (accessToken == null) {
-            throw ErrorFactory.create401Error("No access token was supplied in the bearer header");
+            throw ErrorFactory.createClient401Error("No access token was supplied in the bearer header");
         }
 
         // Bypass and use cached results if they exist

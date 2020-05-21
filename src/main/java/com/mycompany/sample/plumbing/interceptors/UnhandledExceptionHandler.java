@@ -1,7 +1,7 @@
 package com.mycompany.sample.plumbing.interceptors;
 
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.plumbing.errors.ApiError;
+import com.mycompany.sample.plumbing.errors.ServerError;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
@@ -81,12 +81,12 @@ public final class UnhandledExceptionHandler {
         // Get the error into a known object
         var error = ErrorUtils.fromException(ex);
 
-        if (error instanceof ApiError) {
+        if (error instanceof ServerError) {
 
             // Handle 5xx errors
-            var apiError = (ApiError) error;
-            logEntry.setApiError(apiError);
-            return apiError.toClientError(this.apiName);
+            var serverError = (ServerError) error;
+            logEntry.setServerError(serverError);
+            return serverError.toClientError(this.apiName);
 
         } else {
 

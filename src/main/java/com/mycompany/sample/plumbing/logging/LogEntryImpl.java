@@ -2,7 +2,7 @@ package com.mycompany.sample.plumbing.logging;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kstruct.gethostname4j.Hostname;
-import com.mycompany.sample.plumbing.errors.ApiError;
+import com.mycompany.sample.plumbing.errors.ServerError;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import java.util.ArrayList;
@@ -147,7 +147,7 @@ public class LogEntryImpl implements LogEntry {
     /*
      * Add a 5xx error to the log data
      */
-    public void setApiError(final ApiError error) {
+    public void setServerError(final ServerError error) {
         this.current().setErrorData(error.toLogFormat(this.data.getApiName()));
         this.current().setErrorCode(error.getErrorCode());
         this.current().setErrorId(error.getInstanceId());

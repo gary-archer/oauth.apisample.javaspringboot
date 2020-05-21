@@ -11,7 +11,7 @@ import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.plumbing.errors.ApiError;
+import com.mycompany.sample.plumbing.errors.ServerError;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import java.util.ArrayList;
 import org.slf4j.Logger;
@@ -82,12 +82,12 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         }
 
         // Get the error into a loggable format
-        var error = (ApiError) ErrorUtils.fromException(exception);
+        var error = (ServerError) ErrorUtils.fromException(exception);
 
         // Create a log entry and set error details
         var logEntry = new LogEntryImpl(this.apiName, this.getProductionLogger());
         logEntry.setOperationName("startup");
-        logEntry.setApiError(error);
+        logEntry.setServerError(error);
         logEntry.write();
     }
 

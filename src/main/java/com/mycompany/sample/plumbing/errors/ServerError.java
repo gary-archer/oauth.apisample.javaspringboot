@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /*
- * An interface for processing full API error details
+ * A class to process full error details
  */
-public abstract class ApiError extends RuntimeException {
+public abstract class ServerError extends RuntimeException {
 
-    public ApiError(final String message, final Throwable cause) {
+    public ServerError(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -24,6 +24,6 @@ public abstract class ApiError extends RuntimeException {
     // Return the log format
     public abstract ObjectNode toLogFormat(String apiName);
 
-    // Return the client error for the API error
+    // Return the client error for this service error
     public abstract ClientError toClientError(String apiName);
 }
