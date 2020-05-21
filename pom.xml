@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
-            <version>8.3</version>
+            <version>8.4</version>
         </dependency>
 
         <!-- An in memory cache used for claims caching -->
