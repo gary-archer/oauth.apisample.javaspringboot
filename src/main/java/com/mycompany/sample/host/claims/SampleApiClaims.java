@@ -1,6 +1,6 @@
 package com.mycompany.sample.host.claims;
 
-import com.mycompany.sample.host.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import lombok.Getter;
 import lombok.Setter;
 

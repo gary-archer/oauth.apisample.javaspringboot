@@ -1,11 +1,10 @@
 package com.mycompany.sample.host.startup;
 
 import com.mycompany.sample.host.configuration.ApiConfiguration;
-import com.mycompany.sample.host.configuration.Configuration;
-import com.mycompany.sample.host.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.host.plumbing.interceptors.CustomHeaderInterceptor;
-import com.mycompany.sample.host.plumbing.interceptors.LoggingInterceptor;
-import com.mycompany.sample.host.plumbing.logging.LoggerFactory;
+import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
+import com.mycompany.sample.plumbing.interceptors.CustomHeaderInterceptor;
+import com.mycompany.sample.plumbing.interceptors.LoggingInterceptor;
+import com.mycompany.sample.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.host.utilities.WebStaticContentFileResolver;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;

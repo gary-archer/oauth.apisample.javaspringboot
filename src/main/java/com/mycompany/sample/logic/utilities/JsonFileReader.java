@@ -3,7 +3,7 @@ package com.mycompany.sample.logic.utilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
-import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 import org.javaync.io.AsyncFiles;

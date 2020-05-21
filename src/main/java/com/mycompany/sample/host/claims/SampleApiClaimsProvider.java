@@ -1,6 +1,6 @@
 package com.mycompany.sample.host.claims;
 
-import com.mycompany.sample.host.plumbing.claims.CustomClaimsProvider;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import javax.servlet.http.HttpServletRequest;
 
 /*

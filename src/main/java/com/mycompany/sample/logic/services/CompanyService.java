@@ -1,7 +1,7 @@
 package com.mycompany.sample.logic.services;
 
-import com.mycompany.sample.host.plumbing.errors.ClientError;
-import com.mycompany.sample.host.plumbing.errors.ErrorFactory;
+import com.mycompany.sample.plumbing.errors.ClientError;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
