@@ -32,11 +32,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.3.0.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-resource-server</artifactId>
-            <version>5.3.2.RELEASE</version>
-        </dependency>
 
         <!-- Spring Security libraries -->
         <dependency>

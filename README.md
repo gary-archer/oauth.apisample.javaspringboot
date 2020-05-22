@@ -12,7 +12,7 @@
 
 ### Programming Languages
 
-* Java 14 and Spring Boot 2.3 are used to implement the REST API
+* Java 13 and Spring Boot 2.3 are used to implement the REST API
 
 ### Middleware Used
 
