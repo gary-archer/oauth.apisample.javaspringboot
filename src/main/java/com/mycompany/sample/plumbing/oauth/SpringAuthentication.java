@@ -1,15 +1,15 @@
 package com.mycompany.sample.plumbing.oauth;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
-import org.springframework.security.core.authority.AuthorityUtils;
 
 /*
  * A helper class to enable us to return the results of OAuth processing in Spring Security terms
  */
-public class SpringAuthentication implements Authentication {
+public final class SpringAuthentication implements Authentication {
 
     private final CoreApiClaims claims;
 
@@ -21,13 +21,11 @@ public class SpringAuthentication implements Authentication {
     }
 
     /*
-     * Spring security requires a granted authorities list based on roles
-     * We need to create a default list in order to avoid access denied problems
-     * https://www.baeldung.com/spring-security-granted-authority-vs-role
+     * Return a default result since we are not using authorities or default role based authorization
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList();
+        return new ArrayList<>();
     }
 
     /*
@@ -66,7 +64,7 @@ public class SpringAuthentication implements Authentication {
      * This is not relevant for our scenario
      */
     @Override
-    public void setAuthenticated(boolean b) throws IllegalArgumentException {
+    public void setAuthenticated(final boolean b) throws IllegalArgumentException {
     }
 
     /*

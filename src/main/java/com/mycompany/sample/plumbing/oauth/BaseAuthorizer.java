@@ -28,7 +28,8 @@ public abstract class BaseAuthorizer extends OncePerRequestFilter {
     }
 
     /*
-     * Authorization processing
+     * We override entire security processing since our solution is based on nimbusds libraries
+     * This also provides complete control over all error responses, since Spring defaults can be poor
      */
     @Override
     protected void doFilterInternal(
@@ -56,10 +57,8 @@ public abstract class BaseAuthorizer extends OncePerRequestFilter {
             // Log who called the API
             logEntry.setIdentity(claims);
 
-            // Update the Spring security context
+            // Update the Spring security context, then move onto business logic
             SecurityContextHolder.getContext().setAuthentication(new SpringAuthentication(claims));
-
-            // Move on to business logic
             filterChain.doFilter(request, response);
 
         } catch (Throwable ex) {
