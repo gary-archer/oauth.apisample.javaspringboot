@@ -2,7 +2,6 @@ package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
@@ -58,15 +57,14 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> extends BaseAu
     }
 
     /*
-     * Read the access token
+     * Try to read the access token from the authorization header
      */
     private String readAccessToken(final HttpServletRequest request) {
 
-        // Get the received access token
-        var extractor = new BearerTokenExtractor();
-        var token = extractor.extract(request);
-        if (token != null) {
-            return token.getPrincipal().toString();
+        var header = request.getHeader("Authorization");
+        var parts = header.split(" ");
+        if (parts.length == 2 && parts[0].equals("Bearer")) {
+            return parts[1];
         }
 
         return null;

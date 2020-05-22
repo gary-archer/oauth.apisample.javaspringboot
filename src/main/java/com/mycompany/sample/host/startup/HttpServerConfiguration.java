@@ -18,7 +18,6 @@ import com.mycompany.sample.host.utilities.WebStaticContentFileResolver;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.interceptors.CustomHeaderInterceptor;
 import com.mycompany.sample.plumbing.interceptors.LoggingInterceptor;
-import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
  * A class to manage HTTP configuration for our server
@@ -31,7 +30,6 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     private final ApiConfiguration apiConfiguration;
     private final LoggingConfiguration loggingConfiguration;
     private final OncePerRequestFilter authorizer;
-    private final LoggerFactory loggerFactory;
     private final ConfigurableApplicationContext context;
 
     // Constants
@@ -44,13 +42,11 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
             final ApiConfiguration apiConfiguration,
             final LoggingConfiguration loggingConfiguration,
             final @Qualifier("Authorizer") OncePerRequestFilter authorizer,
-            final LoggerFactory loggerFactory,
             final ConfigurableApplicationContext context) {
 
         this.apiConfiguration = apiConfiguration;
         this.loggingConfiguration = loggingConfiguration;
         this.authorizer = authorizer;
-        this.loggerFactory = loggerFactory;
         this.context = context;
     }
 
