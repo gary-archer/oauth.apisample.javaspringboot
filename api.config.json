@@ -8,43 +8,41 @@
     "proxyUrl": "http://127.0.0.1:8888",
     "useProxy": false
   },
-  "framework": {
-    "apiName":  "SampleApi",
-    "logging": {
-      "development": {
-        "level": "info",
-        "namespace": "com.mycompany.sample",
-        "overrideLevels": {
-          "ClaimsCache": "info"
-        }
-      },
-      "production": {
-        "level": "info",
-        "appenders": [
-          {
-            "type": "console"
-          },
-          {
-            "type": "file",
-            "filePrefix": "api",
-            "dirname": "./logs",
-            "totalLogSizeMB": "1024",
-            "maxFiles": "100"
-          }
-        ],
-        "performanceThresholdsMilliseconds": {
-          "default": 250,
-          "operationOverrides": {
-            "authorizer": 1000
-          }
-        }
-      }
-    }
-  },
   "oauth": {
     "authority":    "https://dev-843469.oktapreview.com/oauth2/default",
     "clientId":     "0oac5s69rjXE0HcZO0h7",
     "clientSecret": "VEEe9m9WDneeUSUJUOMKZiso_X6xwKvAqRInT2kg",
     "maxClaimsCacheMinutes": 60
+  },
+  "logging": {
+    "apiName": "SampleApi",
+    "production": {
+      "level": "info",
+      "appenders": [
+        {
+          "type": "console"
+        },
+        {
+          "type": "file",
+          "filePrefix": "api",
+          "dirname": "./logs",
+          "totalLogSizeMB": "1024",
+          "maxFiles": "100"
+        }
+      ],
+      "performanceThresholdsMilliseconds": {
+        "default": 250,
+        "operationOverrides": {
+          "authorizer": 1000
+        }
+      }
+    },
+    "development": {
+      "level": "info",
+      "namespace": "com.mycompany.sample",
+      "overrideLevels": {
+        "ClaimsCache": "info"
+      }
+    }
   }
 }

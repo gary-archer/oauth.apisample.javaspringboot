@@ -12,12 +12,12 @@
 
 ### Programming Languages
 
-* Java 13 and Spring Boot 2.2 are used to implement the REST API
+* Java 14 and Spring Boot 2.3 are used to implement the REST API
 
 ### Middleware Used
 
 * The [Connect2Id SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk) is used for API OAuth operations
 * [Cache2K](https://cache2k.org) is used to cache API claims in memory
-* Tomcat is used to host both the API and the SPA's static web content
+* The Tomcat web server is used to host both the API and the SPA's static web content
 * Okta is used for the Authorization Server
 * OpenSSL is used for SSL certificate handling

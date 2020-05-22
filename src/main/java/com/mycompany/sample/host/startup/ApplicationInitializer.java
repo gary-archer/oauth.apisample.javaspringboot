@@ -1,21 +1,19 @@
 package com.mycompany.sample.host.startup;
 
-import com.mycompany.sample.framework.api.base.logging.LoggerFactory;
-import com.mycompany.sample.host.claims.SampleApiClaims;
-import com.mycompany.sample.host.configuration.ApiConfiguration;
-import com.mycompany.sample.host.configuration.Configuration;
-import com.mycompany.sample.framework.api.base.startup.FrameworkBuilder;
-import com.mycompany.sample.framework.api.oauth.startup.OAuthAuthorizerBuilder;
-import com.mycompany.sample.host.authorization.SampleApiClaimsProvider;
-import com.mycompany.sample.host.errors.RestErrorTranslator;
-import com.mycompany.sample.logic.utilities.JsonFileReader;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.MapPropertySource;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.MapPropertySource;
+import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
+import com.mycompany.sample.host.configuration.ApiConfiguration;
+import com.mycompany.sample.host.configuration.Configuration;
+import com.mycompany.sample.logic.utilities.JsonFileReader;
+import com.mycompany.sample.plumbing.dependencies.CompositionRoot;
+import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
  * Override startup to customize behaviour
@@ -42,29 +40,26 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var configuration = reader.readFile("api.config.json", Configuration.class).join();
 
         // Initialise logging from configuration settings
-        loggerFactory.configure(configuration.getFramework());
+        loggerFactory.configure(configuration.getLogging());
 
         // Configure the API to listen on SSL and to support proxying requests via an HTTP debugger
         this.configureHttpDebugging(configuration.getApi());
         this.configureSsl(context, configuration);
 
-        // Get the container
+        // Register common code dependencies
         var container = context.getBeanFactory();
+        new CompositionRoot<SampleApiClaims>(
+                container,
+                configuration.getLogging(),
+                configuration.getOauth(),
+                loggerFactory)
+                    .withApiBasePath("/api/")
+                    .withClaimsSupplier(SampleApiClaims::new)
+                    .withCustomClaimsProviderSupplier(SampleApiClaimsProvider::new)
+                    .register();
 
-        // Register base framework dependencies
-        new FrameworkBuilder(container, configuration.getFramework(), loggerFactory)
-                .withApiBasePath("/api/")
-                .withApplicationExceptionHandler(new RestErrorTranslator())
-                .register();
-
-        // Register Oauth framework dependencies
-        new OAuthAuthorizerBuilder<SampleApiClaims>(container, configuration.getOauth(), loggerFactory)
-                .withClaimsSupplier(SampleApiClaims::new)
-                .withCustomClaimsProviderSupplier(SampleApiClaimsProvider::new)
-                .register();
-
-        // Register the concrete API's runtime dependencies, and note that most dependencies use annotations
-        container.registerSingleton("AppConfiguration", configuration.getApi());
+        // Register this app's specific dependencies
+        container.registerSingleton("ApiConfiguration", configuration.getApi());
     }
 
     /*

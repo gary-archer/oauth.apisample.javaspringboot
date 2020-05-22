@@ -1,7 +1,7 @@
 package com.mycompany.sample.host.configuration;
 
-import com.mycompany.sample.framework.api.base.configuration.FrameworkConfiguration;
-import com.mycompany.sample.framework.api.oauth.configuration.OAuthConfiguration;
+import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
+import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +16,9 @@ public class Configuration {
 
     @Getter
     @Setter
-    private FrameworkConfiguration framework;
+    private OAuthConfiguration oauth;
 
     @Getter
     @Setter
-    private OAuthConfiguration oauth;
+    private LoggingConfiguration logging;
 }

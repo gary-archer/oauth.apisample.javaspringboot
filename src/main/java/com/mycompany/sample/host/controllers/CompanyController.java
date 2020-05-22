@@ -1,20 +1,20 @@
 package com.mycompany.sample.host.controllers;
 
-import com.google.common.primitives.Ints;
-import com.mycompany.sample.framework.api.base.errors.ErrorFactory;
-import com.mycompany.sample.logic.entities.Company;
-import com.mycompany.sample.logic.entities.CompanyTransactions;
-import com.mycompany.sample.host.claims.SampleApiClaims;
-import com.mycompany.sample.logic.errors.ErrorCodes;
-import com.mycompany.sample.logic.services.CompanyService;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import com.google.common.primitives.Ints;
+import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.logic.entities.Company;
+import com.mycompany.sample.logic.entities.CompanyTransactions;
+import com.mycompany.sample.logic.errors.SampleErrorCodes;
+import com.mycompany.sample.logic.services.CompanyService;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
 /*
  * A controller to return company related info to the caller
@@ -28,6 +28,9 @@ public class CompanyController {
     private final CompanyService service;
     private final SampleApiClaims claims;
 
+    /*
+     * The claims object is injected into the controller or other classes after OAuth processing
+     */
     public CompanyController(final CompanyService service, final SampleApiClaims claims) {
         this.service = service;
         this.claims = claims;
@@ -53,7 +56,7 @@ public class CompanyController {
         if (idValue == null || idValue <= 0) {
             throw ErrorFactory.createClientError(
                     HttpStatus.BAD_REQUEST,
-                    ErrorCodes.INVALID_COMPANY_ID,
+                    SampleErrorCodes.INVALID_COMPANY_ID,
                     "The company id must be a positive numeric integer");
         }
 
