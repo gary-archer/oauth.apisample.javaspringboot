@@ -35,9 +35,14 @@
 
         <!-- Spring Security libraries -->
         <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>2.4.1.RELEASE</version>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>5.3.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>5.3.2.RELEASE</version>
         </dependency>
 
         <!-- The certified implementation we are using for OAuth 2.0 handling in the API
@@ -55,6 +60,11 @@
             <artifactId>cache2k-base-bom</artifactId>
             <version>1.2.4.Final</version>
             <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
         </dependency>
 
         <!-- JSON handling -->

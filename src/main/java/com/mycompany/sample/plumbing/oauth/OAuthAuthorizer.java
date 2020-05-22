@@ -62,9 +62,11 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> extends BaseAu
     private String readAccessToken(final HttpServletRequest request) {
 
         var header = request.getHeader("Authorization");
-        var parts = header.split(" ");
-        if (parts.length == 2 && parts[0].equals("Bearer")) {
-            return parts[1];
+        if (header != null) {
+            var parts = header.split(" ");
+            if (parts.length == 2 && parts[0].equals("Bearer")) {
+                return parts[1];
+            }
         }
 
         return null;
