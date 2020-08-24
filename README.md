@@ -2,7 +2,7 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/authguidance.apisample.javaspringboot/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/gary-archer/authguidance.apisample.javaspringboot?targetFile=pom.xml)
 
-### Overview
+### Overview 
 
 * The final API code sample using OAuth 2.0 and Open Id Connect, referenced in my blog at https://authguidance.com
 * **The goal of this sample is to implement this blog's** [API Architecture](https://authguidance.com/2019/03/24/api-platform-design/) **in Java using Spring Boot**
