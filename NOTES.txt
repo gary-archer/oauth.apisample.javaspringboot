@@ -1,17 +1,19 @@
-1. Improve token validation error responses
-   Test API logs + client errors for each failure scenario
-
-2. Currently Expire Access Token is not working in the UI
+1. Improve token validation error code
+   Currently Expire Access Token is not working in the UI
    I need to return a 401 as for NodeJS
 
-3. Current SPA State
+2. Get rid of any Checkstyle warnings
+
+3. Test API logs + client errors for each failure scenario
+
+4. Current SPA State
    Okta config has been deleted
 
-4. Final SPA State
+5. Final SPA State
    Okta config has been deleted
 
-5. NodeJS update next
+6. NodeJS update next
 
-6. Net Core after that
+7. Net Core after that
 
-7. Update Final API + Final SPA howto write ups
+8. Update Final API + Final SPA howto write ups

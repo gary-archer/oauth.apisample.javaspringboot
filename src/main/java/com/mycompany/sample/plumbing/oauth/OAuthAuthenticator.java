@@ -6,6 +6,7 @@ import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.SignedJWT;
@@ -148,35 +149,20 @@ public class OAuthAuthenticator {
 
         try (var perf = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
-            // First decode the JWT and get its kid
-            var decodedJwt = SignedJWT.parse(accessToken);
-            var kid = decodedJwt.getHeader().getKeyID();
+            // First get the access token header's kid value
+            var jwt = this.decodeAccessToken(accessToken);
+            var kid = jwt.getHeader().getKeyID();
 
-            // Download token signing keys
-            var keysUri = this.metadata.getMetadata().getJWKSetURI();
-            JWKSet publicKeys = JWKSet.load(keysUri.toURL());
+            // Download the token signing public key
+            var publicKey = this.getTokenSigningPublicKey(kid);
 
-            // Get the key that matches the JWT
-            var publicKey = publicKeys.getKeyByKeyId(kid);
-            if (publicKey == null) {
-                throw new RuntimeException("PUBLIC KEY NOT FOUND");
-            }
-
-            // Check we have the expected RSA key
-            if (!(publicKey instanceof RSAKey)) {
-                throw new RuntimeException("UNEXPECTED KEY TYPE");
-            }
-
-            // Validate the token signature
-            JWSVerifier verifier = new RSASSAVerifier((RSAKey) publicKey);
-            if (!decodedJwt.verify(verifier)) {
-                throw new RuntimeException("TOKEN VALIDATION FAILURE");
-            }
+            // Verify the token's digital signature
+            this.validateJsonWebToken(jwt, publicKey);
 
             // If required, also check the token's audience and scopes before accepting claims
 
             // Define some callbacks to receive claims
-            var tokenClaims = decodedJwt.getPayload().toJSONObject();
+            var tokenClaims = jwt.getPayload().toJSONObject();
             Function<String, String> getStringJwtClaim = tokenClaims::getAsString;
             Function<String, Integer> getIntegerJwtClaim = (String name) -> tokenClaims.getAsNumber(name).intValue();
 
@@ -187,10 +173,67 @@ public class OAuthAuthenticator {
             var expiry = this.getIntegerClaim(getIntegerJwtClaim, "exp");
             claims.setTokenInfo(subject, clientId, scope.split(" "), expiry);
         }
+    }
+
+    /*
+     * Decode the JWT and get its key identifier
+     */
+    private SignedJWT decodeAccessToken(String accessToken) {
+
+        try {
+
+            return SignedJWT.parse(accessToken);
+        }
         catch (Throwable e) {
 
             // Report exceptions
-            throw ErrorUtils.fromTokenValidationError(e);
+            throw ErrorUtils.fromAccessTokenDecodeError(e);
+        }
+    }
+
+    /*
+     * Get the public key with which our access token is signed
+     */
+    private JWK getTokenSigningPublicKey(String keyIdentifier) {
+
+        var jwksUri = this.metadata.getMetadata().getJWKSetURI();
+        try {
+
+            // Download token signing keys
+            JWKSet keys = JWKSet.load(jwksUri.toURL());
+
+            // Get the key that matches the JWT
+            var publicKey = keys.getKeyByKeyId(keyIdentifier);
+
+            // Check we have the expected RSA key
+            if (!(publicKey instanceof RSAKey)) {
+                throw new RuntimeException("UNEXPECTED KEY TYPE");
+            }
+
+            // Return the result
+            return publicKey.toPublicJWK();
+        }
+        catch (Throwable e) {
+
+            // Report exceptions
+            throw ErrorUtils.fromTokenSigningKeyDownloadError(e, jwksUri.toString());
+        }
+    }
+
+    /*
+     * Do the work of verifying the access token
+     */
+    private void validateJsonWebToken(SignedJWT jwt, JWK publicKey) {
+
+        try {
+
+            JWSVerifier verifier = new RSASSAVerifier((RSAKey) publicKey);
+            if (!jwt.verify(verifier)) {
+                throw ErrorUtils.fromAccessTokenValidationError(null);
+            }
+        }
+        catch (Throwable e) {
+            throw ErrorUtils.fromAccessTokenValidationError(e);
         }
     }
 

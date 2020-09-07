@@ -105,25 +105,35 @@ public final class ErrorUtils {
     }
 
     /*
-     * Handle a general token validation failure
+     * Handle token decode errors, meaning we received invalid input
      */
-    public static ServerError fromTokenValidationError(final Throwable ex) {
+    public static ClientError fromAccessTokenDecodeError(final Throwable ex) {
 
-        // Already handled from response data
-        if (ex instanceof ServerError) {
-            return (ServerError) ex;
-        }
+        var details = ErrorUtils.getExceptionDetailsMessage(ex);
+        var message = String.format("Failed to decode received JWT: %s", details);
+        return ErrorFactory.createClient401Error(message);
+    }
 
-        // Already handled due to invalid token
-        if (ex instanceof ClientError) {
-            throw (ClientError) ex;
-        }
+    /*
+     * Handle token signing key download errors, meaning an API technical error
+     */
+    public static ServerError fromTokenSigningKeyDownloadError(final Throwable ex, final String jwksUri) {
 
         var error = ErrorFactory.createServerError(
-                ErrorCodes.TOKEN_VALIDATION_FAILURE,
+                ErrorCodes.TOKEN_SIGNING_KEY_DOWNLOAD_ERROR,
                 "Token validation failed", ex);
-        ErrorUtils.setErrorDetails(error, null, ex, null);
+        ErrorUtils.setErrorDetails(error, null, ex, jwksUri);
         return error;
+    }
+
+    /*
+     * Handle token validation errors, meaning we received an invalid token
+     */
+    public static ClientError fromAccessTokenValidationError(final Throwable ex) {
+
+        var details = ErrorUtils.getExceptionDetailsMessage(ex);
+        var message = String.format("Failed to verify JWT: %s", details);
+        return ErrorFactory.createClient401Error(message);
     }
 
     /*
@@ -287,6 +297,10 @@ public final class ErrorUtils {
      * Set a string version of the exception details against the server error, which will be logged
      */
     private static String getExceptionDetailsMessage(final Throwable ex) {
+
+        if (ex == null) {
+            return "";
+        }
 
         if (ex.getMessage() == null) {
             return String.format("%s", ex.getClass());
