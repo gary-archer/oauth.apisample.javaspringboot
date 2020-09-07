@@ -105,6 +105,28 @@ public final class ErrorUtils {
     }
 
     /*
+     * Handle a general token validation failure
+     */
+    public static ServerError fromTokenValidationError(final Throwable ex) {
+
+        // Already handled from response data
+        if (ex instanceof ServerError) {
+            return (ServerError) ex;
+        }
+
+        // Already handled due to invalid token
+        if (ex instanceof ClientError) {
+            throw (ClientError) ex;
+        }
+
+        var error = ErrorFactory.createServerError(
+                ErrorCodes.TOKEN_VALIDATION_FAILURE,
+                "Token validation failed", ex);
+        ErrorUtils.setErrorDetails(error, null, ex, null);
+        return error;
+    }
+
+    /*
      * Handle user info errors in the response body
      */
     public static ServerError fromUserInfoError(final ErrorObject errorObject, final String url) {

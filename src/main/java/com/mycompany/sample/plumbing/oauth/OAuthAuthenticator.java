@@ -1,6 +1,17 @@
 package com.mycompany.sample.plumbing.oauth;
 
+import java.net.URI;
+import java.text.ParseException;
+import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -10,10 +21,6 @@ import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -22,7 +29,6 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import com.nimbusds.openid.connect.sdk.claims.ClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 /*
@@ -41,7 +47,8 @@ public class OAuthAuthenticator {
             final OAuthConfiguration configuration,
             final IssuerMetadata metadata,
             final LogEntry logEntry) {
-       this.configuration = configuration;
+
+        this.configuration = configuration;
         this.metadata = metadata;
         this.logEntry = logEntry;
     }
@@ -58,8 +65,13 @@ public class OAuthAuthenticator {
         // This ensures that any errors and performances in this area are reported separately to business logic
         var authorizationLogEntry = this.logEntry.createChild("authorizer");
 
-        // Our implementation introspects the token to get token claims
-        this.introspectTokenAndGetTokenClaims(accessToken, claims);
+        // First validate the token and get token claims, using introspection if supported
+        var introspectionUri = metadata.getMetadata().getIntrospectionEndpointURI();
+        if (introspectionUri != null) {
+            this.introspectTokenAndGetTokenClaims(accessToken, claims, introspectionUri);
+        } else {
+            this.validateTokenInMemoryAndGetTokenClaims(accessToken, claims);
+        }
 
         // It then adds user info claims
         this.getCentralUserInfoClaims(accessToken, claims);
@@ -71,9 +83,11 @@ public class OAuthAuthenticator {
     /*
      * The entry point for validating an access token
      */
-    private void introspectTokenAndGetTokenClaims(final String accessToken, final CoreApiClaims claims) {
+    private void introspectTokenAndGetTokenClaims(
+            final String accessToken,
+            final CoreApiClaims claims,
+            final URI introspectionUri) {
 
-        var url = this.metadata.getMetadata().getIntrospectionEndpointURI();
         try (var perf = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
             // Supply the API's introspection credentials
@@ -83,7 +97,7 @@ public class OAuthAuthenticator {
 
             // Make the request
             HTTPResponse httpResponse = new TokenIntrospectionRequest(
-                    url,
+                    introspectionUri,
                     credentials,
                     new BearerAccessToken(accessToken))
                         .toHTTPRequest()
@@ -93,7 +107,7 @@ public class OAuthAuthenticator {
             var introspectionResponse = TokenIntrospectionResponse.parse(httpResponse);
             if (!introspectionResponse.indicatesSuccess()) {
                 var errorResponse = TokenIntrospectionErrorResponse.parse(httpResponse);
-                throw ErrorUtils.fromIntrospectionError(errorResponse.getErrorObject(), url.toString());
+                throw ErrorUtils.fromIntrospectionError(errorResponse.getErrorObject(), introspectionUri.toString());
             }
 
             // Get token claims from the response
@@ -104,17 +118,75 @@ public class OAuthAuthenticator {
                 throw ErrorFactory.createClient401Error("Access token is expired and failed introspection");
             }
 
+            // Define some callbacks to process claims
+            Function<String, String> getStringIntrospectionClaim = (String name) -> tokenClaims.getStringParameter(name);
+            Function<String, Integer> getIntegerIntrospectionClaim = (String name) -> {
+                var value = tokenClaims.getNumberParameter(name);
+                return (value != null) ? value.intValue() : null;
+            };
+
             // Get token claims and use the immutable user id as the subject claim
-            var subject = this.getTokenStringClaim(tokenClaims, "uid");
-            var clientId = this.getTokenStringClaim(tokenClaims, "client_id");
-            var scope = this.getTokenStringClaim(tokenClaims, "scope");
-            var expiry = this.getTokenIntegerClaim(tokenClaims, "exp");
+            var subject = this.getStringClaim(getStringIntrospectionClaim, "uid");
+            var clientId = this.getStringClaim(getStringIntrospectionClaim, "client_id");
+            var scope = this.getStringClaim(getStringIntrospectionClaim, "scope");
+            var expiry = this.getIntegerClaim(getIntegerIntrospectionClaim, "exp");
             claims.setTokenInfo(subject, clientId, scope.split(" "), expiry);
 
         } catch (Throwable e) {
 
             // Report exceptions
-            throw ErrorUtils.fromIntrospectionError(e, url.toString());
+            throw ErrorUtils.fromIntrospectionError(e, introspectionUri.toString());
+        }
+    }
+
+    /*
+     * As above but uses in memory token validation
+     */
+    private void validateTokenInMemoryAndGetTokenClaims(final String accessToken, final CoreApiClaims claims) {
+
+        try (var perf = this.logEntry.createPerformanceBreakdown("validateToken")) {
+
+            // First decode the JWT and get its kid
+            var decodedJwt = SignedJWT.parse(accessToken);
+            var kid = decodedJwt.getHeader().getKeyID();
+
+            // Download token signing keys
+            var keysUri = this.metadata.getMetadata().getJWKSetURI();
+            JWKSet publicKeys = JWKSet.load(keysUri.toURL());
+
+            // Get the key that matches the JWT
+            var publicKey = publicKeys.getKeyByKeyId(kid);
+            if (publicKey == null) {
+                throw new RuntimeException("PUBLIC KEY NOT FOUND");
+            }
+
+            // Check we have the expected RSA key
+            if (!(publicKey instanceof RSAKey)) {
+                throw new RuntimeException("UNEXPECTED KEY TYPE");
+            }
+
+            // Validate the token signature
+            JWSVerifier verifier = new RSASSAVerifier((RSAKey) publicKey);
+            if (!decodedJwt.verify(verifier)) {
+                throw new RuntimeException("TOKEN VALIDATION FAILURE");
+            }
+
+            // Define some callbacks to process claims
+            var tokenClaims = decodedJwt.getPayload().toJSONObject();
+            Function<String, String> getStringJwtClaim = tokenClaims::getAsString;
+            Function<String, Integer> getIntegerJwtClaim = (String name) -> tokenClaims.getAsNumber(name).intValue();
+
+            // Get token claims and use the immutable user id as the subject claim
+            var subject = this.getStringClaim(getStringJwtClaim, "sub");
+            var clientId = this.getStringClaim(getStringJwtClaim, "client_id");
+            var scope = this.getStringClaim(getStringJwtClaim, "scope");
+            var expiry = this.getIntegerClaim(getIntegerJwtClaim, "exp");
+            claims.setTokenInfo(subject, clientId, scope.split(" "), expiry);
+        }
+        catch (Throwable e) {
+
+            // Report exceptions
+            throw ErrorUtils.fromTokenValidationError(e);
         }
     }
 
@@ -145,11 +217,12 @@ public class OAuthAuthenticator {
 
             // Get token claims from the response
             var userInfo = userInfoResponse.toSuccessResponse().getUserInfo();
+            Function<String, String> getUserInfoClaim = (String name) -> userInfo.getStringClaim(name);
 
             // Update claims
-            var givenName = this.getUserInfoClaim(userInfo, UserInfo.GIVEN_NAME_CLAIM_NAME);
-            var familyName = this.getUserInfoClaim(userInfo, UserInfo.FAMILY_NAME_CLAIM_NAME);
-            var email = this.getUserInfoClaim(userInfo, UserInfo.EMAIL_CLAIM_NAME);
+            var givenName = this.getStringClaim(getUserInfoClaim, UserInfo.GIVEN_NAME_CLAIM_NAME);
+            var familyName = this.getStringClaim(getUserInfoClaim, UserInfo.FAMILY_NAME_CLAIM_NAME);
+            var email = this.getStringClaim(getUserInfoClaim, UserInfo.EMAIL_CLAIM_NAME);
             claims.setCentralUserInfo(givenName, familyName, email);
 
         } catch (Throwable e) {
@@ -160,11 +233,11 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * Do basic null checking of input when reading token claims to avoid possible null pointer exceptions
+     * Do basic null checking of input when reading claims
      */
-    private String getTokenStringClaim(final TokenIntrospectionSuccessResponse claims, final String name) {
+    private String getStringClaim(final Function<String, String> callback, final String name) {
 
-        var claim = claims.getStringParameter(name);
+        var claim = callback.apply(name);
         if (StringUtils.isEmpty(claim)) {
             throw ErrorUtils.fromMissingClaim(name);
         }
@@ -173,25 +246,12 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * Do basic null checking of input when reading token claims to avoid possible null pointer exceptions
+     * Do basic null checking of input when reading claims
      */
-    private int getTokenIntegerClaim(final TokenIntrospectionSuccessResponse claims, final String name) {
+    private int getIntegerClaim(final Function<String, Integer> callback, final String name) {
 
-        var claim = claims.getNumberParameter(name);
+        var claim = callback.apply(name);
         if (claim == null) {
-            throw ErrorUtils.fromMissingClaim(name);
-        }
-
-        return claim.intValue();
-    }
-
-    /*
-     * Do basic null checking of input when reading user info claims to avoid possible null pointer exceptions
-     */
-    private String getUserInfoClaim(final ClaimsSet claims, final String name) {
-
-        var claim = claims.getClaim(name, String.class);
-        if (StringUtils.isEmpty(claim)) {
             throw ErrorUtils.fromMissingClaim(name);
         }
 

@@ -18,6 +18,8 @@ public final class ErrorCodes {
 
     public static final String INTROSPECTION_FAILURE = "introspection_failure";
 
+    public static final String TOKEN_VALIDATION_FAILURE = "token_validation_failure";
+
     public static final String USERINFO_FAILURE = "userinfo_failure";
 
     public static final String EXCEPTION_SIMULATION = "exception_simulation";
