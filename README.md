@@ -5,7 +5,7 @@
 ### Overview 
 
 * The final API code sample using OAuth 2.0 and Open Id Connect, referenced in my blog at https://authguidance.com
-* **The goal of this sample is to implement this blog's** [API Architecture](https://authguidance.com/2019/03/24/api-platform-design/) **in Java using Spring Boot**
+* **This sample implements our [API Non Functional Requirements](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior) in Java via Spring Boot**
 
 ### Details
 
@@ -18,8 +18,8 @@
 
 ### Middleware Used
 
+* The Tomcat web server hosts the API over SSL, using OpenSSL self signed certificates 
 * AWS Cognito is used as the Cloud Authorization Server
 * The [Connect2Id SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk) is used for API OAuth handling
 * [Cache2K](https://cache2k.org) is used to cache API claims in memory
-* The Tomcat web server hosts the API over SSL, using OpenSSL self signed certificates 
 * API logs can be aggregated to [Elastic Search](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
