@@ -1,18 +1,8 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
-import java.text.ParseException;
 import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -22,6 +12,15 @@ import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -120,7 +119,8 @@ public class OAuthAuthenticator {
             }
 
             // Define some callbacks to receive claims
-            Function<String, String> getStringIntrospectionClaim = (String name) -> tokenClaims.getStringParameter(name);
+            Function<String, String> getStringIntrospectionClaim =
+                    (String name) -> tokenClaims.getStringParameter(name);
             Function<String, Integer> getIntegerIntrospectionClaim = (String name) -> {
                 var value = tokenClaims.getNumberParameter(name);
                 return (value != null) ? value.intValue() : null;
@@ -178,13 +178,13 @@ public class OAuthAuthenticator {
     /*
      * Decode the JWT and get its key identifier
      */
-    private SignedJWT decodeAccessToken(String accessToken) {
+    private SignedJWT decodeAccessToken(final String accessToken) {
 
         try {
 
             return SignedJWT.parse(accessToken);
-        }
-        catch (Throwable e) {
+
+        } catch (Throwable e) {
 
             // Report exceptions
             throw ErrorUtils.fromAccessTokenDecodeError(e);
@@ -194,7 +194,7 @@ public class OAuthAuthenticator {
     /*
      * Get the public key with which our access token is signed
      */
-    private JWK getTokenSigningPublicKey(String keyIdentifier) {
+    private JWK getTokenSigningPublicKey(final String keyIdentifier) {
 
         var jwksUri = this.metadata.getMetadata().getJWKSetURI();
         try {
@@ -212,8 +212,8 @@ public class OAuthAuthenticator {
 
             // Return the result
             return publicKey.toPublicJWK();
-        }
-        catch (Throwable e) {
+
+        } catch (Throwable e) {
 
             // Report exceptions
             throw ErrorUtils.fromTokenSigningKeyDownloadError(e, jwksUri.toString());
@@ -223,7 +223,7 @@ public class OAuthAuthenticator {
     /*
      * Do the work of verifying the access token
      */
-    private void validateJsonWebToken(SignedJWT jwt, JWK publicKey) {
+    private void validateJsonWebToken(final SignedJWT jwt, final JWK publicKey) {
 
         try {
 
@@ -231,8 +231,7 @@ public class OAuthAuthenticator {
             if (!jwt.verify(verifier)) {
                 throw ErrorUtils.fromAccessTokenValidationError(null);
             }
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw ErrorUtils.fromAccessTokenValidationError(e);
         }
     }
