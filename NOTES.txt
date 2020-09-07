@@ -1,14 +1,7 @@
 1. Test API logs + client errors for each failure scenario
 
-2. Current SPA State
-   Okta config has been deleted
-   Search and remove Okta
+2. NodeJS API update
 
-5. Final SPA State
-   Okta config has been deleted
+3. Net Core update
 
-6. NodeJS update next
-
-7. Net Core after that
-
-8. Update Final API + Final SPA howto write ups
+4. Update Final API + Final SPA howto write ups and remove Okta occurrences
