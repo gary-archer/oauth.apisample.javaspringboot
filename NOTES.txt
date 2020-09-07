@@ -1,7 +1,0 @@
-1. Test API logs + client errors for each failure scenario
-
-2. NodeJS API update
-
-3. Net Core update
-
-4. Update Final API + Final SPA howto write ups and remove Okta occurrences
