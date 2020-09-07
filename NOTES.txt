@@ -1,0 +1,11 @@
+1. Improve token validation error responses
+   Test API logs + client errors for each failure scenario
+
+2. Currently Expire Access Token is not working in the UI
+   I need to return a 401 as for NodeJS
+
+3. Current SPA State
+   Okta config has been deleted
+
+4. Final SPA State
+   Okta config has been deleted
