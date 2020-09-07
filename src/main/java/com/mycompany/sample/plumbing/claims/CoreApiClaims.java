@@ -23,7 +23,7 @@ public class CoreApiClaims implements AuthenticatedPrincipal {
     @Getter
     private int expiry;
 
-    // Data from the OAuth user info endpoint
+    // Name and email claims from the OAuth user info endpoint
     @Getter
     private String givenName;
 
@@ -38,7 +38,7 @@ public class CoreApiClaims implements AuthenticatedPrincipal {
     @Setter
     private String userDatabaseId;
 
-    // We use the immutable user id from the access token as the user name
+    // Use the access token subject claim as the technical user name
     @Override
     public String getName() {
         return this.subject;
