@@ -21,6 +21,6 @@
 * The [Connect2Id SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk) is used for API OAuth operations
 * [Cache2K](https://cache2k.org) is used to cache API claims in memory
 * The Tomcat web server is used to host both the API and the SPA's static web content
-* Okta is used for the Authorization Server
+* AWS Cognito is used for the Authorization Server
 * OpenSSL is used for SSL certificate handling
 * API logs can be aggregated to [Elastic Search](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support common [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
