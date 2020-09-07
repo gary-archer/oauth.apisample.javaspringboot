@@ -18,9 +18,8 @@
 
 ### Middleware Used
 
-* The [Connect2Id SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk) is used for API OAuth operations
+* AWS Cognito is used as the Cloud Authorization Server
+* The [Connect2Id SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk) is used for API OAuth handling
 * [Cache2K](https://cache2k.org) is used to cache API claims in memory
-* The Tomcat web server is used to host both the API and the SPA's static web content
-* AWS Cognito is used for the Authorization Server
-* OpenSSL is used for SSL certificate handling
-* API logs can be aggregated to [Elastic Search](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support common [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
+* The Tomcat web server hosts the API over SSL, using OpenSSL self signed certificates 
+* API logs can be aggregated to [Elastic Search](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
