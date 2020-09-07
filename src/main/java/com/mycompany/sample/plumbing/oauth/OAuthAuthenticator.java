@@ -118,12 +118,14 @@ public class OAuthAuthenticator {
                 throw ErrorFactory.createClient401Error("Access token is expired and failed introspection");
             }
 
-            // Define some callbacks to process claims
+            // Define some callbacks to receive claims
             Function<String, String> getStringIntrospectionClaim = (String name) -> tokenClaims.getStringParameter(name);
             Function<String, Integer> getIntegerIntrospectionClaim = (String name) -> {
                 var value = tokenClaims.getNumberParameter(name);
                 return (value != null) ? value.intValue() : null;
             };
+
+            // If required, also check the token's audience and scopes before accepting claims
 
             // Get token claims and use the immutable user id as the subject claim
             var subject = this.getStringClaim(getStringIntrospectionClaim, "uid");
@@ -171,7 +173,9 @@ public class OAuthAuthenticator {
                 throw new RuntimeException("TOKEN VALIDATION FAILURE");
             }
 
-            // Define some callbacks to process claims
+            // If required, also check the token's audience and scopes before accepting claims
+
+            // Define some callbacks to receive claims
             var tokenClaims = decodedJwt.getPayload().toJSONObject();
             Function<String, String> getStringJwtClaim = tokenClaims::getAsString;
             Function<String, Integer> getIntegerJwtClaim = (String name) -> tokenClaims.getAsNumber(name).intValue();

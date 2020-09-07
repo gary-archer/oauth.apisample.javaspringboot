@@ -9,3 +9,9 @@
 
 4. Final SPA State
    Okta config has been deleted
+
+5. NodeJS update next
+
+6. Net Core after that
+
+7. Update Final API + Final SPA howto write ups
