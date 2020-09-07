@@ -181,12 +181,9 @@ public class OAuthAuthenticator {
     private SignedJWT decodeAccessToken(final String accessToken) {
 
         try {
-
             return SignedJWT.parse(accessToken);
 
         } catch (Throwable e) {
-
-            // Report exceptions
             throw ErrorUtils.fromAccessTokenDecodeError(e);
         }
     }
@@ -231,6 +228,7 @@ public class OAuthAuthenticator {
             if (!jwt.verify(verifier)) {
                 throw ErrorUtils.fromAccessTokenValidationError(null);
             }
+
         } catch (Throwable e) {
             throw ErrorUtils.fromAccessTokenValidationError(e);
         }
