@@ -57,7 +57,7 @@ public class CoreApiClaims implements AuthenticatedPrincipal {
     /*
      * Set informational fields after user info lookup
      */
-    public void setCentralUserInfo(final String givenName, final String familyName, final String email) {
+    public void setUserInfo(final String givenName, final String familyName, final String email) {
         this.givenName = givenName;
         this.familyName = familyName;
         this.email = email;

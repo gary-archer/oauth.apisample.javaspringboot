@@ -239,7 +239,7 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * The entry point for user lookup
+     * Perform OAuth user info lookup
      */
     private void getUserInfoClaims(final String accessToken, final CoreApiClaims claims) {
 
@@ -271,7 +271,7 @@ public class OAuthAuthenticator {
             var givenName = this.getStringClaim(getUserInfoClaim, UserInfo.GIVEN_NAME_CLAIM_NAME);
             var familyName = this.getStringClaim(getUserInfoClaim, UserInfo.FAMILY_NAME_CLAIM_NAME);
             var email = this.getStringClaim(getUserInfoClaim, UserInfo.EMAIL_CLAIM_NAME);
-            claims.setCentralUserInfo(givenName, familyName, email);
+            claims.setUserInfo(givenName, familyName, email);
 
         } catch (Throwable e) {
 
