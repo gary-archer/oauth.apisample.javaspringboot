@@ -193,27 +193,30 @@ public class OAuthAuthenticator {
      */
     private JWK getTokenSigningPublicKey(final String keyIdentifier) {
 
-        var jwksUri = this.metadata.getMetadata().getJWKSetURI();
-        try {
+        try (var perf = this.logEntry.createPerformanceBreakdown("getTokenSigningPublicKey")) {
 
-            // Download token signing keys
-            JWKSet keys = JWKSet.load(jwksUri.toURL());
+            var jwksUri = this.metadata.getMetadata().getJWKSetURI();
+            try {
 
-            // Get the key that matches the JWT
-            var publicKey = keys.getKeyByKeyId(keyIdentifier);
+                // Download token signing keys
+                JWKSet keys = JWKSet.load(jwksUri.toURL());
 
-            // Check we have the expected RSA key
-            if (!(publicKey instanceof RSAKey)) {
-                throw ErrorUtils.fromInvalidTokenSignatureType(publicKey.getClass().getName());
+                // Get the key that matches the JWT
+                var publicKey = keys.getKeyByKeyId(keyIdentifier);
+
+                // Check we have the expected RSA key
+                if (!(publicKey instanceof RSAKey)) {
+                    throw ErrorUtils.fromInvalidTokenSignatureType(publicKey.getClass().getName());
+                }
+
+                // Return the result
+                return publicKey.toPublicJWK();
+
+            } catch (Throwable e) {
+
+                // Report exceptions
+                throw ErrorUtils.fromTokenSigningKeysDownloadError(e, jwksUri.toString());
             }
-
-            // Return the result
-            return publicKey.toPublicJWK();
-
-        } catch (Throwable e) {
-
-            // Report exceptions
-            throw ErrorUtils.fromTokenSigningKeyDownloadError(e, jwksUri.toString());
         }
     }
 
@@ -222,14 +225,15 @@ public class OAuthAuthenticator {
      */
     private void validateJsonWebToken(final SignedJWT jwt, final JWK publicKey) {
 
-        try {
+        try (var perf = this.logEntry.createPerformanceBreakdown("validateJsonWebToken")) {
 
             JWSVerifier verifier = new RSASSAVerifier((RSAKey) publicKey);
             if (!jwt.verify(verifier)) {
                 throw ErrorUtils.fromAccessTokenValidationError(null);
             }
-
         } catch (Throwable e) {
+
+            // Report exceptions
             throw ErrorUtils.fromAccessTokenValidationError(e);
         }
     }

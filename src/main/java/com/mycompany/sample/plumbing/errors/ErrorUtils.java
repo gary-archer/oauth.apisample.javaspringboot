@@ -117,11 +117,11 @@ public final class ErrorUtils {
     /*
      * Handle token signing key download errors, meaning an API technical error
      */
-    public static ServerError fromTokenSigningKeyDownloadError(final Throwable ex, final String jwksUri) {
+    public static ServerError fromTokenSigningKeysDownloadError(final Throwable ex, final String jwksUri) {
 
         var error = ErrorFactory.createServerError(
-                ErrorCodes.TOKEN_SIGNING_KEY_DOWNLOAD_ERROR,
-                "Token validation failed", ex);
+                ErrorCodes.TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR,
+                "Problem downloading token signing keys", ex);
         ErrorUtils.setErrorDetails(error, null, ex, jwksUri);
         return error;
     }

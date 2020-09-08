@@ -18,7 +18,7 @@ public final class ErrorCodes {
 
     public static final String INTROSPECTION_FAILURE = "introspection_failure";
 
-    public static final String TOKEN_SIGNING_KEY_DOWNLOAD_ERROR = "jwks_download_failure";
+    public static final String TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR = "jwks_download_failure";
 
     public static final String USERINFO_FAILURE = "userinfo_failure";
 
