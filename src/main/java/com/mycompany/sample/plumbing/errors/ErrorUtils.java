@@ -127,6 +127,15 @@ public final class ErrorUtils {
     }
 
     /*
+     * Handle token signing key download errors, meaning an API technical error
+     */
+    public static ClientError fromInvalidTokenSignatureType(final String signatureType) {
+
+        var message = String.format("Unsupported Token Signature Type: %s", signatureType);
+        return ErrorFactory.createClient401Error(message);
+    }
+
+    /*
      * Handle token validation errors, meaning we received an invalid token
      */
     public static ClientError fromAccessTokenValidationError(final Throwable ex) {

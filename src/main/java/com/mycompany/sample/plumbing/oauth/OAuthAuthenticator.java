@@ -54,7 +54,7 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * Our form of authentication performs introspection and user info lookup
+     * Do OAuth work to perform token validation and user info lookup
      */
     public void validateTokenAndGetClaims(
             final String accessToken,
@@ -74,14 +74,14 @@ public class OAuthAuthenticator {
         }
 
         // It then adds user info claims
-        this.getCentralUserInfoClaims(accessToken, claims);
+        this.getUserInfoClaims(accessToken, claims);
 
         // Finish logging here, and on exception the child is disposed by logging classes
         authorizationLogEntry.close();
     }
 
     /*
-     * The entry point for validating an access token
+     * Validate the access token via introspection and populate claims
      */
     private void introspectTokenAndGetTokenClaims(
             final String accessToken,
@@ -143,7 +143,7 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * As above but uses in memory token validation
+     * Validate the access token in memory via the token signing public key
      */
     private void validateTokenInMemoryAndGetTokenClaims(final String accessToken, final CoreApiClaims claims) {
 
@@ -204,7 +204,7 @@ public class OAuthAuthenticator {
 
             // Check we have the expected RSA key
             if (!(publicKey instanceof RSAKey)) {
-                throw new RuntimeException("UNEXPECTED KEY TYPE");
+                throw ErrorUtils.fromInvalidTokenSignatureType(publicKey.getClass().getName());
             }
 
             // Return the result
@@ -237,7 +237,7 @@ public class OAuthAuthenticator {
     /*
      * The entry point for user lookup
      */
-    private void getCentralUserInfoClaims(final String accessToken, final CoreApiClaims claims) {
+    private void getUserInfoClaims(final String accessToken, final CoreApiClaims claims) {
 
         var url = this.metadata.getMetadata().getUserInfoEndpointURI();
         try (var perf = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
