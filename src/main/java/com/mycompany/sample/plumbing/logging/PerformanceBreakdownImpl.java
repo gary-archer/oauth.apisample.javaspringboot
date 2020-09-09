@@ -88,10 +88,11 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
     /*
      * Add a child to the performance breakdown
      */
-    public PerformanceBreakdownImpl createChild(final String name) {
+    public PerformanceBreakdown createChild(final String name) {
 
         var child = new PerformanceBreakdownImpl(name);
         this.children.add(child);
+        child.start();
         return child;
     }
 }

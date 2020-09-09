@@ -12,6 +12,7 @@ import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
+import com.mycompany.sample.plumbing.logging.PerformanceBreakdown;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
@@ -88,7 +89,7 @@ public class OAuthAuthenticator {
             final CoreApiClaims claims,
             final URI introspectionUri) {
 
-        try (var perf = this.logEntry.createPerformanceBreakdown("validateToken")) {
+        try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
             // Supply the API's introspection credentials
             var introspectionClientId = new ClientID(this.configuration.getClientId());
@@ -147,17 +148,17 @@ public class OAuthAuthenticator {
      */
     private void validateTokenInMemoryAndGetTokenClaims(final String accessToken, final CoreApiClaims claims) {
 
-        try (var perf = this.logEntry.createPerformanceBreakdown("validateToken")) {
+        try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
             // First get the access token header's kid value
             var jwt = this.decodeAccessToken(accessToken);
             var kid = jwt.getHeader().getKeyID();
 
             // Download the token signing public key
-            var publicKey = this.getTokenSigningPublicKey(kid);
+            var publicKey = this.getTokenSigningPublicKey(kid, breakdown);
 
             // Verify the token's digital signature
-            this.validateJsonWebToken(jwt, publicKey);
+            this.validateJsonWebToken(jwt, publicKey, breakdown);
 
             // If required, also check the token's audience and scopes before accepting claims
 
@@ -191,9 +192,9 @@ public class OAuthAuthenticator {
     /*
      * Get the public key with which our access token is signed
      */
-    private JWK getTokenSigningPublicKey(final String keyIdentifier) {
+    private JWK getTokenSigningPublicKey(final String keyIdentifier, final PerformanceBreakdown parent) {
 
-        try (var perf = this.logEntry.createPerformanceBreakdown("getTokenSigningPublicKey")) {
+        try (var breakdown = parent.createChild("getTokenSigningPublicKey")) {
 
             var jwksUri = this.metadata.getMetadata().getJWKSetURI();
             try {
@@ -223,9 +224,9 @@ public class OAuthAuthenticator {
     /*
      * Do the work of verifying the access token
      */
-    private void validateJsonWebToken(final SignedJWT jwt, final JWK publicKey) {
+    private void validateJsonWebToken(final SignedJWT jwt, final JWK publicKey, final PerformanceBreakdown parent) {
 
-        try (var perf = this.logEntry.createPerformanceBreakdown("validateJsonWebToken")) {
+        try (var breakdown = parent.createChild("validateJsonWebToken")) {
 
             JWSVerifier verifier = new RSASSAVerifier((RSAKey) publicKey);
             if (!jwt.verify(verifier)) {
@@ -244,7 +245,7 @@ public class OAuthAuthenticator {
     private void getUserInfoClaims(final String accessToken, final CoreApiClaims claims) {
 
         var url = this.metadata.getMetadata().getUserInfoEndpointURI();
-        try (var perf = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
+        try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
             // Make the request
             HTTPResponse httpResponse = new UserInfoRequest(url, new BearerAccessToken(accessToken))

@@ -11,6 +11,9 @@ public interface PerformanceBreakdown extends AutoCloseable {
     // Set details to associate with the performance breakdown, such as SQL and parameters
     void setDetails(JsonNode value);
 
+    // Create a child performance breakdown
+    PerformanceBreakdown createChild(String name);
+
     // Override the default implementation to remove the throws clause and make try with resources easier to use
     // Our implementation's close method does not throw any checked exceptions so this is correct
     @Override

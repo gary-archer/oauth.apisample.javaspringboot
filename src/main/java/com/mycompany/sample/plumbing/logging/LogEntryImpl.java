@@ -128,10 +128,7 @@ public class LogEntryImpl implements LogEntry {
      */
     @Override
     public PerformanceBreakdown createPerformanceBreakdown(final String name) {
-
-        var child = this.current().getPerformance().createChild(name);
-        child.start();
-        return child;
+        return this.current().getPerformance().createChild(name);
     }
 
     /*

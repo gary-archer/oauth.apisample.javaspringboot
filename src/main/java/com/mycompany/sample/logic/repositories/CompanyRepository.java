@@ -43,7 +43,7 @@ public class CompanyRepository {
      */
     public CompletableFuture<List<Company>> getCompanyList() {
 
-        try (var perf = this.logEntry.createPerformanceBreakdown("getCompanyList")) {
+        try (var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyList")) {
 
             var companies = await(this.jsonReader.readFile("data/CompanyList.json", Company[].class));
             return completedFuture(Arrays.stream(companies).collect(Collectors.toList()));
@@ -55,7 +55,7 @@ public class CompanyRepository {
      */
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
-        try (var perf = this.logEntry.createPerformanceBreakdown("getCompanyTransactions")) {
+        try (var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyTransactions")) {
 
             // First read companies data
             var companies = await(this.jsonReader.readFile("data/companyList.json", Company[].class));
