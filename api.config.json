@@ -1,0 +1,52 @@
+{
+    "api": {
+        "sslCertificateFileName": "mycompany.ssl.pfx",
+        "sslCertificatePassword": "SslPassword1",
+        "sslPort": 444,
+        "proxyUrl": "http://127.0.0.1:8888",
+        "useProxy": true,
+        "webTrustedOrigins": [
+            "https://web.mycompany.com"
+        ]
+    },
+    "logging": {
+        "apiName": "SampleApi",
+        "production": {
+            "level": "info",
+            "appenders": [
+                {
+                    "type": "console"
+                },
+                {
+                    "type": "file",
+                    "filePrefix": "api",
+                    "dirname": "./logs",
+                    "totalLogSizeMB": "1024",
+                    "maxFiles": "100"
+                }
+            ],
+            "performanceThresholdsMilliseconds": {
+                "default": 250,
+                "operationOverrides": {
+                    "authorizer": 1000
+                }
+            }
+        },
+        "development": {
+            "level": "info",
+            "namespace": "com.mycompany.sample",
+            "overrideLevels": {
+                "ClaimsCache": "info"
+            }
+        }
+    },
+    "oauth": {
+        "authority":     "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "requiredScope": "https://api.authsamples.com/api/default",
+        "clientId":      "",
+        "clientSecret":  ""
+    },
+    "claims": {
+        "maxCacheMinutes": 30
+    }
+}
