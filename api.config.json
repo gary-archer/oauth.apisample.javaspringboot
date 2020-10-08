@@ -4,7 +4,7 @@
         "sslCertificatePassword": "SslPassword1",
         "sslPort": 444,
         "proxyUrl": "http://127.0.0.1:8888",
-        "useProxy": true,
+        "useProxy": false,
         "webTrustedOrigins": [
             "https://web.mycompany.com"
         ]

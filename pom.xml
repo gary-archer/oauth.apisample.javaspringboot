@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.2.RELEASE</version>
+        <version>2.3.4.RELEASE</version>
         <relativePath/>
     </parent>
     <groupId>com.mycompany.api</groupId>
@@ -25,24 +25,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>2.3.2.RELEASE</version>
+            <version>2.3.4.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.3.2.RELEASE</version>
+            <version>2.3.4.RELEASE</version>
         </dependency>
 
         <!-- Spring Security libraries -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>5.3.2.RELEASE</version>
+            <version>5.3.4.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>5.3.2.RELEASE</version>
+            <version>5.3.4.RELEASE</version>
         </dependency>
 
         <!-- The certified implementation we are using for OAuth 2.0 handling in the API
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
-            <version>8.4</version>
+            <version>8.22</version>
         </dependency>
 
         <!-- An in memory cache used for claims caching -->
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.0</version>
+            <version>2.11.3</version>
         </dependency>
 
         <!-- Async support and async file reading -->
