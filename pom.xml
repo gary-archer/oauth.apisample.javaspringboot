@@ -125,12 +125,32 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
+            <!-- Used when building to a JAR file with 'mvn clean install' -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <release>13</release>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.mycompany.sample.SampleApiApplication</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
+            </plugin>
+
+            <!-- Used to remove await references at build time -->
+            <plugin>
+                <groupId>com.ea.async</groupId>
+                <artifactId>ea-async-maven-plugin</artifactId>
+                <version>1.2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>instrument</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
