@@ -2,7 +2,6 @@
 
 #
 # A MacOS script to build the Java API and deploy it to a local Kubernetes instance
-# Run with . ./deploy.sh
 #
 
 #
@@ -10,7 +9,7 @@
 #
 echo "Building Java Code ..."
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-13.0.1.jdk/Contents/Home;
-mvn clean install
+mvn clean install -f ../pom.xml
 if [ $? -ne 0 ]
 then
   echo "*** Java build error ***"
@@ -24,17 +23,18 @@ echo "Preparing Kubernetes ..."
 eval $(minikube docker-env)
 
 #
-# Clean up any resources from an old version of the API
+# Clean up any resources from the old version of the API
 #
 kubectl delete deploy/javaapi   2>/dev/null
 kubectl delete svc/javaapi-svc  2>/dev/null
 docker image rm -f javaapi      2>/dev/null
 
 #
-# Build the docker image
+# Build the docker image, and the docker 
 #
 echo "Building Docker Image from JAR file ..."
-docker build --build-arg jar_file=target/sampleapi-0.0.1-SNAPSHOT.jar -t javaapi .
+cd ..
+docker build -f deployment/Dockerfile -t javaapi .
 if [ $? -ne 0 ]
 then
   echo "*** Docker build error ***"
@@ -45,6 +45,7 @@ fi
 # Deploy the local docker image to Kubernetes
 #
 echo "Deploying Docker Image to Kubernetes ..."
+cd deployment
 kubectl create -f Kubernetes.yaml
 if [ $? -ne 0 ]
 then
@@ -53,20 +54,18 @@ then
 fi
 
 #
-# Get the POD name and indicate success
+# Get the POD names and indicate success
 #
-PODNAME=$(kubectl get pod -l app=javaapi -o jsonpath="{.items[0].metadata.name}")
-echo "Successfully deployed javapi to POD $PODNAME ..."
-export PODNAME
+echo "Deployment completed successfully"
+echo $(kubectl get pod -l app=javaapi -o jsonpath="{.items[0].metadata.name}")
 
 #
-# View logs from the POD like this if needed, to troubleshoot
+# View logs from the POD like this if needed, in order to troubleshoot development errors
 #
 #kubectl logs --tail=100 pod/$PODNAME
 
 #
-# Remote to the POD like this if needed, to verify deployed files
+# Remote to the POD like this if needed, to verify that deployed files are correct
 #
-#echo "Deployment finished, viewing files ..."
 #kubectl exec --stdin --tty pod/$PODNAME -- /bin/sh
 #ls -lr /usr/sampleapi

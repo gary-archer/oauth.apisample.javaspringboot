@@ -1,0 +1,10 @@
+1. Understand how ports are used
+   I think multiple pods in a cluster will all listen on port 444
+
+2. Understand how to call the Java API from outside the container over HTTP
+
+3. Understand how to call the Java API from outside the container over HTTPS
+
+3. Find a smaller Java image with just the JRE or use maven with jlink
+
+4. Use redis to cache tokens across the cluster
