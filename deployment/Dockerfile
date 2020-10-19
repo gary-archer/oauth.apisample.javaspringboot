@@ -15,5 +15,8 @@ COPY deployment/api.config.json          /usr/sampleapi/
 COPY certs/mycompany.ssl.pfx             /usr/sampleapi/certs/
 COPY data/*                              /usr/sampleapi/data/
 
-# This will execute the Java program in the container
+# When the container is run, this will execute the Java program
 CMD ["java", "-jar", "/usr/sampleapi/sampleapi-0.0.1-SNAPSHOT.jar"]
+
+# This can be used to view the image's file structure before deploying it
+# docker run -it javaapi sh
