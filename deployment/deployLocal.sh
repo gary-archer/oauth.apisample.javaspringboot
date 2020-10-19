@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# A MacOS script to build the Java API and deploy it to a local Kubernetes instance
+# A MacOS script to build the Java API and deploy it to a minikube local PC Kubernetes cluster
 #
 
 #
@@ -23,14 +23,14 @@ echo "Preparing Kubernetes ..."
 eval $(minikube docker-env)
 
 #
-# Clean up any resources from the old version of the API
+# Clean up any resources for the previously deployed version of the API
 #
 kubectl delete deploy/javaapi   2>/dev/null
 kubectl delete svc/javaapi-svc  2>/dev/null
 docker image rm -f javaapi      2>/dev/null
 
 #
-# Build the docker image, and the docker 
+# Build the docker image, with the JAR file, configuration file and SSL certificate
 #
 echo "Building Docker Image from JAR file ..."
 cd ..
@@ -42,7 +42,7 @@ then
 fi
 
 #
-# Deploy the local docker image to Kubernetes
+# Deploy the local docker image to multiple Kubernetes pods
 #
 echo "Deploying Docker Image to Kubernetes ..."
 cd deployment
@@ -54,18 +54,23 @@ then
 fi
 
 #
-# Get the POD names and indicate success
+# Output the names of created PODs and indicate success
 #
 echo "Deployment completed successfully"
-echo $(kubectl get pod -l app=javaapi -o jsonpath="{.items[0].metadata.name}")
+kubectl get pod -l app=javaapi
 
 #
-# View logs from the POD like this if needed, in order to troubleshoot development errors
+# View logs from a POD like this if needed, in order to troubleshoot development errors
 #
-#kubectl logs --tail=100 pod/$PODNAME
+#kubectl logs --tail=100 pod/javaapi-74f57df659-2tjz5
 
 #
-# Remote to the POD like this if needed, to verify that deployed files are correct
+# Connect to a POD like this if needed, to verify that deployed files are correct
 #
-#kubectl exec --stdin --tty pod/$PODNAME -- /bin/sh
+#kubectl exec --stdin --tty pod/javaapi-74f57df659-2tjz5 -- /bin/sh
 #ls -lr /usr/sampleapi
+
+#
+# Get the load balanced Kubernetes URL like this and try to call the service
+#
+# echo $(minikube service --url javaapi-svc)/api/companies

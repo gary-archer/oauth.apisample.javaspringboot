@@ -3,8 +3,9 @@
 #
 
 # Use the Open JDK 13 image
-FROM adoptopenjdk/openjdk13:jdk-13.0.2_8
- 
+# FROM adoptopenjdk/openjdk13:jdk-13.0.2_8
+FROM adoptopenjdk/openjdk13:jre-13.0.2_8-alpine
+
 # Set the API folder
 WORKDIR /usr/sampleapi
 

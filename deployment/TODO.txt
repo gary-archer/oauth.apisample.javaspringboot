@@ -1,10 +1,13 @@
-1. Understand how ports are used
-   I think multiple pods in a cluster will all listen on port 444
+1. Understand how my Java code should use ports when running in a container
+   Configure the API to listen on port 8080 by default and make useSSL optional
+   Get calls from outside the container working over HTTP using IP addresses
 
-2. Understand how to call the Java API from outside the container over HTTP
+2. Get logging working to a better level
+   Start by turning Spring Boot log level back to the default
 
-3. Understand how to call the Java API from outside the container over HTTPS
+3. Get DNS working so that the API is called from outside Kubernetes over api.mycompany.com
 
-3. Find a smaller Java image with just the JRE or use maven with jlink
+4. Get SSL working so that the call into Kubernetes from the local PC is over port 444
+   Understand how to make this work in DNS terms
 
-4. Use redis to cache tokens across the cluster
+5. Use redisTemplate to cache tokens across the cluster
