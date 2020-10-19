@@ -30,9 +30,9 @@ kubectl delete svc/javaapi-svc  2>/dev/null
 docker image rm -f javaapi      2>/dev/null
 
 #
-# Build the docker image, with the JAR file, configuration file and SSL certificate
+# Build the docker image, with the JAR file and other resources
 #
-echo "Building Docker Image from JAR file ..."
+echo "Building Java Docker Image ..."
 cd ..
 docker build -f deployment/Dockerfile -t javaapi .
 if [ $? -ne 0 ]
