@@ -5,12 +5,11 @@
 ### Overview 
 
 * The final API code sample using OAuth 2.0 and Open Id Connect, from my blog at https://authguidance.com
-* **This sample implements our [API Non Functional Requirements](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior) in Java via Spring Boot**
 
 ### Details
 
 * See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for what the API does and how to run it
-* See the [OAuth Integration Page](https://authguidance.com/2019/03/24/java-spring-boot-api-coding-key-points/) for notes on Custom Claims Handling
+* See the [OAuth Integration Page](https://authguidance.com/2019/03/24/java-spring-boot-api-coding-key-points/) for details on OAuth Integration and Custom Claims handling
 
 ### Programming Languages
 
