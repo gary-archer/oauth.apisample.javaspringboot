@@ -1,0 +1,33 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: javaapi-svc
+spec:
+  selector:
+    app: posts
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 8080
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javaapi
+  labels:
+    app: javaapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: javaapi
+  template:
+    metadata:
+      labels:
+        app: javaapi
+    spec:
+      containers:
+      - name: javaapi
+        image: javaapi
+        imagePullPolicy: Never
