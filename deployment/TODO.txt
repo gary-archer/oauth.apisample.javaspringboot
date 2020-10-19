@@ -1,13 +1,15 @@
-1. Understand how my Java code should use ports when running in a container
+1. Understand how my code should use ports when running in a container
    Configure the API to listen on port 8080 by default and make useSSL optional
    Get calls from outside the container working over HTTP using IP addresses
 
-2. Get logging working to a better level
-   Start by turning Spring Boot log level back to the default
+2. Verify that logging works for every API request
 
 3. Get DNS working so that the API is called from outside Kubernetes over api.mycompany.com
 
 4. Get SSL working so that the call into Kubernetes from the local PC is over port 444
    Understand how to make this work in DNS terms
 
-5. Use redisTemplate to cache tokens across the cluster
+5. Use a redis client to cache tokens across the cluster
+
+6. Get stdout logging pushing to Elastic Search
+   This means pods need to be able to call localhost:9200 on the host

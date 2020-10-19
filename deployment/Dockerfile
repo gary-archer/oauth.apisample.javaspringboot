@@ -13,6 +13,7 @@ WORKDIR /usr/sampleapi
 COPY target/sampleapi-0.0.1-SNAPSHOT.jar /usr/sampleapi/
 COPY deployment/api.config.json          /usr/sampleapi/
 COPY certs/mycompany.ssl.pfx             /usr/sampleapi/certs/
+COPY data/*                              /usr/sampleapi/data/
 
 # This will execute the Java program in the container
 CMD ["java", "-jar", "/usr/sampleapi/sampleapi-0.0.1-SNAPSHOT.jar"]

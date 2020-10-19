@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# A MacOS script to build the Java API and deploy it to a minikube local PC Kubernetes cluster
+# A MacOS script to build the Java API and deploy it to a local PC minikube Kubernetes cluster
 #
 
 #
