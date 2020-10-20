@@ -2,11 +2,8 @@ package com.mycompany.sample.host.startup;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.MapPropertySource;
 import com.mycompany.sample.host.claims.SampleApiClaims;
 import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
@@ -43,7 +40,8 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         // Initialise logging from configuration settings
         loggerFactory.configure(configuration.getLogging());
 
-        // Configure the API to listen on SSL and to support proxying requests via an HTTP debugger
+        // Configure API listening details
+        this.configurePort(configuration.getApi());
         this.configureHttpDebugging(configuration.getApi());
         this.configureSsl(context, configuration);
 
@@ -63,7 +61,14 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
     }
 
     /*
-     * Set up HTTP debugging if enabled, which requires the HTTP debugger's root certificate to be trusted
+     * Set the HTTP/S port from configuration
+     */
+    private void configurePort(final ApiConfiguration configuration) {
+        System.setProperty("server.port", Integer.toString(configuration.getPort()));
+    }
+
+    /*
+     * Set up HTTP debugging if enabled, which requires the HTTP proxy's root certificate to be trusted
      */
     private void configureHttpDebugging(final ApiConfiguration configuration) {
 
@@ -83,18 +88,15 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
     }
 
     /*
-     * Configure the port to listen on and SSL properties
+     * Configure SSL certificate details
      */
     private void configureSsl(final ConfigurableApplicationContext context, final Configuration configuration) {
 
-        // Set Spring Boot SSL related properties
-        Map<String, Object> map = new HashMap<>();
-        map.put("server.port", configuration.getApi().getSslPort());
-        map.put("server.ssl.key-store", String.format("certs/%s", configuration.getApi().getSslCertificateFileName()));
-        map.put("server.ssl.key-store-password", configuration.getApi().getSslCertificatePassword());
-
-        // Set properties against the environment
-        var propertySources = context.getEnvironment().getPropertySources();
-        propertySources.addFirst(new MapPropertySource("runtimeProperties", map));
+        if (configuration.getApi().isUseSsl()) {
+            System.setProperty("server.ssl.key-store",
+                    String.format("certs/%s", configuration.getApi().getSslCertificateFileName()));
+            System.setProperty("server.ssl.key-store-password",
+                    configuration.getApi().getSslCertificatePassword());
+        }
     }
 }

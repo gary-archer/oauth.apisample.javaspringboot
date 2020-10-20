@@ -18,5 +18,8 @@ COPY data/*                              /usr/sampleapi/data/
 # When the container is run, this will execute the Java program
 CMD ["java", "-jar", "/usr/sampleapi/sampleapi-0.0.1-SNAPSHOT.jar"]
 
+# Expose the service over port 80 for demo purposes
+EXPOSE 80/tcp
+
 # This can be used to view the image's file structure before deploying it
 # docker run -it javaapi sh

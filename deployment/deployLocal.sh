@@ -58,19 +58,20 @@ fi
 #
 echo "Deployment completed successfully"
 kubectl get pod -l app=javaapi
+API_URL=$(minikube service --url javaapi-svc)/api/companies
+echo $API_URL
 
 #
-# View logs from a POD like this if needed, in order to troubleshoot development errors
+# Troubleshooting commands from outside Kubernetes
 #
+#curl $API_URL
+#kubectl describe service javaapi-svc
 #kubectl logs --tail=100 pod/javaapi-74f57df659-2tjz5
 
 #
-# Connect to a POD like this if needed, to verify that deployed files are correct
+# Troubleshooting commands from inside the POD
 #
 #kubectl exec --stdin --tty pod/javaapi-74f57df659-2tjz5 -- /bin/sh
 #ls -lr /usr/sampleapi
-
-#
-# Get the load balanced Kubernetes URL like this and try to call the service
-#
-# echo $(minikube service --url javaapi-svc)/api/companies
+#apk add curl
+#curl http://localhost/api/companies

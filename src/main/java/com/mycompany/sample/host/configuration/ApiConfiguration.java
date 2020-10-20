@@ -10,6 +10,14 @@ public class ApiConfiguration {
 
     @Getter
     @Setter
+    private int port;
+
+    @Getter
+    @Setter
+    private boolean useSsl;
+
+    @Getter
+    @Setter
     private String sslCertificateFileName;
 
     @Getter
@@ -18,15 +26,11 @@ public class ApiConfiguration {
 
     @Getter
     @Setter
-    private int sslPort;
+    private boolean useProxy;
 
     @Getter
     @Setter
     private String proxyUrl;
-
-    @Getter
-    @Setter
-    private boolean useProxy;
 
     @Getter
     @Setter

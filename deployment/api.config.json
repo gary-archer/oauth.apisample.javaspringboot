@@ -1,8 +1,9 @@
 {
     "api": {
-        "sslCertificateFileName": "mycompany.ssl.pfx",
-        "sslCertificatePassword": "SslPassword1",
-        "sslPort": 444,
+        "port": 80,
+        "useSsl": false,
+        "sslCertificateFileName": "",
+        "sslCertificatePassword": "",
         "proxyUrl": "http://127.0.0.1:8888",
         "useProxy": false,
         "webTrustedOrigins": [

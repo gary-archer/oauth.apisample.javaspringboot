@@ -1,15 +1,13 @@
-1. Understand how my code should use ports when running in a container
-   Configure the API to listen on port 8080 by default and make useSSL optional
-   Get calls from outside the container working over HTTP using IP addresses
+1. Understand how to expose the API over port 80
+   Right now NodePort uses a port above 30000
 
-2. Verify that logging works for every API request
+2. Understand Kubernetes, Minikube and DNS via host files
+   Get a better API URL over HTTP, similar to api.mycompany.com
 
-3. Get DNS working so that the API is called from outside Kubernetes over api.mycompany.com
+3. Get SSL working so that the call into Kubernetes from the local PC is over port 444
+   Understand how to configure SSL trust
 
-4. Get SSL working so that the call into Kubernetes from the local PC is over port 444
-   Understand how to make this work in DNS terms
+4. Use a redis client to cache tokens across the cluster
 
-5. Use a redis client to cache tokens across the cluster
-
-6. Get stdout logging pushing to Elastic Search
+5. Get stdout logging pushing to Elastic Search
    This means pods need to be able to call localhost:9200 on the host
