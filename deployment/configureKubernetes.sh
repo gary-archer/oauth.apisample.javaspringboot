@@ -11,10 +11,6 @@ echo "Preparing Kubernetes ..."
 eval $(minikube docker-env)
 
 #
-# Tell Kubernetes to trust our root certificate
-#
-
-#
 # Deploy our SSL wildcard certificate to the Kubernetes cluster
 #
 kubectl delete secret mycompany-com-tls     2>/dev/null
