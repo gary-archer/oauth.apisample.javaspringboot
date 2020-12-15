@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.utilities.SecurityContextProvider;
 
 /*
@@ -19,9 +20,9 @@ public class ClaimsInjector {
      * Get an object to inject into CompanyRepository with the OAuth processing results
      */
     @Bean
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    // @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Scope(value = CustomRequestScope.NAME)
     public SampleApiClaims getClaims() {
-        System.out.println("** CLAIMS BEAN");
         return SecurityContextProvider.getClaims(SampleApiClaims.class);
     }
 }

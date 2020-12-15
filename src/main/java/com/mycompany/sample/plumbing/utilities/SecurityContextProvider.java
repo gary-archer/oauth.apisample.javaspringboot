@@ -17,21 +17,17 @@ public final class SecurityContextProvider {
      */
     public static <T extends CoreApiClaims> T getClaims(final Class<T> runtimeClass) {
 
-        System.out.println("*** GETTING API CLAIMS");
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
 
             var principal = authentication.getPrincipal();
             try {
-                System.out.println("*** FOUND API CLAIMS");
                 return runtimeClass.cast(principal);
             } catch (ClassCastException e) {
-                System.out.println("*** NOT FOUND API CLAIMS 1");
                 return null;
             }
         }
 
-        System.out.println("*** NOT FOUND API CLAIMS 2");
         return null;
     }
 }

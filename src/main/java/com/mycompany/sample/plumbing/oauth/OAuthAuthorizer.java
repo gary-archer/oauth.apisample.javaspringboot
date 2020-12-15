@@ -25,14 +25,6 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> extends BaseAu
     @SuppressWarnings("unchecked")
     protected CoreApiClaims execute(final HttpServletRequest request) {
 
-        var claimsSupplier = super.getContainer().getBean(ClaimsSupplier.class);
-        var claims = claimsSupplier.createEmptyClaims();
-        claims.setTokenInfo("s123", "c123", "openid profile email".split(" "), 23);
-        claims.setUserInfo("Fred", "Flintstone", "fred.flintstone@bedrock.com");
-        claimsSupplier.createCustomClaimsProvider().addCustomClaims("AT", request, claims);
-        return claims;
-
-        /*
         // Resolve dependencies
         var cache = super.getContainer().getBean(ClaimsCache.class);
         var claimsSupplier = super.getContainer().getBean(ClaimsSupplier.class);
@@ -64,7 +56,7 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> extends BaseAu
         cache.addClaimsForToken(accessTokenHash, claims);
 
         // Return the result on success
-        return claims;*/
+        return claims;
     }
 
     /*

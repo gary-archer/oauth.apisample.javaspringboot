@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.errors.ServerError;
@@ -67,6 +68,9 @@ public final class UnhandledExceptionHandler {
         // Output log details, since our logger interceptor does not fire for requests where authentication fail
         logEntry.end(response);
         logEntry.write();
+
+        // Clean up per request dependencies
+        new CustomRequestScope().removeAll();
 
         // Write the response and ensure that the browser client can read it by adding CORS headers
         var writer = new ResponseWriter();
