@@ -74,7 +74,7 @@ public final class UnhandledExceptionHandler {
     }
 
     /*
-     * An internal routing to log the error details; and return a client error to the caller
+     * An internal method to log the error details and return a client error to the caller
      */
     private ClientError handleError(final Throwable ex, final LogEntryImpl logEntry) {
 
@@ -82,6 +82,8 @@ public final class UnhandledExceptionHandler {
         var error = ErrorUtils.fromException(ex);
 
         if (error instanceof ServerError) {
+
+            System.out.println(((ServerError) error).toLogFormat("MYAPI").toString());
 
             // Handle 5xx errors
             var serverError = (ServerError) error;

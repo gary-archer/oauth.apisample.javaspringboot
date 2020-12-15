@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import static com.ea.async.Async.await;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
-import com.mycompany.sample.logic.utilities.CGLib;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
 import com.mycompany.sample.plumbing.logging.LogEntry;
 
@@ -29,13 +28,8 @@ public class CompanyRepository {
 
     public CompanyRepository(final JsonFileReader jsonReader, final LogEntry logEntry) {
 
-        // Our JSON reader acts as a primitive database connection
         this.jsonReader = jsonReader;
-
-        // In an API scenario, the log entry is request scoped, and Spring uses thread local storage
-        // We store the underlying object rather than the CGLib proxy, to prevent problems after an await call
-        // Code after the await uses a different thread, after which we must avoid resolving objects
-        this.logEntry = CGLib.unproxy(logEntry);
+        this.logEntry = logEntry;
     }
 
     /*

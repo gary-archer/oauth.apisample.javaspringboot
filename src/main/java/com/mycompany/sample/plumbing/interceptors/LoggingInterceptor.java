@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.utilities.RequestClassifier;
 
@@ -77,9 +78,14 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
 
             var requestClassifier = this.container.getBean(RequestClassifier.class);
             if (requestClassifier.isApiRequest(request)) {
+
+                // Finish logging
                 var logEntry = this.container.getBean(LogEntryImpl.class);
                 logEntry.end(response);
                 logEntry.write();
+
+                // Clean up per request dependencies
+                new CustomRequestScope().removeAll();
             }
 
         } catch (Exception filterException) {

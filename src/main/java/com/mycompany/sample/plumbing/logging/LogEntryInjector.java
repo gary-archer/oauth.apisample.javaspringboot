@@ -4,7 +4,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
  * A utility to use Spring's mechanism to ensure that the log entry is only created once per request
@@ -25,7 +25,7 @@ public class LogEntryInjector {
      * Use a Bean to create the log entry the first time it is asked for during an API request
      */
     @Bean
-    @RequestScope
+    @Scope(value = CustomRequestScope.NAME)
     public LogEntryImpl createLogEntry() {
         return this.loggerFactory.createLogEntry();
     }

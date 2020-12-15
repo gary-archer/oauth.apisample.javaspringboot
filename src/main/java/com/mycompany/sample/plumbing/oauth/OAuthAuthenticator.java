@@ -4,11 +4,12 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.annotation.RequestScope;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
@@ -36,7 +37,7 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
  * The class from which OAuth calls are initiated
  */
 @Component
-@RequestScope
+@Scope(value = CustomRequestScope.NAME)
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class OAuthAuthenticator {
 

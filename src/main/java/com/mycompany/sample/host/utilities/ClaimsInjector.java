@@ -21,6 +21,7 @@ public class ClaimsInjector {
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public SampleApiClaims getClaims() {
+        System.out.println("** CLAIMS BEAN");
         return SecurityContextProvider.getClaims(SampleApiClaims.class);
     }
 }

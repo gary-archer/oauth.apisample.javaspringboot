@@ -10,6 +10,7 @@ import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
 import com.mycompany.sample.plumbing.dependencies.BaseCompositionRoot;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
@@ -45,8 +46,11 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         this.configureHttpDebugging(configuration.getApi());
         this.configureSsl(context, configuration);
 
-        // Register common code dependencies
+        // Register our custom scope
         var container = context.getBeanFactory();
+        container.registerScope("CustomRequestScope", new CustomRequestScope());
+
+        // Register common code dependencies
         new BaseCompositionRoot<SampleApiClaims>(container)
                 .useApiBasePath("/api/")
                 .useDiagnostics(configuration.getLogging(), loggerFactory)

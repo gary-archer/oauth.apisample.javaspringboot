@@ -53,6 +53,7 @@ public abstract class BaseAuthorizer extends OncePerRequestFilter {
             logEntry.start(request, handlerMappings);
 
             // Do the authorization work via the concrete class
+            System.out.println("*** CALLING AUTHORIZER");
             var claims = this.execute(request);
 
             // Log who called the API
@@ -60,6 +61,7 @@ public abstract class BaseAuthorizer extends OncePerRequestFilter {
 
             // Update the Spring security context, then move onto business logic
             SecurityContextHolder.getContext().setAuthentication(new SpringAuthentication(claims));
+            System.out.println("*** PRINCIPAL IS SET");
             filterChain.doFilter(request, response);
 
         } catch (Throwable ex) {
