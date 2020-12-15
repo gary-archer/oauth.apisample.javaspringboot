@@ -79,7 +79,7 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
             var requestClassifier = this.container.getBean(RequestClassifier.class);
             if (requestClassifier.isApiRequest(request)) {
 
-                // Finish logging
+                // Finish logging for successful requests
                 var logEntry = this.container.getBean(LogEntryImpl.class);
                 logEntry.end(response);
                 logEntry.write();

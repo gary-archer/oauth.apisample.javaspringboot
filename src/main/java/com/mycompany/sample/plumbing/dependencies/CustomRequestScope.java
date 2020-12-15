@@ -18,7 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class CustomRequestScope implements Scope {
 
     public static final String NAME = "CustomRequestScope";
-    private final String keyName = "REQUEST_OBJECTS";
+    private static final String KEY_NAME = "REQUEST_OBJECTS";
 
     /*
      * Get an object and add to the object map so that it is only created once
@@ -74,13 +74,13 @@ public class CustomRequestScope implements Scope {
     /*
      * Clear all objects at the end of an HTTP request
      */
-    public void removeAll() {
+    public static void removeAll() {
 
         // Get the request object
-        var request = this.getCurrentRequest();
+        var request = CustomRequestScope.getCurrentRequest();
 
         // Get the data
-        var data = request.getAttribute(this.keyName);
+        var data = request.getAttribute(CustomRequestScope.KEY_NAME);
         if (data != null) {
 
             // Remove objects from the map
@@ -88,7 +88,7 @@ public class CustomRequestScope implements Scope {
             objectMap.clear();
 
             // Remove the attribute from the request
-            request.removeAttribute(this.keyName);
+            request.removeAttribute(CustomRequestScope.KEY_NAME);
         }
     }
 
@@ -98,13 +98,13 @@ public class CustomRequestScope implements Scope {
     private Map<String, Object> getCurrentRequestObjects() {
 
         // Get the request object
-        var request = this.getCurrentRequest();
+        var request = CustomRequestScope.getCurrentRequest();
 
         // Get or create the data for injected objects
-        var data = request.getAttribute(this.keyName);
+        var data = request.getAttribute(this.KEY_NAME);
         if (data == null) {
             data = new HashMap<String, Object>();
-            request.setAttribute(this.keyName, data);
+            request.setAttribute(this.KEY_NAME, data);
         }
 
         // Return the object reference, to which items will be read or written
@@ -114,7 +114,7 @@ public class CustomRequestScope implements Scope {
     /*
      * Use the static request attributes to get the current request
      */
-    private HttpServletRequest getCurrentRequest() {
+    private static HttpServletRequest getCurrentRequest() {
 
         // Use the static request attributes to get the current request
         var requestAttributes = RequestContextHolder.getRequestAttributes();

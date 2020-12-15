@@ -77,7 +77,7 @@ public class CompanyRepository {
             }
 
             // Indicate no data found
-            return null;
+            return completedFuture(null);
         }
     }
 }

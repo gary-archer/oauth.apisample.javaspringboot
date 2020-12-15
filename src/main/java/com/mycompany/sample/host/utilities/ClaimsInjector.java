@@ -17,7 +17,7 @@ import com.mycompany.sample.plumbing.utilities.SecurityContextProvider;
 public class ClaimsInjector {
 
     /*
-     * Use a Bean to create the injectable claims object the first time it is asked for during an API request
+     * Use a Bean to create the injectable claims object when our controllers are auto wired
      */
     @Bean
     @Scope(value = CustomRequestScope.NAME)

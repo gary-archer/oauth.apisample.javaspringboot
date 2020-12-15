@@ -65,7 +65,7 @@ public final class UnhandledExceptionHandler {
         // At this point the status is 200 so set it to the correct value
         response.setStatus(clientError.getStatusCode().value());
 
-        // Output log details, since our logger interceptor does not fire for requests where authentication fail
+        // Finish logging for failed requests
         logEntry.end(response);
         logEntry.write();
 
