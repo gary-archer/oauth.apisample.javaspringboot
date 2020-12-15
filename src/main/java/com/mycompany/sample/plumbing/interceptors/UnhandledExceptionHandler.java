@@ -87,8 +87,6 @@ public final class UnhandledExceptionHandler {
 
         if (error instanceof ServerError) {
 
-            System.out.println(((ServerError) error).toLogFormat("MYAPI").toString());
-
             // Handle 5xx errors
             var serverError = (ServerError) error;
             logEntry.setServerError(serverError);

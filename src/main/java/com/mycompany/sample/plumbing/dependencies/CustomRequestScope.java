@@ -28,10 +28,8 @@ public class CustomRequestScope implements Scope {
             final @NonNull String name,
             final @NonNull ObjectFactory<?> objectFactory) {
 
-        System.out.println("GETTING OBJECT " + name);
         Map<String, Object> objectMap = this.getCurrentRequestObjects();
         if (!objectMap.containsKey(name)) {
-            System.out.println("STORING OBJECT " + name);
             objectMap.put(name, objectFactory.getObject());
         }
 
@@ -44,7 +42,6 @@ public class CustomRequestScope implements Scope {
     @Override
     public Object remove(final @NonNull String name) {
 
-        System.out.println("REMOVING OBJECT " + name);
         Map<String, Object> objectMap = this.getCurrentRequestObjects();
         return objectMap.remove(name);
     }
@@ -80,7 +77,6 @@ public class CustomRequestScope implements Scope {
     public void removeAll() {
 
         // Get the request object
-        System.out.println("CLEARING ALL OBJECTS");
         var request = this.getCurrentRequest();
 
         // Get the data
@@ -89,7 +85,6 @@ public class CustomRequestScope implements Scope {
 
             // Remove objects from the map
             var objectMap = (Map<String, Object>) data;
-            System.out.println(String.format("OBJECT COUNT: %d", objectMap.size()));
             objectMap.clear();
 
             // Remove the attribute from the request
@@ -108,7 +103,6 @@ public class CustomRequestScope implements Scope {
         // Get or create the data for injected objects
         var data = request.getAttribute(this.keyName);
         if (data == null) {
-            System.out.println("CREATING OBJECT MAP");
             data = new HashMap<String, Object>();
             request.setAttribute(this.keyName, data);
         }

@@ -13,7 +13,6 @@ public final class SecurityContextProvider {
 
     /*
      * Return the API claims for the current request
-     * We avoid returning a Bean, since that creates the object before the security context is ready
      */
     public static <T extends CoreApiClaims> T getClaims(final Class<T> runtimeClass) {
 
@@ -24,7 +23,7 @@ public final class SecurityContextProvider {
             try {
                 return runtimeClass.cast(principal);
             } catch (ClassCastException e) {
-                return null;
+                throw new RuntimeException("Problem encountered casting the claims principal", e);
             }
         }
 

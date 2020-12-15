@@ -17,12 +17,19 @@ import com.mycompany.sample.plumbing.utilities.SecurityContextProvider;
 public class ClaimsInjector {
 
     /*
-     * Get an object to inject into CompanyRepository with the OAuth processing results
+     * Use a Bean to create the injectable claims object the first time it is asked for during an API request
      */
     @Bean
-    // @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Scope(value = CustomRequestScope.NAME)
-    public SampleApiClaims getClaims() {
-        return SecurityContextProvider.getClaims(SampleApiClaims.class);
+    public SampleApiClaims createClaims() {
+
+        // Get claims from the security context
+        var claims = SecurityContextProvider.getClaims(SampleApiClaims.class);
+        if (claims != null) {
+            return claims;
+        }
+
+        // For OPTIONS requests we may need to provide a default object to auto wire the controller
+        return new SampleApiClaims();
     }
 }
