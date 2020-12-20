@@ -1,0 +1,49 @@
+{
+    "api": {
+        "port": 8000,
+        "useSsl": false,
+        "sslCertificateFileName": "",
+        "sslCertificatePassword": "",
+        "useProxy": false,
+        "proxyUrl": "http://192.168.64.1:8888",
+        "webTrustedOrigins": [
+            "https://web.mycompany.com"
+        ]
+    },
+    "logging": {
+        "apiName": "SampleApi",
+        "production": {
+            "level": "info",
+            "appenders": [
+                {
+                    "type": "console",
+                    "prettyPrint": false
+                }
+            ],
+            "performanceThresholdsMilliseconds": {
+                "default": 250,
+                "operationOverrides": {
+                    "authorizer": 1000
+                }
+            }
+        },
+        "development": {
+            "level": "info",
+            "namespace": "com.mycompany.sample",
+            "appenders": [
+                {
+                    "type": "console"
+                }
+            ]
+        }
+    },
+    "oauth": {
+        "authority":     "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "requiredScope": "https://api.authsamples.com/api/default",
+        "clientId":      "",
+        "clientSecret":  ""
+    },
+    "claims": {
+        "maxCacheMinutes": 30
+    }
+}
