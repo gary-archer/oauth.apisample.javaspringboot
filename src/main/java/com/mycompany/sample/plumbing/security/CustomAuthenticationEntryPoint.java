@@ -28,6 +28,8 @@ public final class CustomAuthenticationEntryPoint implements AuthenticationEntry
             final HttpServletResponse response,
             final AuthenticationException ex) {
 
+        // Note that our error handling will pick up the inner exception of the AuthenticationException
+        // In our case that will be a ClientError or ServerError exception type
         var handler = this.container.getBean(UnhandledExceptionHandler.class);
         handler.handleFilterException(request, response, ex);
     }
