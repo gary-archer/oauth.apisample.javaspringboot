@@ -1,0 +1,26 @@
+org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter has an outline of processing
+
+- AuthenticationEntryPoint - when no token received
+- AuthenticationManager - succeed or throw an AuthenticationException derived value
+- AccessDeniedHandler - handles the above AuthenticationException
+
+// See this link for problems:
+https://stackoverflow.com/questions/41140669/handle-security-exceptions-in-spring-boot-resource-server
+
+// Handle both errors in one place:
+public class AuthExceptionHandler implements AuthenticationEntryPoint, AccessDeniedHandler {
+
+
+1. Do I still need the filter exception?
+
+2. Can I get rid of RequestClassifier?
+
+3. Update to very latest released versions
+
+4. Is UI loading user info?
+
+5. Blog update once done
+
+6. Set logged operationName to authorizer when there is a 401 due to no token
+
+7. API paths for security to put back - as an ant matcher - google preferred syntax

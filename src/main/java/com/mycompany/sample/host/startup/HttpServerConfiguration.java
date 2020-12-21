@@ -1,14 +1,11 @@
 package com.mycompany.sample.host.startup;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,21 +13,21 @@ import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.interceptors.CustomHeaderInterceptor;
 import com.mycompany.sample.plumbing.interceptors.LoggingInterceptor;
+import com.mycompany.sample.plumbing.security.CustomAuthenticationEntryPoint;
+import com.mycompany.sample.plumbing.security.CustomAuthenticationManager;
+import com.mycompany.sample.plumbing.security.CustomBearerTokenResolver;
 
 /*
- * A class to manage HTTP configuration for our server
+ * A class to manage HTTP configuration for our server according to Spring Security latest recommendations
+ * https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide
  */
 @org.springframework.context.annotation.Configuration
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    // Injected properties
     private final ApiConfiguration apiConfiguration;
     private final LoggingConfiguration loggingConfiguration;
-    private final OncePerRequestFilter authorizer;
     private final ConfigurableApplicationContext context;
-
-    // Constants
     private final String apiRequestPaths = "/api/**";
 
     /*
@@ -39,32 +36,32 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     public HttpServerConfiguration(
             final ApiConfiguration apiConfiguration,
             final LoggingConfiguration loggingConfiguration,
-            final @Qualifier("Authorizer") OncePerRequestFilter authorizer,
             final ConfigurableApplicationContext context) {
 
         this.apiConfiguration = apiConfiguration;
         this.loggingConfiguration = loggingConfiguration;
-        this.authorizer = authorizer;
         this.context = context;
     }
 
     /*
-     * Configure how API requests are secured
-     * We use a OncePerRequestFilter as opposed to providing a custom ResourceServerTokenServices
-     * The latter fires again when a CompletableFuture moves to the ASYNC / completed stage
+     * Apply OAuth resource server checks to API requests, but not to OPTIONS requests
      */
     @Override
     public void configure(final HttpSecurity http) throws Exception {
 
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .antMatcher(this.apiRequestPaths)
+        var container = this.context.getBeanFactory();
+        http
                 .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .addFilterBefore(this.authorizer, AbstractPreAuthenticatedProcessingFilter.class);
+                    .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
+                    .anyRequest()
+                    .authenticated()
+                    .and()
+                .oauth2ResourceServer()
+                    .bearerTokenResolver(new CustomBearerTokenResolver())
+                    .authenticationManagerResolver(request -> new CustomAuthenticationManager(container, request))
+                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint(container))
+                    .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     /*
@@ -86,7 +83,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     }
 
     /*
-     * Ensure that OPTIONS requests are not passed to the authorizer
+     * Ensure that OPTIONS requests are not passed to interceptors
      */
     @Override
     public void configure(final WebSecurity web) {

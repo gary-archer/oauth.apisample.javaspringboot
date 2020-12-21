@@ -70,7 +70,7 @@ public final class UnhandledExceptionHandler {
         logEntry.write();
 
         // Clean up per request dependencies
-        new CustomRequestScope().removeAll();
+        CustomRequestScope.removeAll();
 
         // Write the response and ensure that the browser client can read it by adding CORS headers
         var writer = new ResponseWriter();

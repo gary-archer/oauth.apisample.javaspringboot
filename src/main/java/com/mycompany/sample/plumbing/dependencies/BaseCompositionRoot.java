@@ -11,7 +11,6 @@ import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
-import com.mycompany.sample.plumbing.oauth.OAuthAuthorizer;
 import com.mycompany.sample.plumbing.utilities.RequestClassifier;
 
 /*
@@ -142,13 +141,9 @@ public final class BaseCompositionRoot<TClaims extends CoreApiClaims> {
         var metadata = new IssuerMetadata(this.oauthConfiguration);
         metadata.initialize();
 
-        // Create the authorizer, which is a Spring once per request filter
-        var authorizer = new OAuthAuthorizer(this.container);
-
         // Register these natural singletons
         this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
         this.container.registerSingleton("IssuerMetadata", metadata);
-        this.container.registerSingleton("Authorizer", authorizer);
     }
 
     /*

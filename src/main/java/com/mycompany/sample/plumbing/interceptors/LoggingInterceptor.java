@@ -85,7 +85,7 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
                 logEntry.write();
 
                 // Clean up per request dependencies
-                new CustomRequestScope().removeAll();
+                CustomRequestScope.removeAll();
             }
 
         } catch (Exception filterException) {

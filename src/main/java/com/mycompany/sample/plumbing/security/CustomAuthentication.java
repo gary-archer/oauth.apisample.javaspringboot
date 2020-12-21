@@ -9,14 +9,14 @@ import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 /*
  * A helper class to enable us to return the security principal in Spring Security terms
  */
-public final class SpringAuthentication implements Authentication {
+public final class CustomAuthentication implements Authentication {
 
     private final CoreApiClaims claims;
 
     /*
      * Construct from the results of authorizer processing
      */
-    public SpringAuthentication(final CoreApiClaims claims) {
+    public CustomAuthentication(final CoreApiClaims claims) {
         this.claims = claims;
     }
 

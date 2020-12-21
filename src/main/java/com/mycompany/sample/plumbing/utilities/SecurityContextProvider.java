@@ -23,6 +23,7 @@ public final class SecurityContextProvider {
             var principal = authentication.getPrincipal();
             try {
                 return runtimeClass.cast(principal);
+
             } catch (ClassCastException e) {
                 throw new IllegalStateException("Problem encountered casting the claims principal", e);
             }

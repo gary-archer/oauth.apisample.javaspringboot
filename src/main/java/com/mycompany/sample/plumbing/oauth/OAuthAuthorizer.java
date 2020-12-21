@@ -2,32 +2,41 @@ package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.plumbing.security.BaseAuthorizer;
+import com.mycompany.sample.plumbing.security.Authorizer;
 
 /*
- * The Spring entry point for handling token validation and claims lookup
+ * A plain Java class to manage `token validation and claims lookup
  */
-public final class OAuthAuthorizer extends BaseAuthorizer {
+@Component
+@Scope(value = CustomRequestScope.NAME)
+public final class OAuthAuthorizer<TClaims extends CoreApiClaims> implements Authorizer {
 
-    public OAuthAuthorizer(final BeanFactory container) {
-        super(container);
+    private final ClaimsCache<TClaims> cache;
+    private final ClaimsSupplier<TClaims> claimsSupplier;
+    private final OAuthAuthenticator authenticator;
+
+    public OAuthAuthorizer(
+            final ClaimsCache<TClaims> cache,
+            final ClaimsSupplier<TClaims> claimsSupplier,
+            final OAuthAuthenticator authenticator) {
+
+        this.cache = cache;
+        this.claimsSupplier = claimsSupplier;
+        this.authenticator = authenticator;
     }
 
     /*
      * OAuth authorization involves token validation and claims lookup
      */
     @Override
-    protected CoreApiClaims execute(final HttpServletRequest request) {
-
-        // Resolve dependencies
-        var cache = super.getContainer().getBean(ClaimsCache.class);
-        var claimsSupplier = super.getContainer().getBean(ClaimsSupplier.class);
-        var authenticator = super.getContainer().getBean(OAuthAuthenticator.class);
+    public CoreApiClaims execute(final HttpServletRequest request) {
 
         // First read the access token
         String accessToken = this.readAccessToken(request);
@@ -37,24 +46,22 @@ public final class OAuthAuthorizer extends BaseAuthorizer {
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        var cachedClaims = cache.getClaimsForToken(accessTokenHash);
+        var cachedClaims = this.cache.getClaimsForToken(accessTokenHash);
         if (cachedClaims != null) {
             return cachedClaims;
         }
 
         // Otherwise create new claims which we will populate
-        var claims = claimsSupplier.createEmptyClaims();
+        var claims = this.claimsSupplier.createEmptyClaims();
 
         // Add OAuth claims from introspection and user info lookup
-        authenticator.validateTokenAndGetClaims(accessToken, request, claims);
+        this.authenticator.validateTokenAndGetClaims(accessToken, request, claims);
 
         // Add custom claims from the API's own data if needed
-        // noinspection unchecked
-        claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, request, claims);
+        this.claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, request, claims);
 
         // Cache the claims against the token hash until the token's expiry time
-        // noinspection unchecked
-        cache.addClaimsForToken(accessTokenHash, claims);
+        this.cache.addClaimsForToken(accessTokenHash, claims);
 
         // Return the result on success
         return claims;
