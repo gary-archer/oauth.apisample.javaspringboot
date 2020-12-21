@@ -5,7 +5,7 @@
 
 3. API paths for security to put back - as an ant matcher - google preferred syntax
 
-4. Can I get rid of RequestClassifier?
+4. Test RequestClassifier - both for OPTIONS and dispatcher stages
    Test carefully for OPTIONS, while turning off JSON logging
    Understand impact of this line:
    - web.ignoring().antMatchers(HttpMethod.OPTIONS, "/api/**");
@@ -20,3 +20,6 @@
 8. Explain that it is quite hard work to take control over:
    - Make every request go via CustomAuthenticationManager
    - Make all errors go via CustomAuthenticationEntryPoint
+
+9. Re-test built in request scope with JsonReader and GetCompanyTransactions
+   See if that problem persists and I should leave my blog comment on 'notorious error' in place
