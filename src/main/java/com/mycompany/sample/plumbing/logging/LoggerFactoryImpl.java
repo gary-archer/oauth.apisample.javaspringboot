@@ -212,7 +212,6 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Create a custom appender that writes production logs as a single line of text, suitable for log shippers
      */
-    @SuppressWarnings("unchecked")
     private RollingFileAppender<ILoggingEvent> createProductionFileAppender(
             final JsonNode appendersConfig,
             final LoggerContext context) {
@@ -242,14 +241,14 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         appender.setContext(context);
 
         // Configure its rolling policy
-        var policy = new TimeBasedRollingPolicy();
+        var policy = new TimeBasedRollingPolicy<ILoggingEvent>();
         policy.setContext(context);
         policy.setParent(appender);
         policy.setFileNamePattern(filePattern);
         policy.setMaxHistory(maxFiles);
 
         // Set size details and complete the rolling policy
-        var triggerPolicy = new SizeAndTimeBasedFNATP();
+        var triggerPolicy = new SizeAndTimeBasedFNATP<ILoggingEvent>();
         triggerPolicy.setMaxFileSize(fileSize);
         policy.setTimeBasedFileNamingAndTriggeringPolicy(triggerPolicy);
         policy.start();

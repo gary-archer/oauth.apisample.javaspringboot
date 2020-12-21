@@ -46,7 +46,7 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
                 // Call start, which will be a no-op if logging has already been started by the authorizer
                 logEntry.start(request, handlerMappings);
 
-                // Set the resource ids at this stage, since it is not available in the authorizer
+                // Record populated path segments here as the resource id
                 @SuppressWarnings("unchecked")
                 var pathVariables = (Map<String, String>)
                         request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

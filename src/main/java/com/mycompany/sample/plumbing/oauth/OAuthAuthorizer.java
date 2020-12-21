@@ -22,7 +22,6 @@ public final class OAuthAuthorizer extends BaseAuthorizer {
      * OAuth authorization involves token validation and claims lookup
      */
     @Override
-    @SuppressWarnings("unchecked")
     protected CoreApiClaims execute(final HttpServletRequest request) {
 
         // Resolve dependencies
@@ -50,9 +49,11 @@ public final class OAuthAuthorizer extends BaseAuthorizer {
         authenticator.validateTokenAndGetClaims(accessToken, request, claims);
 
         // Add custom claims from the API's own data if needed
+        // noinspection unchecked
         claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, request, claims);
 
         // Cache the claims against the token hash until the token's expiry time
+        // noinspection unchecked
         cache.addClaimsForToken(accessTokenHash, claims);
 
         // Return the result on success

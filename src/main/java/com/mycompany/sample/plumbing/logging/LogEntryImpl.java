@@ -20,8 +20,7 @@ import com.mycompany.sample.plumbing.errors.ServerError;
  * Each API request writes a structured log entry containing fields we will query by
  * This class contains the behaviour and can be injected into business logic if required
  */
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
-public class LogEntryImpl implements LogEntry {
+public final class LogEntryImpl implements LogEntry {
 
     // The logger and its state
     private final Logger logger;

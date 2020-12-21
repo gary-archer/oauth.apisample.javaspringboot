@@ -13,8 +13,7 @@ import com.mycompany.sample.plumbing.utilities.RequestClassifier;
 /*
  * A class to process custom headers to enable testers to control non functional behaviour
  */
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
-public class CustomHeaderInterceptor extends HandlerInterceptorAdapter {
+public final class CustomHeaderInterceptor extends HandlerInterceptorAdapter {
 
     private final BeanFactory container;
     private final String apiName;

@@ -15,7 +15,7 @@ import com.mycompany.sample.plumbing.logging.LoggerFactory;
 @SuppressWarnings("PMD.GenericsNaming")
 public final class ClaimsCache<TClaims extends CoreApiClaims> {
 
-    private Cache<String, Object> cache;
+    private Cache<String, CoreApiClaims> cache;
     private final ClaimsConfiguration configuration;
     private final Logger debugLogger;
 
@@ -30,7 +30,7 @@ public final class ClaimsCache<TClaims extends CoreApiClaims> {
     public void initialize() {
 
         // Output expiry debug messages here if required
-        CacheEntryExpiredListener<String, Object> listener = (cache, cacheEntry) -> {
+        CacheEntryExpiredListener<String, CoreApiClaims> listener = (cache, cacheEntry) -> {
             var message = String.format(
                     "Expired token has been removed from the cache (hash: %s)",
                     cacheEntry.getKey());
@@ -38,7 +38,7 @@ public final class ClaimsCache<TClaims extends CoreApiClaims> {
         };
 
         // Create the cache with a default token expiry time
-        this.cache = new Cache2kBuilder<String, Object>() {
+        this.cache = new Cache2kBuilder<String, CoreApiClaims>() {
         }
             .name("claims")
             .expireAfterWrite(this.configuration.getMaxCacheMinutes(), TimeUnit.MINUTES)
@@ -63,6 +63,7 @@ public final class ClaimsCache<TClaims extends CoreApiClaims> {
         // Otherwise return cached claims
         this.debugLogger.debug(
                 String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
+
         @SuppressWarnings("unchecked")
         var result = (TClaims) data;
         return result;
@@ -87,7 +88,7 @@ public final class ClaimsCache<TClaims extends CoreApiClaims> {
             // Do not exceed the maximum time we configured
             final var secondsMultiplier = 60;
             var maxExpirySeconds =
-                    Instant.now().getEpochSecond() + this.configuration.getMaxCacheMinutes() * secondsMultiplier;
+                    Instant.now().getEpochSecond() + (long) this.configuration.getMaxCacheMinutes() * secondsMultiplier;
             if (secondsToCache > maxExpirySeconds) {
                 secondsToCache = maxExpirySeconds;
             }

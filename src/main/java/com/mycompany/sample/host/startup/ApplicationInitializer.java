@@ -31,7 +31,6 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
      * Set properties from our JSON configuration file
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void initialize(final ConfigurableApplicationContext context) {
 
         // First load our configuration file
