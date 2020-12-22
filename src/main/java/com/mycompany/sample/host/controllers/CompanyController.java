@@ -51,7 +51,6 @@ public class CompanyController {
      */
     @GetMapping(value = "{companyId}/transactions")
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(
-            final CustomAuthentication principal,
             @PathVariable("companyId") final String companyId) {
 
         // Throw a 400 error if we have an invalid id
