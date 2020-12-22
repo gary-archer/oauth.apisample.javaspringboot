@@ -16,7 +16,6 @@ import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.services.CompanyService;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.plumbing.security.CustomAuthentication;
 
 /*
  * A controller to return company related info to the caller
