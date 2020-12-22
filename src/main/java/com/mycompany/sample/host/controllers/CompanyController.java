@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.common.primitives.Ints;
-import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.host.utilities.ClaimsResolver;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.services.CompanyService;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
+import com.mycompany.sample.plumbing.security.CustomAuthentication;
 
 /*
  * A controller to return company related info to the caller
@@ -27,14 +28,14 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyController {
 
     private final CompanyService service;
-    private final SampleApiClaims claims;
+    private final ClaimsResolver claimsResolver;
 
     /*
-     * The claims object is injected into the controller or other classes after OAuth processing
+     * The claims resolver is injected into the controller after OAuth processing
      */
-    public CompanyController(final CompanyService service, final SampleApiClaims claims) {
+    public CompanyController(final CompanyService service, final ClaimsResolver claimsResolver) {
         this.service = service;
-        this.claims = claims;
+        this.claimsResolver = claimsResolver;
     }
 
     /*
@@ -42,7 +43,7 @@ public class CompanyController {
      */
     @GetMapping(value = "")
     public CompletableFuture<List<Company>> getCompanyList() {
-        return this.service.getCompanyList(claims.getRegionsCovered());
+        return this.service.getCompanyList(this.claimsResolver.getClaims().getRegionsCovered());
     }
 
     /*
@@ -50,6 +51,7 @@ public class CompanyController {
      */
     @GetMapping(value = "{companyId}/transactions")
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(
+            final CustomAuthentication principal,
             @PathVariable("companyId") final String companyId) {
 
         // Throw a 400 error if we have an invalid id
@@ -61,6 +63,6 @@ public class CompanyController {
                     "The company id must be a positive numeric integer");
         }
 
-        return this.service.getCompanyTransactions(idValue, claims.getRegionsCovered());
+        return this.service.getCompanyTransactions(idValue, this.claimsResolver.getClaims().getRegionsCovered());
     }
 }

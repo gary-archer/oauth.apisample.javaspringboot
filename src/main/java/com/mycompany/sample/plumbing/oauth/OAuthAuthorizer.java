@@ -9,7 +9,6 @@ import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.plumbing.security.Authorizer;
 
 /*
  * A plain Java class to manage `token validation and claims lookup

@@ -15,7 +15,7 @@ public final class RequestClassifier {
     }
 
     /*
-     * Spring Boot calls us again during async completion, and we do not want to repeat startup processing
+     * Avoid running interceptors again during async completion
      */
     @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean isApiStartRequest(final HttpServletRequest request) {
@@ -32,7 +32,7 @@ public final class RequestClassifier {
     }
 
     /*
-     * Ignore pre flight OPTIONS requests
+     * Ensure that this is a proper API request
      */
     @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean isApiRequest(final HttpServletRequest request) {

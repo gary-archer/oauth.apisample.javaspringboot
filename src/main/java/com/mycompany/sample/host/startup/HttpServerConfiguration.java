@@ -1,9 +1,7 @@
 package com.mycompany.sample.host.startup;
 
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -18,8 +16,7 @@ import com.mycompany.sample.plumbing.security.CustomAuthenticationManager;
 import com.mycompany.sample.plumbing.security.CustomBearerTokenResolver;
 
 /*
- * A class to manage HTTP configuration for our server according to Spring Security latest recommendations
- * https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide
+ * A class to manage HTTP configuration for our server
  */
 @org.springframework.context.annotation.Configuration
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
@@ -44,15 +41,17 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     }
 
     /*
-     * Apply OAuth resource server checks to API requests, but not to OPTIONS requests
+     * Configure API security according to 2020 Spring Security patterns
+     * https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide
      */
     @Override
     public void configure(final HttpSecurity http) throws Exception {
 
         var container = this.context.getBeanFactory();
         http
+                .cors()
+                .and()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
                     .anyRequest()
                     .authenticated()
                     .and()
@@ -61,7 +60,8 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                     .authenticationManagerResolver(request -> new CustomAuthenticationManager(container, request))
                     .authenticationEntryPoint(new CustomAuthenticationEntryPoint(container))
                     .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     /*
@@ -80,14 +80,6 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                 this.context.getBeanFactory(),
                 this.loggingConfiguration.getApiName());
         registry.addInterceptor(headerInterceptor);
-    }
-
-    /*
-     * Ensure that OPTIONS requests are not passed to interceptors
-     */
-    @Override
-    public void configure(final WebSecurity web) {
-        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/api/**");
     }
 
     /*

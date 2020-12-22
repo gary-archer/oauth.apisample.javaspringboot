@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.security;
+package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
 import com.mycompany.sample.plumbing.claims.CoreApiClaims;

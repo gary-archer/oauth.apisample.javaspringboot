@@ -84,7 +84,6 @@ public final class UnhandledExceptionHandler {
 
         // Get the error into a known object
         var error = ErrorUtils.fromException(ex);
-
         if (error instanceof ServerError) {
 
             // Handle 5xx errors
