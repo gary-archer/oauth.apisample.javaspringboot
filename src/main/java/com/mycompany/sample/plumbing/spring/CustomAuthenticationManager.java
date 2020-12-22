@@ -27,7 +27,7 @@ public final class CustomAuthenticationManager implements AuthenticationManager 
      * Our implementation does its main work in our own authorizer class
      */
     @Override
-    public Authentication authenticate(final Authentication defaultAuthentication) throws AuthenticationException {
+    public Authentication authenticate(final Authentication bearerTokenAuthentication) throws AuthenticationException {
 
         try {
 

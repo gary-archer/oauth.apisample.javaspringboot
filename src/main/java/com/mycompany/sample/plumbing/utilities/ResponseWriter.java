@@ -23,8 +23,7 @@ public final class ResponseWriter {
     }
 
     /*
-     * When there is an error response in a filter, Spring Boot does not honour the headers we've configured
-     * Therefore we re-implement them in the below method, so that browser clients can read the error response
+     * Write error headers to the response
      */
     private void addErrorResponseHeaders(
             final HttpServletRequest request,
@@ -38,20 +37,10 @@ public final class ResponseWriter {
         if (response.getStatus() == unauthorizedStatus) {
             response.setHeader("WWW-Authenticate", "Bearer");
         }
-
-        // Derive the CORS header from the origin header in the request
-        String responseHeaderName = "Access-Control-Allow-Origin";
-        var responseHeader = response.getHeader(responseHeaderName);
-        if (responseHeader == null) {
-            var originHeader = request.getHeader("Origin");
-            if (originHeader != null) {
-                response.setHeader(responseHeaderName, originHeader.toString());
-            }
-        }
     }
 
     /*
-     * Set response details and handle the exception
+     * Write response body details
      */
     private void setErrorResponseBody(final HttpServletResponse response, final ClientError clientError) {
 

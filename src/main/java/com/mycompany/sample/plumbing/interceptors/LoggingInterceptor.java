@@ -34,7 +34,7 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
 
         try {
 
-            // Avoid running the interceptor again during async completion
+            // Only run the logging interceptor during the request stage and not in the async completion stage
             if (request.getDispatcherType().equals(DispatcherType.REQUEST)) {
 
                 // Get the log entry for this request
@@ -76,7 +76,7 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
 
         try {
 
-            // Finish logging for successful requests
+            // Finish logging of successful requests
             var logEntry = this.container.getBean(LogEntryImpl.class);
             logEntry.end(response);
             logEntry.write();

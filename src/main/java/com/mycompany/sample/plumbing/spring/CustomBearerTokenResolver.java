@@ -1,7 +1,6 @@
 package com.mycompany.sample.plumbing.spring;
 
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 
 /*
@@ -16,8 +15,6 @@ public final class CustomBearerTokenResolver implements BearerTokenResolver {
      */
     @Override
     public String resolve(final HttpServletRequest httpServletRequest) {
-
-        BearerTokenAuthenticationFilter x;
         return "TOKEN";
     }
 }

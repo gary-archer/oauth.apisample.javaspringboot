@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mycompany.sample.host.claims.UserInfoClaims;
 import com.mycompany.sample.host.utilities.ClaimsResolver;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.spring.CustomAuthentication;
 
 /*
  * A simple controller to return user info to the caller
@@ -32,7 +31,7 @@ public class UserInfoController {
      * Return the user info claims when the API is called
      */
     @GetMapping(value = "current")
-    public CompletableFuture<UserInfoClaims> getUserClaims(final CustomAuthentication principal) {
+    public CompletableFuture<UserInfoClaims> getUserClaims() {
 
         var claims = this .claimsResolver.getClaims();
 

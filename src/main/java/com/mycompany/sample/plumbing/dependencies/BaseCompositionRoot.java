@@ -18,11 +18,7 @@ import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
 @SuppressWarnings("PMD.GenericsNaming")
 public final class BaseCompositionRoot<TClaims extends CoreApiClaims> {
 
-    // Constructor properties
     private final ConfigurableListableBeanFactory container;
-
-    // Builder properties
-    private String apiBasePath;
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
     private OAuthConfiguration oauthConfiguration;
@@ -30,26 +26,10 @@ public final class BaseCompositionRoot<TClaims extends CoreApiClaims> {
     private Supplier<TClaims> claimsSupplier;
     private Supplier<CustomClaimsProvider<TClaims>> customClaimsProviderSupplier;
 
-    /*
-     * Receive configuration and initialize properties
-     */
     public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
         this.claimsSupplier = null;
         this.customClaimsProviderSupplier = null;
-    }
-
-    /*
-     * Record the API base path
-     */
-    public BaseCompositionRoot<TClaims> useApiBasePath(final String apiBasePath) {
-
-        this.apiBasePath = apiBasePath.toLowerCase();
-        if (!this.apiBasePath.endsWith("/")) {
-            this.apiBasePath += '/';
-        }
-
-        return this;
     }
 
     /*

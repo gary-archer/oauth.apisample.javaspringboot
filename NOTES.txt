@@ -1,13 +1,14 @@
-1. Set logged operationName to authorizer when there is a 401 due to no token
+0. Do CORS differently
+   See if I still need to write CORS response headers on error
 
-2. Check codacy warnings
+1. Check codacy warnings
 
-3. Update blog - and point to main algorithm:
+2. Update blog - and point to main algorithm:
    org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter has an outline of processing
 
-4. Explain that it is quite hard work to take control over:
+3. Explain that it is quite hard work to take control over:
    - Make every request go via CustomAuthenticationManager
    - Make all errors go via CustomAuthenticationEntryPoint
 
-5. Look at .Net Core / NodeJS / Serverless for claims injection
+4. Look at .Net Core / NodeJS / Serverless for claims injection
    Make possible improvements

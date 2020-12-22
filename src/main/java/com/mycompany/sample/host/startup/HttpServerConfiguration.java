@@ -48,6 +48,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         http
                 .antMatcher(this.apiRequestPaths)
                 .cors()
+                    //.configurationSource()
                     .and()
                 .authorizeRequests()
                     .anyRequest()

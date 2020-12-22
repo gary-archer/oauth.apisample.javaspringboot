@@ -51,7 +51,6 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
 
         // Register common code dependencies
         new BaseCompositionRoot<SampleApiClaims>(container)
-                .useApiBasePath("/api/")
                 .useDiagnostics(configuration.getLogging(), loggerFactory)
                 .useOAuth(configuration.getOauth())
                 .useClaimsCaching(configuration.getClaims())

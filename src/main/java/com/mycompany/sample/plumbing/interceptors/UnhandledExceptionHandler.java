@@ -49,7 +49,7 @@ public final class UnhandledExceptionHandler {
     }
 
     /*
-     * Process exceptions in filters, which by default do not contain CORS headers
+     * Process exceptions in filters
      */
     public void handleFilterException(
             final HttpServletRequest request,
@@ -65,7 +65,7 @@ public final class UnhandledExceptionHandler {
         // At this point the status is 200 so set it to the correct value
         response.setStatus(clientError.getStatusCode().value());
 
-        // Finish logging for failed requests
+        // Finish logging of failed requests
         logEntry.end(response);
         logEntry.write();
 
