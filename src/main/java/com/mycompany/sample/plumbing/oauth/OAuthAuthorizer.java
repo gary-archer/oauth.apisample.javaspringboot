@@ -74,7 +74,7 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> implements Aut
         var header = request.getHeader("Authorization");
         if (header != null) {
             var parts = header.split(" ");
-            if (parts.length == 2 && parts[0].equals("Bearer")) {
+            if (parts.length == 2 && parts[0].equalsIgnoreCase("Bearer")) {
                 return parts[1];
             }
         }

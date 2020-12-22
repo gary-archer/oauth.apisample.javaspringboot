@@ -11,7 +11,6 @@ import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
 import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
-import com.mycompany.sample.plumbing.utilities.RequestClassifier;
 
 /*
  * A class to manage composing core API behaviour
@@ -123,13 +122,8 @@ public final class BaseCompositionRoot<TClaims extends CoreApiClaims> {
      */
     private void registerBaseDependencies() {
 
-        // Create an object used to prevent interceptors from processing SPA and OPTIONS requests
-        var requestClassifier = new RequestClassifier(this.apiBasePath);
-
-        // Register these natural singletons
         this.container.registerSingleton("LoggingConfiguration", this.loggingConfiguration);
         this.container.registerSingleton("LoggerFactory", this.loggerFactory);
-        this.container.registerSingleton("RequestClassifier", requestClassifier);
     }
 
     /*

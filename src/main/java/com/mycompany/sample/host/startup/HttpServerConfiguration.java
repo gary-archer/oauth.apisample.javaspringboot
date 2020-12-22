@@ -27,9 +27,6 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     private final ConfigurableApplicationContext context;
     private final String apiRequestPaths = "/api/**";
 
-    /*
-     * Construction via the container
-     */
     public HttpServerConfiguration(
             final ApiConfiguration apiConfiguration,
             final LoggingConfiguration loggingConfiguration,
@@ -49,8 +46,9 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
 
         var container = this.context.getBeanFactory();
         http
+                .antMatcher(this.apiRequestPaths)
                 .cors()
-                .and()
+                    .and()
                 .authorizeRequests()
                     .anyRequest()
                     .authenticated()
@@ -65,24 +63,6 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     }
 
     /*
-     * Configure cross cutting concerns
-     */
-    @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
-
-        // Add the logging interceptor for API requests
-        var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory());
-        registry.addInterceptor(loggingInterceptor)
-                .addPathPatterns(this.apiRequestPaths);
-
-        // Add a custom header interceptor for testing failure scenarios
-        var headerInterceptor = new CustomHeaderInterceptor(
-                this.context.getBeanFactory(),
-                this.loggingConfiguration.getApiName());
-        registry.addInterceptor(headerInterceptor);
-    }
-
-    /*
      * Configure our API to allow cross origin requests from our SPA
      */
     @Override
@@ -93,5 +73,22 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         for (var trustedOrigin: trustedOrigins) {
             registration.allowedOrigins(trustedOrigin);
         }
+    }
+
+    /*
+     * Configure cross cutting concerns
+     */
+    @Override
+    public void addInterceptors(final InterceptorRegistry registry) {
+
+        // Add the logging interceptor
+        var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory());
+        registry.addInterceptor(loggingInterceptor)
+                .addPathPatterns(this.apiRequestPaths);
+
+        // Add a custom header interceptor for testing failure scenarios
+        var headerInterceptor = new CustomHeaderInterceptor(this.loggingConfiguration.getApiName());
+        registry.addInterceptor(headerInterceptor)
+                .addPathPatterns(this.apiRequestPaths);
     }
 }
