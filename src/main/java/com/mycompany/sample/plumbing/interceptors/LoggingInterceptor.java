@@ -65,13 +65,13 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
     }
 
     /*
-     * Do post reqeest handling and handle errors properly, since by default Spring does not add CORS headers
+     * Do post request handling and handle errors properly, since by default Spring does not add CORS headers
      */
     @Override
     public void afterCompletion(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final Object handler,
+            final @NonNull HttpServletRequest request,
+            final @NonNull HttpServletResponse response,
+            final @NonNull Object handler,
             final Exception ex) {
 
         try {

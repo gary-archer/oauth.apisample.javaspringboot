@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.security;
+package com.mycompany.sample.plumbing.spring;
 
 import java.util.ArrayList;
 import java.util.Collection;

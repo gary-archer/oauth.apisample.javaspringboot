@@ -11,9 +11,9 @@ import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.interceptors.CustomHeaderInterceptor;
 import com.mycompany.sample.plumbing.interceptors.LoggingInterceptor;
-import com.mycompany.sample.plumbing.security.CustomAuthenticationEntryPoint;
-import com.mycompany.sample.plumbing.security.CustomAuthenticationManager;
-import com.mycompany.sample.plumbing.security.CustomBearerTokenResolver;
+import com.mycompany.sample.plumbing.spring.CustomAuthenticationEntryPoint;
+import com.mycompany.sample.plumbing.spring.CustomAuthenticationManager;
+import com.mycompany.sample.plumbing.spring.CustomBearerTokenResolver;
 
 /*
  * A class to manage HTTP configuration for our server

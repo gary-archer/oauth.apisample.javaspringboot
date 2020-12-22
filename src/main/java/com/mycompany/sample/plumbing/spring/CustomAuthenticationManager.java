@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.security;
+package com.mycompany.sample.plumbing.spring;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.BeanFactory;
