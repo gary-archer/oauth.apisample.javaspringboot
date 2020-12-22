@@ -1,12 +1,16 @@
 package com.mycompany.sample.host.startup;
 
+import java.util.Arrays;
+
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.interceptors.CustomHeaderInterceptor;
@@ -14,11 +18,12 @@ import com.mycompany.sample.plumbing.interceptors.LoggingInterceptor;
 import com.mycompany.sample.plumbing.spring.CustomAuthenticationEntryPoint;
 import com.mycompany.sample.plumbing.spring.CustomAuthenticationManager;
 import com.mycompany.sample.plumbing.spring.CustomBearerTokenResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /*
  * A class to manage HTTP configuration for our server
  */
-@org.springframework.context.annotation.Configuration
+@Configuration
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
@@ -48,8 +53,8 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         http
                 .antMatcher(this.apiRequestPaths)
                 .cors()
-                    //.configurationSource()
-                    .and()
+                    .configurationSource(this.getCorsConfiguration())
+                .and()
                 .authorizeRequests()
                     .anyRequest()
                     .authenticated()
@@ -61,19 +66,6 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                     .and()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    }
-
-    /*
-     * Configure our API to allow cross origin requests from our SPA
-     */
-    @Override
-    public void addCorsMappings(final CorsRegistry registry) {
-
-        var registration = registry.addMapping(this.apiRequestPaths);
-        var trustedOrigins = this.apiConfiguration.getWebTrustedOrigins();
-        for (var trustedOrigin: trustedOrigins) {
-            registration.allowedOrigins(trustedOrigin);
-        }
     }
 
     /*
@@ -91,5 +83,19 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         var headerInterceptor = new CustomHeaderInterceptor(this.loggingConfiguration.getApiName());
         registry.addInterceptor(headerInterceptor)
                 .addPathPatterns(this.apiRequestPaths);
+    }
+
+    /*
+     * Configure our API to allow cross origin requests from our SPA
+     */
+    private CorsConfigurationSource getCorsConfiguration() {
+
+        var configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(this.apiConfiguration.getWebTrustedOrigins()));
+        configuration.applyPermitDefaultValues();
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration(this.apiRequestPaths, configuration);
+        return source;
     }
 }
