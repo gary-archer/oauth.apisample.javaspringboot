@@ -1,0 +1,13 @@
+# General
+logs
+.DS_Store
+
+# API output
+/target/*
+!.mvn/wrapper/maven-wrapper.jar
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
