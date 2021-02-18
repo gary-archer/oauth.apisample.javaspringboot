@@ -254,11 +254,11 @@ public final class ErrorUtils {
         String description = null;
         if (errorObject != null) {
 
-            if (!StringUtils.isEmpty(errorObject.getCode())) {
+            if (StringUtils.hasLength(errorObject.getCode())) {
                 code = errorObject.getCode().toLowerCase();
             }
 
-            if (!StringUtils.isEmpty(errorObject.getDescription())) {
+            if (StringUtils.hasLength(errorObject.getDescription())) {
                 description = errorObject.getDescription();
             }
         }
@@ -276,7 +276,7 @@ public final class ErrorUtils {
 
         // Include the OAuth error code in the short technical message returned
         String message = userMessage;
-        if (!StringUtils.isEmpty(oauthErrorCode)) {
+        if (StringUtils.hasLength(oauthErrorCode)) {
             message += String.format(" : %s", oauthErrorCode);
         }
 
@@ -293,13 +293,13 @@ public final class ErrorUtils {
             final String url) {
 
         var detailsText = "";
-        if (!StringUtils.isEmpty(oauthDetails)) {
+        if (StringUtils.hasLength(oauthDetails)) {
             detailsText += oauthDetails;
         } else if (ex != null) {
             detailsText += ErrorUtils.getExceptionDetailsMessage(ex);
         }
 
-        if (!StringUtils.isEmpty(url)) {
+        if (StringUtils.hasLength(url)) {
             detailsText += String.format(", URL: %s", url);
         }
 

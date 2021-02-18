@@ -70,8 +70,8 @@ public class OAuthAuthenticator {
         // Validate the token and read token claims
         var introspectionUri = metadata.getMetadata().getIntrospectionEndpointURI();
         if (introspectionUri != null
-            && !StringUtils.isEmpty(this.configuration.getClientId())
-            && !StringUtils.isEmpty(this.configuration.getClientSecret())) {
+            && StringUtils.hasLength(this.configuration.getClientId())
+            && StringUtils.hasLength(this.configuration.getClientSecret())) {
 
             // Use introspection if we can
             this.introspectTokenAndGetTokenClaims(accessToken, claims, introspectionUri);
@@ -312,7 +312,7 @@ public class OAuthAuthenticator {
     private String getStringClaim(final Function<String, String> callback, final String name) {
 
         var claim = callback.apply(name);
-        if (StringUtils.isEmpty(claim)) {
+        if (!StringUtils.hasLength(claim)) {
             throw ErrorUtils.fromMissingClaim(name);
         }
 

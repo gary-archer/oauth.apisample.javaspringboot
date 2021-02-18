@@ -86,13 +86,13 @@ public final class LogEntryImpl implements LogEntry {
 
             // Our callers can supply a custom header so that we can keep track of who is calling each API
             var callingApplicationName = request.getHeader("x-mycompany-api-client");
-            if (!StringUtils.isEmpty(callingApplicationName)) {
+            if (StringUtils.hasLength(callingApplicationName)) {
                 this.data.setClientApplicationName(callingApplicationName);
             }
 
             // Use the correlation id from request headers or create one
             var correlationId = request.getHeader("'x-mycompany-correlation-id");
-            if (!StringUtils.isEmpty(correlationId)) {
+            if (StringUtils.hasLength(correlationId)) {
                 this.data.setCorrelationId(correlationId);
             } else {
                 this.data.setCorrelationId(UUID.randomUUID().toString());
@@ -100,7 +100,7 @@ public final class LogEntryImpl implements LogEntry {
 
             // Log an optional session id if supplied
             var sessionId = request.getHeader("x-mycompany-session-id");
-            if (!StringUtils.isEmpty(sessionId)) {
+            if (StringUtils.hasLength(sessionId)) {
                 this.data.setSessionId(sessionId);
             }
         }
@@ -245,7 +245,7 @@ public final class LogEntryImpl implements LogEntry {
      */
     private String getRequestPath(final HttpServletRequest request) {
 
-        if (StringUtils.isEmpty(request.getQueryString())) {
+        if (!StringUtils.hasLength(request.getQueryString())) {
             return request.getRequestURI();
         }
 
