@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.7.RELEASE</version>
+        <version>2.4.2</version>
         <relativePath/>
     </parent>
 
@@ -28,29 +28,29 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>2.3.7.RELEASE</version>
+            <version>2.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.3.7.RELEASE</version>
+            <version>2.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-            <version>2.3.7.RELEASE</version>
+            <version>2.4.2</version>
         </dependency>
 
         <!-- Spring Security libraries -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>5.3.6.RELEASE</version>
+            <version>5.4.5</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>5.3.6.RELEASE</version>
+            <version>5.4.5</version>
         </dependency>
 
         <!-- The security library we are using for OAuth 2.0 handling in the API
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
-            <version>8.27</version>
+            <version>9.1</version>
         </dependency>
 
         <!-- An in memory cache used for claims caching -->
