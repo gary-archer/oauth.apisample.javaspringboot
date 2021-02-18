@@ -6,6 +6,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ClientError;
@@ -13,7 +14,6 @@ import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.errors.ServerError;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.utilities.ResponseWriter;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /*
  * A central point of exception handling

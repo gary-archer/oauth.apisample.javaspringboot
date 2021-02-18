@@ -4,8 +4,6 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.oauth2.sdk.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -21,7 +19,12 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -134,7 +137,7 @@ public class OAuthAuthenticator {
             var subject = this.getStringClaim(tokenClaims, "sub");
             var clientId = this.getStringClaim(tokenClaims, "client_id");
             var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
-            var expiry = (int)tokenClaims.getExpirationTime().toInstant().getEpochSecond();
+            var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
             // Make an audience check to ensure that the token is for this API
             this.verifyScopes(scopes);
@@ -170,7 +173,7 @@ public class OAuthAuthenticator {
             var subject = this.getStringClaim(tokenClaims, "sub");
             var clientId = this.getStringClaim(tokenClaims, "client_id");
             var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
-            var expiry = (int)tokenClaims.getExpirationTime().toInstant().getEpochSecond();
+            var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
             // Make an audience check to ensure that the token is for this API
             this.verifyScopes(scopes);
@@ -229,7 +232,10 @@ public class OAuthAuthenticator {
     /*
      * Do the work of verifying the access token
      */
-    private JWTClaimsSet validateJsonWebToken(final SignedJWT jwt, final JWK publicKey, final PerformanceBreakdown parent) {
+    private JWTClaimsSet validateJsonWebToken(
+            final SignedJWT jwt,
+            final JWK publicKey,
+            final PerformanceBreakdown parent) {
 
         try (var breakdown = parent.createChild("validateJsonWebToken")) {
 
@@ -297,7 +303,7 @@ public class OAuthAuthenticator {
     /*
      * Get a string claims from the introspection object
      */
-    private String getStringClaim(TokenIntrospectionSuccessResponse claims, final String name) {
+    private String getStringClaim(final TokenIntrospectionSuccessResponse claims, final String name) {
 
         var claim = claims.getStringParameter(name);
         if (StringUtils.hasLength(claim)) {
@@ -310,7 +316,7 @@ public class OAuthAuthenticator {
     /*
      * Get a string claims from the JWT claims object
      */
-    private String getStringClaim(JWTClaimsSet claims, final String name) {
+    private String getStringClaim(final JWTClaimsSet claims, final String name) {
 
         try {
 
@@ -329,7 +335,7 @@ public class OAuthAuthenticator {
     /*
      * Get a string claims from the user info claims object
      */
-    private String getStringClaim(UserInfo claims, final String name) {
+    private String getStringClaim(final UserInfo claims, final String name) {
 
         var claim = claims.getStringClaim(name);
         if (StringUtils.hasLength(claim)) {
