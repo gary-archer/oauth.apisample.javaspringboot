@@ -13,6 +13,7 @@ import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.errors.ServerError;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.utilities.ResponseWriter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /*
  * A central point of exception handling
@@ -66,7 +67,8 @@ public final class UnhandledExceptionHandler {
         response.setStatus(clientError.getStatusCode().value());
 
         // Finish logging of failed requests
-        logEntry.end(response);
+        var handlerMappings = this.container.getBean(RequestMappingHandlerMapping.class);
+        logEntry.end(request, response, handlerMappings);
         logEntry.write();
 
         // Clean up per request dependencies

@@ -1,9 +1,11 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
+import java.text.ParseException;
 import java.util.Arrays;
-import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.oauth2.sdk.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,9 +22,6 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -131,19 +130,11 @@ public class OAuthAuthenticator {
                 throw ErrorFactory.createClient401Error("Access token is expired and failed introspection");
             }
 
-            // Define some callbacks to receive claims
-            Function<String, String> getStringIntrospectionClaim =
-                    (String name) -> tokenClaims.getStringParameter(name);
-            Function<String, Integer> getIntegerIntrospectionClaim = (String name) -> {
-                var value = tokenClaims.getNumberParameter(name);
-                return (value != null) ? value.intValue() : null;
-            };
-
             // Get token claims and use the immutable user id as the subject claim
-            var subject = this.getStringClaim(getStringIntrospectionClaim, "sub");
-            var clientId = this.getStringClaim(getStringIntrospectionClaim, "client_id");
-            var scopes = this.getStringClaim(getStringIntrospectionClaim, "scope").split(" ");
-            var expiry = this.getIntegerClaim(getIntegerIntrospectionClaim, "exp");
+            var subject = this.getStringClaim(tokenClaims, "sub");
+            var clientId = this.getStringClaim(tokenClaims, "client_id");
+            var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
+            var expiry = (int)tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
             // Make an audience check to ensure that the token is for this API
             this.verifyScopes(scopes);
@@ -172,19 +163,14 @@ public class OAuthAuthenticator {
             // Download the token signing public key
             var publicKey = this.getTokenSigningPublicKey(kid, breakdown);
 
-            // Verify the token's digital signature
-            this.validateJsonWebToken(jwt, publicKey, breakdown);
-
-            // Define some callbacks to receive claims
-            var tokenClaims = jwt.getPayload().toJSONObject();
-            Function<String, String> getStringJwtClaim = tokenClaims::getAsString;
-            Function<String, Integer> getIntegerJwtClaim = (String name) -> tokenClaims.getAsNumber(name).intValue();
+            // Verify the token's digital signature and get its claims
+            var tokenClaims = this.validateJsonWebToken(jwt, publicKey, breakdown);
 
             // Get token claims and use the immutable user id as the subject claim
-            var subject = this.getStringClaim(getStringJwtClaim, "sub");
-            var clientId = this.getStringClaim(getStringJwtClaim, "client_id");
-            var scopes = this.getStringClaim(getStringJwtClaim, "scope").split(" ");
-            var expiry = this.getIntegerClaim(getIntegerJwtClaim, "exp");
+            var subject = this.getStringClaim(tokenClaims, "sub");
+            var clientId = this.getStringClaim(tokenClaims, "client_id");
+            var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
+            var expiry = (int)tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
             // Make an audience check to ensure that the token is for this API
             this.verifyScopes(scopes);
@@ -243,7 +229,7 @@ public class OAuthAuthenticator {
     /*
      * Do the work of verifying the access token
      */
-    private void validateJsonWebToken(final SignedJWT jwt, final JWK publicKey, final PerformanceBreakdown parent) {
+    private JWTClaimsSet validateJsonWebToken(final SignedJWT jwt, final JWK publicKey, final PerformanceBreakdown parent) {
 
         try (var breakdown = parent.createChild("validateJsonWebToken")) {
 
@@ -251,6 +237,9 @@ public class OAuthAuthenticator {
             if (!jwt.verify(verifier)) {
                 throw ErrorUtils.fromAccessTokenValidationError(null);
             }
+
+            return jwt.getJWTClaimsSet();
+
         } catch (Throwable e) {
 
             // Report exceptions
@@ -291,12 +280,11 @@ public class OAuthAuthenticator {
 
             // Get token claims from the response
             var userInfo = userInfoResponse.toSuccessResponse().getUserInfo();
-            Function<String, String> getUserInfoClaim = (String name) -> userInfo.getStringClaim(name);
 
             // Update claims
-            var givenName = this.getStringClaim(getUserInfoClaim, UserInfo.GIVEN_NAME_CLAIM_NAME);
-            var familyName = this.getStringClaim(getUserInfoClaim, UserInfo.FAMILY_NAME_CLAIM_NAME);
-            var email = this.getStringClaim(getUserInfoClaim, UserInfo.EMAIL_CLAIM_NAME);
+            var givenName = this.getStringClaim(userInfo, UserInfo.GIVEN_NAME_CLAIM_NAME);
+            var familyName = this.getStringClaim(userInfo, UserInfo.FAMILY_NAME_CLAIM_NAME);
+            var email = this.getStringClaim(userInfo, UserInfo.EMAIL_CLAIM_NAME);
             claims.setUserInfo(givenName, familyName, email);
 
         } catch (Throwable e) {
@@ -307,28 +295,47 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * Do basic null checking of input when reading claims
+     * Get a string claims from the introspection object
      */
-    private String getStringClaim(final Function<String, String> callback, final String name) {
+    private String getStringClaim(TokenIntrospectionSuccessResponse claims, final String name) {
 
-        var claim = callback.apply(name);
-        if (!StringUtils.hasLength(claim)) {
-            throw ErrorUtils.fromMissingClaim(name);
+        var claim = claims.getStringParameter(name);
+        if (StringUtils.hasLength(claim)) {
+            return claim;
         }
 
-        return claim;
+        throw ErrorUtils.fromMissingClaim(name);
     }
 
     /*
-     * Do basic null checking of input when reading claims
+     * Get a string claims from the JWT claims object
      */
-    private int getIntegerClaim(final Function<String, Integer> callback, final String name) {
+    private String getStringClaim(JWTClaimsSet claims, final String name) {
 
-        var claim = callback.apply(name);
-        if (claim == null) {
+        try {
+
+            var claim = claims.getStringClaim(name);
+            if (StringUtils.hasLength(claim)) {
+                return claim;
+            }
+
+            throw ErrorUtils.fromMissingClaim(name);
+
+        } catch (ParseException ex) {
             throw ErrorUtils.fromMissingClaim(name);
         }
+    }
 
-        return claim;
+    /*
+     * Get a string claims from the user info claims object
+     */
+    private String getStringClaim(UserInfo claims, final String name) {
+
+        var claim = claims.getStringClaim(name);
+        if (StringUtils.hasLength(claim)) {
+            return claim;
+        }
+
+        throw ErrorUtils.fromMissingClaim(name);
     }
 }

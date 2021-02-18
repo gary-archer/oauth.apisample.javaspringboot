@@ -6,7 +6,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.oauth.OAuthAuthorizer;
 
@@ -32,9 +31,8 @@ public final class CustomAuthenticationManager implements AuthenticationManager 
         try {
 
             // For secured requests, API logging starts here
-            var handlerMappings = this.container.getBean(RequestMappingHandlerMapping.class);
             var logEntry = this.container.getBean(LogEntryImpl.class);
-            logEntry.start(this.request, handlerMappings);
+            logEntry.start(this.request);
 
             // Get the authorizer for this HTTP request
             var authorizer = this.container.getBean(OAuthAuthorizer.class);

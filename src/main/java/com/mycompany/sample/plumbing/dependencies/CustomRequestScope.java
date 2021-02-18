@@ -85,6 +85,7 @@ public class CustomRequestScope implements Scope {
         if (data != null) {
 
             // Remove objects from the map
+            @SuppressWarnings("unchecked")
             var objectMap = (Map<String, Object>) data;
             objectMap.clear();
 
@@ -109,7 +110,9 @@ public class CustomRequestScope implements Scope {
         }
 
         // Return the object reference, to which items will be read or written
-        return (Map<String, Object>) data;
+        @SuppressWarnings("unchecked")
+        var result = (Map<String, Object>) data;
+        return result;
     }
 
     /*

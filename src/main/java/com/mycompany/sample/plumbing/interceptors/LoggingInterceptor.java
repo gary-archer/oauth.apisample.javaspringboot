@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
@@ -15,7 +15,7 @@ import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 /*
  * Do custom logging of requests for support purposes
  */
-public final class LoggingInterceptor extends HandlerInterceptorAdapter {
+public final class LoggingInterceptor implements HandlerInterceptor {
 
     private final BeanFactory container;
 
@@ -40,11 +40,8 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
                 // Get the log entry for this request
                 var logEntry = this.container.getBean(LogEntryImpl.class);
 
-                // Get metadata for this request
-                var handlerMappings = this.container.getBean(RequestMappingHandlerMapping.class);
-
                 // Call start, which will be a no-op if logging has already been started by the authorizer
-                logEntry.start(request, handlerMappings);
+                logEntry.start(request);
 
                 // Record populated path segments here as the resource id
                 @SuppressWarnings("unchecked")
@@ -78,7 +75,8 @@ public final class LoggingInterceptor extends HandlerInterceptorAdapter {
 
             // Finish logging of successful requests
             var logEntry = this.container.getBean(LogEntryImpl.class);
-            logEntry.end(response);
+            var handlerMappings = this.container.getBean(RequestMappingHandlerMapping.class);
+            logEntry.end(request, response, handlerMappings);
             logEntry.write();
 
             // Clean up per request dependencies

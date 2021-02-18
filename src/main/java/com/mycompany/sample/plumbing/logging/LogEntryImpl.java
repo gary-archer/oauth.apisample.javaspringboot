@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -67,9 +68,7 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Start collecting data before calling the API's business logic
      */
-    public void start(
-            final HttpServletRequest request,
-            final RequestMappingHandlerMapping handlerMappings) {
+    public void start(final HttpServletRequest request) {
 
         if (!this.started) {
             this.started = true;
@@ -80,9 +79,6 @@ public final class LogEntryImpl implements LogEntry {
             // Calculate fields from the request object
             this.data.setRequestVerb(request.getMethod());
             this.data.setRequestPath(this.getRequestPath(request));
-
-            // Calculate the operation name
-            this.setOperationName(request, handlerMappings);
 
             // Our callers can supply a custom header so that we can keep track of who is calling each API
             var callingApplicationName = request.getHeader("x-mycompany-api-client");
@@ -191,10 +187,16 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Finish collecting data at the end of the API request and write the output
      */
-    public void end(final HttpServletResponse response) {
+    public void end(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final RequestMappingHandlerMapping handlerMapping) {
 
         if (!this.finished) {
             this.finished = true;
+
+            // Set details that are not available at the start of a request
+            this.setOperationName(request, handlerMapping);
 
             // If an active child operation needs ending (due to exceptions) then we do it here
             this.endChildOperation();
@@ -259,22 +261,41 @@ public final class LogEntryImpl implements LogEntry {
             final HttpServletRequest request,
             final RequestMappingHandlerMapping handlerMapping) {
 
-        // Get metadata for all methods
-        var methods = handlerMapping.getHandlerMethods();
-        for (RequestMappingInfo mappingInfo : methods.keySet()) {
+        var handlerInfo = this.getOperationHandlerInfo(request, handlerMapping);
+        if (handlerInfo != null) {
 
-            // Find a match
-            var match = mappingInfo.getMatchingCondition(request);
-            if (match != null) {
+            // Set the operation name
+            this.data.setOperationName(handlerInfo.getMethod().getName());
 
-                // Set the operation name
-                var handlerMethod = methods.get(mappingInfo);
-                this.data.setOperationName(handlerMethod.getMethod().getName());
+            // Also ensure that the correct performance threshold is set for the operation name
+            this.data.setPerformanceThresholdMilliseconds(
+                    this.performanceThresholdCallback.apply(this.data.getOperationName()));
+        }
+    }
 
-                // Record the operation name and also ensure that the correct performance threshold is used
-                this.data.setPerformanceThresholdMilliseconds(
-                        this.performanceThresholdCallback.apply(this.data.getOperationName()));
+    /*
+     * Try to return a match for this request, which will not work for authorizer errors
+     * The Spring code may throw an assertion in this case, which we will swallow
+     */
+    private HandlerMethod getOperationHandlerInfo(
+            final HttpServletRequest request,
+            final RequestMappingHandlerMapping handlerMapping) {
+
+        try {
+
+            var methods = handlerMapping.getHandlerMethods();
+            for (RequestMappingInfo mappingInfo : methods.keySet()) {
+
+                var match = mappingInfo.getMatchingCondition(request);
+                if (match != null) {
+                    return methods.get(mappingInfo);
+                }
             }
+
+            return null;
+
+        } catch (Throwable ex) {
+            return null;
         }
     }
 
