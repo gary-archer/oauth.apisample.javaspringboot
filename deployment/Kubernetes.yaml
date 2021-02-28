@@ -1,0 +1,42 @@
+#
+# The Kubernetes deployment file specifies a low privilege internal port of 8000
+#
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: javaapi-svc
+spec:
+  selector:
+    app: javaapi
+  ports:
+  - protocol: "TCP"
+    port: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javaapi
+  labels:
+    app: javaapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: javaapi
+  template:
+    metadata:
+      labels:
+        app: javaapi
+    spec:
+      containers:
+      - name: javaapi
+        image: javaapi:v1
+        imagePullPolicy: Never
+
+      # If required the API pod can add custom host file entries, eg for Ingress URLs
+      # This might enable a Kubernetes API to call a development authorization server over SSL
+      hostAliases:
+        - ip: 192.168.64.3
+          hostnames:
+            - login.mycompany.com
