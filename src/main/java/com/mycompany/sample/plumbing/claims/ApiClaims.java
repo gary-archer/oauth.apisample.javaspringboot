@@ -1,0 +1,32 @@
+package com.mycompany.sample.plumbing.claims;
+
+import org.springframework.security.core.AuthenticatedPrincipal;
+import lombok.Getter;
+
+/*
+ * An extensible claims object for APIs
+ */
+@SuppressWarnings(value = "checkstyle:DesignForExtension")
+public class ApiClaims implements AuthenticatedPrincipal {
+
+    @Getter
+    private final TokenClaims token;
+
+    @Getter
+    private final UserInfoClaims userInfo;
+
+    @Getter
+    private final CustomClaims custom;
+
+    public ApiClaims(TokenClaims token, UserInfoClaims userInfo, CustomClaims custom) {
+        this.token = token;
+        this.userInfo = userInfo;
+        this.custom = custom;
+    }
+
+    // Use the access token subject claim as the technical user name
+    @Override
+    public String getName() {
+        return this.getToken().getSubject();
+    }
+}

@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.claims.ApiClaims;
 
 /*
  * A helper class to enable us to return the security principal in Spring Security terms
  */
 public final class CustomAuthentication implements Authentication {
 
-    private final CoreApiClaims claims;
+    private final ApiClaims claims;
 
     /*
      * Construct from the results of authorizer processing
      */
-    public CustomAuthentication(final CoreApiClaims claims) {
+    public CustomAuthentication(final ApiClaims claims) {
         this.claims = claims;
     }
 

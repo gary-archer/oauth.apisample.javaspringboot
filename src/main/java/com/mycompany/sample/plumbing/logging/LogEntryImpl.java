@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kstruct.gethostname4j.Hostname;
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ServerError;
 
@@ -112,7 +112,7 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Add identity details for secured requests
      */
-    public void setIdentity(final CoreApiClaims claims) {
+    public void setIdentity(final ApiClaims claims) {
         this.data.setClientOAuthId(claims.getClientId());
         this.data.setUserId(claims.getUserDatabaseId());
         this.data.setUserOAuthId(claims.getSubject());

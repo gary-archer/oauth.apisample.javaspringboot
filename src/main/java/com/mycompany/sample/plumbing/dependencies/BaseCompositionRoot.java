@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.ClaimsConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
@@ -16,7 +16,7 @@ import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
  * A class to manage composing core API behaviour
  */
 @SuppressWarnings("PMD.GenericsNaming")
-public final class BaseCompositionRoot<TClaims extends CoreApiClaims> {
+public final class BaseCompositionRoot<TClaims extends ApiClaims> {
 
     private final ConfigurableListableBeanFactory container;
     private LoggingConfiguration loggingConfiguration;

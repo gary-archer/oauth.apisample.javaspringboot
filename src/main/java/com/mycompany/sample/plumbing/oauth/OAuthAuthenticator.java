@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
@@ -63,7 +63,7 @@ public class OAuthAuthenticator {
     public void validateTokenAndGetClaims(
             final String accessToken,
             final HttpServletRequest request,
-            final CoreApiClaims claims) {
+            final ApiClaims claims) {
 
         // Create a child log entry for authentication related work
         // This ensures that any errors and performances in this area are reported separately to business logic
@@ -97,7 +97,7 @@ public class OAuthAuthenticator {
      */
     private void introspectTokenAndGetTokenClaims(
             final String accessToken,
-            final CoreApiClaims claims,
+            final ApiClaims claims,
             final URI introspectionUri) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
@@ -155,7 +155,7 @@ public class OAuthAuthenticator {
     /*
      * Validate the access token in memory via the token signing public key
      */
-    private void validateTokenInMemoryAndGetTokenClaims(final String accessToken, final CoreApiClaims claims) {
+    private void validateTokenInMemoryAndGetTokenClaims(final String accessToken, final ApiClaims claims) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
@@ -267,7 +267,7 @@ public class OAuthAuthenticator {
     /*
      * Perform OAuth user info lookup
      */
-    private void getUserInfoClaims(final String accessToken, final CoreApiClaims claims) {
+    private void getUserInfoClaims(final String accessToken, final ApiClaims claims) {
 
         var url = this.metadata.getMetadata().getUserInfoEndpointURI();
         try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
