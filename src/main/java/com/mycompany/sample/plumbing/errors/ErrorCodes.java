@@ -22,6 +22,8 @@ public final class ErrorCodes {
 
     public static final String USERINFO_TOKEN_EXPIRED = "invalid_token";
 
+    public static final String JSON_PARSE_ERROR = "json_parse_error";
+
     public static final String EXCEPTION_SIMULATION = "exception_simulation";
 
     private ErrorCodes() {

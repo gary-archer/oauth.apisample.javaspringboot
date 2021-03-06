@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.mycompany.sample.host.claims.UserInfoClaims;
-import com.mycompany.sample.host.utilities.ClaimsResolver;
+import com.mycompany.sample.logic.entities.ClientUserInfo;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
+import com.mycompany.sample.plumbing.utilities.UserInfoClaimsResolver;
 
 /*
  * A simple controller to return user info to the caller
@@ -18,12 +18,12 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class UserInfoController {
 
-    private final ClaimsResolver claimsResolver;
+    private final UserInfoClaimsResolver claimsResolver;
 
     /*
      * The claims resolver is injected into the controller after OAuth processing
      */
-    public UserInfoController(final ClaimsResolver claimsResolver) {
+    public UserInfoController(final UserInfoClaimsResolver claimsResolver) {
         this.claimsResolver = claimsResolver;
     }
 
@@ -31,14 +31,13 @@ public class UserInfoController {
      * Return the user info claims when the API is called
      */
     @GetMapping(value = "current")
-    public CompletableFuture<UserInfoClaims> getUserClaims() {
+    public CompletableFuture<ClientUserInfo> getUserClaims() {
 
         var claims = this .claimsResolver.getClaims();
 
-        var userInfo = new UserInfoClaims(
-                claims.getGivenName(),
-                claims.getFamilyName(),
-                claims.getEmail());
+        var userInfo = new ClientUserInfo();
+        userInfo.setGivenName(claims.getGivenName());
+        userInfo.setFamilyName(claims.getFamilyName());
 
         return CompletableFuture.completedFuture(userInfo);
     }

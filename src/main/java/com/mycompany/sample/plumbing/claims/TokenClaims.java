@@ -22,7 +22,7 @@ public class TokenClaims {
     @Getter
     private final int expiry;
 
-    public static TokenClaims importData(ObjectNode data) {
+    public static TokenClaims importData(final ObjectNode data) {
 
         var subjectValue = data.get("subject").asText();
         var clientIdValue = data.get("clientId").asText();

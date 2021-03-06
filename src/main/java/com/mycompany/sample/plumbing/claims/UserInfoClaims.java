@@ -19,7 +19,7 @@ public class UserInfoClaims {
     @Getter
     private final String email;
 
-    public static UserInfoClaims importData(ObjectNode data) {
+    public static UserInfoClaims importData(final ObjectNode data) {
 
         var givenNameValue = data.get("givenName").asText();
         var familyNameValue = data.get("familyName").asText();

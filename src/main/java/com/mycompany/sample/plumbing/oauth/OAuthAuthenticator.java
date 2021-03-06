@@ -3,11 +3,11 @@ package com.mycompany.sample.plumbing.oauth;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.claims.ApiClaims;
+import com.mycompany.sample.plumbing.claims.TokenClaims;
+import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
@@ -60,44 +60,64 @@ public class OAuthAuthenticator {
     /*
      * Do OAuth work to perform token validation and user info lookup
      */
-    public void validateTokenAndGetClaims(
-            final String accessToken,
-            final HttpServletRequest request,
-            final ApiClaims claims) {
+    public TokenClaims validateToken(final String accessToken) {
 
-        // Create a child log entry for authentication related work
-        // This ensures that any errors and performances in this area are reported separately to business logic
-        var authorizationLogEntry = this.logEntry.createChild("authorizer");
-
-        // Validate the token and read token claims
+        // See whether to use introspection
         var introspectionUri = metadata.getMetadata().getIntrospectionEndpointURI();
         if (introspectionUri != null
             && StringUtils.hasLength(this.configuration.getClientId())
             && StringUtils.hasLength(this.configuration.getClientSecret())) {
 
             // Use introspection if we can
-            this.introspectTokenAndGetTokenClaims(accessToken, claims, introspectionUri);
+            return this.introspectTokenAndGetTokenClaims(accessToken, introspectionUri);
         } else {
 
             // Otherwise use in memory token validation
-            this.validateTokenInMemoryAndGetTokenClaims(accessToken, claims);
+            return this.validateTokenInMemoryAndGetTokenClaims(accessToken);
         }
+    }
 
-        // Add user info claims if the access token supports Open Id Connect operations
-        if (Arrays.asList(claims.getScopes()).contains("openid")) {
-            this.getUserInfoClaims(accessToken, claims);
+    /*
+     * Perform OAuth user info lookup
+     */
+    public UserInfoClaims getUserInfo(final String accessToken) {
+
+        var url = this.metadata.getMetadata().getUserInfoEndpointURI();
+        try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
+
+            // Make the request
+            HTTPResponse httpResponse = new UserInfoRequest(url, new BearerAccessToken(accessToken))
+                    .toHTTPRequest()
+                    .send();
+
+            // Handle errors returned in the response body
+            var userInfoResponse = UserInfoResponse.parse(httpResponse);
+            if (!userInfoResponse.indicatesSuccess()) {
+                var errorResponse = UserInfoErrorResponse.parse(httpResponse);
+                throw ErrorUtils.fromUserInfoError(errorResponse.getErrorObject(), url.toString());
+            }
+
+            // Get claims from the response
+            var userInfo = userInfoResponse.toSuccessResponse().getUserInfo();
+
+            // Get and return claims
+            var givenName = this.getStringClaim(userInfo, UserInfo.GIVEN_NAME_CLAIM_NAME);
+            var familyName = this.getStringClaim(userInfo, UserInfo.FAMILY_NAME_CLAIM_NAME);
+            var email = this.getStringClaim(userInfo, UserInfo.EMAIL_CLAIM_NAME);
+            return new UserInfoClaims(givenName, familyName, email);
+
+        } catch (Throwable e) {
+
+            // Report exceptions
+            throw ErrorUtils.fromUserInfoError(e, url.toString());
         }
-
-        // Finish logging here, and on exception the child is disposed by logging classes
-        authorizationLogEntry.close();
     }
 
     /*
      * Validate the access token via introspection and populate claims
      */
-    private void introspectTokenAndGetTokenClaims(
+    private TokenClaims introspectTokenAndGetTokenClaims(
             final String accessToken,
-            final ApiClaims claims,
             final URI introspectionUri) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
@@ -142,8 +162,8 @@ public class OAuthAuthenticator {
             // Make an audience check to ensure that the token is for this API
             this.verifyScopes(scopes);
 
-            // Update token claims
-            claims.setTokenInfo(subject, clientId, scopes, expiry);
+            // Return token claims
+            return new TokenClaims(subject, clientId, scopes, expiry);
 
         } catch (Throwable e) {
 
@@ -155,7 +175,7 @@ public class OAuthAuthenticator {
     /*
      * Validate the access token in memory via the token signing public key
      */
-    private void validateTokenInMemoryAndGetTokenClaims(final String accessToken, final ApiClaims claims) {
+    private TokenClaims validateTokenInMemoryAndGetTokenClaims(final String accessToken) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
@@ -179,7 +199,7 @@ public class OAuthAuthenticator {
             this.verifyScopes(scopes);
 
             // Update token claims
-            claims.setTokenInfo(subject, clientId, scopes, expiry);
+            return new TokenClaims(subject, clientId, scopes, expiry);
         }
     }
 
@@ -261,42 +281,6 @@ public class OAuthAuthenticator {
         var found = Arrays.stream(scopes).filter(s -> s.equals(this.configuration.getRequiredScope())).findFirst();
         if (found.isEmpty()) {
             throw ErrorFactory.createClient401Error("Access token does not have a valid scope for this API");
-        }
-    }
-
-    /*
-     * Perform OAuth user info lookup
-     */
-    private void getUserInfoClaims(final String accessToken, final ApiClaims claims) {
-
-        var url = this.metadata.getMetadata().getUserInfoEndpointURI();
-        try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
-
-            // Make the request
-            HTTPResponse httpResponse = new UserInfoRequest(url, new BearerAccessToken(accessToken))
-                    .toHTTPRequest()
-                    .send();
-
-            // Handle errors returned in the response body
-            var userInfoResponse = UserInfoResponse.parse(httpResponse);
-            if (!userInfoResponse.indicatesSuccess()) {
-                var errorResponse = UserInfoErrorResponse.parse(httpResponse);
-                throw ErrorUtils.fromUserInfoError(errorResponse.getErrorObject(), url.toString());
-            }
-
-            // Get token claims from the response
-            var userInfo = userInfoResponse.toSuccessResponse().getUserInfo();
-
-            // Update claims
-            var givenName = this.getStringClaim(userInfo, UserInfo.GIVEN_NAME_CLAIM_NAME);
-            var familyName = this.getStringClaim(userInfo, UserInfo.FAMILY_NAME_CLAIM_NAME);
-            var email = this.getStringClaim(userInfo, UserInfo.EMAIL_CLAIM_NAME);
-            claims.setUserInfo(givenName, familyName, email);
-
-        } catch (Throwable e) {
-
-            // Report exceptions
-            throw ErrorUtils.fromUserInfoError(e, url.toString());
         }
     }
 

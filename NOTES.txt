@@ -1,11 +1,5 @@
-1. Complete code for claims serialization in plumbing and host
+1. Checkstyle
 
-2. Clean up TClaims usage in composition root and implement EmptyCustomClaimsProvider
+2. Test and iron out issues
 
-3. Configure injection for all 3 claims types
-
-4. Remove userId from logging
-
-5. Test and iron out issues
-
-6. Then merge and do Serverless then .Net Core
+3. Split token validator

@@ -1,30 +1,31 @@
-package com.mycompany.sample.host.utilities;
+package com.mycompany.sample.plumbing.utilities;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import com.mycompany.sample.host.claims.SampleApiClaims;
+import com.mycompany.sample.plumbing.claims.ApiClaims;
+import com.mycompany.sample.plumbing.claims.TokenClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
- * An injectable object to get claims in a type safe manner
+ * Spring DI creates request objects before authentication begins so we inject a resolver
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
-public class ClaimsResolver {
+public class TokenClaimsResolver {
 
     /*
-     * Get the claims object when request
+     * Resolve the claims object when getClaims is asked for
      */
     @Bean
     @Scope(value = CustomRequestScope.NAME)
-    public SampleApiClaims getClaims() {
+    public TokenClaims getClaims() {
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
-            return (SampleApiClaims) authentication.getPrincipal();
+            return ((ApiClaims) authentication.getPrincipal()).getToken();
         }
 
         return null;

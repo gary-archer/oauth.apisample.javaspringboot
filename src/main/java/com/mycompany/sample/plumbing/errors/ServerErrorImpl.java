@@ -2,9 +2,11 @@ package com.mycompany.sample.plumbing.errors;
 
 import java.time.Instant;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 /*
  * The default implementation of a server error
@@ -38,7 +40,11 @@ public final class ServerErrorImpl extends ServerError {
         this.errorCode = errorCode;
         this.instanceId = (int) Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID);
         this.utcTime = Instant.now().toString();
-        this.details = null;
+
+        var message = cause.getMessage();
+        if (StringUtils.hasLength(message)) {
+            this.details = new TextNode(message);
+        }
     }
 
     @Override

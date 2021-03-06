@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.common.primitives.Ints;
-import com.mycompany.sample.host.utilities.ClaimsResolver;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
@@ -27,14 +26,12 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyController {
 
     private final CompanyService service;
-    private final ClaimsResolver claimsResolver;
 
     /*
      * The claims resolver is injected into the controller after OAuth processing
      */
-    public CompanyController(final CompanyService service, final ClaimsResolver claimsResolver) {
+    public CompanyController(final CompanyService service) {
         this.service = service;
-        this.claimsResolver = claimsResolver;
     }
 
     /*
@@ -42,8 +39,7 @@ public class CompanyController {
      */
     @GetMapping(value = "")
     public CompletableFuture<List<Company>> getCompanyList() {
-        var claims = this.claimsResolver.getClaims();
-        return this.service.getCompanyList(claims.isAdmin(), claims.getRegionsCovered());
+        return this.service.getCompanyList();
     }
 
     /*
@@ -62,7 +58,6 @@ public class CompanyController {
                     "The company id must be a positive numeric integer");
         }
 
-        var claims = this.claimsResolver.getClaims();
-        return this.service.getCompanyTransactions(idValue, claims.isAdmin(), claims.getRegionsCovered());
+        return this.service.getCompanyTransactions(idValue);
     }
 }

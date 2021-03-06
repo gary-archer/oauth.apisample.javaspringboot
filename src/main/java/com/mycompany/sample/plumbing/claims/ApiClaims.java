@@ -18,7 +18,11 @@ public class ApiClaims implements AuthenticatedPrincipal {
     @Getter
     private final CustomClaims custom;
 
-    public ApiClaims(TokenClaims token, UserInfoClaims userInfo, CustomClaims custom) {
+    public ApiClaims(
+            final TokenClaims token,
+            final UserInfoClaims userInfo,
+            final CustomClaims custom) {
+
         this.token = token;
         this.userInfo = userInfo;
         this.custom = custom;

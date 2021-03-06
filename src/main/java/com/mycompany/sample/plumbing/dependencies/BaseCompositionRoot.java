@@ -1,10 +1,7 @@
 package com.mycompany.sample.plumbing.dependencies;
 
-import java.util.function.Supplier;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
-import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
-import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.ClaimsConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
@@ -15,27 +12,24 @@ import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
 /*
  * A class to manage composing core API behaviour
  */
-@SuppressWarnings("PMD.GenericsNaming")
-public final class BaseCompositionRoot<TClaims extends ApiClaims> {
+public final class BaseCompositionRoot {
 
     private final ConfigurableListableBeanFactory container;
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
     private OAuthConfiguration oauthConfiguration;
     private ClaimsConfiguration claimsConfiguration;
-    private Supplier<TClaims> claimsSupplier;
-    private Supplier<CustomClaimsProvider<TClaims>> customClaimsProviderSupplier;
+    private CustomClaimsProvider customClaimsProvider;
 
     public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
-        this.claimsSupplier = null;
-        this.customClaimsProviderSupplier = null;
+        this.customClaimsProvider = null;
     }
 
     /*
      * Receive the logging configuration so that we can create objects related to logging and error handling
      */
-    public BaseCompositionRoot<TClaims> useDiagnostics(
+    public BaseCompositionRoot useDiagnostics(
             final LoggingConfiguration loggingConfiguration,
             final LoggerFactory loggerFactory) {
 
@@ -47,7 +41,7 @@ public final class BaseCompositionRoot<TClaims extends ApiClaims> {
     /*
      * Indicate that we're using OAuth and receive the configuration
      */
-    public BaseCompositionRoot<TClaims> useOAuth(final OAuthConfiguration oauthConfiguration) {
+    public BaseCompositionRoot useOAuth(final OAuthConfiguration oauthConfiguration) {
 
         this.oauthConfiguration = oauthConfiguration;
         return this;
@@ -56,27 +50,17 @@ public final class BaseCompositionRoot<TClaims extends ApiClaims> {
     /*
      * Receive information used for claims caching
      */
-    public BaseCompositionRoot<TClaims> useClaimsCaching(final ClaimsConfiguration claimsConfiguration) {
+    public BaseCompositionRoot useClaimsCaching(final ClaimsConfiguration claimsConfiguration) {
 
         this.claimsConfiguration = claimsConfiguration;
         return this;
     }
 
     /*
-     * Consumers must provide a callback for creating claims
+     * Consumers can provide an object for providing custom claims
      */
-    public BaseCompositionRoot<TClaims> withClaimsSupplier(final Supplier<TClaims> claimsSupplier) {
-        this.claimsSupplier = claimsSupplier;
-        return this;
-    }
-
-    /*
-     * Consumers can provide a callback for creating a custom claims provider
-     */
-    public BaseCompositionRoot<TClaims> withCustomClaimsProviderSupplier(
-            final Supplier<CustomClaimsProvider<TClaims>> supplier) {
-
-        this.customClaimsProviderSupplier = supplier;
+    public BaseCompositionRoot withCustomClaimsProvider(final CustomClaimsProvider provider) {
+        this.customClaimsProvider = provider;
         return this;
     }
 
@@ -125,26 +109,11 @@ public final class BaseCompositionRoot<TClaims extends ApiClaims> {
      */
     private void registerClaimsDependencies() {
 
-        // Create an injectable object to allow claims objects of a concrete type to be created at runtime
-        var supplier = new ClaimsSupplier<TClaims>() {
-
-            @Override
-            public TClaims createEmptyClaims() {
-                return claimsSupplier.get();
-            }
-
-            @Override
-            public CustomClaimsProvider<TClaims> createCustomClaimsProvider() {
-                return customClaimsProviderSupplier.get();
-            }
-        };
-
         // Create and initialize the claims cache
-        var cache = new ClaimsCache<TClaims>(this.claimsConfiguration, this.loggerFactory);
+        var cache = new ClaimsCache(this.claimsConfiguration, this.customClaimsProvider, this.loggerFactory);
         cache.initialize();
 
         // Register these natural singletons
         this.container.registerSingleton("ClaimsCache", cache);
-        this.container.registerSingleton("ClaimsSupplier", supplier);
     }
 }

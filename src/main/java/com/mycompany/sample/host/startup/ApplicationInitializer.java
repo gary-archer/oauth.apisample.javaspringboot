@@ -4,8 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import com.mycompany.sample.host.claims.SampleApiClaims;
-import com.mycompany.sample.host.claims.SampleApiClaimsProvider;
+import com.mycompany.sample.host.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
@@ -50,12 +49,11 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         container.registerScope(CustomRequestScope.NAME, new CustomRequestScope());
 
         // Register common code dependencies
-        new BaseCompositionRoot<SampleApiClaims>(container)
+        new BaseCompositionRoot(container)
                 .useDiagnostics(configuration.getLogging(), loggerFactory)
                 .useOAuth(configuration.getOauth())
                 .useClaimsCaching(configuration.getClaims())
-                .withClaimsSupplier(SampleApiClaims::new)
-                .withCustomClaimsProviderSupplier(SampleApiClaimsProvider::new)
+                .withCustomClaimsProvider(new SampleCustomClaimsProvider())
                 .register();
 
         // Register this app's specific dependencies

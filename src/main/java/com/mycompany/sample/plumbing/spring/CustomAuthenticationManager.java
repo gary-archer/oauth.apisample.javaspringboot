@@ -41,7 +41,7 @@ public final class CustomAuthenticationManager implements AuthenticationManager 
             var claims = authorizer.execute(this.request);
 
             // Log who called the API
-            logEntry.setIdentity(claims);
+            logEntry.setIdentity(claims.getToken());
 
             // Return the Spring security context
             return new CustomAuthentication(claims);

@@ -6,13 +6,13 @@ import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
 import org.slf4j.Logger;
+import org.springframework.util.StringUtils;
 import com.mycompany.sample.plumbing.configuration.ClaimsConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
  * A singleton in memory claims cache for our API
  */
-@SuppressWarnings("PMD.GenericsNaming")
 public final class ClaimsCache {
 
     private Cache<String, String> cache;
@@ -58,9 +58,9 @@ public final class ClaimsCache {
      */
     public ApiClaims getClaimsForToken(final String accessTokenHash) {
 
-        // Return the cached claims if they exist
-        var data = cache.get(accessTokenHash);
-        if (data == null) {
+        // Return null if there are no cached claims
+        var claimsText = cache.get(accessTokenHash);
+        if (!StringUtils.hasLength(claimsText)) {
             this.debugLogger.debug(
                     String.format("New token will be added to claims cache (hash: %s)", accessTokenHash));
             return null;
@@ -69,7 +69,7 @@ public final class ClaimsCache {
         // Otherwise return cached claims
         this.debugLogger.debug(
                 String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
-        return this.serializer.deserialize(data);
+        return this.serializer.deserialize(claimsText);
     }
 
     /*
@@ -102,8 +102,8 @@ public final class ClaimsCache {
                     secondsToCache,
                     accessTokenHash));
             final var futureExpiryMilliseconds = (epochSeconds + secondsToCache) * 1000;
-            var text = this.serializer.serialize(claims);
-            cache.invoke(accessTokenHash, e -> e.setValue(text).setExpiryTime(futureExpiryMilliseconds));
+            var claimsText = this.serializer.serialize(claims);
+            cache.invoke(accessTokenHash, e -> e.setValue(claimsText).setExpiryTime(futureExpiryMilliseconds));
         }
     }
 }
