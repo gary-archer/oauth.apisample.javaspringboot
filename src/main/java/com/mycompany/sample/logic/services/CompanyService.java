@@ -46,7 +46,7 @@ public class CompanyService {
         // Filter on what the user is allowed to access
         return completedFuture(
                 companies.stream()
-                         .filter(c -> this.isUserAuthorizedForCompany(c))
+                         .filter(this::isUserAuthorizedForCompany)
                          .collect(Collectors.toList()));
     }
 
