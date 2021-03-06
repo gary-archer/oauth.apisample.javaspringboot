@@ -1,5 +1,0 @@
-1. Checkstyle
-
-2. Test and iron out issues
-
-3. Split token validator
