@@ -21,7 +21,7 @@ public class TokenClaimsResolver {
      */
     @Bean
     @Scope(value = CustomRequestScope.NAME)
-    public TokenClaims getClaims() {
+    public TokenClaims getTokenClaims() {
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {

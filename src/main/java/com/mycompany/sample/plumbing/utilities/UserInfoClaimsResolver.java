@@ -22,7 +22,7 @@ public class UserInfoClaimsResolver {
      */
     @Bean
     @Scope(value = CustomRequestScope.NAME)
-    public UserInfoClaims getClaims() {
+    public UserInfoClaims getUserInfoClaims() {
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {

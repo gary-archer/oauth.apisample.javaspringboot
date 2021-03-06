@@ -101,6 +101,7 @@ public final class BaseCompositionRoot {
 
         // Register these natural singletons
         this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
+        this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
         this.container.registerSingleton("IssuerMetadata", metadata);
     }
 

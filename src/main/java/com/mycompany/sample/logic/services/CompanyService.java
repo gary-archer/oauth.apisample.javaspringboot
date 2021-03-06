@@ -69,7 +69,7 @@ public class CompanyService {
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 
-        var claims = (SampleCustomClaims) this.claimsResolver.getClaims();
+        var claims = (SampleCustomClaims) this.claimsResolver.getCustomClaims();
         if (claims.isAdmin()) {
             return true;
         }

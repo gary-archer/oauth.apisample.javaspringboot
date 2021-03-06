@@ -33,7 +33,7 @@ public class UserInfoController {
     @GetMapping(value = "current")
     public CompletableFuture<ClientUserInfo> getUserClaims() {
 
-        var claims = this .claimsResolver.getClaims();
+        var claims = this .claimsResolver.getUserInfoClaims();
 
         var userInfo = new ClientUserInfo();
         userInfo.setGivenName(claims.getGivenName());

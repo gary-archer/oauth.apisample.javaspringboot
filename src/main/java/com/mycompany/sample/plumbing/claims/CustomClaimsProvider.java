@@ -13,6 +13,7 @@ public class CustomClaimsProvider {
     /*
      * Return empty custom claims by default
      */
+    @SuppressWarnings(value = "checkstyle:DesignForExtension")
     public CustomClaims getCustomClaims(final TokenClaims token, final UserInfoClaims userInfo) {
         return new CustomClaims();
     }
@@ -63,6 +64,7 @@ public class CustomClaimsProvider {
     /*
      * This default implementation can be overridden to manage deserialization
      */
+    @SuppressWarnings(value = "checkstyle:DesignForExtension")
     protected CustomClaims deserializeCustomClaims(final ObjectNode claimsNode) {
         return CustomClaims.importData(claimsNode);
     }

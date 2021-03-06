@@ -21,7 +21,7 @@ public class CustomClaimsResolver {
      */
     @Bean
     @Scope(value = CustomRequestScope.NAME)
-    public CustomClaims getClaims() {
+    public CustomClaims getCustomClaims() {
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {

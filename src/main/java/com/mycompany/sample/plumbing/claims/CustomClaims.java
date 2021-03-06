@@ -18,6 +18,7 @@ public class CustomClaims {
     /*
      * This can be overridden by derived classes to export real custom claims
      */
+    @SuppressWarnings(value = "checkstyle:DesignForExtension")
     public ObjectNode exportData() {
         var mapper = new ObjectMapper();
         return mapper.createObjectNode();
