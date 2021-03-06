@@ -38,7 +38,6 @@ public final class ServerErrorImpl extends ServerError {
         this.errorCode = errorCode;
         this.instanceId = (int) Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID);
         this.utcTime = Instant.now().toString();
-        this.details = null;
     }
 
     @Override

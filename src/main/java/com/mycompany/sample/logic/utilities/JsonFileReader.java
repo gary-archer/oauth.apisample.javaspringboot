@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import static com.ea.async.Async.await;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -37,12 +36,10 @@ public class JsonFileReader {
         } catch (Throwable ex) {
 
             // Report the error including an error code and exception details
-            var error = ErrorFactory.createServerError(
+            throw ErrorFactory.createServerError(
                     SampleErrorCodes.FILE_READ_ERROR,
                     "Problem encountered reading data",
                     ex);
-            error.setDetails(new TextNode(ex.getMessage()));
-            throw error;
         }
     }
 

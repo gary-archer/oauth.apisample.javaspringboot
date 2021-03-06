@@ -4,39 +4,42 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
-import com.mycompany.sample.plumbing.claims.ClaimsSupplier;
-import com.mycompany.sample.plumbing.claims.CoreApiClaims;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
+import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 
 /*
  * A plain Java class to manage `token validation and claims lookup
  */
-@SuppressWarnings("PMD.GenericsNaming")
 @Component
 @Scope(value = CustomRequestScope.NAME)
-public final class OAuthAuthorizer<TClaims extends CoreApiClaims> implements Authorizer {
+public final class OAuthAuthorizer implements Authorizer {
 
-    private final ClaimsCache<TClaims> cache;
-    private final ClaimsSupplier<TClaims> claimsSupplier;
+    private final ClaimsCache cache;
     private final OAuthAuthenticator authenticator;
+    private final CustomClaimsProvider customClaimsProvider;
+    private final LogEntryImpl logEntry;
 
     public OAuthAuthorizer(
-            final ClaimsCache<TClaims> cache,
-            final ClaimsSupplier<TClaims> claimsSupplier,
-            final OAuthAuthenticator authenticator) {
+            final ClaimsCache cache,
+            final OAuthAuthenticator authenticator,
+            final CustomClaimsProvider customClaimsProvider,
+            final LogEntryImpl logEntry) {
 
         this.cache = cache;
-        this.claimsSupplier = claimsSupplier;
         this.authenticator = authenticator;
+        this.customClaimsProvider = customClaimsProvider;
+        this.logEntry = logEntry;
     }
 
     /*
      * OAuth authorization involves token validation and claims lookup
      */
     @Override
-    public CoreApiClaims execute(final HttpServletRequest request) {
+    public ApiClaims execute(final HttpServletRequest request) {
 
         // First read the access token
         String accessToken = this.readAccessToken(request);
@@ -51,19 +54,25 @@ public final class OAuthAuthorizer<TClaims extends CoreApiClaims> implements Aut
             return cachedClaims;
         }
 
-        // Otherwise create new claims which we will populate
-        var claims = this.claimsSupplier.createEmptyClaims();
+        // Create a child log entry for authentication related work
+        // This ensures that any errors and performances in this area are reported separately to business logic
+        var authorizationLogEntry = this.logEntry.createChild("authorizer");
 
-        // Add OAuth claims from introspection and user info lookup
-        this.authenticator.validateTokenAndGetClaims(accessToken, request, claims);
+        // Validate the token and read token claims
+        var tokenClaims = this.authenticator.validateToken(accessToken);
 
-        // Add custom claims from the API's own data if needed
-        this.claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, request, claims);
+        // Do the work for user info lookup
+        var userInfoClaims = this.authenticator.getUserInfo(accessToken);
+
+        // Get custom claims from the API's own data if needed
+        var customClaims = this.customClaimsProvider.getCustomClaims(tokenClaims, userInfoClaims);
 
         // Cache the claims against the token hash until the token's expiry time
+        var claims = new ApiClaims(tokenClaims, userInfoClaims, customClaims);
         this.cache.addClaimsForToken(accessTokenHash, claims);
 
-        // Return the result on success
+        // Finish logging here, and on exception the child is disposed by logging classes
+        authorizationLogEntry.close();
         return claims;
     }
 

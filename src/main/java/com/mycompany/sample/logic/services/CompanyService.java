@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import static com.ea.async.Async.await;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
+import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
+import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -26,15 +28,17 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyService {
 
     private final CompanyRepository repository;
+    private final SampleCustomClaims claims;
 
-    public CompanyService(final CompanyRepository repository) {
+    public CompanyService(final CompanyRepository repository, final CustomClaims claims) {
         this.repository = repository;
+        this.claims = (SampleCustomClaims) claims;
     }
 
     /*
      * Forward to the repository to get the company list
      */
-    public CompletableFuture<List<Company>> getCompanyList(final boolean isAdmin, final String[] regionsCovered) {
+    public CompletableFuture<List<Company>> getCompanyList() {
 
         // Use a micro services approach of getting all data
         var companies = await(this.repository.getCompanyList());
@@ -42,21 +46,18 @@ public class CompanyService {
         // Filter on what the user is allowed to access
         return completedFuture(
                 companies.stream()
-                         .filter(c -> this.isUserAuthorizedForCompany(c, isAdmin, regionsCovered))
+                         .filter(this::isUserAuthorizedForCompany)
                          .collect(Collectors.toList()));
     }
 
     /*
      * Forward to the repository to get the company transactions
      */
-    public CompletableFuture<CompanyTransactions> getCompanyTransactions(
-            final int companyId,
-            final boolean isAdmin,
-            final String[] regionsCovered) {
+    public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
         // Deny access if required
         var data = await(this.repository.getCompanyTransactions(companyId));
-        if (data == null || !this.isUserAuthorizedForCompany(data.getCompany(), isAdmin, regionsCovered)) {
+        if (data == null || !this.isUserAuthorizedForCompany(data.getCompany())) {
             throw this.unauthorizedError(companyId);
         }
 
@@ -66,16 +67,13 @@ public class CompanyService {
     /*
      * A simple example of applying domain specific claims
      */
-    private boolean isUserAuthorizedForCompany(
-            final Company company,
-            final boolean isAdmin,
-            final String[] regionsCovered) {
+    private boolean isUserAuthorizedForCompany(final Company company) {
 
-        if (isAdmin) {
+        if (this.claims.isAdmin()) {
             return true;
         }
 
-        return Arrays.stream(regionsCovered).anyMatch(ur -> ur.equals(company.getRegion()));
+        return Arrays.stream(this.claims.getRegionsCovered()).anyMatch(ur -> ur.equals(company.getRegion()));
     }
 
     /*
