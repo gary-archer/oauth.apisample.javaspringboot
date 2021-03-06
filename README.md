@@ -1,4 +1,4 @@
-# authguidance.apisample.javaspringboot
+# oauth.apisample.javaspringboot
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/599ddc4dabcc4810b6ac9af8ddc8bc20)](https://www.codacy.com/gh/gary-archer/authguidance.apisample.javaspringboot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gary-archer/authguidance.apisample.javaspringboot&amp;utm_campaign=Badge_Grade)
 
