@@ -1,5 +1,6 @@
 package com.mycompany.sample.plumbing.claims;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -11,7 +12,7 @@ public class CustomClaims {
     public CustomClaims() {
     }
 
-    public static CustomClaims importData(final ObjectNode data) {
+    public static CustomClaims importData(final JsonNode data) {
         return new CustomClaims();
     }
 
@@ -20,6 +21,7 @@ public class CustomClaims {
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
     public ObjectNode exportData() {
+
         var mapper = new ObjectMapper();
         return mapper.createObjectNode();
     }

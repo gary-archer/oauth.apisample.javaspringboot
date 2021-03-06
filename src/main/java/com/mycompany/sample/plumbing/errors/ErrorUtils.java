@@ -288,13 +288,13 @@ public final class ErrorUtils {
      */
     private static void setErrorDetails(
             final ServerError error,
-            final String oauthDetails,
+            final String details,
             final Throwable ex,
             final String url) {
 
         var detailsText = "";
-        if (StringUtils.hasLength(oauthDetails)) {
-            detailsText += oauthDetails;
+        if (StringUtils.hasLength(details)) {
+            detailsText += details;
         } else if (ex != null) {
             detailsText += ErrorUtils.getExceptionDetailsMessage(ex);
         }

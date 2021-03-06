@@ -15,9 +15,9 @@ import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
+import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.plumbing.utilities.CustomClaimsResolver;
 
 /*
  * Our service layer class applies business authorization
@@ -28,11 +28,11 @@ import com.mycompany.sample.plumbing.utilities.CustomClaimsResolver;
 public class CompanyService {
 
     private final CompanyRepository repository;
-    private final CustomClaimsResolver claimsResolver;
+    private final SampleCustomClaims claims;
 
-    public CompanyService(final CompanyRepository repository, final CustomClaimsResolver claimsResolver) {
+    public CompanyService(final CompanyRepository repository, final CustomClaims claims) {
         this.repository = repository;
-        this.claimsResolver = claimsResolver;
+        this.claims = (SampleCustomClaims) claims;
     }
 
     /*
@@ -69,12 +69,11 @@ public class CompanyService {
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 
-        var claims = (SampleCustomClaims) this.claimsResolver.getCustomClaims();
-        if (claims.isAdmin()) {
+        if (this.claims.isAdmin()) {
             return true;
         }
 
-        return Arrays.stream(claims.getRegionsCovered()).anyMatch(ur -> ur.equals(company.getRegion()));
+        return Arrays.stream(this.claims.getRegionsCovered()).anyMatch(ur -> ur.equals(company.getRegion()));
     }
 
     /*

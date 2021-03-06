@@ -101,6 +101,7 @@ public final class ClaimsCache {
                     "Adding token to claims cache for %d seconds (hash: %s)",
                     secondsToCache,
                     accessTokenHash));
+
             final var futureExpiryMilliseconds = (epochSeconds + secondsToCache) * 1000;
             var claimsText = this.serializer.serialize(claims);
             cache.invoke(accessTokenHash, e -> e.setValue(claimsText).setExpiryTime(futureExpiryMilliseconds));

@@ -1,6 +1,6 @@
 package com.mycompany.sample.host.claims;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
@@ -35,7 +35,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
      * Ensure that custom claims are correctly deserialized
      */
     @Override
-    protected CustomClaims deserializeCustomClaims(final ObjectNode claimsNode) {
+    protected CustomClaims deserializeCustomClaims(final JsonNode claimsNode) {
         return SampleCustomClaims.importData(claimsNode);
     }
 }

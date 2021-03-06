@@ -70,6 +70,7 @@ public class OAuthAuthenticator {
 
             // Use introspection if we can
             return this.introspectTokenAndGetTokenClaims(accessToken, introspectionUri);
+
         } else {
 
             // Otherwise use in memory token validation

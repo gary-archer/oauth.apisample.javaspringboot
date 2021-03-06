@@ -1,5 +1,6 @@
 package com.mycompany.sample.plumbing.claims;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class UserInfoClaims {
     @Getter
     private final String email;
 
-    public static UserInfoClaims importData(final ObjectNode data) {
+    public static UserInfoClaims importData(final JsonNode data) {
 
         var givenNameValue = data.get("givenName").asText();
         var familyNameValue = data.get("familyName").asText();

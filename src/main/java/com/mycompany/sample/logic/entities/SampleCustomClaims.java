@@ -1,5 +1,6 @@
 package com.mycompany.sample.logic.entities;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
@@ -19,7 +20,7 @@ public final class SampleCustomClaims extends CustomClaims {
     @Getter
     private final String[] regionsCovered;
 
-    public static SampleCustomClaims importData(final ObjectNode data) {
+    public static SampleCustomClaims importData(final JsonNode data) {
 
         var userDatabaseId = data.get("userDatabaseId").asText();
         var isAdmin = data.get("isAdmin").asBoolean();

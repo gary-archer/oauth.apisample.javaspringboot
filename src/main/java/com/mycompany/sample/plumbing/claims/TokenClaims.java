@@ -1,5 +1,6 @@
 package com.mycompany.sample.plumbing.claims;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class TokenClaims {
     @Getter
     private final int expiry;
 
-    public static TokenClaims importData(final ObjectNode data) {
+    public static TokenClaims importData(final JsonNode data) {
 
         var subjectValue = data.get("subject").asText();
         var clientIdValue = data.get("clientId").asText();

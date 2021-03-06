@@ -1,5 +1,6 @@
 package com.mycompany.sample.plumbing.claims;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.errors.ErrorCodes;
@@ -37,17 +38,12 @@ public class CustomClaimsProvider {
     public final ApiClaims deserialize(final String claimsText) {
 
         try {
-
             var mapper = new ObjectMapper();
+            var data = mapper.readValue(claimsText, ObjectNode.class);
 
-            var tokenNode = mapper.readValue("token", ObjectNode.class);
-            var token = TokenClaims.importData(tokenNode);
-
-            var userInfoNode = mapper.readValue("userInfo", ObjectNode.class);
-            var userInfo = UserInfoClaims.importData(userInfoNode);
-
-            var customNode = mapper.readValue("custom", ObjectNode.class);
-            var custom = this.deserializeCustomClaims(customNode);
+            var token = TokenClaims.importData(data.get("token"));
+            var userInfo = UserInfoClaims.importData(data.get("userInfo"));
+            var custom = this.deserializeCustomClaims(data.get("custom"));
 
             return new ApiClaims(token, userInfo, custom);
 
@@ -65,7 +61,7 @@ public class CustomClaimsProvider {
      * This default implementation can be overridden to manage deserialization
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    protected CustomClaims deserializeCustomClaims(final ObjectNode claimsNode) {
+    protected CustomClaims deserializeCustomClaims(final JsonNode claimsNode) {
         return CustomClaims.importData(claimsNode);
     }
 }
