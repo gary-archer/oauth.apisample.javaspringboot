@@ -1,0 +1,44 @@
+#
+# The Kubernetes deployment file for our NodeJS API
+# API instances run on dynamically assigned IP addresses and the low privilege port
+#
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: demoapi-svc
+spec:
+  selector:
+    app: demoapi
+  ports:
+  - protocol: "TCP"
+    port: 8101
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoapi
+  labels:
+    app: demoapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demoapi
+  template:
+    metadata:
+      labels:
+        app: demoapi
+    spec:
+      containers:
+      - name: demoapi
+        image: demoapi:v1
+        imagePullPolicy: Never
+        volumeMounts:
+          - mountPath: /usr/api/certs
+            name: ssl-cert
+            readOnly: true
+      volumes:
+        - name: ssl-cert
+          secret:
+            secretName: demoapi-svc-internal-cert

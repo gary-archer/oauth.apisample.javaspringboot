@@ -1,13 +1,12 @@
 {
     "api": {
-        "port": 8000,
-        "useSsl": false,
-        "sslCertificateFileName": "",
-        "sslCertificatePassword": "",
+        "port": 8101,
+        "sslCertificateFileName": "./certs/keystore.p12",
+        "sslCertificatePassword": "Password1",
         "useProxy": false,
-        "proxyUrl": "http://192.168.64.1:8888",
+        "proxyUrl": "",
         "webTrustedOrigins": [
-            "https://web.mycompany.com"
+            "https://web.mycluster.com"
         ]
     },
     "logging": {
