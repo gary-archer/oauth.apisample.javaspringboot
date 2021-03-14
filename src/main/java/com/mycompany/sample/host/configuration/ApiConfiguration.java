@@ -14,10 +14,6 @@ public class ApiConfiguration {
 
     @Getter
     @Setter
-    private boolean useSsl;
-
-    @Getter
-    @Setter
     private String sslCertificateFileName;
 
     @Getter

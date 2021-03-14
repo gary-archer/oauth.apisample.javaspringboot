@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.StringUtils;
 import com.mycompany.sample.host.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
@@ -92,13 +93,12 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
      */
     private void configureSsl(final Configuration configuration) {
 
-        if (configuration.getApi().isUseSsl()) {
+        if (StringUtils.hasLength(configuration.getApi().getSslCertificateFileName())
+                && StringUtils.hasLength(configuration.getApi().getSslCertificatePassword())) {
 
             // Reference our SSL certificate details
-            System.setProperty("server.ssl.key-store",
-                    String.format("certs/%s", configuration.getApi().getSslCertificateFileName()));
-            System.setProperty("server.ssl.key-store-password",
-                    configuration.getApi().getSslCertificatePassword());
+            System.setProperty("server.ssl.key-store", configuration.getApi().getSslCertificateFileName());
+            System.setProperty("server.ssl.key-store-password", configuration.getApi().getSslCertificatePassword());
 
             // Prevent TLS 1.3 errors under load, which show up in our load test otherwise
             // https://bugs.openjdk.java.net/browse/JDK-8241248
