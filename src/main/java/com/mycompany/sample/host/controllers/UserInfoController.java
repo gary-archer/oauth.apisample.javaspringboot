@@ -14,7 +14,7 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
  */
 @RestController
 @Scope(value = CustomRequestScope.NAME)
-@RequestMapping(value = "api/userclaims")
+@RequestMapping(value = "api/userinfo")
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class UserInfoController {
 
@@ -30,7 +30,7 @@ public class UserInfoController {
     /*
      * Return the user info claims when the API is called
      */
-    @GetMapping(value = "current")
+    @GetMapping(value = "")
     public CompletableFuture<ClientUserInfo> getUserClaims() {
 
         var userInfo = new ClientUserInfo();
