@@ -113,7 +113,6 @@ public final class LogEntryImpl implements LogEntry {
      * Add identity details for secured requests
      */
     public void setIdentity(final TokenClaims claims) {
-        this.data.setClientOAuthId(claims.getClientId());
         this.data.setUserOAuthId(claims.getSubject());
     }
 

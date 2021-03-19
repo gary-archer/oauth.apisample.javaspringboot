@@ -156,7 +156,6 @@ public class OAuthAuthenticator {
 
             // Get token claims and use the immutable user id as the subject claim
             var subject = this.getStringClaim(tokenClaims, "sub");
-            var clientId = this.getStringClaim(tokenClaims, "client_id");
             var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
             var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
@@ -164,7 +163,7 @@ public class OAuthAuthenticator {
             this.verifyScopes(scopes);
 
             // Return token claims
-            return new TokenClaims(subject, clientId, scopes, expiry);
+            return new TokenClaims(subject, scopes, expiry);
 
         } catch (Throwable e) {
 
@@ -192,7 +191,6 @@ public class OAuthAuthenticator {
 
             // Get token claims and use the immutable user id as the subject claim
             var subject = this.getStringClaim(tokenClaims, "sub");
-            var clientId = this.getStringClaim(tokenClaims, "client_id");
             var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
             var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
@@ -200,7 +198,7 @@ public class OAuthAuthenticator {
             this.verifyScopes(scopes);
 
             // Update token claims
-            return new TokenClaims(subject, clientId, scopes, expiry);
+            return new TokenClaims(subject, scopes, expiry);
         }
     }
 

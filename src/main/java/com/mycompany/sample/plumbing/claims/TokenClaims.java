@@ -15,9 +15,6 @@ public class TokenClaims {
     private final String subject;
 
     @Getter
-    private final String clientId;
-
-    @Getter
     private final String[] scopes;
 
     @Getter
@@ -26,16 +23,14 @@ public class TokenClaims {
     public static TokenClaims importData(final JsonNode data) {
 
         var subjectValue = data.get("subject").asText();
-        var clientIdValue = data.get("clientId").asText();
         var scopeValue = data.get("scopes").asText();
         var expiryValue = data.get("expiry").asInt();
-        return new TokenClaims(subjectValue, clientIdValue, scopeValue.split(" "), expiryValue);
+        return new TokenClaims(subjectValue, scopeValue.split(" "), expiryValue);
     }
 
-    public TokenClaims(final String subject, final String clientId, final String[] scopes, final int expiry) {
+    public TokenClaims(final String subject, final String[] scopes, final int expiry) {
 
         this.subject = subject;
-        this.clientId = clientId;
         this.scopes = scopes;
         this.expiry = expiry;
     }
@@ -45,7 +40,6 @@ public class TokenClaims {
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("subject", this.subject);
-        data.put("clientId", this.clientId);
         data.put("scopes", String.join(" ", this.scopes));
         data.put("expiry", this.expiry);
         return data;
