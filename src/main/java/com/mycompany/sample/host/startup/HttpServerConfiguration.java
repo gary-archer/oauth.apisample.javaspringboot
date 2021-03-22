@@ -4,6 +4,7 @@ import java.util.Arrays;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.cors.CorsConfiguration;
@@ -55,6 +56,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                     .configurationSource(this.getCorsConfiguration())
                     .and()
                 .authorizeRequests()
+                    .antMatchers("/api/customclaims/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .oauth2ResourceServer()
@@ -64,6 +66,14 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                     .and()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    /*
+     * This is necessary to prevent requests to anonymous endpoints from requiring an access token
+     */
+    @Override
+    public void configure(WebSecurity webSecurity) {
+        webSecurity.ignoring().antMatchers("/api/customclaims/**");
     }
 
     /*
