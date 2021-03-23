@@ -14,10 +14,6 @@ public class OAuthConfiguration {
 
     @Getter
     @Setter
-    private String requiredScope;
-
-    @Getter
-    @Setter
     private String clientId;
 
     @Getter

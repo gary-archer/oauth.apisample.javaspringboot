@@ -1,7 +1,7 @@
 package com.mycompany.sample.host.controllers;
 
-import java.util.concurrent.CompletableFuture;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -18,6 +18,8 @@ public final class ErrorCodes {
 
     public static final String TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR = "jwks_download_failure";
 
+    public static final String INSUFFICIENT_SCOPE = "insufficient_scope";
+
     public static final String USERINFO_FAILURE = "userinfo_failure";
 
     public static final String USERINFO_TOKEN_EXPIRED = "invalid_token";

@@ -2,7 +2,6 @@ package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
 import java.text.ParseException;
-import java.util.Arrays;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -159,9 +158,6 @@ public class OAuthAuthenticator {
             var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
             var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
-            // Make an audience check to ensure that the token is for this API
-            this.verifyScopes(scopes);
-
             // Return token claims
             return new TokenClaims(subject, scopes, expiry);
 
@@ -193,9 +189,6 @@ public class OAuthAuthenticator {
             var subject = this.getStringClaim(tokenClaims, "sub");
             var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
             var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
-
-            // Make an audience check to ensure that the token is for this API
-            this.verifyScopes(scopes);
 
             // Update token claims
             return new TokenClaims(subject, scopes, expiry);
@@ -269,17 +262,6 @@ public class OAuthAuthenticator {
 
             // Report exceptions
             throw ErrorUtils.fromAccessTokenValidationError(e);
-        }
-    }
-
-    /*
-     * Make sure the token is for this API
-     */
-    private void verifyScopes(final String[] scopes) {
-
-        var found = Arrays.stream(scopes).filter(s -> s.equals(this.configuration.getRequiredScope())).findFirst();
-        if (found.isEmpty()) {
-            throw ErrorFactory.createClient401Error("Access token does not have a valid scope for this API");
         }
     }
 

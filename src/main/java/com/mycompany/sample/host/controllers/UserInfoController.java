@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mycompany.sample.logic.entities.ClientUserInfo;
+import com.mycompany.sample.plumbing.claims.TokenClaims;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
@@ -18,13 +19,15 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class UserInfoController {
 
-    private final UserInfoClaims claims;
+    private final TokenClaims baseClaims;
+    private final UserInfoClaims userInfoClaims;
 
     /*
      * The claims resolver is injected into the controller after OAuth processing
      */
-    public UserInfoController(final UserInfoClaims claims) {
-        this.claims = claims;
+    public UserInfoController(final TokenClaims baseClaims, final UserInfoClaims userInfoClaims) {
+        this.baseClaims = baseClaims;
+        this.userInfoClaims = userInfoClaims;
     }
 
     /*
@@ -33,10 +36,13 @@ public class UserInfoController {
     @GetMapping(value = "")
     public CompletableFuture<ClientUserInfo> getUserClaims() {
 
-        var userInfo = new ClientUserInfo();
-        userInfo.setGivenName(this.claims.getGivenName());
-        userInfo.setFamilyName(this.claims.getFamilyName());
+        // First check scopes
+        this.baseClaims.verifyScope("profile");
 
+        // Next return the user info
+        var userInfo = new ClientUserInfo();
+        userInfo.setGivenName(this.userInfoClaims.getGivenName());
+        userInfo.setFamilyName(this.userInfoClaims.getFamilyName());
         return CompletableFuture.completedFuture(userInfo);
     }
 }

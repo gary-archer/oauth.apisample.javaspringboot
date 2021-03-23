@@ -13,6 +13,7 @@ import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.services.CompanyService;
+import com.mycompany.sample.plumbing.claims.TokenClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -26,12 +27,14 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyController {
 
     private final CompanyService service;
+    private final TokenClaims claims;
 
     /*
      * The claims resolver is injected into the controller after OAuth processing
      */
-    public CompanyController(final CompanyService service) {
+    public CompanyController(final CompanyService service, final TokenClaims claims) {
         this.service = service;
+        this.claims = claims;
     }
 
     /*
@@ -39,6 +42,11 @@ public class CompanyController {
      */
     @GetMapping(value = "")
     public CompletableFuture<List<Company>> getCompanyList() {
+
+        // First check scopes
+        this.claims.verifyScope("transactions_read");
+
+        // Next return filtered data based on claims
         return this.service.getCompanyList();
     }
 
@@ -49,6 +57,9 @@ public class CompanyController {
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(
             @PathVariable("companyId") final String companyId) {
 
+        // First check scopes
+        this.claims.verifyScope("transactions_read");
+
         // Throw a 400 error if we have an invalid id
         var idValue = Ints.tryParse(companyId);
         if (idValue == null || idValue <= 0) {
@@ -58,6 +69,7 @@ public class CompanyController {
                     "The company id must be a positive numeric integer");
         }
 
+        // Next authorize access based on claims
         return this.service.getCompanyTransactions(idValue);
     }
 }

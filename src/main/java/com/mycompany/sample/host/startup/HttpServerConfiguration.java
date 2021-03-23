@@ -72,7 +72,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
      * This is necessary to prevent requests to anonymous endpoints from requiring an access token
      */
     @Override
-    public void configure(WebSecurity webSecurity) {
+    public void configure(final WebSecurity webSecurity) {
         webSecurity.ignoring().antMatchers("/api/customclaims/**");
     }
 
