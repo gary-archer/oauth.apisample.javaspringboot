@@ -2,9 +2,9 @@ package com.mycompany.sample.host.claims;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
+import com.mycompany.sample.plumbing.claims.BaseClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
-import com.mycompany.sample.plumbing.claims.TokenClaims;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 
 /*
@@ -16,7 +16,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
      * An example of how custom claims can be included
      */
     @Override
-    public CustomClaims getCustomClaims(final TokenClaims token, final UserInfoClaims userInfo) {
+    public CustomClaims getCustomClaims(final BaseClaims token, final UserInfoClaims userInfo) {
 
         // A real implementation would look up the database user id from the subject and / or email claim
         var email = userInfo.getEmail();

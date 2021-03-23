@@ -20,7 +20,7 @@ public class ClaimsInjector {
      */
     @Bean
     @Scope(value = CustomRequestScope.NAME)
-    public TokenClaims getTokenClaims() {
+    public BaseClaims getTokenClaims() {
 
         var claims = this.getClaims();
         if (claims != null) {

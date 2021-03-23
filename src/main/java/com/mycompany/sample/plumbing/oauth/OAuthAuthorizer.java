@@ -59,16 +59,16 @@ public final class OAuthAuthorizer implements Authorizer {
         var authorizationLogEntry = this.logEntry.createChild("authorizer");
 
         // Validate the token and read token claims
-        var tokenClaims = this.authenticator.validateToken(accessToken);
+        var baseClaims = this.authenticator.validateToken(accessToken);
 
         // Do the work for user info lookup
         var userInfoClaims = this.authenticator.getUserInfo(accessToken);
 
         // Get custom claims from the API's own data if needed
-        var customClaims = this.customClaimsProvider.getCustomClaims(tokenClaims, userInfoClaims);
+        var customClaims = this.customClaimsProvider.getCustomClaims(baseClaims, userInfoClaims);
 
         // Cache the claims against the token hash until the token's expiry time
-        var claims = new ApiClaims(tokenClaims, userInfoClaims, customClaims);
+        var claims = new ApiClaims(baseClaims, userInfoClaims, customClaims);
         this.cache.addClaimsForToken(accessTokenHash, claims);
 
         // Finish logging here, and on exception the child is disposed by logging classes

@@ -30,7 +30,7 @@ public final class IssuerMetadata {
 
         try {
             // Create the issuer object
-            var issuer = new Issuer(this.configuration.getAuthority());
+            var issuer = new Issuer(this.configuration.getIssuer());
 
             // Make the HTTP request for metadata
             var request = new OIDCProviderConfigurationRequest(issuer).toHTTPRequest();
@@ -40,7 +40,7 @@ public final class IssuerMetadata {
         } catch (Throwable e) {
 
             // Throw an understandable error
-            throw ErrorUtils.fromMetadataError(e, this.configuration.getAuthority());
+            throw ErrorUtils.fromMetadataError(e, this.configuration.getIssuer());
         }
     }
 }

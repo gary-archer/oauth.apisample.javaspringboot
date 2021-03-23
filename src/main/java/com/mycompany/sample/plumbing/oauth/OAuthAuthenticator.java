@@ -5,7 +5,7 @@ import java.text.ParseException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.claims.TokenClaims;
+import com.mycompany.sample.plumbing.claims.BaseClaims;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
@@ -35,7 +35,7 @@ import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 /*
- * The class from which OAuth calls are initiated
+ * The entry point for calls to the Authorization Server
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
@@ -59,13 +59,13 @@ public class OAuthAuthenticator {
     /*
      * Do OAuth work to perform token validation and user info lookup
      */
-    public TokenClaims validateToken(final String accessToken) {
+    public BaseClaims validateToken(final String accessToken) {
 
         // See whether to use introspection
         var introspectionUri = metadata.getMetadata().getIntrospectionEndpointURI();
         if (introspectionUri != null
-            && StringUtils.hasLength(this.configuration.getClientId())
-            && StringUtils.hasLength(this.configuration.getClientSecret())) {
+            && StringUtils.hasLength(this.configuration.getIntrospectClientId())
+            && StringUtils.hasLength(this.configuration.getIntrospectClientSecret())) {
 
             // Use introspection if we can
             return this.introspectTokenAndGetTokenClaims(accessToken, introspectionUri);
@@ -116,15 +116,15 @@ public class OAuthAuthenticator {
     /*
      * Validate the access token via introspection and populate claims
      */
-    private TokenClaims introspectTokenAndGetTokenClaims(
+    private BaseClaims introspectTokenAndGetTokenClaims(
             final String accessToken,
             final URI introspectionUri) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
             // Supply the API's introspection credentials
-            var introspectionClientId = new ClientID(this.configuration.getClientId());
-            var introspectionClientSecret = new Secret(this.configuration.getClientSecret());
+            var introspectionClientId = new ClientID(this.configuration.getIntrospectClientId());
+            var introspectionClientSecret = new Secret(this.configuration.getIntrospectClientSecret());
             var credentials = new ClientSecretBasic(introspectionClientId, introspectionClientSecret);
 
             // Set up the request
@@ -159,7 +159,7 @@ public class OAuthAuthenticator {
             var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
             // Return token claims
-            return new TokenClaims(subject, scopes, expiry);
+            return new BaseClaims(subject, scopes, expiry);
 
         } catch (Throwable e) {
 
@@ -171,7 +171,7 @@ public class OAuthAuthenticator {
     /*
      * Validate the access token in memory via the token signing public key
      */
-    private TokenClaims validateTokenInMemoryAndGetTokenClaims(final String accessToken) {
+    private BaseClaims validateTokenInMemoryAndGetTokenClaims(final String accessToken) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
@@ -191,7 +191,7 @@ public class OAuthAuthenticator {
             var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
 
             // Update token claims
-            return new TokenClaims(subject, scopes, expiry);
+            return new BaseClaims(subject, scopes, expiry);
         }
     }
 

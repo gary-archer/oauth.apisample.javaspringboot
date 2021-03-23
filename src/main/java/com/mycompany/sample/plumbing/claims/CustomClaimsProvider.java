@@ -15,7 +15,7 @@ public class CustomClaimsProvider {
      * Return empty custom claims by default
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims getCustomClaims(final TokenClaims token, final UserInfoClaims userInfo) {
+    public CustomClaims getCustomClaims(final BaseClaims token, final UserInfoClaims userInfo) {
         return new CustomClaims();
     }
 
@@ -41,7 +41,7 @@ public class CustomClaimsProvider {
             var mapper = new ObjectMapper();
             var data = mapper.readValue(claimsText, ObjectNode.class);
 
-            var token = TokenClaims.importData(data.get("token"));
+            var token = BaseClaims.importData(data.get("token"));
             var userInfo = UserInfoClaims.importData(data.get("userInfo"));
             var custom = this.deserializeCustomClaims(data.get("custom"));
 

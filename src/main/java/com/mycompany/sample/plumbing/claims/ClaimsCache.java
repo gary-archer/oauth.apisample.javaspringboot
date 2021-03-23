@@ -7,7 +7,6 @@ import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.configuration.ClaimsConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
@@ -16,24 +15,18 @@ import com.mycompany.sample.plumbing.logging.LoggerFactory;
 public final class ClaimsCache {
 
     private Cache<String, String> cache;
-    private final ClaimsConfiguration configuration;
+    private int timeToLiveMinutes;
     private final CustomClaimsProvider serializer;
     private final Logger debugLogger;
 
     public ClaimsCache(
-            final ClaimsConfiguration configuration,
+            final int timeToLiveMinutes,
             final CustomClaimsProvider serializer,
             final LoggerFactory loggerFactory) {
 
-        this.configuration = configuration;
+        this.timeToLiveMinutes = timeToLiveMinutes;
         this.serializer = serializer;
         this.debugLogger = loggerFactory.getDevelopmentLogger(ClaimsCache.class);
-    }
-
-    /*
-     * Create the cache on demand
-     */
-    public void initialize() {
 
         // Output expiry debug messages here if required
         CacheEntryExpiredListener<String, String> listener = (cache, cacheEntry) -> {
@@ -46,10 +39,10 @@ public final class ClaimsCache {
         // Create the cache with a default token expiry time
         this.cache = new Cache2kBuilder<String, String>() {
         }
-            .name("claims")
-            .expireAfterWrite(this.configuration.getMaxCacheMinutes(), TimeUnit.MINUTES)
-            .addListener(listener)
-            .build();
+                .name("claims")
+                .expireAfterWrite(timeToLiveMinutes, TimeUnit.MINUTES)
+                .addListener(listener)
+                .build();
     }
 
     /*
@@ -91,7 +84,7 @@ public final class ClaimsCache {
             // Do not exceed the maximum time we configured
             final var secondsMultiplier = 60;
             var maxExpirySeconds =
-                    Instant.now().getEpochSecond() + (long) this.configuration.getMaxCacheMinutes() * secondsMultiplier;
+                    Instant.now().getEpochSecond() + (long) this.timeToLiveMinutes * secondsMultiplier;
             if (secondsToCache > maxExpirySeconds) {
                 secondsToCache = maxExpirySeconds;
             }

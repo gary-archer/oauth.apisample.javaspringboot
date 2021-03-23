@@ -3,7 +3,6 @@ package com.mycompany.sample.plumbing.dependencies;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
-import com.mycompany.sample.plumbing.configuration.ClaimsConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
@@ -15,27 +14,14 @@ import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
 public final class BaseCompositionRoot {
 
     private final ConfigurableListableBeanFactory container;
+    private OAuthConfiguration oauthConfiguration;
+    private CustomClaimsProvider customClaimsProvider;
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
-    private OAuthConfiguration oauthConfiguration;
-    private ClaimsConfiguration claimsConfiguration;
-    private CustomClaimsProvider customClaimsProvider;
 
     public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
         this.customClaimsProvider = null;
-    }
-
-    /*
-     * Receive the logging configuration so that we can create objects related to logging and error handling
-     */
-    public BaseCompositionRoot useDiagnostics(
-            final LoggingConfiguration loggingConfiguration,
-            final LoggerFactory loggerFactory) {
-
-        this.loggingConfiguration = loggingConfiguration;
-        this.loggerFactory = loggerFactory;
-        return this;
     }
 
     /*
@@ -48,19 +34,22 @@ public final class BaseCompositionRoot {
     }
 
     /*
-     * Receive information used for claims caching
-     */
-    public BaseCompositionRoot useClaimsCaching(final ClaimsConfiguration claimsConfiguration) {
-
-        this.claimsConfiguration = claimsConfiguration;
-        return this;
-    }
-
-    /*
      * Consumers can provide an object for providing custom claims
      */
     public BaseCompositionRoot withCustomClaimsProvider(final CustomClaimsProvider provider) {
         this.customClaimsProvider = provider;
+        return this;
+    }
+
+    /*
+     * Receive the logging configuration so that we can create objects related to logging and error handling
+     */
+    public BaseCompositionRoot withLogging(
+            final LoggingConfiguration loggingConfiguration,
+            final LoggerFactory loggerFactory) {
+
+        this.loggingConfiguration = loggingConfiguration;
+        this.loggerFactory = loggerFactory;
         return this;
     }
 
@@ -110,11 +99,10 @@ public final class BaseCompositionRoot {
      */
     private void registerClaimsDependencies() {
 
-        // Create and initialize the claims cache
-        var cache = new ClaimsCache(this.claimsConfiguration, this.customClaimsProvider, this.loggerFactory);
-        cache.initialize();
-
-        // Register these natural singletons
+        var cache = new ClaimsCache(
+                this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
+                this.customClaimsProvider,
+                this.loggerFactory);
         this.container.registerSingleton("ClaimsCache", cache);
     }
 }

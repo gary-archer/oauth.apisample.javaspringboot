@@ -13,7 +13,7 @@ import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.services.CompanyService;
-import com.mycompany.sample.plumbing.claims.TokenClaims;
+import com.mycompany.sample.plumbing.claims.BaseClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -27,12 +27,12 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyController {
 
     private final CompanyService service;
-    private final TokenClaims claims;
+    private final BaseClaims claims;
 
     /*
      * The claims resolver is injected into the controller after OAuth processing
      */
-    public CompanyController(final CompanyService service, final TokenClaims claims) {
+    public CompanyController(final CompanyService service, final BaseClaims claims) {
         this.service = service;
         this.claims = claims;
     }

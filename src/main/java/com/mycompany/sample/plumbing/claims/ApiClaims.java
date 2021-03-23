@@ -10,7 +10,7 @@ import lombok.Getter;
 public class ApiClaims implements AuthenticatedPrincipal {
 
     @Getter
-    private final TokenClaims token;
+    private final BaseClaims token;
 
     @Getter
     private final UserInfoClaims userInfo;
@@ -19,7 +19,7 @@ public class ApiClaims implements AuthenticatedPrincipal {
     private final CustomClaims custom;
 
     public ApiClaims(
-            final TokenClaims token,
+            final BaseClaims token,
             final UserInfoClaims userInfo,
             final CustomClaims custom) {
 

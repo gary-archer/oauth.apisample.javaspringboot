@@ -13,7 +13,7 @@ import lombok.Getter;
  * Claims included in the JWT
  */
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
-public class TokenClaims {
+public class BaseClaims {
 
     @Getter
     private final String subject;
@@ -27,15 +27,15 @@ public class TokenClaims {
     /*
      * Read claims from the claims cache
      */
-    public static TokenClaims importData(final JsonNode data) {
+    public static BaseClaims importData(final JsonNode data) {
 
         var subjectValue = data.get("subject").asText();
         var scopeValue = data.get("scopes").asText();
         var expiryValue = data.get("expiry").asInt();
-        return new TokenClaims(subjectValue, scopeValue.split(" "), expiryValue);
+        return new BaseClaims(subjectValue, scopeValue.split(" "), expiryValue);
     }
 
-    public TokenClaims(final String subject, final String[] scopes, final int expiry) {
+    public BaseClaims(final String subject, final String[] scopes, final int expiry) {
 
         this.subject = subject;
         this.scopes = scopes;

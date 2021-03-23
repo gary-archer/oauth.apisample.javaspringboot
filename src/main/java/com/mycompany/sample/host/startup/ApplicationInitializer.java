@@ -51,10 +51,9 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
 
         // Register common code dependencies
         new BaseCompositionRoot(container)
-                .useDiagnostics(configuration.getLogging(), loggerFactory)
                 .useOAuth(configuration.getOauth())
-                .useClaimsCaching(configuration.getClaims())
                 .withCustomClaimsProvider(new SampleCustomClaimsProvider())
+                .withLogging(configuration.getLogging(), loggerFactory)
                 .register();
 
         // Register this app's specific dependencies

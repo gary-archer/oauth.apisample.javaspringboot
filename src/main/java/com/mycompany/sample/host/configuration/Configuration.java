@@ -1,6 +1,5 @@
 package com.mycompany.sample.host.configuration;
 
-import com.mycompany.sample.plumbing.configuration.ClaimsConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import lombok.Getter;
@@ -22,8 +21,4 @@ public class Configuration {
     @Getter
     @Setter
     private OAuthConfiguration oauth;
-
-    @Getter
-    @Setter
-    private ClaimsConfiguration claims;
 }
