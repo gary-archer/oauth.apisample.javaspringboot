@@ -2,6 +2,8 @@ package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
 import java.text.ParseException;
+import com.mycompany.sample.plumbing.oauth.tokenvalidation.ClaimsPayload;
+import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,14 +22,8 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
-import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
@@ -43,37 +39,26 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 public class OAuthAuthenticator {
 
     private final OAuthConfiguration configuration;
-    private final IssuerMetadata metadata;
+    private final TokenValidator tokenValidator;
     private final LogEntry logEntry;
 
     public OAuthAuthenticator(
             final OAuthConfiguration configuration,
-            final IssuerMetadata metadata,
+            final TokenValidator tokenValidator,
             final LogEntry logEntry) {
 
         this.configuration = configuration;
-        this.metadata = metadata;
+        this.tokenValidator = tokenValidator;
         this.logEntry = logEntry;
     }
 
     /*
-     * Do OAuth work to perform token validation and user info lookup
+     * Do the work of validating the access token and returning its claims
      */
-    public BaseClaims validateToken(final String accessToken) {
+    public ClaimsPayload validateToken(final String accessToken) {
 
-        // See whether to use introspection
-        var introspectionUri = metadata.getMetadata().getIntrospectionEndpointURI();
-        if (introspectionUri != null
-            && StringUtils.hasLength(this.configuration.getIntrospectClientId())
-            && StringUtils.hasLength(this.configuration.getIntrospectClientSecret())) {
-
-            // Use introspection if we can
-            return this.introspectTokenAndGetTokenClaims(accessToken, introspectionUri);
-
-        } else {
-
-            // Otherwise use in memory token validation
-            return this.validateTokenInMemoryAndGetTokenClaims(accessToken);
+        try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
+            return this.tokenValidator.validateToken(accessToken);
         }
     }
 
@@ -82,11 +67,11 @@ public class OAuthAuthenticator {
      */
     public UserInfoClaims getUserInfo(final String accessToken) {
 
-        var url = this.metadata.getMetadata().getUserInfoEndpointURI();
         try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
             // Make the request
-            HTTPResponse httpResponse = new UserInfoRequest(url, new BearerAccessToken(accessToken))
+            var userInfoUrl = new URI(this.configuration.getUserInfoEndpoint());
+            HTTPResponse httpResponse = new UserInfoRequest(userInfoUrl, new BearerAccessToken(accessToken))
                     .toHTTPRequest()
                     .send();
 
@@ -94,7 +79,9 @@ public class OAuthAuthenticator {
             var userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (!userInfoResponse.indicatesSuccess()) {
                 var errorResponse = UserInfoErrorResponse.parse(httpResponse);
-                throw ErrorUtils.fromUserInfoError(errorResponse.getErrorObject(), url.toString());
+                throw ErrorUtils.fromUserInfoError(
+                        errorResponse.getErrorObject(),
+                        this.configuration.getUserInfoEndpoint());
             }
 
             // Get claims from the response
@@ -109,159 +96,7 @@ public class OAuthAuthenticator {
         } catch (Throwable e) {
 
             // Report exceptions
-            throw ErrorUtils.fromUserInfoError(e, url.toString());
-        }
-    }
-
-    /*
-     * Validate the access token via introspection and populate claims
-     */
-    private BaseClaims introspectTokenAndGetTokenClaims(
-            final String accessToken,
-            final URI introspectionUri) {
-
-        try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
-
-            // Supply the API's introspection credentials
-            var introspectionClientId = new ClientID(this.configuration.getIntrospectClientId());
-            var introspectionClientSecret = new Secret(this.configuration.getIntrospectClientSecret());
-            var credentials = new ClientSecretBasic(introspectionClientId, introspectionClientSecret);
-
-            // Set up the request
-            var request = new TokenIntrospectionRequest(
-                    introspectionUri,
-                    credentials,
-                    new BearerAccessToken(accessToken))
-                        .toHTTPRequest();
-            request.setAccept("application/json");
-
-            // Make the request and get the response
-            HTTPResponse httpResponse = request.send();
-
-            // Handle errors returned in the response body and return an understandable error
-            var introspectionResponse = TokenIntrospectionResponse.parse(httpResponse);
-            if (!introspectionResponse.indicatesSuccess()) {
-                var errorResponse = TokenIntrospectionErrorResponse.parse(httpResponse);
-                throw ErrorUtils.fromIntrospectionError(errorResponse.getErrorObject(), introspectionUri.toString());
-            }
-
-            // Get token claims from the response
-            var tokenClaims = introspectionResponse.toSuccessResponse();
-
-            // We will return a 401 if the token is invalid or expired
-            if (!tokenClaims.isActive()) {
-                throw ErrorFactory.createClient401Error("Access token is expired and failed introspection");
-            }
-
-            // Get token claims and use the immutable user id as the subject claim
-            var subject = this.getStringClaim(tokenClaims, "sub");
-            var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
-            var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
-
-            // Return token claims
-            return new BaseClaims(subject, scopes, expiry);
-
-        } catch (Throwable e) {
-
-            // Report exceptions
-            throw ErrorUtils.fromIntrospectionError(e, introspectionUri.toString());
-        }
-    }
-
-    /*
-     * Validate the access token in memory via the token signing public key
-     */
-    private BaseClaims validateTokenInMemoryAndGetTokenClaims(final String accessToken) {
-
-        try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
-
-            // First get the access token header's kid value
-            var jwt = this.decodeAccessToken(accessToken);
-            var kid = jwt.getHeader().getKeyID();
-
-            // Download the token signing public key
-            var publicKey = this.getTokenSigningPublicKey(kid, breakdown);
-
-            // Verify the token's digital signature and get its claims
-            var tokenClaims = this.validateJsonWebToken(jwt, publicKey, breakdown);
-
-            // Get token claims and use the immutable user id as the subject claim
-            var subject = this.getStringClaim(tokenClaims, "sub");
-            var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
-            var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
-
-            // Update token claims
-            return new BaseClaims(subject, scopes, expiry);
-        }
-    }
-
-    /*
-     * Decode the JWT and get its key identifier
-     */
-    private SignedJWT decodeAccessToken(final String accessToken) {
-
-        try {
-            return SignedJWT.parse(accessToken);
-
-        } catch (Throwable e) {
-            throw ErrorUtils.fromAccessTokenDecodeError(e);
-        }
-    }
-
-    /*
-     * Get the public key with which our access token is signed
-     */
-    private JWK getTokenSigningPublicKey(final String keyIdentifier, final PerformanceBreakdown parent) {
-
-        try (var breakdown = parent.createChild("getTokenSigningPublicKey")) {
-
-            var jwksUri = this.metadata.getMetadata().getJWKSetURI();
-            try {
-
-                // Download token signing keys
-                JWKSet keys = JWKSet.load(jwksUri.toURL());
-
-                // Get the key that matches the JWT
-                var publicKey = keys.getKeyByKeyId(keyIdentifier);
-                if (!(publicKey instanceof RSAKey)) {
-
-                    // Fail if not found or the wrong type
-                    String message = String.format("Key with identifier: %s not found in JWKS download", keyIdentifier);
-                    throw ErrorFactory.createClient401Error(message);
-                }
-
-                // Return the result
-                return publicKey.toPublicJWK();
-
-            } catch (Throwable e) {
-
-                // Report exceptions
-                throw ErrorUtils.fromTokenSigningKeysDownloadError(e, jwksUri.toString());
-            }
-        }
-    }
-
-    /*
-     * Do the work of verifying the access token
-     */
-    private JWTClaimsSet validateJsonWebToken(
-            final SignedJWT jwt,
-            final JWK publicKey,
-            final PerformanceBreakdown parent) {
-
-        try (var breakdown = parent.createChild("validateJsonWebToken")) {
-
-            JWSVerifier verifier = new RSASSAVerifier((RSAKey) publicKey);
-            if (!jwt.verify(verifier)) {
-                throw ErrorUtils.fromAccessTokenValidationError(null);
-            }
-
-            return jwt.getJWTClaimsSet();
-
-        } catch (Throwable e) {
-
-            // Report exceptions
-            throw ErrorUtils.fromAccessTokenValidationError(e);
+            throw ErrorUtils.fromUserInfoError(e, this.configuration.getUserInfoEndpoint());
         }
     }
 
