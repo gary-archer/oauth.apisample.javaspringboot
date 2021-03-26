@@ -25,6 +25,7 @@ Test standard strategy with Curity and update oauth.end-to-end
 
 7. CONSOLIDATION
 Review code for simplicity, then merge Java to master
+Can I use standard Spring Boot?
 
 8. CONSOLIDATION
 NodeJS to use a ClaimsPayload and be updated equivalently
