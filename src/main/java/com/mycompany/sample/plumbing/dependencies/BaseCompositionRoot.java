@@ -88,6 +88,24 @@ public final class BaseCompositionRoot {
         var metadata = new IssuerMetadata(this.oauthConfiguration);
         metadata.initialize();
 
+        if (this.oauthConfiguration.getStrategy() == "claims-caching") {
+
+            // this.container.registerResolvableDependency();
+
+        } else {
+
+            // this.container.registerResolvableDependency();
+        }
+
+        if (this.oauthConfiguration.getTokenValidationStrategy() == "introspection") {
+
+            // this.container.registerResolvableDependency();
+
+        } else {
+
+            // this.container.registerResolvableDependency();
+        }
+
         // Register these natural singletons
         this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
         this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);

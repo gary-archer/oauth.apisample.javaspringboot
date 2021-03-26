@@ -1,12 +1,9 @@
 package com.mycompany.sample.plumbing.oauth.tokenvalidation;
 
 import java.net.URI;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
@@ -22,8 +19,6 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 /*
  * An implementation that validates access tokens by introspecting them
  */
-@Component
-@Scope(value = CustomRequestScope.NAME)
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class IntrospectionValidator implements TokenValidator {
 

@@ -2,12 +2,9 @@ package com.mycompany.sample.plumbing.oauth.tokenvalidation;
 
 import java.net.URI;
 import java.text.ParseException;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.nimbusds.jose.JWSVerifier;
@@ -21,8 +18,6 @@ import com.nimbusds.jwt.SignedJWT;
 /*
  * An implementation that validates access tokens as JWTs
  */
-@Component
-@Scope(value = CustomRequestScope.NAME)
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class JwtValidator implements TokenValidator {
 

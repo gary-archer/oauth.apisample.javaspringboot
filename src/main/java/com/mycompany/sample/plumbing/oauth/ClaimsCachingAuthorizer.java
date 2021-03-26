@@ -2,20 +2,15 @@ package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 
 /*
  * An authorizer that manages claims in an extensible manner, with the ability to use claims from the API's own data
  */
-@Component
-@Scope(value = CustomRequestScope.NAME)
 public final class ClaimsCachingAuthorizer implements Authorizer {
 
     private final ClaimsCache cache;

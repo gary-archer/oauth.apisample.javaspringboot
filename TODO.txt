@@ -1,21 +1,25 @@
-1. Handle array claims properly
-- SerializeToCache must use array for scopes
-- Regions must be an array
+1. Get BaseCompositionRoot updated in line with NodeJS
+- Use registerResolvableDependency
 
-2. NodeJS to use a ClaimsPayload
+2. BaseAuthorizer to read the access token
 
 3. Inject SampleCustomClaimsProvider into ClaimsController properly
 
-4. Handle DI ambiguity:
-- StandardAuthorizer v ClaimsCachingAuthorizer
-- TokenValidator v IntrospectionValidator
+4. Get API endpoints working in this sequence:
+- Browser request returning 401
+- ClaimsController in browser
+- SPA to test claims caching strategy
 
-5. Test both types of authorizer:
-- Cognito
-- Curity
+5. Think about how understandable the code is
 
-6. Get oauth.end-to-end updated for both local and Kubernetes:
+6. Handle array claims properly
+- SerializeToCache must use array for scopes - even if requires verbose code
+- Regions must be an array
+
+7. Merge Java to master if all OK
+
+8. NodeJS to use a ClaimsPayload
+
+9. Get oauth.end-to-end updated for both local and Kubernetes:
+- test the standard strategy with Curity
 - api --> api-node and api-java
-
-7. Think about how understandable the code is
-   Then merge Java to master if OK
