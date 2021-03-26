@@ -2,6 +2,9 @@ package com.mycompany.sample.plumbing.oauth.tokenvalidation;
 
 import java.net.URI;
 import java.text.ParseException;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
@@ -14,9 +17,6 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /*
  * An implementation that validates access tokens as JWTs
@@ -36,7 +36,7 @@ public class JwtValidator implements TokenValidator {
      * The entry point for in memory token validation
      */
     @Override
-    public ClaimsPayload validateToken(String accessToken) {
+    public ClaimsPayload validateToken(final String accessToken) {
 
         try {
             // First get the access token header's kid value
@@ -131,7 +131,7 @@ public class JwtValidator implements TokenValidator {
      */
     private String getStringClaim(final Object data, final String name) {
 
-        var claimsSet = (JWTClaimsSet)data;
+        var claimsSet = (JWTClaimsSet) data;
         try {
 
             var claim = claimsSet.getStringClaim(name);
@@ -151,7 +151,7 @@ public class JwtValidator implements TokenValidator {
      */
     private long getExpirationClaim(final Object data) {
 
-        var claimsSet = (JWTClaimsSet)data;
+        var claimsSet = (JWTClaimsSet) data;
         return claimsSet.getExpirationTime().toInstant().getEpochSecond();
     }
 }

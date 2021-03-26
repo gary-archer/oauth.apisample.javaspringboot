@@ -1,0 +1,21 @@
+1. Handle array claims properly
+- SerializeToCache must use array for scopes
+- Regions must be an array
+
+2. NodeJS to use a ClaimsPayload
+
+3. Inject SampleCustomClaimsProvider into ClaimsController properly
+
+4. Handle DI ambiguity:
+- StandardAuthorizer v ClaimsCachingAuthorizer
+- TokenValidator v IntrospectionValidator
+
+5. Test both types of authorizer:
+- Cognito
+- Curity
+
+6. Get oauth.end-to-end updated for both local and Kubernetes:
+- api --> api-node and api-java
+
+7. Think about how understandable the code is
+   Then merge Java to master if OK

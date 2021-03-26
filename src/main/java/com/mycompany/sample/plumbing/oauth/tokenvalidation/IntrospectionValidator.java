@@ -1,6 +1,9 @@
 package com.mycompany.sample.plumbing.oauth.tokenvalidation;
 
 import java.net.URI;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
@@ -15,9 +18,6 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /*
  * An implementation that validates access tokens by introspecting them
@@ -90,7 +90,7 @@ public class IntrospectionValidator implements TokenValidator {
      */
     private String getStringClaim(final Object data, final String name) {
 
-        var claimsSet = (TokenIntrospectionSuccessResponse)data;
+        var claimsSet = (TokenIntrospectionSuccessResponse) data;
 
         var claim = claimsSet.getStringParameter(name);
         if (StringUtils.hasLength(claim)) {
@@ -105,7 +105,7 @@ public class IntrospectionValidator implements TokenValidator {
      */
     private long getExpirationClaim(final Object data) {
 
-        var claimsSet = (TokenIntrospectionSuccessResponse)data;
+        var claimsSet = (TokenIntrospectionSuccessResponse) data;
         return claimsSet.getExpirationTime().toInstant().getEpochSecond();
     }
 }

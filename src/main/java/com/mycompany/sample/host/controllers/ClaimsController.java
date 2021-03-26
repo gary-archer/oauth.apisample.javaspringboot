@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mycompany.sample.host.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
@@ -21,6 +22,12 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsController {
 
+    private final SampleCustomClaimsProvider customClaimsProvider;
+
+    public ClaimsController(final SampleCustomClaimsProvider customClaimsProvider) {
+        this.customClaimsProvider = customClaimsProvider;
+    }
+
     /*
      * This is called during token issuance by the Authorization Server when using the StandardAuthorizer
      * The custom claims are then included in the access token
@@ -29,14 +36,19 @@ public class ClaimsController {
     public CompletableFuture<ObjectNode> getCustomClaims(
             @PathVariable("subject") final String subject) {
 
+        var claims = this.customClaimsProvider.supplyCustomClaimsFromSubject(subject);
+
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.put("user_id", "10345");
-        data.put("user_role", "user");
+        data.put("user_id", claims.getUserId());
+        data.put("user_role", claims.getUserRole());
 
-        var regions = mapper.createArrayNode();
-        regions.add("USA");
-        data.set("user_regions", regions);
+        var regionsNode = mapper.createArrayNode();
+        for (String region: claims.getUserRegions()) {
+            regionsNode.add(region);
+        }
+
+        data.set("user_regions", regionsNode);
         return completedFuture(data);
     }
 }

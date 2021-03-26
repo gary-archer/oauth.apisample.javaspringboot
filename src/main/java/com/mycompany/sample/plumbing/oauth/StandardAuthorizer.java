@@ -1,12 +1,12 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /*
  * An authorizer that relies on the advanced features of the Authorization Server to provide claims

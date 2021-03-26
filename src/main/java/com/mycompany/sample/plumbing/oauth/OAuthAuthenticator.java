@@ -1,21 +1,21 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
-import com.mycompany.sample.plumbing.claims.ClaimsPayload;
-import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
+import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import org.springframework.util.StringUtils;
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 /*
  * The entry point for calls to the Authorization Server
@@ -91,7 +91,7 @@ public class OAuthAuthenticator {
      */
     private String getStringClaim(final Object data, final String name) {
 
-        var claimsSet = (UserInfo)data;
+        var claimsSet = (UserInfo) data;
         var claim = claimsSet.getStringClaim(name);
         if (StringUtils.hasLength(claim)) {
             return claim;

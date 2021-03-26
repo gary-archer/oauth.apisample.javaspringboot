@@ -62,7 +62,7 @@ public final class ClaimsCache {
         // Otherwise return cached claims
         this.debugLogger.debug(
                 String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
-        return this.serializer.deserialize(claimsText);
+        return this.serializer.deserializeFromCache(claimsText);
     }
 
     /*
@@ -96,7 +96,7 @@ public final class ClaimsCache {
                     accessTokenHash));
 
             final var futureExpiryMilliseconds = (epochSeconds + secondsToCache) * 1000;
-            var claimsText = this.serializer.serialize(claims);
+            var claimsText = this.serializer.serializeToCache(claims);
             cache.invoke(accessTokenHash, e -> e.setValue(claimsText).setExpiryTime(futureExpiryMilliseconds));
         }
     }
