@@ -12,30 +12,30 @@ import lombok.Getter;
 public final class SampleCustomClaims extends CustomClaims {
 
     @Getter
-    private final String userDatabaseId;
+    private final String userId;
 
     @Getter
-    private final boolean isAdmin;
+    private final String userRole;
 
     @Getter
-    private final String[] regionsCovered;
+    private final String[] userRegions;
 
     public static SampleCustomClaims importData(final JsonNode data) {
 
-        var userDatabaseId = data.get("userDatabaseId").asText();
-        var isAdmin = data.get("isAdmin").asBoolean();
-        var regionsCovered = data.get("regionsCovered").asText();
-        return new SampleCustomClaims(userDatabaseId, isAdmin, regionsCovered.split(" "));
+        var userDatabaseId = data.get("userId").asText();
+        var userRole = data.get("userRole").asText();
+        var userRegions = data.get("userRegions").asText();
+        return new SampleCustomClaims(userDatabaseId, userRole, userRegions.split(" "));
     }
 
     public SampleCustomClaims(
-            final String userDatabaseId,
-            final boolean isAdmin,
-            final String[] regionsCovered) {
+            final String userId,
+            final String userRole,
+            final String[] userRegions) {
 
-        this.userDatabaseId = userDatabaseId;
-        this.isAdmin = isAdmin;
-        this.regionsCovered = regionsCovered;
+        this.userId = userId;
+        this.userRole = userRole;
+        this.userRegions = userRegions;
     }
 
     @Override
@@ -43,9 +43,9 @@ public final class SampleCustomClaims extends CustomClaims {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.put("userDatabaseId", this.userDatabaseId);
-        data.put("isAdmin", this.isAdmin);
-        data.put("regionsCovered", String.join(" ", this.regionsCovered));
+        data.put("userId", this.userId);
+        data.put("userRole", this.userRole);
+        data.put("userRegions", String.join(" ", this.userRegions));
         return data;
     }
 }

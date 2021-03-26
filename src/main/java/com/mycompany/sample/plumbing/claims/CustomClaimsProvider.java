@@ -12,11 +12,28 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CustomClaimsProvider {
 
     /*
-     * Return empty custom claims by default
+     * The StandardAuthorizer calls this method, when all claims are included in the access token
+     * These claims will have been collected earlier during token issuance by calling the ClaimsController
      */
-    @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims getCustomClaims(final BaseClaims token, final UserInfoClaims userInfo) {
-        return new CustomClaims();
+    public ApiClaims readClaims(ClaimsPayload tokenData) {
+
+        return new ApiClaims(
+                this.readBaseClaims(tokenData),
+                this.readUserInfoClaims(tokenData),
+                this.readCustomClaims(tokenData));
+    }
+
+    /*
+     * The ClaimsCachingAuthorizer calls this, to ask the API to supply its claims when the token is first received
+     */
+    public ApiClaims supplyClaims(ClaimsPayload tokenData, ClaimsPayload userInfoData) {
+
+        var customClaims = this.supplyCustomClaims(tokenData, userInfoData);
+
+        return new ApiClaims(
+                this.readBaseClaims(tokenData),
+                this.readUserInfoClaims(userInfoData),
+                customClaims);
     }
 
     /*
@@ -58,10 +75,47 @@ public class CustomClaimsProvider {
     }
 
     /*
+     * This default implementation can be overridden by derived classes
+     */
+    protected CustomClaims readCustomClaims(final ClaimsPayload token) {
+        return new CustomClaims();
+    }
+
+    /*
+     * This default implementation can be overridden by derived classes
+     */
+    @SuppressWarnings(value = "checkstyle:DesignForExtension")
+    protected CustomClaims supplyCustomClaims(final ClaimsPayload token, final ClaimsPayload userInfo) {
+        return new CustomClaims();
+    }
+
+    /*
      * This default implementation can be overridden to manage deserialization
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
     protected CustomClaims deserializeCustomClaims(final JsonNode claimsNode) {
         return CustomClaims.importData(claimsNode);
+    }
+
+    /*
+     * Read base claims from the supplied token data
+     */
+    private BaseClaims readBaseClaims(ClaimsPayload data) {
+
+        var subject = data.getStringClaim("sub");
+        var scopes = data.getStringClaim("scope").split(" ");
+        var expiry = data.getExpirationClaim();
+        return new BaseClaims(subject, scopes, expiry);
+    }
+
+    /*
+     * Read user info claims from the supplied data, which could originate from a token or user info payload
+     */
+    private UserInfoClaims readUserInfoClaims(ClaimsPayload data) {
+
+        var givenName = data.getStringClaim("given_name");
+        var familyName = data.getStringClaim("family_name");
+        var email = data.getStringClaim("email");
+        return new UserInfoClaims(givenName, familyName, email);
     }
 }

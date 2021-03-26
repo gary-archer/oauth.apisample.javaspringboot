@@ -1,34 +1,21 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
-import java.text.ParseException;
-import com.mycompany.sample.plumbing.oauth.tokenvalidation.ClaimsPayload;
+import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.claims.BaseClaims;
-import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
-import com.mycompany.sample.plumbing.logging.PerformanceBreakdown;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import org.springframework.util.StringUtils;
 
 /*
  * The entry point for calls to the Authorization Server
@@ -65,7 +52,7 @@ public class OAuthAuthenticator {
     /*
      * Perform OAuth user info lookup
      */
-    public UserInfoClaims getUserInfo(final String accessToken) {
+    public ClaimsPayload getUserInfo(final String accessToken) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
@@ -87,11 +74,10 @@ public class OAuthAuthenticator {
             // Get claims from the response
             var userInfo = userInfoResponse.toSuccessResponse().getUserInfo();
 
-            // Get and return claims
-            var givenName = this.getStringClaim(userInfo, UserInfo.GIVEN_NAME_CLAIM_NAME);
-            var familyName = this.getStringClaim(userInfo, UserInfo.FAMILY_NAME_CLAIM_NAME);
-            var email = this.getStringClaim(userInfo, UserInfo.EMAIL_CLAIM_NAME);
-            return new UserInfoClaims(givenName, familyName, email);
+            // Return a payload object that will be read later
+            var payload = new ClaimsPayload(userInfo);
+            payload.setStringClaimCallback(this::getStringClaim);
+            return payload;
 
         } catch (Throwable e) {
 
@@ -101,43 +87,12 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * Get a string claims from the introspection object
-     */
-    private String getStringClaim(final TokenIntrospectionSuccessResponse claims, final String name) {
-
-        var claim = claims.getStringParameter(name);
-        if (StringUtils.hasLength(claim)) {
-            return claim;
-        }
-
-        throw ErrorUtils.fromMissingClaim(name);
-    }
-
-    /*
-     * Get a string claims from the JWT claims object
-     */
-    private String getStringClaim(final JWTClaimsSet claims, final String name) {
-
-        try {
-
-            var claim = claims.getStringClaim(name);
-            if (StringUtils.hasLength(claim)) {
-                return claim;
-            }
-
-            throw ErrorUtils.fromMissingClaim(name);
-
-        } catch (ParseException ex) {
-            throw ErrorUtils.fromMissingClaim(name);
-        }
-    }
-
-    /*
      * Get a string claims from the user info claims object
      */
-    private String getStringClaim(final UserInfo claims, final String name) {
+    private String getStringClaim(final Object data, final String name) {
 
-        var claim = claims.getStringClaim(name);
+        var claimsSet = (UserInfo)data;
+        var claim = claimsSet.getStringClaim(name);
         if (StringUtils.hasLength(claim)) {
             return claim;
         }

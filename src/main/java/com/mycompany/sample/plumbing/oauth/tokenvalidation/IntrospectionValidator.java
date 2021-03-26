@@ -1,6 +1,7 @@
 package com.mycompany.sample.plumbing.oauth.tokenvalidation;
 
 import java.net.URI;
+import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
@@ -8,6 +9,7 @@ import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionErrorResponse;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -15,6 +17,7 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /*
  * An implementation that validates access tokens by introspecting them
@@ -64,26 +67,45 @@ public class IntrospectionValidator implements TokenValidator {
             }
 
             // Get token claims from the response and return a 401 if the token is invalid or expired
-            var tokenClaims = introspectionResponse.toSuccessResponse();
-            if (!tokenClaims.isActive()) {
+            var data = introspectionResponse.toSuccessResponse();
+            if (!data.isActive()) {
                 throw ErrorFactory.createClient401Error("Access token is expired and failed introspection");
             }
 
-            return new ClaimsPayload(tokenClaims);
+            // Return a payload object that will be read later
+            var payload = new ClaimsPayload(data);
+            payload.setStringClaimCallback(this::getStringClaim);
+            payload.setExpirationClaimCallback(this::getExpirationClaim);
+            return payload;
 
         } catch (Throwable e) {
 
             // Report exceptions
             throw ErrorUtils.fromIntrospectionError(e, this.configuration.getIntrospectEndpoint().toString());
         }
+    }
 
-        /*
-        // Get token claims and use the immutable user id as the subject claim
-        var subject = this.getStringClaim(tokenClaims, "sub");
-        var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
-        var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
+    /*
+     * Get a string claim from the introspection object
+     */
+    private String getStringClaim(final Object data, final String name) {
 
-        // Return token claims
-        return new BaseClaims(subject, scopes, expiry);*/
+        var claimsSet = (TokenIntrospectionSuccessResponse)data;
+
+        var claim = claimsSet.getStringParameter(name);
+        if (StringUtils.hasLength(claim)) {
+            return claim;
+        }
+
+        throw ErrorUtils.fromMissingClaim(name);
+    }
+
+    /*
+     * Get the expiration claims from the introspection object
+     */
+    private long getExpirationClaim(final Object data) {
+
+        var claimsSet = (TokenIntrospectionSuccessResponse)data;
+        return claimsSet.getExpirationTime().toInstant().getEpochSecond();
     }
 }

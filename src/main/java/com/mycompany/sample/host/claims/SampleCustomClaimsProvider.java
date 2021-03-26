@@ -2,10 +2,9 @@ package com.mycompany.sample.host.claims;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
-import com.mycompany.sample.plumbing.claims.BaseClaims;
+import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
-import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 
 /*
  * An example of including domain specific details in cached claims
@@ -13,22 +12,39 @@ import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
     /*
-     * An example of how custom claims can be included
+     * When using the StandardAuthorizer this is called at the time of token issuance by the ClaimsController
+     * My Authorization Server setup currently sends the user's email as the subject claim
      */
-    @Override
-    public CustomClaims getCustomClaims(final BaseClaims token, final UserInfoClaims userInfo) {
+    public SampleCustomClaims supplyCustomClaimsFromSubject(String subject) {
+        return (SampleCustomClaims)this.supplyCustomClaims(subject);
+    }
 
-        // A real implementation would look up the database user id from the subject and / or email claim
-        var email = userInfo.getEmail();
-        var userDatabaseId = "10345";
+    /*
+     * When using the ClaimsCachingAuthorizer this is called when the API first receives the access token
+     */
+    protected CustomClaims supplyCustomClaims(ClaimsPayload tokenData, ClaimsPayload userInfoData) {
+        return this.supplyCustomClaims(userInfoData.getStringClaim("email"));
+    }
 
-        // Our blog's code samples have two fixed users and we use the below mock implementation:
-        // - guestadmin@mycompany.com is an admin and sees all data
-        // - guestuser@mycompany.com is not an admin and only sees data for the USA region
+    /*
+     * Simulate some API logic for identifying the user from OAuth data, via either the subject or email claims
+     * A real API would then do a database lookup to find the user's custom claims
+     */
+    private CustomClaims supplyCustomClaims(String email) {
+
         var isAdmin = email.toLowerCase().contains("admin");
-        var regionsCovered = isAdmin ? new String[]{} : new String[]{"USA"};
+        if (isAdmin) {
 
-        return new SampleCustomClaims(userDatabaseId, isAdmin, regionsCovered);
+            // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions
+            // The CompanyService class will use these claims to return all transaction data
+            return new SampleCustomClaims("20116", "admin", new String[]{});
+
+        } else {
+
+            // For other users we hard code this user id, assign a role of 'user' and grant access to only one region
+            // The CompanyService class will use these claims to return only transactions for the US region
+            return new SampleCustomClaims("10345", "user", new String[]{"USA"});
+        }
     }
 
     /*

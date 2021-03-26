@@ -1,6 +1,8 @@
 package com.mycompany.sample.plumbing.oauth.tokenvalidation;
 
 import java.net.URI;
+import java.text.ParseException;
+import com.mycompany.sample.plumbing.claims.ClaimsPayload;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
@@ -14,6 +16,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /*
  * An implementation that validates access tokens as JWTs
@@ -44,17 +47,13 @@ public class JwtValidator implements TokenValidator {
             var publicKey = this.getTokenSigningPublicKey(kid);
 
             // Verify the token's digital signature and get its claims
-            var tokenClaims = this.validateJsonWebToken(jwt, publicKey);
-            return new ClaimsPayload(tokenClaims);
+            var data = this.validateJsonWebToken(jwt, publicKey);
 
-            /*
-            // Get token claims and use the immutable user id as the subject claim
-            var subject = this.getStringClaim(tokenClaims, "sub");
-            var scopes = this.getStringClaim(tokenClaims, "scope").split(" ");
-            var expiry = (int) tokenClaims.getExpirationTime().toInstant().getEpochSecond();
-
-            // Update token claims
-            return new BaseClaims(subject, scopes, expiry);*/
+            // Return a payload object that will be read later
+            var payload = new ClaimsPayload(data);
+            payload.setStringClaimCallback(this::getStringClaim);
+            payload.setExpirationClaimCallback(this::getExpirationClaim);
+            return payload;
 
         } catch (Throwable e) {
 
@@ -125,5 +124,34 @@ public class JwtValidator implements TokenValidator {
             // Report exceptions
             throw ErrorUtils.fromAccessTokenValidationError(e);
         }
+    }
+
+    /*
+     * Get a string claim from the JWT claims object
+     */
+    private String getStringClaim(final Object data, final String name) {
+
+        var claimsSet = (JWTClaimsSet)data;
+        try {
+
+            var claim = claimsSet.getStringClaim(name);
+            if (StringUtils.hasLength(claim)) {
+                return claim;
+            }
+
+            throw ErrorUtils.fromMissingClaim(name);
+
+        } catch (ParseException ex) {
+            throw ErrorUtils.fromMissingClaim(name);
+        }
+    }
+
+    /*
+     * Get the expiration claims from the claims set object
+     */
+    private long getExpirationClaim(final Object data) {
+
+        var claimsSet = (JWTClaimsSet)data;
+        return claimsSet.getExpirationTime().toInstant().getEpochSecond();
     }
 }

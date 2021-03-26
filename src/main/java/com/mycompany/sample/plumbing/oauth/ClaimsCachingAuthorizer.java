@@ -12,18 +12,18 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 
 /*
- * A plain Java class to manage `token validation and claims lookup
+ * An authorizer that manages claims in an extensible manner, with the ability to use claims from the API's own data
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
-public final class OAuthAuthorizer implements Authorizer {
+public final class ClaimsCachingAuthorizer implements Authorizer {
 
     private final ClaimsCache cache;
     private final OAuthAuthenticator authenticator;
     private final CustomClaimsProvider customClaimsProvider;
     private final LogEntryImpl logEntry;
 
-    public OAuthAuthorizer(
+    public ClaimsCachingAuthorizer(
             final ClaimsCache cache,
             final OAuthAuthenticator authenticator,
             final CustomClaimsProvider customClaimsProvider,
@@ -65,10 +65,9 @@ public final class OAuthAuthorizer implements Authorizer {
         var userInfoClaims = this.authenticator.getUserInfo(accessToken);
 
         // Get custom claims from the API's own data if needed
-        var customClaims = this.customClaimsProvider.getCustomClaims(baseClaims, userInfoClaims);
+        var claims = this.customClaimsProvider.supplyClaims(baseClaims, userInfoClaims);
 
         // Cache the claims against the token hash until the token's expiry time
-        var claims = new ApiClaims(baseClaims, userInfoClaims, customClaims);
         this.cache.addClaimsForToken(accessTokenHash, claims);
 
         // Finish logging here, and on exception the child is disposed by logging classes

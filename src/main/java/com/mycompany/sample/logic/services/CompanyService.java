@@ -69,11 +69,12 @@ public class CompanyService {
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 
-        if (this.claims.isAdmin()) {
+        var isAdmin = this.claims.getUserRole().toLowerCase().contains("admin");
+        if (isAdmin) {
             return true;
         }
 
-        return Arrays.stream(this.claims.getRegionsCovered()).anyMatch(ur -> ur.equals(company.getRegion()));
+        return Arrays.stream(this.claims.getUserRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
     }
 
     /*

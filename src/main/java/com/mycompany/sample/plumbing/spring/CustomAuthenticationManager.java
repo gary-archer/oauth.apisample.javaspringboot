@@ -7,7 +7,7 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
-import com.mycompany.sample.plumbing.oauth.OAuthAuthorizer;
+import com.mycompany.sample.plumbing.oauth.ClaimsCachingAuthorizer;
 
 /*
  * The Spring Boot entry point class for OAuth request handling
@@ -35,7 +35,7 @@ public final class CustomAuthenticationManager implements AuthenticationManager 
             logEntry.start(this.request);
 
             // Get the authorizer for this HTTP request
-            var authorizer = this.container.getBean(OAuthAuthorizer.class);
+            var authorizer = this.container.getBean(ClaimsCachingAuthorizer.class);
 
             // Do the OAuth work in plain Java classes and return our customised claims
             var claims = authorizer.execute(this.request);
