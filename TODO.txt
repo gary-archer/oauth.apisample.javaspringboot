@@ -1,25 +1,30 @@
-1. Get BaseCompositionRoot updated in line with NodeJS
+1. ESSENTIAL 
+Get BaseCompositionRoot updated in line with NodeJS
 - Use registerResolvableDependency
+- Also register SampleCustomClaimsProvider
 
-2. BaseAuthorizer to read the access token
-
-3. Inject SampleCustomClaimsProvider into ClaimsController properly
-
-4. Get API endpoints working in this sequence:
+2. CONSOLIDATION
+Get API endpoints working in this sequence:
 - Browser request returning 401
 - ClaimsController in browser
 - SPA to test claims caching strategy
 
-5. Think about how understandable the code is
+3. CONSOLIDATION
+BaseAuthorizer to read the access token
 
-6. Handle array claims properly
+4. ESSENTIAL
+JWKS key caching for the standard strategy
+
+5. ESSENTIAL
+Handle array claims properly
 - SerializeToCache must use array for scopes - even if requires verbose code
 - Regions must be an array
 
-7. Merge Java to master if all OK
+6. CONSOLIDATION
+Test standard strategy with Curity and update oauth.end-to-end
 
-8. NodeJS to use a ClaimsPayload
+7. CONSOLIDATION
+Review code for simplicity, then merge Java to master
 
-9. Get oauth.end-to-end updated for both local and Kubernetes:
-- test the standard strategy with Curity
-- api --> api-node and api-java
+8. CONSOLIDATION
+NodeJS to use a ClaimsPayload and be updated equivalently
