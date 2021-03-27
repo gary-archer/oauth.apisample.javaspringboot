@@ -57,16 +57,11 @@ public final class BaseCompositionRoot {
      */
     public void register() {
 
-        // Register dependencies for logging and error handling
+        // Register runtime dependencies for logging and error handling
         this.registerLoggingDependencies();
 
-        // Register OAuth specific dependencies for Entry Point APIs
-        if (this.oauthConfiguration != null) {
-            this.registerOAuthDependencies();
-        }
-
-        // Register claims dependencies for all APIs
-        this.registerClaimsDependencies();
+        // Register runtime dependencies for OAuth and claims handling
+        this.registerOAuthDependencies();
     }
 
     /*
@@ -82,13 +77,8 @@ public final class BaseCompositionRoot {
      * Register dependencies used for OAuth processing
      */
     private void registerOAuthDependencies() {
-        this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
-    }
 
-    /*
-     * Register dependencies used for Claims processing
-     */
-    private void registerClaimsDependencies() {
+        this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
 
         if (this.oauthConfiguration.getStrategy().equals("claims-caching")) {
 
