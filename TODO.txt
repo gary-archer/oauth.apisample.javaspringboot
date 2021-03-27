@@ -7,6 +7,11 @@
 - SerializeToCache must use array for scopes - even if requires verbose code
 - Regions must be an array
 
+4. Java and underscores:
+- checkstyle
+- serialization
+- Lombok
+
 4. CONSOLIDATION
 - NodeJS to use a ClaimsPayload and be updated equivalently
 - Use an injected proxy object
