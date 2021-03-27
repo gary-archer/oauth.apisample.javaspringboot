@@ -24,8 +24,9 @@ public final class SampleCustomClaims extends CustomClaims {
 
         var userDatabaseId = data.get("userId").asText();
         var userRole = data.get("userRole").asText();
-        var userRegions = data.get("userRegions").asText();
-        return new SampleCustomClaims(userDatabaseId, userRole, userRegions.split(" "));
+        var userRegions = data.findValuesAsText("userRegions").toArray(new String[0]);
+
+        return new SampleCustomClaims(userDatabaseId, userRole, userRegions);
     }
 
     public SampleCustomClaims(
@@ -45,7 +46,13 @@ public final class SampleCustomClaims extends CustomClaims {
         var data = mapper.createObjectNode();
         data.put("userId", this.userId);
         data.put("userRole", this.userRole);
-        data.put("userRegions", String.join(" ", this.userRegions));
+
+        var regionsNode = mapper.createArrayNode();
+        for (var region: this.userRegions) {
+            regionsNode.add(region);
+        }
+
+        data.set("userRegions", regionsNode);
         return data;
     }
 }

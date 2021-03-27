@@ -14,6 +14,7 @@ import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.oauth.tokenvalidation.IntrospectionValidator;
 import com.mycompany.sample.plumbing.oauth.tokenvalidation.JwtValidator;
 import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
+import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 
 /*
  * A helper class to manage creating OAuth related objects at runtime
@@ -68,7 +69,8 @@ public class OAuthInjector {
 
         } else {
 
-            return new JwtValidator(this.configuration);
+            var jwksKeySet = this.container.getBean(RemoteJWKSet.class);
+            return new JwtValidator(this.configuration, jwksKeySet);
         }
     }
 }

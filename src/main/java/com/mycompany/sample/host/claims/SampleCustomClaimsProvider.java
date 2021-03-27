@@ -27,7 +27,8 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
             final ClaimsPayload tokenData,
             final ClaimsPayload userInfoData) {
 
-        return this.supplyCustomClaims(userInfoData.getStringClaim("email"));
+        var email = userInfoData.getStringClaim("email");
+        return this.supplyCustomClaims(email);
     }
 
     /*
@@ -38,7 +39,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
         var userId = token.getStringClaim("user_id");
         var userRole = token.getStringClaim("user_role");
-        var userRegions = token.getStringClaim("user_regions").split(" ");
+        var userRegions = token.getStringArrayClaim("user_regions");
         return new SampleCustomClaims(userId, userRole, userRegions);
     }
 

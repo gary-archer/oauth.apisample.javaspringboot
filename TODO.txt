@@ -1,17 +1,16 @@
-1. Test standard authorizer in oauth.end-to-end
+1. Check issuer and audience
 
-2. Once working, get JWKS key caching working for the standard strategy
-   Use JWKSetCache if needed?
+2. Performance breakdown
+   Get rid of child log entry for authorizer - but think about serverless case
+   Include JWKS lookup time in perf breakdown of API call
+   Should see a small value on each call
 
-3. Handle array claims properly:
-- SerializeToCache must use array for scopes - even if requires verbose code
-- Regions must be an array
-
-4. Java and underscores:
+2. Java and underscores:
 - checkstyle
 - serialization
 - Lombok
 
-4. CONSOLIDATION
+3. CONSOLIDATION
 - NodeJS to use a ClaimsPayload and be updated equivalently
 - Use an injected proxy object
+- PerformanceBreakdown to include JWK download time

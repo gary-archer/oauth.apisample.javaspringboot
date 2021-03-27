@@ -1,6 +1,5 @@
 package com.mycompany.sample.plumbing.oauth.tokenvalidation;
 
-import java.net.URI;
 import java.text.ParseException;
 import org.springframework.util.StringUtils;
 import com.mycompany.sample.plumbing.claims.ClaimsPayload;
@@ -10,8 +9,13 @@ import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.JWKMatcher;
+import com.nimbusds.jose.jwk.JWKSelector;
+import com.nimbusds.jose.jwk.KeyType;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.RemoteJWKSet;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jose.proc.SimpleSecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
@@ -22,9 +26,14 @@ import com.nimbusds.jwt.SignedJWT;
 public class JwtValidator implements TokenValidator {
 
     private final OAuthConfiguration configuration;
+    private final RemoteJWKSet<SecurityContext> jwksKeys;
 
-    public JwtValidator(final OAuthConfiguration configuration) {
+    public JwtValidator(
+            final OAuthConfiguration configuration,
+            final RemoteJWKSet<SecurityContext> jwksKeys) {
+
         this.configuration = configuration;
+        this.jwksKeys = jwksKeys;
     }
 
     /*
@@ -47,6 +56,7 @@ public class JwtValidator implements TokenValidator {
             // Return a payload object that will be read later
             var payload = new ClaimsPayload(data);
             payload.setStringClaimCallback(this::getStringClaim);
+            payload.setStringArrayClaimCallback(this::getStringArrayClaim);
             payload.setExpirationClaimCallback(this::getExpirationClaim);
             return payload;
 
@@ -76,21 +86,19 @@ public class JwtValidator implements TokenValidator {
     private JWK getTokenSigningPublicKey(final String keyIdentifier) {
 
         try {
+            var matcher = new JWKMatcher.Builder()
+                    .keyType(KeyType.RSA)
+                    .keyID(keyIdentifier)
+                    .build();
+            var selector = new JWKSelector(matcher);
 
-            // Download token signing keys
-            var jwksUri = new URI(this.configuration.getJwksEndpoint());
-            JWKSet keys = JWKSet.load(jwksUri.toURL());
-
-            // Get the key that matches the JWT
-            var publicKey = keys.getKeyByKeyId(keyIdentifier);
-            if (!(publicKey instanceof RSAKey)) {
-
-                // Fail if not found or the wrong type
+            var keys = this.jwksKeys.get(selector, new SimpleSecurityContext());
+            if (keys.size() != 1) {
                 String message = String.format("Key with identifier: %s not found in JWKS download", keyIdentifier);
                 throw ErrorFactory.createClient401Error(message);
             }
 
-            return publicKey.toPublicJWK();
+            return keys.get(0);
 
         } catch (Throwable e) {
 
@@ -132,6 +140,22 @@ public class JwtValidator implements TokenValidator {
             }
 
             throw ErrorUtils.fromMissingClaim(name);
+
+        } catch (ParseException ex) {
+
+            throw ErrorUtils.fromMissingClaim(name);
+        }
+    }
+
+    /*
+     * Get a string claim from the JWT claims object
+     */
+    private String[] getStringArrayClaim(final Object data, final String name) {
+
+        var claimsSet = (JWTClaimsSet) data;
+        try {
+
+            return claimsSet.getStringArrayClaim(name);
 
         } catch (ParseException ex) {
 

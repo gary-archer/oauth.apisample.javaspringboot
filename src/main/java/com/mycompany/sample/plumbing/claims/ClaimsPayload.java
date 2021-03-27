@@ -18,6 +18,10 @@ public final class ClaimsPayload {
 
     @Getter
     @Setter
+    private BiFunction<Object, String, String[]> stringArrayClaimCallback;
+
+    @Getter
+    @Setter
     private Function<Object, Long> expirationClaimCallback;
 
     public ClaimsPayload(final Object claims) {
@@ -34,6 +38,15 @@ public final class ClaimsPayload {
         }
 
         return this.stringClaimCallback.apply(this.claims, key);
+    }
+
+    public String[] getStringArrayClaim(final String key) {
+
+        if (this.stringArrayClaimCallback == null) {
+            throw new RuntimeException("stringArrayClaimCallback is null in the ClaimsPayload class");
+        }
+
+        return this.stringArrayClaimCallback.apply(this.claims, key);
     }
 
     public int getExpirationClaim() {

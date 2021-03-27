@@ -1,11 +1,13 @@
 package com.mycompany.sample.plumbing.dependencies;
 
+import java.net.URI;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
+import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 
 /*
  * A class to manage composing core API behaviour
@@ -78,17 +80,32 @@ public final class BaseCompositionRoot {
      */
     private void registerOAuthDependencies() {
 
-        this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
+        try {
 
-        if (this.oauthConfiguration.getStrategy().equals("claims-caching")) {
+            this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
+            this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
 
-            var cache = new ClaimsCache(
-                    this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
-                    this.customClaimsProvider,
-                    this.loggerFactory);
-            this.container.registerSingleton("ClaimsCache", cache);
+            // Inject the claims cache if using this strategy
+            if (this.oauthConfiguration.getStrategy().equals("claims-caching")) {
+
+                var cache = new ClaimsCache(
+                        this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
+                        this.customClaimsProvider,
+                        this.loggerFactory);
+                this.container.registerSingleton("ClaimsCache", cache);
+            }
+
+            // Use a global object that caches JWKS keys if using this strategy
+            if (this.oauthConfiguration.getTokenValidationStrategy().equals("jwt")) {
+
+                var jwksUri = new URI(this.oauthConfiguration.getJwksEndpoint());
+                var jwksKeySet = new RemoteJWKSet<>(jwksUri.toURL());
+                this.container.registerSingleton("JWKSKeySet", jwksKeySet);
+            }
+
+        } catch (Throwable ex) {
+
+            throw new RuntimeException("Problem encountered registering OAuth dependencies", ex);
         }
-
-        this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
     }
 }
