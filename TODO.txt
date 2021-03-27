@@ -1,16 +1,13 @@
-1. Check issuer and audience
+1. Cognito problems
+   Not found - problems with user region claims in CompanyService
 
-2. Performance breakdown
-   Get rid of child log entry for authorizer - but think about serverless case
-   Include JWKS lookup time in perf breakdown of API call
-   Should see a small value on each call
-
-2. Java and underscores:
-- checkstyle
-- serialization
-- Lombok
-
-3. CONSOLIDATION
+2. Consolidation
 - NodeJS to use a ClaimsPayload and be updated equivalently
 - Use an injected proxy object
 - PerformanceBreakdown to include JWK download time
+- Get rid of extra authorizer log entry
+
+3. Java and underscores:
+- checkstyle
+- serialization
+- Lombok
