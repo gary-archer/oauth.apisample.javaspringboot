@@ -6,7 +6,6 @@ import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
-import com.mycompany.sample.plumbing.oauth.IssuerMetadata;
 
 /*
  * A class to manage composing core API behaviour
@@ -59,7 +58,7 @@ public final class BaseCompositionRoot {
     public void register() {
 
         // Register dependencies for logging and error handling
-        this.registerBaseDependencies();
+        this.registerLoggingDependencies();
 
         // Register OAuth specific dependencies for Entry Point APIs
         if (this.oauthConfiguration != null) {
@@ -73,7 +72,7 @@ public final class BaseCompositionRoot {
     /*
      * Register dependencies used for logging and error handling, which are natural singletons
      */
-    private void registerBaseDependencies() {
+    private void registerLoggingDependencies() {
 
         this.container.registerSingleton("LoggingConfiguration", this.loggingConfiguration);
         this.container.registerSingleton("LoggerFactory", this.loggerFactory);
@@ -83,33 +82,7 @@ public final class BaseCompositionRoot {
      * Register dependencies used for OAuth processing
      */
     private void registerOAuthDependencies() {
-
-        // Load metadata if using OAuth security
-        var metadata = new IssuerMetadata(this.oauthConfiguration);
-        metadata.initialize();
-
-        if (this.oauthConfiguration.getStrategy() == "claims-caching") {
-
-            // this.container.registerResolvableDependency();
-
-        } else {
-
-            // this.container.registerResolvableDependency();
-        }
-
-        if (this.oauthConfiguration.getTokenValidationStrategy() == "introspection") {
-
-            // this.container.registerResolvableDependency();
-
-        } else {
-
-            // this.container.registerResolvableDependency();
-        }
-
-        // Register these natural singletons
         this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
-        this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
-        this.container.registerSingleton("IssuerMetadata", metadata);
     }
 
     /*
@@ -117,10 +90,15 @@ public final class BaseCompositionRoot {
      */
     private void registerClaimsDependencies() {
 
-        var cache = new ClaimsCache(
-                this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
-                this.customClaimsProvider,
-                this.loggerFactory);
-        this.container.registerSingleton("ClaimsCache", cache);
+        if (this.oauthConfiguration.getStrategy().equals("claims-caching")) {
+
+            var cache = new ClaimsCache(
+                    this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
+                    this.customClaimsProvider,
+                    this.loggerFactory);
+            this.container.registerSingleton("ClaimsCache", cache);
+        }
+
+        this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
     }
 }

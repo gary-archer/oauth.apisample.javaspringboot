@@ -52,7 +52,6 @@ public class JwtValidator implements TokenValidator {
 
         } catch (Throwable e) {
 
-            // Report exceptions
             throw ErrorUtils.fromIntrospectionError(e, this.configuration.getIntrospectEndpoint().toString());
         }
     }
@@ -66,6 +65,7 @@ public class JwtValidator implements TokenValidator {
             return SignedJWT.parse(accessToken);
 
         } catch (Throwable e) {
+
             throw ErrorUtils.fromAccessTokenDecodeError(e);
         }
     }
@@ -90,12 +90,10 @@ public class JwtValidator implements TokenValidator {
                 throw ErrorFactory.createClient401Error(message);
             }
 
-            // Return the result
             return publicKey.toPublicJWK();
 
         } catch (Throwable e) {
 
-            // Report exceptions
             throw ErrorUtils.fromTokenSigningKeysDownloadError(e, this.configuration.getJwksEndpoint());
         }
     }
@@ -116,7 +114,6 @@ public class JwtValidator implements TokenValidator {
 
         } catch (Throwable e) {
 
-            // Report exceptions
             throw ErrorUtils.fromAccessTokenValidationError(e);
         }
     }
@@ -137,6 +134,7 @@ public class JwtValidator implements TokenValidator {
             throw ErrorUtils.fromMissingClaim(name);
 
         } catch (ParseException ex) {
+
             throw ErrorUtils.fromMissingClaim(name);
         }
     }

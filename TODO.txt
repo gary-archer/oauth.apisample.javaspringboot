@@ -1,31 +1,25 @@
-1. ESSENTIAL 
-Get BaseCompositionRoot updated in line with NodeJS
-- Use registerResolvableDependency
-- Also register SampleCustomClaimsProvider
+1. Test standard authorizer in oauth.end-to-end
 
 2. CONSOLIDATION
-Get API endpoints working in this sequence:
-- Browser request returning 401
-- ClaimsController in browser
-- SPA to test claims caching strategy
-
-3. CONSOLIDATION
 BaseAuthorizer to read the access token
+Is there a better way to customize OAuth and get rid of CustomBearerTokenResolver?
+Look at Spring source code
 
-4. ESSENTIAL
+3. ESSENTIAL
 JWKS key caching for the standard strategy
 
-5. ESSENTIAL
-Handle array claims properly
+3. ESSENTIAL
+Handle array claims properly:
 - SerializeToCache must use array for scopes - even if requires verbose code
 - Regions must be an array
 
-6. CONSOLIDATION
+4. CONSOLIDATION
 Test standard strategy with Curity and update oauth.end-to-end
 
-7. CONSOLIDATION
+5. CONSOLIDATION
 Review code for simplicity, then merge Java to master
 Can I use standard Spring Boot?
 
-8. CONSOLIDATION
+6. CONSOLIDATION
 NodeJS to use a ClaimsPayload and be updated equivalently
+Use an injected proxy object

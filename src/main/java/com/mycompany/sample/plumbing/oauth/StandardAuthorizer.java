@@ -34,7 +34,7 @@ public final class StandardAuthorizer implements Authorizer {
             throw ErrorFactory.createClient401Error("No access token was supplied in the bearer header");
         }
 
-        // Read all claims from the access token, including custom claims and those with user info
+        // Read all claims from the access token, including custom claims issued by this API's ClaimsController
         var payload = this.authenticator.validateToken(accessToken);
         return this.customClaimsProvider.readClaims(payload);
     }
