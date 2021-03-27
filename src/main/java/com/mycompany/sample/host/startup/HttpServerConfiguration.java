@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,9 +17,7 @@ import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.interceptors.CustomHeaderInterceptor;
 import com.mycompany.sample.plumbing.interceptors.LoggingInterceptor;
-import com.mycompany.sample.plumbing.spring.CustomAuthenticationEntryPoint;
-import com.mycompany.sample.plumbing.spring.CustomAuthenticationManager;
-import com.mycompany.sample.plumbing.spring.CustomBearerTokenResolver;
+import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
 
 /*
  * A class to manage HTTP configuration for our server
@@ -43,13 +42,14 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     }
 
     /*
-     * Configure API security according to 2020 Spring Security patterns
-     * https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide
+     * Configure API security via a custom authorization filter which allows us to take full control
      */
     @Override
     public void configure(final HttpSecurity http) throws Exception {
 
         var container = this.context.getBeanFactory();
+        var authorizationFilter = new CustomAuthorizationFilter(container);
+
         http
                 .antMatcher(this.apiRequestPaths)
                 .cors()
@@ -59,11 +59,9 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                     .antMatchers("/api/customclaims/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
-                .oauth2ResourceServer()
-                    .bearerTokenResolver(new CustomBearerTokenResolver())
-                    .authenticationManagerResolver(request -> new CustomAuthenticationManager(container, request))
-                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint(container))
-                    .and()
+                .addFilterBefore(
+                        authorizationFilter,
+                        AbstractPreAuthenticatedProcessingFilter.class)
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
