@@ -22,8 +22,6 @@ public final class ClaimsPayload {
 
     public ClaimsPayload(final Object claims) {
 
-        System.out.println(claims.toString());
-
         this.claims = claims;
         this.stringClaimCallback = null;
         this.expirationClaimCallback = null;

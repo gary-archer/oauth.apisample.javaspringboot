@@ -2,12 +2,15 @@ package com.mycompany.sample.host.startup;
 
 import java.util.Arrays;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -89,6 +92,17 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         var headerInterceptor = new CustomHeaderInterceptor(this.loggingConfiguration.getApiName());
         registry.addInterceptor(headerInterceptor)
                 .addPathPatterns(this.apiRequestPaths);
+    }
+
+    /*
+     * My current Authorization Server calls the claims controller without URL encoding so allow this temporarily
+     */
+    @Bean
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+
+        var firewall = new StrictHttpFirewall();
+        firewall.setAllowUrlEncodedPercent(true);
+        return firewall;
     }
 
     /*
