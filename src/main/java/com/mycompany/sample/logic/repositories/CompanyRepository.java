@@ -23,12 +23,12 @@ import com.mycompany.sample.plumbing.logging.LogEntry;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyRepository {
 
-    private final JsonFileReader jsonReader;
-    private final LogEntry logEntry;
+    private final JsonFileReader _jsonReader;
+    private final LogEntry _logEntry;
 
     public CompanyRepository(final JsonFileReader jsonReader, final LogEntry logEntry) {
-        this.jsonReader = jsonReader;
-        this.logEntry = logEntry;
+        this._jsonReader = jsonReader;
+        this._logEntry = logEntry;
     }
 
     /*
@@ -36,9 +36,9 @@ public class CompanyRepository {
      */
     public CompletableFuture<List<Company>> getCompanyList() {
 
-        try (var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyList")) {
+        try (var breakdown = this._logEntry.createPerformanceBreakdown("getCompanyList")) {
 
-            var companies = await(this.jsonReader.readFile("data/companyList.json", Company[].class));
+            var companies = await(this._jsonReader.readFile("data/companyList.json", Company[].class));
             return completedFuture(Arrays.stream(companies).collect(Collectors.toList()));
         }
     }
@@ -49,29 +49,29 @@ public class CompanyRepository {
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
         // Record the time taken for data access
-        try (var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyTransactions")) {
+        try (var breakdown = this._logEntry.createPerformanceBreakdown("getCompanyTransactions")) {
 
             // First read companies data
-            var companies = await(this.jsonReader.readFile("data/companyList.json", Company[].class));
+            var companies = await(this._jsonReader.readFile("data/companyList.json", Company[].class));
 
             // Find the required company
-            Optional<Company> foundCompany = Arrays.stream(companies).filter(c -> c.getId() == companyId).findFirst();
+            Optional<Company> foundCompany = Arrays.stream(companies).filter(c -> c.get_id() == companyId).findFirst();
             if (foundCompany.isPresent()) {
 
                 // Next read transactions
                 var transactions = await(
-                    this.jsonReader.readFile("data/companyTransactions.json",
+                    this._jsonReader.readFile("data/companyTransactions.json",
                     CompanyTransactions[].class));
 
                 // Find the required transactions
                 Optional<CompanyTransactions> foundTransactions =
-                    Arrays.stream(transactions).filter(t -> t.getId() == companyId).findFirst();
+                    Arrays.stream(transactions).filter(t -> t.get_id() == companyId).findFirst();
 
                 if (foundTransactions.isPresent()) {
 
                     // Form composite results
                     var result = foundTransactions.get();
-                    result.setCompany(foundCompany.get());
+                    result.set_company(foundCompany.get());
                     return completedFuture(result);
                 }
             }

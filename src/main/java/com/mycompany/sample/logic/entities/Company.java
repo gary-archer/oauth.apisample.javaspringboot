@@ -1,34 +1,37 @@
 package com.mycompany.sample.logic.entities;
 
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.mycompany.sample.plumbing.utilities.UnderscorePropertyNamingStrategy;
 import lombok.Getter;
 import lombok.Setter;
 
 /*
  * A simple company entity
  */
+@JsonNaming(UnderscorePropertyNamingStrategy.class)
 public class Company {
 
     @Getter
     @Setter
-    private int id;
+    private int _id;
 
     @Getter
     @Setter
-    private String name;
+    private String _name;
 
     @Getter
     @Setter
-    private String region;
+    private String _region;
 
     @Getter
     @Setter
-    private Double targetUsd;
+    private Double _targetUsd;
 
     @Getter
     @Setter
-    private Double investmentUsd;
+    private Double _investmentUsd;
 
     @Getter
     @Setter
-    private int noInvestors;
+    private int _noInvestors;
 }

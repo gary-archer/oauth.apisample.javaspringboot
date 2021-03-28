@@ -40,7 +40,7 @@ public class OAuthInjector {
     @Scope(value = CustomRequestScope.NAME)
     public Authorizer createAuthorizer() {
 
-        if (this.configuration.getStrategy().equals("claims-caching")) {
+        if (this.configuration.get_strategy().equals("claims-caching")) {
 
             var cache = this.container.getBean(ClaimsCache.class);
             var authenticator = this.container.getBean(OAuthAuthenticator.class);
@@ -63,7 +63,7 @@ public class OAuthInjector {
     @Scope(value = CustomRequestScope.NAME)
     public TokenValidator createTokenValidator() {
 
-        if (this.configuration.getTokenValidationStrategy().equals("introspection")) {
+        if (this.configuration.get_tokenValidationStrategy().equals("introspection")) {
 
             return new IntrospectionValidator(this.configuration);
 

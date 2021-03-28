@@ -14,13 +14,13 @@ import lombok.Getter;
 public final class SampleCustomClaims extends CustomClaims {
 
     @Getter
-    private final String userId;
+    private final String _userId;
 
     @Getter
-    private final String userRole;
+    private final String _userRole;
 
     @Getter
-    private final String[] userRegions;
+    private final String[] _userRegions;
 
     public static SampleCustomClaims importData(final JsonNode data) {
 
@@ -41,9 +41,9 @@ public final class SampleCustomClaims extends CustomClaims {
             final String userRole,
             final String[] userRegions) {
 
-        this.userId = userId;
-        this.userRole = userRole;
-        this.userRegions = userRegions;
+        this._userId = userId;
+        this._userRole = userRole;
+        this._userRegions = userRegions;
     }
 
     @Override
@@ -51,11 +51,11 @@ public final class SampleCustomClaims extends CustomClaims {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.put("userId", this.userId);
-        data.put("userRole", this.userRole);
+        data.put("userId", this._userId);
+        data.put("userRole", this._userRole);
 
         var regionsNode = mapper.createArrayNode();
-        for (var region: this.userRegions) {
+        for (var region: this._userRegions) {
             regionsNode.add(region);
         }
 

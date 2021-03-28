@@ -41,8 +41,8 @@ public class UserInfoController {
 
         // Next return the user info
         var userInfo = new ClientUserInfo();
-        userInfo.setGivenName(this._userInfoClaims.get_givenName());
-        userInfo.setFamilyName(this._userInfoClaims.get_familyName());
+        userInfo.set_givenName(this._userInfoClaims.get_givenName());
+        userInfo.set_familyName(this._userInfoClaims.get_familyName());
         return CompletableFuture.completedFuture(userInfo);
     }
 }

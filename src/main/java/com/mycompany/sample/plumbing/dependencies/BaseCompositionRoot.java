@@ -86,19 +86,19 @@ public final class BaseCompositionRoot {
             this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
 
             // Inject the claims cache if using this strategy
-            if (this.oauthConfiguration.getStrategy().equals("claims-caching")) {
+            if (this.oauthConfiguration.get_strategy().equals("claims-caching")) {
 
                 var cache = new ClaimsCache(
-                        this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
+                        this.oauthConfiguration.get_claimsCacheTimeToLiveMinutes(),
                         this.customClaimsProvider,
                         this.loggerFactory);
                 this.container.registerSingleton("ClaimsCache", cache);
             }
 
             // Use a global object that caches JWKS keys if using this strategy
-            if (this.oauthConfiguration.getTokenValidationStrategy().equals("jwt")) {
+            if (this.oauthConfiguration.get_tokenValidationStrategy().equals("jwt")) {
 
-                var jwksUri = new URI(this.oauthConfiguration.getJwksEndpoint());
+                var jwksUri = new URI(this.oauthConfiguration.get_jwksEndpoint());
                 var jwksKeySet = new RemoteJWKSet<>(jwksUri.toURL());
                 this.container.registerSingleton("JWKSKeySet", jwksKeySet);
             }

@@ -64,7 +64,7 @@ public class JwtValidator implements TokenValidator {
 
         } catch (Throwable e) {
 
-            throw ErrorUtils.fromIntrospectionError(e, this.configuration.getIntrospectEndpoint().toString());
+            throw ErrorUtils.fromIntrospectionError(e, this.configuration.get_introspectEndpoint().toString());
         }
     }
 
@@ -108,7 +108,7 @@ public class JwtValidator implements TokenValidator {
 
         } catch (Throwable e) {
 
-            throw ErrorUtils.fromTokenSigningKeysDownloadError(e, this.configuration.getJwksEndpoint());
+            throw ErrorUtils.fromTokenSigningKeysDownloadError(e, this.configuration.get_jwksEndpoint());
         }
     }
 
@@ -141,8 +141,8 @@ public class JwtValidator implements TokenValidator {
      */
     private DefaultJWTClaimsVerifier<SecurityContext> createClaimsVerifier() {
 
-        var issuer = new JWTClaimsSet.Builder().issuer(this.configuration.getIssuer()).build();
-        var audience =  this.configuration.getAudience();
+        var issuer = new JWTClaimsSet.Builder().issuer(this.configuration.get_issuer()).build();
+        var audience =  this.configuration.get_audience();
         if (StringUtils.hasLength(audience)) {
 
             // If there is an audience claim configured then verify it

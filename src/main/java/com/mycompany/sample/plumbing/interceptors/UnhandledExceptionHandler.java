@@ -32,7 +32,7 @@ public final class UnhandledExceptionHandler {
             final LoggingConfiguration configuration) {
 
         this.container = container;
-        this.apiName = configuration.getApiName();
+        this.apiName = configuration.get_apiName();
     }
 
     /*

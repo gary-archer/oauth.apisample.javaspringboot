@@ -51,17 +51,17 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     public void configure(final LoggingConfiguration configuration) {
 
         // Store the name, which will enable this API's logs to be distinguished from other APIs
-        this.apiName = configuration.getApiName();
+        this.apiName = configuration.get_apiName();
 
         // Initialise the production logger
-        var prodConfiguration = configuration.getProduction();
+        var prodConfiguration = configuration.get_production();
         var prodLevelNode = prodConfiguration.get("level");
         var productionLevel = Level.toLevel(prodLevelNode.asText().toUpperCase(), Level.INFO);
         this.configureProductionLogger(productionLevel, prodConfiguration.get("appenders"));
         this.loadPerformanceThresholds(prodConfiguration);
 
         // Initialise any development loggers
-        var devConfiguration = configuration.getDevelopment();
+        var devConfiguration = configuration.get_development();
         this.configureDevelopmentLoggers(devConfiguration);
 
         // Indicate successful configuration

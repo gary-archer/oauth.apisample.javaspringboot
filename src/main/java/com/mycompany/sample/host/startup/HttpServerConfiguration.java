@@ -89,7 +89,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                 .addPathPatterns(this._apiRequestPaths);
 
         // Add a custom header interceptor for testing failure scenarios
-        var headerInterceptor = new CustomHeaderInterceptor(this._loggingConfiguration.getApiName());
+        var headerInterceptor = new CustomHeaderInterceptor(this._loggingConfiguration.get_apiName());
         registry.addInterceptor(headerInterceptor)
                 .addPathPatterns(this._apiRequestPaths);
     }
@@ -111,7 +111,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     private CorsConfigurationSource getCorsConfiguration() {
 
         var configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(this._apiConfiguration.getWebTrustedOrigins()));
+        configuration.setAllowedOrigins(Arrays.asList(this._apiConfiguration.get_webTrustedOrigins()));
         configuration.applyPermitDefaultValues();
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

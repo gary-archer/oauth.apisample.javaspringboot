@@ -38,11 +38,11 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var configuration = reader.readFile("api.config.json", Configuration.class).join();
 
         // Initialise logging from configuration settings
-        _loggerFactory.configure(configuration.getLogging());
+        _loggerFactory.configure(configuration.get_logging());
 
         // Configure API listening details
-        this.configurePort(configuration.getApi());
-        this.configureHttpDebugging(configuration.getApi());
+        this.configurePort(configuration.get_api());
+        this.configureHttpDebugging(configuration.get_api());
         this.configureSsl(configuration);
 
         // Register our custom scope
@@ -51,20 +51,20 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
 
         // Register common code dependencies
         new BaseCompositionRoot(container)
-                .useOAuth(configuration.getOauth())
+                .useOAuth(configuration.get_oauth())
                 .withCustomClaimsProvider(new SampleCustomClaimsProvider())
-                .withLogging(configuration.getLogging(), _loggerFactory)
+                .withLogging(configuration.get_logging(), _loggerFactory)
                 .register();
 
         // Register this app's specific dependencies
-        container.registerSingleton("ApiConfiguration", configuration.getApi());
+        container.registerSingleton("ApiConfiguration", configuration.get_api());
     }
 
     /*
      * Set the HTTP/S port from configuration
      */
     private void configurePort(final ApiConfiguration configuration) {
-        System.setProperty("server.port", Integer.toString(configuration.getPort()));
+        System.setProperty("server.port", Integer.toString(configuration.get_port()));
     }
 
     /*
@@ -72,16 +72,16 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
      */
     private void configureHttpDebugging(final ApiConfiguration configuration) {
 
-        if (configuration.isUseProxy()) {
+        if (configuration.is_useProxy()) {
             try {
 
-                var url = new URL(configuration.getProxyUrl());
+                var url = new URL(configuration.get_proxyUrl());
                 System.setProperty("https.proxyHost", url.getHost());
                 System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
 
             } catch (MalformedURLException ex) {
 
-                var message = String.format("Unable to parse proxy URL %s", configuration.getProxyUrl());
+                var message = String.format("Unable to parse proxy URL %s", configuration.get_proxyUrl());
                 throw new IllegalStateException(message, ex);
             }
         }
@@ -92,12 +92,12 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
      */
     private void configureSsl(final Configuration configuration) {
 
-        if (StringUtils.hasLength(configuration.getApi().getSslCertificateFileName())
-                && StringUtils.hasLength(configuration.getApi().getSslCertificatePassword())) {
+        if (StringUtils.hasLength(configuration.get_api().get_sslCertificateFileName())
+                && StringUtils.hasLength(configuration.get_api().get_sslCertificatePassword())) {
 
             // Reference our SSL certificate details
-            System.setProperty("server.ssl.key-store", configuration.getApi().getSslCertificateFileName());
-            System.setProperty("server.ssl.key-store-password", configuration.getApi().getSslCertificatePassword());
+            System.setProperty("server.ssl.key-store", configuration.get_api().get_sslCertificateFileName());
+            System.setProperty("server.ssl.key-store-password", configuration.get_api().get_sslCertificatePassword());
 
             // Prevent TLS 1.3 errors under load, which show up in our load test otherwise
             // https://bugs.openjdk.java.net/browse/JDK-8241248

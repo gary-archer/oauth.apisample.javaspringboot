@@ -27,12 +27,12 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyService {
 
-    private final CompanyRepository repository;
-    private final SampleCustomClaims claims;
+    private final CompanyRepository _repository;
+    private final SampleCustomClaims _claims;
 
     public CompanyService(final CompanyRepository repository, final CustomClaims claims) {
-        this.repository = repository;
-        this.claims = (SampleCustomClaims) claims;
+        this._repository = repository;
+        this._claims = (SampleCustomClaims) claims;
     }
 
     /*
@@ -41,7 +41,7 @@ public class CompanyService {
     public CompletableFuture<List<Company>> getCompanyList() {
 
         // Use a micro services approach of getting all data
-        var companies = await(this.repository.getCompanyList());
+        var companies = await(this._repository.getCompanyList());
 
         // Filter on what the user is allowed to access
         return completedFuture(
@@ -56,8 +56,8 @@ public class CompanyService {
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
         // Deny access if required
-        var data = await(this.repository.getCompanyTransactions(companyId));
-        if (data == null || !this.isUserAuthorizedForCompany(data.getCompany())) {
+        var data = await(this._repository.getCompanyTransactions(companyId));
+        if (data == null || !this.isUserAuthorizedForCompany(data.get_company())) {
             throw this.unauthorizedError(companyId);
         }
 
@@ -69,12 +69,12 @@ public class CompanyService {
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 
-        var isAdmin = this.claims.getUserRole().toLowerCase().contains("admin");
+        var isAdmin = this._claims.get_userRole().toLowerCase().contains("admin");
         if (isAdmin) {
             return true;
         }
 
-        return Arrays.stream(this.claims.getUserRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
+        return Arrays.stream(this._claims.get_userRegions()).anyMatch(ur -> ur.equals(company.get_region()));
     }
 
     /*

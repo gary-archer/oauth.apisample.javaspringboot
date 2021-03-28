@@ -40,11 +40,11 @@ public class ClaimsController {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.put("user_id", claims.getUserId());
-        data.put("user_role", claims.getUserRole());
+        data.put("user_id", claims.get_userId());
+        data.put("user_role", claims.get_userRole());
 
         var regionsNode = mapper.createArrayNode();
-        for (String region: claims.getUserRegions()) {
+        for (String region: claims.get_userRegions()) {
             regionsNode.add(region);
         }
 

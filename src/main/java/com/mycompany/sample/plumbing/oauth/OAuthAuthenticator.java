@@ -57,7 +57,7 @@ public class OAuthAuthenticator {
         try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
             // Make the request
-            var userInfoUrl = new URI(this.configuration.getUserInfoEndpoint());
+            var userInfoUrl = new URI(this.configuration.get_userInfoEndpoint());
             HTTPResponse httpResponse = new UserInfoRequest(userInfoUrl, new BearerAccessToken(accessToken))
                     .toHTTPRequest()
                     .send();
@@ -68,7 +68,7 @@ public class OAuthAuthenticator {
                 var errorResponse = UserInfoErrorResponse.parse(httpResponse);
                 throw ErrorUtils.fromUserInfoError(
                         errorResponse.getErrorObject(),
-                        this.configuration.getUserInfoEndpoint());
+                        this.configuration.get_userInfoEndpoint());
             }
 
             // Get claims from the response
@@ -82,7 +82,7 @@ public class OAuthAuthenticator {
         } catch (Throwable e) {
 
             // Report exceptions
-            throw ErrorUtils.fromUserInfoError(e, this.configuration.getUserInfoEndpoint());
+            throw ErrorUtils.fromUserInfoError(e, this.configuration.get_userInfoEndpoint());
         }
     }
 
