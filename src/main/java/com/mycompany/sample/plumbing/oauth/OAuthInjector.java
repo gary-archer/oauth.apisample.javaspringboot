@@ -10,7 +10,6 @@ import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.oauth.tokenvalidation.IntrospectionValidator;
 import com.mycompany.sample.plumbing.oauth.tokenvalidation.JwtValidator;
 import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
@@ -42,18 +41,16 @@ public class OAuthInjector {
     @Scope(value = CustomRequestScope.NAME)
     public Authorizer createAuthorizer() {
 
+        var authenticator = this._container.getBean(OAuthAuthenticator.class);
+        var customClaimsProvider = this._container.getBean(CustomClaimsProvider.class);
+
         if (this._configuration.get_strategy().equals("claims-caching")) {
 
             var cache = this._container.getBean(ClaimsCache.class);
-            var authenticator = this._container.getBean(OAuthAuthenticator.class);
-            var customClaimsProvider = this._container.getBean(CustomClaimsProvider.class);
-            var logEntry = this._container.getBean(LogEntryImpl.class);
-            return new ClaimsCachingAuthorizer(cache, authenticator, customClaimsProvider, logEntry);
+            return new ClaimsCachingAuthorizer(cache, authenticator, customClaimsProvider);
 
         } else {
 
-            var authenticator = this._container.getBean(OAuthAuthenticator.class);
-            var customClaimsProvider = this._container.getBean(CustomClaimsProvider.class);
             return new StandardAuthorizer(authenticator, customClaimsProvider);
         }
     }

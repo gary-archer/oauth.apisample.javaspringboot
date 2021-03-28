@@ -6,7 +6,6 @@ import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 
 /*
  * An authorizer that manages claims in an extensible manner, with the ability to use claims from the API's own data
@@ -16,18 +15,15 @@ public final class ClaimsCachingAuthorizer implements Authorizer {
     private final ClaimsCache _cache;
     private final OAuthAuthenticator _authenticator;
     private final CustomClaimsProvider _customClaimsProvider;
-    private final LogEntryImpl _logEntry;
 
     public ClaimsCachingAuthorizer(
             final ClaimsCache cache,
             final OAuthAuthenticator authenticator,
-            final CustomClaimsProvider customClaimsProvider,
-            final LogEntryImpl logEntry) {
+            final CustomClaimsProvider customClaimsProvider) {
 
         this._cache = cache;
         this._authenticator = authenticator;
         this._customClaimsProvider = customClaimsProvider;
-        this._logEntry = logEntry;
     }
 
     /*
@@ -49,10 +45,6 @@ public final class ClaimsCachingAuthorizer implements Authorizer {
             return cachedClaims;
         }
 
-        // Create a child log entry for authentication related work
-        // This ensures that any errors and performances in this area are reported separately to business logic
-        var authorizationLogEntry = this._logEntry.createChild("authorizer");
-
         // Validate the token and read token claims
         var baseClaims = this._authenticator.validateToken(accessToken);
 
@@ -64,9 +56,6 @@ public final class ClaimsCachingAuthorizer implements Authorizer {
 
         // Cache the claims against the token hash until the token's expiry time
         this._cache.addClaimsForToken(accessTokenHash, claims);
-
-        // Finish logging here, and on exception the child is disposed by logging classes
-        authorizationLogEntry.close();
         return claims;
     }
 

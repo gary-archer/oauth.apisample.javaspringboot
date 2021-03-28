@@ -1,6 +1,5 @@
 package com.mycompany.sample.plumbing.logging;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -23,16 +22,11 @@ import com.mycompany.sample.plumbing.errors.ServerError;
  */
 public final class LogEntryImpl implements LogEntry {
 
-    // The logger and its state
     private final Logger _logger;
-    private final Function<String, Integer> _performanceThresholdCallback;
+    private final LogEntryData _data;
     private boolean _started;
     private boolean _finished;
-
-    // Data logged
-    private final LogEntryData _data;
-    private final ArrayList<LogEntryData> _children;
-    private LogEntryData _activeChild;
+    private final Function<String, Integer> _performanceThresholdCallback;
 
     /*
      * The default constructor
@@ -57,8 +51,6 @@ public final class LogEntryImpl implements LogEntry {
 
         // Initialise log data
         this._data = new LogEntryData();
-        this._children = new ArrayList<>();
-        this._activeChild = null;
 
         // Set initial fields
         this._data.set_apiName(apiName);
@@ -121,7 +113,7 @@ public final class LogEntryImpl implements LogEntry {
      */
     @Override
     public PerformanceBreakdown createPerformanceBreakdown(final String name) {
-        return this.current().get_performance().createChild(name);
+        return this._data.get_performance().createChild(name);
     }
 
     /*
@@ -138,17 +130,17 @@ public final class LogEntryImpl implements LogEntry {
      * Add a 5xx error to the log data
      */
     public void setServerError(final ServerError error) {
-        this.current().set_errorData(error.toLogFormat(this._data.get_apiName()));
-        this.current().set_errorCode(error.getErrorCode());
-        this.current().set_errorId(error.getInstanceId());
+        this._data.set_errorData(error.toLogFormat(this._data.get_apiName()));
+        this._data.set_errorCode(error.getErrorCode());
+        this._data.set_errorId(error.getInstanceId());
     }
 
     /*
      * Add a 4xx error to the log data
      */
     public void setClientError(final ClientError error) {
-        this.current().set_errorData(error.toLogFormat());
-        this.current().set_errorCode(error.getErrorCode());
+        this._data.set_errorData(error.toLogFormat());
+        this._data.set_errorCode(error.getErrorCode());
     }
 
     /*
@@ -156,30 +148,7 @@ public final class LogEntryImpl implements LogEntry {
      */
     @Override
     public void addInfo(final JsonNode info) {
-        this.current().get_infoData().add(info);
-    }
-
-    /*
-     * Start a child operation, which gets its own JSON log output
-     */
-    @Override
-    public ChildLogEntry createChild(final String name) {
-
-        // Fail if used incorrectly
-        if (this._activeChild != null) {
-            throw new IllegalStateException(
-                    "The previous child operation must be completed before a new child can be started");
-        }
-
-        // Initialise the child
-        this._activeChild = new LogEntryData();
-        this._activeChild.set_performanceThresholdMilliseconds(this._performanceThresholdCallback.apply(name));
-        this._activeChild.set_operationName(name);
-        this._activeChild.get_performance().start();
-
-        // Add to the parent and return an object to simplify disposal
-        this._children.add(this._activeChild);
-        return new ChildLogEntry(this);
+        this._data.get_infoData().add(info);
     }
 
     /*
@@ -196,9 +165,6 @@ public final class LogEntryImpl implements LogEntry {
             // Set details that are not available at the start of a request
             this.setOperationName(request, handlerMapping);
 
-            // If an active child operation needs ending (due to exceptions) then we do it here
-            this.endChildOperation();
-
             // Finish performance measurements
             this._data.get_performance().close();
 
@@ -207,37 +173,14 @@ public final class LogEntryImpl implements LogEntry {
 
             // Do normal finalisation, such as setting denormalised fields
             this._data.finalise();
-
-            // Finalise data related to child log entries, to copy data points between parent and children
-            for (var child : this._children) {
-                child.finalise();
-                child.updateFromParent(this._data);
-                this._data.updateFromChild(child);
-            }
         }
     }
 
     /*
-     * Output any child data and then the parent data
+     * Output the data
      */
     public void write() {
-
-        for (var child : this._children) {
-            this.writeDataItem(child);
-        }
-
         this.writeDataItem(this._data);
-    }
-
-    /*
-     * Complete the active child operation
-     */
-    public void endChildOperation() {
-
-        if (this._activeChild != null) {
-            this._activeChild.get_performance().close();
-            this._activeChild = null;
-        }
     }
 
     /*
@@ -294,18 +237,6 @@ public final class LogEntryImpl implements LogEntry {
 
         } catch (Throwable ex) {
             return null;
-        }
-    }
-
-    /*
-     * Get the data to use when a child operation needs to be managed
-     */
-    private LogEntryData current() {
-
-        if (this._activeChild != null) {
-            return this._activeChild;
-        } else {
-            return this._data;
         }
     }
 

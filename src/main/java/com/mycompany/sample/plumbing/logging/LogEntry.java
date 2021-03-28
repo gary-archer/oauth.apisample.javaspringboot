@@ -12,7 +12,4 @@ public interface LogEntry {
 
     // Add arbitrary data to include in logs
     void addInfo(JsonNode info);
-
-    // Our sample logs OAuth authorization as a child log entry
-    ChildLogEntry createChild(String name);
 }

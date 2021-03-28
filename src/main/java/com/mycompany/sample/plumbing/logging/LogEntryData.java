@@ -114,33 +114,6 @@ public final class LogEntryData {
     }
 
     /*
-     * For child items, this receives common properties from the parent
-     */
-    public void updateFromParent(final LogEntryData parent) {
-
-        // Set fixed fields from the parent
-        this._apiName = parent._apiName;
-        this._hostName = parent._hostName;
-        this._requestVerb = parent._requestVerb;
-        this._resourceId = parent._resourceId;
-        this._requestPath = parent._requestPath;
-        this._clientApplicationName = parent._clientApplicationName;
-        this._userOAuthId = parent._userOAuthId;
-        this._correlationId = parent._correlationId;
-        this._sessionId = parent._sessionId;
-    }
-
-    /*
-     * This adjusts the parent data from a child
-     */
-    public void updateFromChild(final LogEntryData child) {
-
-        // Exclude the child's execution time from the parent
-        this._performance.setMillisecondsTaken(this._performance.getMillisecondsTaken() - child._millisecondsTaken);
-        this._millisecondsTaken -= child._millisecondsTaken;
-    }
-
-    /*
      * Produce the output format
      */
     public ObjectNode toLogFormat() {
