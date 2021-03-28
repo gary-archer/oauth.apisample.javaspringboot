@@ -16,13 +16,13 @@ import lombok.Getter;
 public class BaseClaims {
 
     @Getter
-    private final String subject;
+    private final String _subject;
 
     @Getter
-    private final String[] scopes;
+    private final String[] _scopes;
 
     @Getter
-    private final int expiry;
+    private final int _expiry;
 
     /*
      * Read claims from the claims cache
@@ -37,9 +37,9 @@ public class BaseClaims {
 
     public BaseClaims(final String subject, final String[] scopes, final int expiry) {
 
-        this.subject = subject;
-        this.scopes = scopes;
-        this.expiry = expiry;
+        this._subject = subject;
+        this._scopes = scopes;
+        this._expiry = expiry;
     }
 
     /*
@@ -49,9 +49,9 @@ public class BaseClaims {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.put("subject", this.subject);
-        data.put("scopes", String.join(" ", this.scopes));
-        data.put("expiry", this.expiry);
+        data.put("subject", this._subject);
+        data.put("scopes", String.join(" ", this._scopes));
+        data.put("expiry", this._expiry);
         return data;
     }
 
@@ -60,7 +60,7 @@ public class BaseClaims {
      */
     public void verifyScope(final String scope) {
 
-        var found = Arrays.stream(this.scopes).filter(s -> s.contains(scope)).findFirst();
+        var found = Arrays.stream(this._scopes).filter(s -> s.contains(scope)).findFirst();
         if (found.isEmpty()) {
             throw ErrorFactory.createClientError(
                     HttpStatus.FORBIDDEN,

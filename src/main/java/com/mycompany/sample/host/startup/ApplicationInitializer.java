@@ -18,13 +18,13 @@ import com.mycompany.sample.plumbing.logging.LoggerFactory;
  */
 public final class ApplicationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private final LoggerFactory loggerFactory;
+    private final LoggerFactory _loggerFactory;
 
     /*
      * Receive the logger at startup
      */
     public ApplicationInitializer(final LoggerFactory loggerFactory) {
-        this.loggerFactory = loggerFactory;
+        this._loggerFactory = loggerFactory;
     }
 
     /*
@@ -38,7 +38,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var configuration = reader.readFile("api.config.json", Configuration.class).join();
 
         // Initialise logging from configuration settings
-        loggerFactory.configure(configuration.getLogging());
+        _loggerFactory.configure(configuration.getLogging());
 
         // Configure API listening details
         this.configurePort(configuration.getApi());
@@ -53,7 +53,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         new BaseCompositionRoot(container)
                 .useOAuth(configuration.getOauth())
                 .withCustomClaimsProvider(new SampleCustomClaimsProvider())
-                .withLogging(configuration.getLogging(), loggerFactory)
+                .withLogging(configuration.getLogging(), _loggerFactory)
                 .register();
 
         // Register this app's specific dependencies

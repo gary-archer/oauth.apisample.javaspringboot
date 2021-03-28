@@ -26,15 +26,15 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyController {
 
-    private final CompanyService service;
-    private final BaseClaims claims;
+    private final CompanyService _service;
+    private final BaseClaims _claims;
 
     /*
      * The claims resolver is injected into the controller after OAuth processing
      */
     public CompanyController(final CompanyService service, final BaseClaims claims) {
-        this.service = service;
-        this.claims = claims;
+        this._service = service;
+        this._claims = claims;
     }
 
     /*
@@ -44,10 +44,10 @@ public class CompanyController {
     public CompletableFuture<List<Company>> getCompanyList() {
 
         // First check scopes
-        this.claims.verifyScope("transactions_read");
+        this._claims.verifyScope("transactions_read");
 
         // Next return filtered data based on claims
-        return this.service.getCompanyList();
+        return this._service.getCompanyList();
     }
 
     /*
@@ -58,7 +58,7 @@ public class CompanyController {
             @PathVariable("companyId") final String companyId) {
 
         // First check scopes
-        this.claims.verifyScope("transactions_read");
+        this._claims.verifyScope("transactions_read");
 
         // Throw a 400 error if we have an invalid id
         var idValue = Ints.tryParse(companyId);
@@ -70,6 +70,6 @@ public class CompanyController {
         }
 
         // Next authorize access based on claims
-        return this.service.getCompanyTransactions(idValue);
+        return this._service.getCompanyTransactions(idValue);
     }
 }

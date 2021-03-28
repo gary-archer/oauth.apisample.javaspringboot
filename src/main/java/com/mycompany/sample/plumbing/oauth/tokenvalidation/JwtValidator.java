@@ -57,9 +57,9 @@ public class JwtValidator implements TokenValidator {
 
             // Return a payload object that will be read later
             var payload = new ClaimsPayload(data);
-            payload.setStringClaimCallback(this::getStringClaim);
-            payload.setStringArrayClaimCallback(this::getStringArrayClaim);
-            payload.setExpirationClaimCallback(this::getExpirationClaim);
+            payload.set_stringClaimCallback(this::getStringClaim);
+            payload.set_stringArrayClaimCallback(this::getStringArrayClaim);
+            payload.set_expirationClaimCallback(this::getExpirationClaim);
             return payload;
 
         } catch (Throwable e) {

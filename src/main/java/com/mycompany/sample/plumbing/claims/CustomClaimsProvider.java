@@ -43,9 +43,9 @@ public class CustomClaimsProvider {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.set("token", claims.getToken().exportData());
-        data.set("userInfo", claims.getUserInfo().exportData());
-        data.set("custom", claims.getCustom().exportData());
+        data.set("token", claims.get_token().exportData());
+        data.set("userInfo", claims.get_userInfo().exportData());
+        data.set("custom", claims.get_custom().exportData());
         return data.toString();
     }
 

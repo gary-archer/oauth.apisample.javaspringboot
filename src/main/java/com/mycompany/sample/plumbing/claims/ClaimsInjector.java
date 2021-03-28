@@ -24,7 +24,7 @@ public class ClaimsInjector {
 
         var claims = this.getClaims();
         if (claims != null) {
-            return claims.getToken();
+            return claims.get_token();
         }
 
         return null;
@@ -39,7 +39,7 @@ public class ClaimsInjector {
 
         var claims = this.getClaims();
         if (claims != null) {
-            return claims.getUserInfo();
+            return claims.get_userInfo();
         }
 
         return null;
@@ -54,7 +54,7 @@ public class ClaimsInjector {
 
         var claims = this.getClaims();
         if (claims != null) {
-            return claims.getCustom();
+            return claims.get_custom();
         }
 
         return null;

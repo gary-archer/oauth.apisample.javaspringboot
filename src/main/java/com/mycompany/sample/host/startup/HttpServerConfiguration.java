@@ -29,19 +29,19 @@ import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    private final ApiConfiguration apiConfiguration;
-    private final LoggingConfiguration loggingConfiguration;
-    private final ConfigurableApplicationContext context;
-    private final String apiRequestPaths = "/api/**";
+    private final ApiConfiguration _apiConfiguration;
+    private final LoggingConfiguration _loggingConfiguration;
+    private final ConfigurableApplicationContext _context;
+    private final String _apiRequestPaths = "/api/**";
 
     public HttpServerConfiguration(
             final ApiConfiguration apiConfiguration,
             final LoggingConfiguration loggingConfiguration,
             final ConfigurableApplicationContext context) {
 
-        this.apiConfiguration = apiConfiguration;
-        this.loggingConfiguration = loggingConfiguration;
-        this.context = context;
+        this._apiConfiguration = apiConfiguration;
+        this._loggingConfiguration = loggingConfiguration;
+        this._context = context;
     }
 
     /*
@@ -50,11 +50,11 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     @Override
     public void configure(final HttpSecurity http) throws Exception {
 
-        var container = this.context.getBeanFactory();
+        var container = this._context.getBeanFactory();
         var authorizationFilter = new CustomAuthorizationFilter(container);
 
         http
-                .antMatcher(this.apiRequestPaths)
+                .antMatcher(this._apiRequestPaths)
                 .cors()
                     .configurationSource(this.getCorsConfiguration())
                     .and()
@@ -84,14 +84,14 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     public void addInterceptors(final InterceptorRegistry registry) {
 
         // Add the logging interceptor
-        var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory());
+        var loggingInterceptor = new LoggingInterceptor(this._context.getBeanFactory());
         registry.addInterceptor(loggingInterceptor)
-                .addPathPatterns(this.apiRequestPaths);
+                .addPathPatterns(this._apiRequestPaths);
 
         // Add a custom header interceptor for testing failure scenarios
-        var headerInterceptor = new CustomHeaderInterceptor(this.loggingConfiguration.getApiName());
+        var headerInterceptor = new CustomHeaderInterceptor(this._loggingConfiguration.getApiName());
         registry.addInterceptor(headerInterceptor)
-                .addPathPatterns(this.apiRequestPaths);
+                .addPathPatterns(this._apiRequestPaths);
     }
 
     /*
@@ -111,11 +111,11 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
     private CorsConfigurationSource getCorsConfiguration() {
 
         var configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(this.apiConfiguration.getWebTrustedOrigins()));
+        configuration.setAllowedOrigins(Arrays.asList(this._apiConfiguration.getWebTrustedOrigins()));
         configuration.applyPermitDefaultValues();
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration(this.apiRequestPaths, configuration);
+        source.registerCorsConfiguration(this._apiRequestPaths, configuration);
         return source;
     }
 }

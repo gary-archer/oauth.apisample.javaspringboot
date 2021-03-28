@@ -12,13 +12,13 @@ import lombok.Getter;
 public class UserInfoClaims {
 
     @Getter
-    private final String givenName;
+    private final String _givenName;
 
     @Getter
-    private final String familyName;
+    private final String _familyName;
 
     @Getter
-    private final String email;
+    private final String _email;
 
     public static UserInfoClaims importData(final JsonNode data) {
 
@@ -30,18 +30,18 @@ public class UserInfoClaims {
 
     public UserInfoClaims(final String givenName, final String familyName, final String email) {
 
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.email = email;
+        this._givenName = givenName;
+        this._familyName = familyName;
+        this._email = email;
     }
 
     public ObjectNode exportData() {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.put("givenName", this.givenName);
-        data.put("familyName", this.familyName);
-        data.put("email", this.email);
+        data.put("givenName", this._givenName);
+        data.put("familyName", this._familyName);
+        data.put("email", this._email);
         return data;
     }
 }

@@ -69,8 +69,8 @@ public class IntrospectionValidator implements TokenValidator {
 
             // Return a payload object that will be read later
             var payload = new ClaimsPayload(data);
-            payload.setStringClaimCallback(this::getStringClaim);
-            payload.setExpirationClaimCallback(this::getExpirationClaim);
+            payload.set_stringClaimCallback(this::getStringClaim);
+            payload.set_expirationClaimCallback(this::getExpirationClaim);
             return payload;
 
         } catch (Throwable e) {

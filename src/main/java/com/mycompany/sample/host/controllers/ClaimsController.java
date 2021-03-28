@@ -22,10 +22,10 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsController {
 
-    private final SampleCustomClaimsProvider customClaimsProvider;
+    private final SampleCustomClaimsProvider _customClaimsProvider;
 
     public ClaimsController(final SampleCustomClaimsProvider customClaimsProvider) {
-        this.customClaimsProvider = customClaimsProvider;
+        this._customClaimsProvider = customClaimsProvider;
     }
 
     /*
@@ -36,7 +36,7 @@ public class ClaimsController {
     public CompletableFuture<ObjectNode> getCustomClaims(
             @PathVariable("subject") final String subject) {
 
-        var claims = this.customClaimsProvider.supplyCustomClaimsFromSubject(subject);
+        var claims = this._customClaimsProvider.supplyCustomClaimsFromSubject(subject);
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();

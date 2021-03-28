@@ -1,7 +1,9 @@
 package com.mycompany.sample.logic.entities;
 
+import java.util.ArrayList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import lombok.Getter;
@@ -24,9 +26,14 @@ public final class SampleCustomClaims extends CustomClaims {
 
         var userDatabaseId = data.get("userId").asText();
         var userRole = data.get("userRole").asText();
-        var userRegions = data.findValuesAsText("userRegions").toArray(new String[0]);
 
-        return new SampleCustomClaims(userDatabaseId, userRole, userRegions);
+        var regionsNode = (ArrayNode) data.get("userRegions");
+        var userRegions = new ArrayList<String>();
+        regionsNode.forEach((n) -> {
+            userRegions.add(n.asText());
+        });
+
+        return new SampleCustomClaims(userDatabaseId, userRole, userRegions.toArray(String[]::new));
     }
 
     public SampleCustomClaims(

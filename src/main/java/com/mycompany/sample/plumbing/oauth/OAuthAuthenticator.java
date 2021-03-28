@@ -76,7 +76,7 @@ public class OAuthAuthenticator {
 
             // Return a payload object that will be read later
             var payload = new ClaimsPayload(userInfo);
-            payload.setStringClaimCallback(this::getStringClaim);
+            payload.set_stringClaimCallback(this::getStringClaim);
             return payload;
 
         } catch (Throwable e) {

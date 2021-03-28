@@ -10,51 +10,51 @@ import lombok.Setter;
  */
 public final class ClaimsPayload {
 
-    private final Object claims;
+    private final Object _claims;
 
     @Getter
     @Setter
-    private BiFunction<Object, String, String> stringClaimCallback;
+    private BiFunction<Object, String, String> _stringClaimCallback;
 
     @Getter
     @Setter
-    private BiFunction<Object, String, String[]> stringArrayClaimCallback;
+    private BiFunction<Object, String, String[]> _stringArrayClaimCallback;
 
     @Getter
     @Setter
-    private Function<Object, Long> expirationClaimCallback;
+    private Function<Object, Long> _expirationClaimCallback;
 
     public ClaimsPayload(final Object claims) {
 
-        this.claims = claims;
-        this.stringClaimCallback = null;
-        this.expirationClaimCallback = null;
+        this._claims = claims;
+        this._stringClaimCallback = null;
+        this._expirationClaimCallback = null;
     }
 
     public String getStringClaim(final String key) {
 
-        if (this.stringClaimCallback == null) {
+        if (this._stringClaimCallback == null) {
             throw new RuntimeException("stringClaimCallback is null in the ClaimsPayload class");
         }
 
-        return this.stringClaimCallback.apply(this.claims, key);
+        return this._stringClaimCallback.apply(this._claims, key);
     }
 
     public String[] getStringArrayClaim(final String key) {
 
-        if (this.stringArrayClaimCallback == null) {
+        if (this._stringArrayClaimCallback == null) {
             throw new RuntimeException("stringArrayClaimCallback is null in the ClaimsPayload class");
         }
 
-        return this.stringArrayClaimCallback.apply(this.claims, key);
+        return this._stringArrayClaimCallback.apply(this._claims, key);
     }
 
     public int getExpirationClaim() {
 
-        if (this.expirationClaimCallback == null) {
+        if (this._expirationClaimCallback == null) {
             throw new RuntimeException("expirationClaimCallback callback is null in the ClaimsPayload class");
         }
 
-        return this.expirationClaimCallback.apply(this.claims).intValue();
+        return this._expirationClaimCallback.apply(this._claims).intValue();
     }
 }

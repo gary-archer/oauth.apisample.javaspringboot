@@ -10,27 +10,27 @@ import lombok.Getter;
 public class ApiClaims implements AuthenticatedPrincipal {
 
     @Getter
-    private final BaseClaims token;
+    private final BaseClaims _token;
 
     @Getter
-    private final UserInfoClaims userInfo;
+    private final UserInfoClaims _userInfo;
 
     @Getter
-    private final CustomClaims custom;
+    private final CustomClaims _custom;
 
     public ApiClaims(
             final BaseClaims token,
             final UserInfoClaims userInfo,
             final CustomClaims custom) {
 
-        this.token = token;
-        this.userInfo = userInfo;
-        this.custom = custom;
+        this._token = token;
+        this._userInfo = userInfo;
+        this._custom = custom;
     }
 
     // Use the access token subject claim as the technical user name
     @Override
     public String getName() {
-        return this.getToken().getSubject();
+        return this._token.get_subject();
     }
 }

@@ -19,15 +19,15 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class UserInfoController {
 
-    private final BaseClaims baseClaims;
-    private final UserInfoClaims userInfoClaims;
+    private final BaseClaims _baseClaims;
+    private final UserInfoClaims _userInfoClaims;
 
     /*
      * The claims resolver is injected into the controller after OAuth processing
      */
     public UserInfoController(final BaseClaims baseClaims, final UserInfoClaims userInfoClaims) {
-        this.baseClaims = baseClaims;
-        this.userInfoClaims = userInfoClaims;
+        this._baseClaims = baseClaims;
+        this._userInfoClaims = userInfoClaims;
     }
 
     /*
@@ -37,12 +37,12 @@ public class UserInfoController {
     public CompletableFuture<ClientUserInfo> getUserClaims() {
 
         // First check scopes
-        this.baseClaims.verifyScope("profile");
+        this._baseClaims.verifyScope("profile");
 
         // Next return the user info
         var userInfo = new ClientUserInfo();
-        userInfo.setGivenName(this.userInfoClaims.getGivenName());
-        userInfo.setFamilyName(this.userInfoClaims.getFamilyName());
+        userInfo.setGivenName(this._userInfoClaims.get_givenName());
+        userInfo.setFamilyName(this._userInfoClaims.get_familyName());
         return CompletableFuture.completedFuture(userInfo);
     }
 }

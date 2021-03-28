@@ -1,13 +1,10 @@
-1. Cognito problems
-   Not found - problems with user region claims in CompanyService
-
-2. Consolidation
+1. Consolidation
 - NodeJS to use a ClaimsPayload and be updated equivalently
 - Use an injected proxy object
 - PerformanceBreakdown to include JWK download time
 - Get rid of extra authorizer log entry
 
-3. Java and underscores:
+2. Java and underscores for private fields:
 - checkstyle
 - serialization
 - Lombok
