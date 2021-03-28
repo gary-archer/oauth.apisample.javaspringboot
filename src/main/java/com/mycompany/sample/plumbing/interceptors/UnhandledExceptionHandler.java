@@ -21,8 +21,8 @@ import com.mycompany.sample.plumbing.utilities.ResponseWriter;
 @RestControllerAdvice
 public final class UnhandledExceptionHandler {
 
-    private final BeanFactory container;
-    private final String apiName;
+    private final BeanFactory _container;
+    private final String _apiName;
 
     /*
      * The exception handler requires the name of the API
@@ -31,8 +31,8 @@ public final class UnhandledExceptionHandler {
             final BeanFactory container,
             final LoggingConfiguration configuration) {
 
-        this.container = container;
-        this.apiName = configuration.get_apiName();
+        this._container = container;
+        this._apiName = configuration.get_apiName();
     }
 
     /*
@@ -42,7 +42,7 @@ public final class UnhandledExceptionHandler {
     public ResponseEntity<String> handleException(final HttpServletRequest request, final Throwable ex) {
 
         // Get the log entry for the current request
-        var logEntry = this.container.getBean(LogEntryImpl.class);
+        var logEntry = this._container.getBean(LogEntryImpl.class);
 
         // Add error details to logs and get the error to return to the client
         var clientError = this.handleError(ex, logEntry);
@@ -58,7 +58,7 @@ public final class UnhandledExceptionHandler {
             final Throwable ex) {
 
         // Get the current log entry
-        var logEntry = this.container.getBean(LogEntryImpl.class);
+        var logEntry = this._container.getBean(LogEntryImpl.class);
 
         // Add error details to logs and get the error to return to the client
         var clientError = this.handleError(ex, logEntry);
@@ -67,7 +67,7 @@ public final class UnhandledExceptionHandler {
         response.setStatus(clientError.getStatusCode().value());
 
         // Finish logging of failed requests
-        var handlerMappings = this.container.getBean(RequestMappingHandlerMapping.class);
+        var handlerMappings = this._container.getBean(RequestMappingHandlerMapping.class);
         logEntry.end(request, response, handlerMappings);
         logEntry.write();
 
@@ -91,7 +91,7 @@ public final class UnhandledExceptionHandler {
             // Handle 5xx errors
             var serverError = (ServerError) error;
             logEntry.setServerError(serverError);
-            return serverError.toClientError(this.apiName);
+            return serverError.toClientError(this._apiName);
 
         } else {
 

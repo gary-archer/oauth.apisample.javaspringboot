@@ -17,64 +17,64 @@ import lombok.Data;
 public final class LogEntryData {
 
     // A unique generated client side id, which becomes the unique id in the aggregated logs database
-    private String id;
+    private String _id;
 
     // The time when the API received the request
-    private Instant utcTime;
+    private Instant _utcTime;
 
     // The name of the API
-    private String apiName;
+    private String _apiName;
 
     // The operation called
-    private String operationName;
+    private String _operationName;
 
     // The host on which the request was processed
-    private String hostName;
+    private String _hostName;
 
     // The HTTP verb
-    private String requestVerb;
+    private String _requestVerb;
 
     // The request path
-    private String requestPath;
+    private String _requestPath;
 
     // The resource id(s) in the request URL path segments is often useful to query by
-    private String resourceId;
+    private String _resourceId;
 
     // The application that called the API
-    private String clientApplicationName;
+    private String _clientApplicationName;
 
     // The subject claim from the OAuth 2.0 access token
-    private String userOAuthId;
+    private String _userOAuthId;
 
     // The status code returned
-    private int statusCode;
+    private int _statusCode;
 
     // The time taken in API code
-    private long millisecondsTaken;
+    private long _millisecondsTaken;
 
     // A time beyond which performance is considered 'slow'
-    private int performanceThresholdMilliseconds;
+    private int _performanceThresholdMilliseconds;
 
     // The error code for requests that failed
-    private String errorCode;
+    private String _errorCode;
 
     // The specific error instance id, for 500 errors
-    private int errorId;
+    private int _errorId;
 
     // The correlation id, used to link related API requests together
-    private String correlationId;
+    private String _correlationId;
 
     // A session id, to group related calls from a client together
-    private String sessionId;
+    private String _sessionId;
 
     // An object containing performance data, written when performance is slow
-    private PerformanceBreakdownImpl performance;
+    private PerformanceBreakdownImpl _performance;
 
     // An object containing error data, written for failed requests
-    private ObjectNode errorData;
+    private ObjectNode _errorData;
 
     // Can be populated in scenarios when extra text is useful
-    private ArrayList<JsonNode> infoData;
+    private ArrayList<JsonNode> _infoData;
 
     /*
      * Give fields default values
@@ -82,35 +82,35 @@ public final class LogEntryData {
     public LogEntryData() {
 
         // Queryable fields
-        this.id = UUID.randomUUID().toString();
-        this.utcTime = Instant.now();
-        this.apiName = "";
-        this.operationName = "";
-        this.hostName = "";
-        this.requestVerb = "";
-        this.resourceId = "";
-        this.requestPath = "";
-        this.clientApplicationName = "";
-        this.userOAuthId = "";
-        this.statusCode = 0;
-        this.millisecondsTaken = 0;
-        this.performanceThresholdMilliseconds = 0;
-        this.errorCode = "";
-        this.errorId = 0;
-        this.correlationId = "";
-        this.sessionId = "";
+        this._id = UUID.randomUUID().toString();
+        this._utcTime = Instant.now();
+        this._apiName = "";
+        this._operationName = "";
+        this._hostName = "";
+        this._requestVerb = "";
+        this._resourceId = "";
+        this._requestPath = "";
+        this._clientApplicationName = "";
+        this._userOAuthId = "";
+        this._statusCode = 0;
+        this._millisecondsTaken = 0;
+        this._performanceThresholdMilliseconds = 0;
+        this._errorCode = "";
+        this._errorId = 0;
+        this._correlationId = "";
+        this._sessionId = "";
 
         // Objects
-        this.performance = new PerformanceBreakdownImpl("total");
-        this.errorData = null;
-        this.infoData = new ArrayList<>();
+        this._performance = new PerformanceBreakdownImpl("total");
+        this._errorData = null;
+        this._infoData = new ArrayList<>();
     }
 
     /*
      * Set fields at the end of a log entry
      */
     public void finalise() {
-        this.millisecondsTaken = this.performance.getMillisecondsTaken();
+        this._millisecondsTaken = this._performance.getMillisecondsTaken();
     }
 
     /*
@@ -119,15 +119,15 @@ public final class LogEntryData {
     public void updateFromParent(final LogEntryData parent) {
 
         // Set fixed fields from the parent
-        this.apiName = parent.apiName;
-        this.hostName = parent.hostName;
-        this.requestVerb = parent.requestVerb;
-        this.resourceId = parent.resourceId;
-        this.requestPath = parent.requestPath;
-        this.clientApplicationName = parent.clientApplicationName;
-        this.userOAuthId = parent.userOAuthId;
-        this.correlationId = parent.correlationId;
-        this.sessionId = parent.sessionId;
+        this._apiName = parent._apiName;
+        this._hostName = parent._hostName;
+        this._requestVerb = parent._requestVerb;
+        this._resourceId = parent._resourceId;
+        this._requestPath = parent._requestPath;
+        this._clientApplicationName = parent._clientApplicationName;
+        this._userOAuthId = parent._userOAuthId;
+        this._correlationId = parent._correlationId;
+        this._sessionId = parent._sessionId;
     }
 
     /*
@@ -136,8 +136,8 @@ public final class LogEntryData {
     public void updateFromChild(final LogEntryData child) {
 
         // Exclude the child's execution time from the parent
-        this.performance.setMillisecondsTaken(this.performance.getMillisecondsTaken() - child.millisecondsTaken);
-        this.millisecondsTaken -= child.millisecondsTaken;
+        this._performance.setMillisecondsTaken(this._performance.getMillisecondsTaken() - child._millisecondsTaken);
+        this._millisecondsTaken -= child._millisecondsTaken;
     }
 
     /*
@@ -149,23 +149,23 @@ public final class LogEntryData {
         var data = mapper.createObjectNode();
 
         // Add queryable informational fields
-        this.outputString(x -> data.put("id", x), this.id);
-        this.outputString(x -> data.put("utcTime", x), this.utcTime.toString());
-        this.outputString(x -> data.put("apiName", x), this.apiName);
-        this.outputString(x -> data.put("operationName", x), this.operationName);
-        this.outputString(x -> data.put("hostName", x), this.hostName);
-        this.outputString(x -> data.put("requestVerb", x), this.requestVerb);
-        this.outputString(x -> data.put("resourceId", x), this.resourceId);
-        this.outputString(x -> data.put("requestPath", x), this.requestPath);
-        this.outputString(x -> data.put("clientApplicationName", x), this.clientApplicationName);
-        this.outputString(x -> data.put("userOAuthId", x), this.userOAuthId);
-        this.outputNumber(x -> data.put("statusCode", x), this.statusCode);
-        this.outputString(x -> data.put("errorCode", x), this.errorCode);
-        this.outputNumber(x -> data.put("errorId", x), this.errorId);
-        this.outputNumberForce(x -> data.put("millisecondsTaken", x), this.millisecondsTaken);
-        this.outputNumberForce(x -> data.put("millisecondsThreshold", x), this.performanceThresholdMilliseconds);
-        this.outputString(x -> data.put("correlationId", x), this.correlationId);
-        this.outputString(x -> data.put("sessionId", x), this.sessionId);
+        this.outputString(x -> data.put("id", x), this._id);
+        this.outputString(x -> data.put("utcTime", x), this._utcTime.toString());
+        this.outputString(x -> data.put("apiName", x), this._apiName);
+        this.outputString(x -> data.put("operationName", x), this._operationName);
+        this.outputString(x -> data.put("hostName", x), this._hostName);
+        this.outputString(x -> data.put("requestVerb", x), this._requestVerb);
+        this.outputString(x -> data.put("resourceId", x), this._resourceId);
+        this.outputString(x -> data.put("requestPath", x), this._requestPath);
+        this.outputString(x -> data.put("clientApplicationName", x), this._clientApplicationName);
+        this.outputString(x -> data.put("userOAuthId", x), this._userOAuthId);
+        this.outputNumber(x -> data.put("statusCode", x), this._statusCode);
+        this.outputString(x -> data.put("errorCode", x), this._errorCode);
+        this.outputNumber(x -> data.put("errorId", x), this._errorId);
+        this.outputNumberForce(x -> data.put("millisecondsTaken", x), this._millisecondsTaken);
+        this.outputNumberForce(x -> data.put("millisecondsThreshold", x), this._performanceThresholdMilliseconds);
+        this.outputString(x -> data.put("correlationId", x), this._correlationId);
+        this.outputString(x -> data.put("sessionId", x), this._sessionId);
 
         // Add JSON text data
         this.outputPerformance(data);
@@ -180,7 +180,7 @@ public final class LogEntryData {
      * Indicate whether an error entry
      */
     public boolean isError() {
-        return this.errorData != null;
+        return this._errorData != null;
     }
 
     /*
@@ -215,8 +215,8 @@ public final class LogEntryData {
      */
     private void outputPerformance(final ObjectNode root) {
 
-        if (this.performance.getMillisecondsTaken() >= this.performanceThresholdMilliseconds || errorId > 0) {
-            root.set("performance", this.performance.getData());
+        if (this._performance.getMillisecondsTaken() >= this._performanceThresholdMilliseconds || _errorId > 0) {
+            root.set("performance", this._performance.getData());
         }
     }
 
@@ -225,8 +225,8 @@ public final class LogEntryData {
      */
     private void outputError(final ObjectNode root) {
 
-        if (this.errorData != null) {
-            root.set("errorData", this.errorData);
+        if (this._errorData != null) {
+            root.set("errorData", this._errorData);
         }
     }
 
@@ -235,9 +235,9 @@ public final class LogEntryData {
      */
     private void outputInfo(final ObjectMapper mapper, final ObjectNode root) {
 
-        if (this.infoData.size() > 0) {
+        if (this._infoData.size() > 0) {
             var infoNode = mapper.createArrayNode();
-            for (var info : this.infoData) {
+            for (var info : this._infoData) {
                 infoNode.add(info);
             }
 

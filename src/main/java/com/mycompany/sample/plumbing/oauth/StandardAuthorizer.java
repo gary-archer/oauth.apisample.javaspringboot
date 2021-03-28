@@ -11,15 +11,15 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
  */
 public final class StandardAuthorizer implements Authorizer {
 
-    private final OAuthAuthenticator authenticator;
-    private final CustomClaimsProvider customClaimsProvider;
+    private final OAuthAuthenticator _authenticator;
+    private final CustomClaimsProvider _customClaimsProvider;
 
     public StandardAuthorizer(
             final OAuthAuthenticator authenticator,
             final CustomClaimsProvider customClaimsProvider) {
 
-        this.authenticator = authenticator;
-        this.customClaimsProvider = customClaimsProvider;
+        this._authenticator = authenticator;
+        this._customClaimsProvider = customClaimsProvider;
     }
 
     /*
@@ -35,8 +35,8 @@ public final class StandardAuthorizer implements Authorizer {
         }
 
         // Read all claims from the access token, including custom claims issued by this API's ClaimsController
-        var payload = this.authenticator.validateToken(accessToken);
-        return this.customClaimsProvider.readClaims(payload);
+        var payload = this._authenticator.validateToken(accessToken);
+        return this._customClaimsProvider.readClaims(payload);
     }
 
     /*

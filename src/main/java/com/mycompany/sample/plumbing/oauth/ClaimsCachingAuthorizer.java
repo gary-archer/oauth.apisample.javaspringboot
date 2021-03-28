@@ -13,10 +13,10 @@ import com.mycompany.sample.plumbing.logging.LogEntryImpl;
  */
 public final class ClaimsCachingAuthorizer implements Authorizer {
 
-    private final ClaimsCache cache;
-    private final OAuthAuthenticator authenticator;
-    private final CustomClaimsProvider customClaimsProvider;
-    private final LogEntryImpl logEntry;
+    private final ClaimsCache _cache;
+    private final OAuthAuthenticator _authenticator;
+    private final CustomClaimsProvider _customClaimsProvider;
+    private final LogEntryImpl _logEntry;
 
     public ClaimsCachingAuthorizer(
             final ClaimsCache cache,
@@ -24,10 +24,10 @@ public final class ClaimsCachingAuthorizer implements Authorizer {
             final CustomClaimsProvider customClaimsProvider,
             final LogEntryImpl logEntry) {
 
-        this.cache = cache;
-        this.authenticator = authenticator;
-        this.customClaimsProvider = customClaimsProvider;
-        this.logEntry = logEntry;
+        this._cache = cache;
+        this._authenticator = authenticator;
+        this._customClaimsProvider = customClaimsProvider;
+        this._logEntry = logEntry;
     }
 
     /*
@@ -44,26 +44,26 @@ public final class ClaimsCachingAuthorizer implements Authorizer {
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        var cachedClaims = this.cache.getClaimsForToken(accessTokenHash);
+        var cachedClaims = this._cache.getClaimsForToken(accessTokenHash);
         if (cachedClaims != null) {
             return cachedClaims;
         }
 
         // Create a child log entry for authentication related work
         // This ensures that any errors and performances in this area are reported separately to business logic
-        var authorizationLogEntry = this.logEntry.createChild("authorizer");
+        var authorizationLogEntry = this._logEntry.createChild("authorizer");
 
         // Validate the token and read token claims
-        var baseClaims = this.authenticator.validateToken(accessToken);
+        var baseClaims = this._authenticator.validateToken(accessToken);
 
         // Do the work for user info lookup
-        var userInfoClaims = this.authenticator.getUserInfo(accessToken);
+        var userInfoClaims = this._authenticator.getUserInfo(accessToken);
 
         // Get custom claims from the API's own data if needed
-        var claims = this.customClaimsProvider.supplyClaims(baseClaims, userInfoClaims);
+        var claims = this._customClaimsProvider.supplyClaims(baseClaims, userInfoClaims);
 
         // Cache the claims against the token hash until the token's expiry time
-        this.cache.addClaimsForToken(accessTokenHash, claims);
+        this._cache.addClaimsForToken(accessTokenHash, claims);
 
         // Finish logging here, and on exception the child is disposed by logging classes
         authorizationLogEntry.close();

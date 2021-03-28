@@ -17,10 +17,10 @@ import com.mycompany.sample.plumbing.logging.LogEntryImpl;
  */
 public final class LoggingInterceptor implements HandlerInterceptor {
 
-    private final BeanFactory container;
+    private final BeanFactory _container;
 
     public LoggingInterceptor(final BeanFactory container) {
-        this.container = container;
+        this._container = container;
     }
 
     /*
@@ -38,7 +38,7 @@ public final class LoggingInterceptor implements HandlerInterceptor {
             if (request.getDispatcherType().equals(DispatcherType.REQUEST)) {
 
                 // Get the log entry for this request
-                var logEntry = this.container.getBean(LogEntryImpl.class);
+                var logEntry = this._container.getBean(LogEntryImpl.class);
 
                 // Call start, which will be a no-op if logging has already been started by the authorizer
                 logEntry.start(request);
@@ -53,7 +53,7 @@ public final class LoggingInterceptor implements HandlerInterceptor {
         } catch (Exception filterException) {
 
             // Handle filter errors
-            var exceptionHandler = this.container.getBean(UnhandledExceptionHandler.class);
+            var exceptionHandler = this._container.getBean(UnhandledExceptionHandler.class);
             exceptionHandler.handleFilterException(request, response, filterException);
             return false;
         }
@@ -74,8 +74,8 @@ public final class LoggingInterceptor implements HandlerInterceptor {
         try {
 
             // Finish logging of successful requests
-            var logEntry = this.container.getBean(LogEntryImpl.class);
-            var handlerMappings = this.container.getBean(RequestMappingHandlerMapping.class);
+            var logEntry = this._container.getBean(LogEntryImpl.class);
+            var handlerMappings = this._container.getBean(RequestMappingHandlerMapping.class);
             logEntry.end(request, response, handlerMappings);
             logEntry.write();
 
@@ -85,7 +85,7 @@ public final class LoggingInterceptor implements HandlerInterceptor {
         } catch (Exception filterException) {
 
             // Handle filter errors
-            var exceptionHandler = this.container.getBean(UnhandledExceptionHandler.class);
+            var exceptionHandler = this._container.getBean(UnhandledExceptionHandler.class);
             exceptionHandler.handleFilterException(request, response, filterException);
         }
     }

@@ -25,18 +25,18 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class OAuthAuthenticator {
 
-    private final OAuthConfiguration configuration;
-    private final TokenValidator tokenValidator;
-    private final LogEntry logEntry;
+    private final OAuthConfiguration _configuration;
+    private final TokenValidator _tokenValidator;
+    private final LogEntry _logEntry;
 
     public OAuthAuthenticator(
             final OAuthConfiguration configuration,
             final TokenValidator tokenValidator,
             final LogEntry logEntry) {
 
-        this.configuration = configuration;
-        this.tokenValidator = tokenValidator;
-        this.logEntry = logEntry;
+        this._configuration = configuration;
+        this._tokenValidator = tokenValidator;
+        this._logEntry = logEntry;
     }
 
     /*
@@ -44,8 +44,8 @@ public class OAuthAuthenticator {
      */
     public ClaimsPayload validateToken(final String accessToken) {
 
-        try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
-            return this.tokenValidator.validateToken(accessToken);
+        try (var breakdown = this._logEntry.createPerformanceBreakdown("validateToken")) {
+            return this._tokenValidator.validateToken(accessToken);
         }
     }
 
@@ -54,10 +54,10 @@ public class OAuthAuthenticator {
      */
     public ClaimsPayload getUserInfo(final String accessToken) {
 
-        try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
+        try (var breakdown = this._logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
             // Make the request
-            var userInfoUrl = new URI(this.configuration.get_userInfoEndpoint());
+            var userInfoUrl = new URI(this._configuration.get_userInfoEndpoint());
             HTTPResponse httpResponse = new UserInfoRequest(userInfoUrl, new BearerAccessToken(accessToken))
                     .toHTTPRequest()
                     .send();
@@ -68,7 +68,7 @@ public class OAuthAuthenticator {
                 var errorResponse = UserInfoErrorResponse.parse(httpResponse);
                 throw ErrorUtils.fromUserInfoError(
                         errorResponse.getErrorObject(),
-                        this.configuration.get_userInfoEndpoint());
+                        this._configuration.get_userInfoEndpoint());
             }
 
             // Get claims from the response
@@ -82,7 +82,7 @@ public class OAuthAuthenticator {
         } catch (Throwable e) {
 
             // Report exceptions
-            throw ErrorUtils.fromUserInfoError(e, this.configuration.get_userInfoEndpoint());
+            throw ErrorUtils.fromUserInfoError(e, this._configuration.get_userInfoEndpoint());
         }
     }
 

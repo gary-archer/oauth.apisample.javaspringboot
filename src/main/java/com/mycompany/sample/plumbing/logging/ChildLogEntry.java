@@ -5,14 +5,14 @@ package com.mycompany.sample.plumbing.logging;
  */
 public final class ChildLogEntry implements AutoCloseable {
 
-    private final LogEntryImpl logEntry;
+    private final LogEntryImpl _logEntry;
 
     public ChildLogEntry(final LogEntryImpl logEntry) {
-        this.logEntry = logEntry;
+        this._logEntry = logEntry;
     }
 
     @Override
     public void close() {
-        this.logEntry.endChildOperation();
+        this._logEntry.endChildOperation();
     }
 }

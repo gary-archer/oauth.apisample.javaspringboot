@@ -22,10 +22,10 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class IntrospectionValidator implements TokenValidator {
 
-    private final OAuthConfiguration configuration;
+    private final OAuthConfiguration _configuration;
 
     public IntrospectionValidator(final OAuthConfiguration configuration) {
-        this.configuration = configuration;
+        this._configuration = configuration;
     }
 
     /*
@@ -37,13 +37,13 @@ public class IntrospectionValidator implements TokenValidator {
         try {
 
             // Supply the API's introspection credentials
-            var introspectionClientId = new ClientID(this.configuration.get_introspectClientId());
-            var introspectionClientSecret = new Secret(this.configuration.get_introspectClientSecret());
+            var introspectionClientId = new ClientID(this._configuration.get_introspectClientId());
+            var introspectionClientSecret = new Secret(this._configuration.get_introspectClientSecret());
             var credentials = new ClientSecretBasic(introspectionClientId, introspectionClientSecret);
 
             // Set up the request
             var request = new TokenIntrospectionRequest(
-                    new URI(this.configuration.get_introspectEndpoint()),
+                    new URI(this._configuration.get_introspectEndpoint()),
                     credentials,
                     new BearerAccessToken(accessToken))
                     .toHTTPRequest();
@@ -58,7 +58,7 @@ public class IntrospectionValidator implements TokenValidator {
                 var errorResponse = TokenIntrospectionErrorResponse.parse(httpResponse);
                 throw ErrorUtils.fromIntrospectionError(
                         errorResponse.getErrorObject(),
-                        this.configuration.get_introspectEndpoint());
+                        this._configuration.get_introspectEndpoint());
             }
 
             // Get token claims from the response and return a 401 if the token is invalid or expired
@@ -76,7 +76,7 @@ public class IntrospectionValidator implements TokenValidator {
         } catch (Throwable e) {
 
             // Report exceptions
-            throw ErrorUtils.fromIntrospectionError(e, this.configuration.get_introspectEndpoint().toString());
+            throw ErrorUtils.fromIntrospectionError(e, this._configuration.get_introspectEndpoint().toString());
         }
     }
 

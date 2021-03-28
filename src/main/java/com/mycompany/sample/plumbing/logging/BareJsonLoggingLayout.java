@@ -12,13 +12,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public final class BareJsonLoggingLayout extends LayoutBase<ILoggingEvent> {
 
-    private final boolean prettyPrint;
+    private final boolean _prettyPrint;
 
     /*
      * We use pretty printing for console output but not file output
      */
     public BareJsonLoggingLayout(final boolean prettyPrint) {
-        this.prettyPrint = prettyPrint;
+        this._prettyPrint = prettyPrint;
     }
 
     /*
@@ -34,7 +34,7 @@ public final class BareJsonLoggingLayout extends LayoutBase<ILoggingEvent> {
             var mapper = new ObjectMapper();
 
             try {
-                if (this.prettyPrint) {
+                if (this._prettyPrint) {
 
                     // Write a property per line and an array item per line for exception stack traces
                     var prettyPrinter = new DefaultPrettyPrinter();

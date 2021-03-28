@@ -25,24 +25,24 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     private static final String PRODUCTION_LOGGER_NAME = "PRODUCTION_LOGGER";
 
     // Base details
-    private String apiName;
-    private String developmentNamespace;
-    private boolean isInitialized;
+    private String _apiName;
+    private String _developmentNamespace;
+    private boolean _isInitialized;
 
     // Performance thresholds
-    private int defaultPerformanceThresholdMilliseconds;
-    private final ArrayList<PerformanceThreshold> thresholdOverrides;
+    private int _defaultPerformanceThresholdMilliseconds;
+    private final ArrayList<PerformanceThreshold> _thresholdOverrides;
 
     /*
      * Set logging defaults when constructed
      */
     public LoggerFactoryImpl() {
 
-        this.isInitialized = false;
-        this.apiName = "";
-        this.developmentNamespace = "";
-        this.defaultPerformanceThresholdMilliseconds = 1000;
-        this.thresholdOverrides = new ArrayList<>();
+        this._isInitialized = false;
+        this._apiName = "";
+        this._developmentNamespace = "";
+        this._defaultPerformanceThresholdMilliseconds = 1000;
+        this._thresholdOverrides = new ArrayList<>();
     }
 
     /*
@@ -51,7 +51,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     public void configure(final LoggingConfiguration configuration) {
 
         // Store the name, which will enable this API's logs to be distinguished from other APIs
-        this.apiName = configuration.get_apiName();
+        this._apiName = configuration.get_apiName();
 
         // Initialise the production logger
         var prodConfiguration = configuration.get_production();
@@ -65,7 +65,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         this.configureDevelopmentLoggers(devConfiguration);
 
         // Indicate successful configuration
-        this.isInitialized = true;
+        this._isInitialized = true;
     }
 
     /*
@@ -75,7 +75,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     public void logStartupError(final Throwable exception) {
 
         // Create the logger if needed
-        if (!this.isInitialized) {
+        if (!this._isInitialized) {
             this.configureProductionLogger(Level.INFO, null);
         }
 
@@ -83,7 +83,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var error = (ServerError) ErrorUtils.fromException(exception);
 
         // Create a log entry and set error details
-        var logEntry = new LogEntryImpl(this.apiName, this.getProductionLogger());
+        var logEntry = new LogEntryImpl(this._apiName, this.getProductionLogger());
         logEntry.setOperationName("startup");
         logEntry.setServerError(error);
         logEntry.write();
@@ -94,7 +94,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      */
     @Override
     public Logger getDevelopmentLogger(final Class type) {
-        String loggerName = String.format("%s.%s", this.developmentNamespace, type.getSimpleName());
+        String loggerName = String.format("%s.%s", this._developmentNamespace, type.getSimpleName());
         return org.slf4j.LoggerFactory.getLogger(loggerName);
     }
 
@@ -104,7 +104,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     public LogEntryImpl createLogEntry() {
 
         return new LogEntryImpl(
-                this.apiName,
+                this._apiName,
                 this.getProductionLogger(),
                 this::getPerformanceThreshold);
     }
@@ -152,12 +152,12 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
         // Set the namespace for development logging
-        this.developmentNamespace = developmentLogConfig.get("namespace").asText();
+        this._developmentNamespace = developmentLogConfig.get("namespace").asText();
 
         // Set the root log level, which will be the default for all loggers per class
         var devLevel = developmentLogConfig.get("level");
         var developmentLevel = Level.toLevel(devLevel.asText().toUpperCase(), Level.INFO);
-        var rootLogger = context.getLogger(this.developmentNamespace);
+        var rootLogger = context.getLogger(this._developmentNamespace);
         rootLogger.setLevel(developmentLevel);
 
         // Set override levels
@@ -173,7 +173,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
                 var level = Level.toLevel(field.getValue().asText().toUpperCase(), Level.INFO);
 
                 // Add to our data
-                String loggerName = String.format("%s.%s", this.developmentNamespace, name);
+                String loggerName = String.format("%s.%s", this._developmentNamespace, name);
                 var logger = context.getLogger(loggerName);
                 logger.setLevel(level);
             }
@@ -297,8 +297,8 @@ public final class LoggerFactoryImpl implements LoggerFactory {
 
         // Read the default performance threshold
         var thresholds = prodConfiguration.get("performanceThresholdsMilliseconds");
-        this.defaultPerformanceThresholdMilliseconds =
-                thresholds.get("default").asInt(this.defaultPerformanceThresholdMilliseconds);
+        this._defaultPerformanceThresholdMilliseconds =
+                thresholds.get("default").asInt(this._defaultPerformanceThresholdMilliseconds);
 
         // Set operation specific overrides
         var operationOverrides = thresholds.get("operationOverrides");
@@ -310,10 +310,10 @@ public final class LoggerFactoryImpl implements LoggerFactory {
                 // Read the operation name and threshold
                 var field = fields.next();
                 var name = field.getKey();
-                var threshold = field.getValue().asInt(this.defaultPerformanceThresholdMilliseconds);
+                var threshold = field.getValue().asInt(this._defaultPerformanceThresholdMilliseconds);
 
                 // Add to our data
-                this.thresholdOverrides.add(new PerformanceThreshold(name, threshold));
+                this._thresholdOverrides.add(new PerformanceThreshold(name, threshold));
             }
         }
     }
@@ -323,13 +323,13 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      */
     private int getPerformanceThreshold(final String name) {
 
-        var found = this.thresholdOverrides.stream().filter(
-                p -> p.getName().equalsIgnoreCase(name)).findFirst();
+        var found = this._thresholdOverrides.stream().filter(
+                p -> p.get_name().equalsIgnoreCase(name)).findFirst();
 
         if (found.isPresent()) {
-            return found.get().getMilliseconds();
+            return found.get().get_milliseconds();
         }
 
-        return this.defaultPerformanceThresholdMilliseconds;
+        return this._defaultPerformanceThresholdMilliseconds;
     }
 }

@@ -14,10 +14,10 @@ import lombok.Setter;
  */
 public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
 
-    private String name;
-    private Instant startTime;
-    private ArrayList<PerformanceBreakdownImpl> children;
-    private JsonNode details;
+    private String _name;
+    private Instant _startTime;
+    private ArrayList<PerformanceBreakdownImpl> _children;
+    private JsonNode _details;
 
     @Getter
     @Setter
@@ -27,25 +27,24 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
      * Set defaults for fields
      */
     public PerformanceBreakdownImpl(final String name) {
-        this.name = name;
+        this._name = name;
         this.millisecondsTaken = 0;
-        this.details = null;
-        this.children = new ArrayList<>();
+        this._details = null;
+        this._children = new ArrayList<>();
     }
 
     /*
      * Start measuring
      */
     public void start() {
-        this.startTime = Instant.now();
+        this._startTime = Instant.now();
     }
 
     /*
      * An overload that supports more detailed data
      */
-    @Override
     public void setDetails(final JsonNode value) {
-        this.details = value;
+        this._details = value;
     }
 
     /*
@@ -53,7 +52,7 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
      */
     @Override
     public void close() {
-        this.millisecondsTaken = Duration.between(this.startTime, Instant.now()).toMillis();
+        this.millisecondsTaken = Duration.between(this._startTime, Instant.now()).toMillis();
     }
 
     /*
@@ -64,17 +63,17 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
 
-        data.put("name", this.name);
+        data.put("name", this._name);
         data.put("millisecondsTaken", this.millisecondsTaken);
 
-        if (this.details != null) {
-            data.set("details", this.details);
+        if (this._details != null) {
+            data.set("details", this._details);
         }
 
-        if (this.children.size() > 0) {
+        if (this._children.size() > 0) {
 
             var childNodes = mapper.createArrayNode();
-            for (var child : this.children) {
+            for (var child : this._children) {
                 childNodes.add(child.getData());
             }
 
@@ -91,7 +90,7 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
     public PerformanceBreakdown createChild(final String name) {
 
         var child = new PerformanceBreakdownImpl(name);
-        this.children.add(child);
+        this._children.add(child);
         child.start();
         return child;
     }

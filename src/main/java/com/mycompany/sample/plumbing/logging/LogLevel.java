@@ -9,13 +9,13 @@ import lombok.Getter;
 public final class LogLevel {
 
     @Getter
-    private final String name;
+    private final String _name;
 
     @Getter
-    private final Level level;
+    private final Level _level;
 
     public LogLevel(final String name, final Level level) {
-        this.name = name;
-        this.level = level;
+        this._name = name;
+        this._level = level;
     }
 }

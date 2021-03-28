@@ -11,13 +11,13 @@ import com.mycompany.sample.plumbing.claims.ApiClaims;
  */
 public final class CustomAuthentication implements Authentication {
 
-    private final ApiClaims claims;
+    private final ApiClaims _claims;
 
     /*
      * Construct from the results of authorizer processing
      */
     public CustomAuthentication(final ApiClaims claims) {
-        this.claims = claims;
+        this._claims = claims;
     }
 
     /*
@@ -49,7 +49,7 @@ public final class CustomAuthentication implements Authentication {
      */
     @Override
     public Object getPrincipal() {
-        return claims;
+        return _claims;
     }
 
     /*
@@ -73,6 +73,6 @@ public final class CustomAuthentication implements Authentication {
      */
     @Override
     public String getName() {
-        return this.claims.get_token().get_subject();
+        return this._claims.get_token().get_subject();
     }
 }

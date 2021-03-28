@@ -24,15 +24,15 @@ import com.mycompany.sample.plumbing.errors.ServerError;
 public final class LogEntryImpl implements LogEntry {
 
     // The logger and its state
-    private final Logger logger;
-    private final Function<String, Integer> performanceThresholdCallback;
-    private boolean started;
-    private boolean finished;
+    private final Logger _logger;
+    private final Function<String, Integer> _performanceThresholdCallback;
+    private boolean _started;
+    private boolean _finished;
 
     // Data logged
-    private final LogEntryData data;
-    private final ArrayList<LogEntryData> children;
-    private LogEntryData activeChild;
+    private final LogEntryData _data;
+    private final ArrayList<LogEntryData> _children;
+    private LogEntryData _activeChild;
 
     /*
      * The default constructor
@@ -50,19 +50,19 @@ public final class LogEntryImpl implements LogEntry {
             final Function<String, Integer> performanceThresholdCallback) {
 
         // Store the logger and initialise state
-        this.logger = logger;
-        this.performanceThresholdCallback = performanceThresholdCallback;
-        this.started = false;
-        this.finished = false;
+        this._logger = logger;
+        this._performanceThresholdCallback = performanceThresholdCallback;
+        this._started = false;
+        this._finished = false;
 
         // Initialise log data
-        this.data = new LogEntryData();
-        this.children = new ArrayList<>();
-        this.activeChild = null;
+        this._data = new LogEntryData();
+        this._children = new ArrayList<>();
+        this._activeChild = null;
 
         // Set initial fields
-        this.data.setApiName(apiName);
-        this.data.setHostName(Hostname.getHostname());
+        this._data.set_apiName(apiName);
+        this._data.set_hostName(Hostname.getHostname());
     }
 
     /*
@@ -70,34 +70,34 @@ public final class LogEntryImpl implements LogEntry {
      */
     public void start(final HttpServletRequest request) {
 
-        if (!this.started) {
-            this.started = true;
+        if (!this._started) {
+            this._started = true;
 
             // Start measuring performance
-            this.data.getPerformance().start();
+            this._data.get_performance().start();
 
             // Calculate fields from the request object
-            this.data.setRequestVerb(request.getMethod());
-            this.data.setRequestPath(this.getRequestPath(request));
+            this._data.set_requestVerb(request.getMethod());
+            this._data.set_requestPath(this.getRequestPath(request));
 
             // Our callers can supply a custom header so that we can keep track of who is calling each API
             var callingApplicationName = request.getHeader("x-mycompany-api-client");
             if (StringUtils.hasLength(callingApplicationName)) {
-                this.data.setClientApplicationName(callingApplicationName);
+                this._data.set_clientApplicationName(callingApplicationName);
             }
 
             // Use the correlation id from request headers or create one
             var correlationId = request.getHeader("'x-mycompany-correlation-id");
             if (StringUtils.hasLength(correlationId)) {
-                this.data.setCorrelationId(correlationId);
+                this._data.set_correlationId(correlationId);
             } else {
-                this.data.setCorrelationId(UUID.randomUUID().toString());
+                this._data.set_correlationId(UUID.randomUUID().toString());
             }
 
             // Log an optional session id if supplied
             var sessionId = request.getHeader("x-mycompany-session-id");
             if (StringUtils.hasLength(sessionId)) {
-                this.data.setSessionId(sessionId);
+                this._data.set_sessionId(sessionId);
             }
         }
     }
@@ -106,14 +106,14 @@ public final class LogEntryImpl implements LogEntry {
      * Set the operation name from a string
      */
     public void setOperationName(final String operationName) {
-        this.data.setOperationName(operationName);
+        this._data.set_operationName(operationName);
     }
 
     /*
      * Add identity details for secured requests
      */
     public void setIdentity(final BaseClaims claims) {
-        this.data.setUserOAuthId(claims.get_subject());
+        this._data.set_userOAuthId(claims.get_subject());
     }
 
     /*
@@ -121,7 +121,7 @@ public final class LogEntryImpl implements LogEntry {
      */
     @Override
     public PerformanceBreakdown createPerformanceBreakdown(final String name) {
-        return this.current().getPerformance().createChild(name);
+        return this.current().get_performance().createChild(name);
     }
 
     /*
@@ -130,7 +130,7 @@ public final class LogEntryImpl implements LogEntry {
     public void setResourceId(final Map<String, String> pathVariables) {
 
         if (pathVariables != null) {
-            this.data.setResourceId(String.join("/", pathVariables.values()));
+            this._data.set_resourceId(String.join("/", pathVariables.values()));
         }
     }
 
@@ -138,17 +138,17 @@ public final class LogEntryImpl implements LogEntry {
      * Add a 5xx error to the log data
      */
     public void setServerError(final ServerError error) {
-        this.current().setErrorData(error.toLogFormat(this.data.getApiName()));
-        this.current().setErrorCode(error.getErrorCode());
-        this.current().setErrorId(error.getInstanceId());
+        this.current().set_errorData(error.toLogFormat(this._data.get_apiName()));
+        this.current().set_errorCode(error.getErrorCode());
+        this.current().set_errorId(error.getInstanceId());
     }
 
     /*
      * Add a 4xx error to the log data
      */
     public void setClientError(final ClientError error) {
-        this.current().setErrorData(error.toLogFormat());
-        this.current().setErrorCode(error.getErrorCode());
+        this.current().set_errorData(error.toLogFormat());
+        this.current().set_errorCode(error.getErrorCode());
     }
 
     /*
@@ -156,7 +156,7 @@ public final class LogEntryImpl implements LogEntry {
      */
     @Override
     public void addInfo(final JsonNode info) {
-        this.current().getInfoData().add(info);
+        this.current().get_infoData().add(info);
     }
 
     /*
@@ -166,19 +166,19 @@ public final class LogEntryImpl implements LogEntry {
     public ChildLogEntry createChild(final String name) {
 
         // Fail if used incorrectly
-        if (this.activeChild != null) {
+        if (this._activeChild != null) {
             throw new IllegalStateException(
                     "The previous child operation must be completed before a new child can be started");
         }
 
         // Initialise the child
-        this.activeChild = new LogEntryData();
-        this.activeChild.setPerformanceThresholdMilliseconds(this.performanceThresholdCallback.apply(name));
-        this.activeChild.setOperationName(name);
-        this.activeChild.getPerformance().start();
+        this._activeChild = new LogEntryData();
+        this._activeChild.set_performanceThresholdMilliseconds(this._performanceThresholdCallback.apply(name));
+        this._activeChild.set_operationName(name);
+        this._activeChild.get_performance().start();
 
         // Add to the parent and return an object to simplify disposal
-        this.children.add(this.activeChild);
+        this._children.add(this._activeChild);
         return new ChildLogEntry(this);
     }
 
@@ -190,8 +190,8 @@ public final class LogEntryImpl implements LogEntry {
             final HttpServletResponse response,
             final RequestMappingHandlerMapping handlerMapping) {
 
-        if (!this.finished) {
-            this.finished = true;
+        if (!this._finished) {
+            this._finished = true;
 
             // Set details that are not available at the start of a request
             this.setOperationName(request, handlerMapping);
@@ -200,19 +200,19 @@ public final class LogEntryImpl implements LogEntry {
             this.endChildOperation();
 
             // Finish performance measurements
-            this.data.getPerformance().close();
+            this._data.get_performance().close();
 
             // Calculate fields from the response object
-            this.data.setStatusCode(response.getStatus());
+            this._data.set_statusCode(response.getStatus());
 
             // Do normal finalisation, such as setting denormalised fields
-            this.data.finalise();
+            this._data.finalise();
 
             // Finalise data related to child log entries, to copy data points between parent and children
-            for (var child : this.children) {
+            for (var child : this._children) {
                 child.finalise();
-                child.updateFromParent(this.data);
-                this.data.updateFromChild(child);
+                child.updateFromParent(this._data);
+                this._data.updateFromChild(child);
             }
         }
     }
@@ -222,11 +222,11 @@ public final class LogEntryImpl implements LogEntry {
      */
     public void write() {
 
-        for (var child : this.children) {
+        for (var child : this._children) {
             this.writeDataItem(child);
         }
 
-        this.writeDataItem(this.data);
+        this.writeDataItem(this._data);
     }
 
     /*
@@ -234,9 +234,9 @@ public final class LogEntryImpl implements LogEntry {
      */
     public void endChildOperation() {
 
-        if (this.activeChild != null) {
-            this.activeChild.getPerformance().close();
-            this.activeChild = null;
+        if (this._activeChild != null) {
+            this._activeChild.get_performance().close();
+            this._activeChild = null;
         }
     }
 
@@ -263,11 +263,11 @@ public final class LogEntryImpl implements LogEntry {
         if (handlerInfo != null) {
 
             // Set the operation name
-            this.data.setOperationName(handlerInfo.getMethod().getName());
+            this._data.set_operationName(handlerInfo.getMethod().getName());
 
             // Also ensure that the correct performance threshold is set for the operation name
-            this.data.setPerformanceThresholdMilliseconds(
-                    this.performanceThresholdCallback.apply(this.data.getOperationName()));
+            this._data.set_performanceThresholdMilliseconds(
+                    this._performanceThresholdCallback.apply(this._data.get_operationName()));
         }
     }
 
@@ -302,10 +302,10 @@ public final class LogEntryImpl implements LogEntry {
      */
     private LogEntryData current() {
 
-        if (this.activeChild != null) {
-            return this.activeChild;
+        if (this._activeChild != null) {
+            return this._activeChild;
         } else {
-            return this.data;
+            return this._data;
         }
     }
 
@@ -314,10 +314,10 @@ public final class LogEntryImpl implements LogEntry {
      */
     private void writeDataItem(final LogEntryData item) {
 
-        if (this.data.isError()) {
-            this.logger.error("error", item.toLogFormat());
+        if (this._data.isError()) {
+            this._logger.error("error", item.toLogFormat());
         } else {
-            this.logger.info("info", item.toLogFormat());
+            this._logger.info("info", item.toLogFormat());
         }
     }
 }

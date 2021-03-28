@@ -13,10 +13,10 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
  */
 public final class CustomHeaderInterceptor implements HandlerInterceptor {
 
-    private final String apiName;
+    private final String _apiName;
 
     public CustomHeaderInterceptor(final String apiName) {
-        this.apiName = apiName;
+        this._apiName = apiName;
     }
 
     /*
@@ -31,7 +31,7 @@ public final class CustomHeaderInterceptor implements HandlerInterceptor {
 
         var apiToBreak = request.getHeader("x-mycompany-test-exception");
         if (StringUtils.hasLength(apiToBreak)) {
-            if (apiToBreak.equalsIgnoreCase(this.apiName)) {
+            if (apiToBreak.equalsIgnoreCase(this._apiName)) {
                 throw ErrorFactory.createServerError(
                     ErrorCodes.EXCEPTION_SIMULATION, "An exception was simulated in the API");
 

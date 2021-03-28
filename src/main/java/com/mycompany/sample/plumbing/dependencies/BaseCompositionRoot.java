@@ -14,15 +14,15 @@ import com.nimbusds.jose.jwk.source.RemoteJWKSet;
  */
 public final class BaseCompositionRoot {
 
-    private final ConfigurableListableBeanFactory container;
-    private OAuthConfiguration oauthConfiguration;
-    private CustomClaimsProvider customClaimsProvider;
-    private LoggingConfiguration loggingConfiguration;
-    private LoggerFactory loggerFactory;
+    private final ConfigurableListableBeanFactory _container;
+    private OAuthConfiguration _oauthConfiguration;
+    private CustomClaimsProvider _customClaimsProvider;
+    private LoggingConfiguration _loggingConfiguration;
+    private LoggerFactory _loggerFactory;
 
     public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
-        this.container = container;
-        this.customClaimsProvider = null;
+        this._container = container;
+        this._customClaimsProvider = null;
     }
 
     /*
@@ -30,7 +30,7 @@ public final class BaseCompositionRoot {
      */
     public BaseCompositionRoot useOAuth(final OAuthConfiguration oauthConfiguration) {
 
-        this.oauthConfiguration = oauthConfiguration;
+        this._oauthConfiguration = oauthConfiguration;
         return this;
     }
 
@@ -38,7 +38,7 @@ public final class BaseCompositionRoot {
      * Consumers can provide an object for providing custom claims
      */
     public BaseCompositionRoot withCustomClaimsProvider(final CustomClaimsProvider provider) {
-        this.customClaimsProvider = provider;
+        this._customClaimsProvider = provider;
         return this;
     }
 
@@ -49,8 +49,8 @@ public final class BaseCompositionRoot {
             final LoggingConfiguration loggingConfiguration,
             final LoggerFactory loggerFactory) {
 
-        this.loggingConfiguration = loggingConfiguration;
-        this.loggerFactory = loggerFactory;
+        this._loggingConfiguration = loggingConfiguration;
+        this._loggerFactory = loggerFactory;
         return this;
     }
 
@@ -71,8 +71,8 @@ public final class BaseCompositionRoot {
      */
     private void registerLoggingDependencies() {
 
-        this.container.registerSingleton("LoggingConfiguration", this.loggingConfiguration);
-        this.container.registerSingleton("LoggerFactory", this.loggerFactory);
+        this._container.registerSingleton("LoggingConfiguration", this._loggingConfiguration);
+        this._container.registerSingleton("LoggerFactory", this._loggerFactory);
     }
 
     /*
@@ -82,25 +82,25 @@ public final class BaseCompositionRoot {
 
         try {
 
-            this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
-            this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
+            this._container.registerSingleton("OAuthConfiguration", this._oauthConfiguration);
+            this._container.registerSingleton("CustomClaimsProvider", this._customClaimsProvider);
 
             // Inject the claims cache if using this strategy
-            if (this.oauthConfiguration.get_strategy().equals("claims-caching")) {
+            if (this._oauthConfiguration.get_strategy().equals("claims-caching")) {
 
                 var cache = new ClaimsCache(
-                        this.oauthConfiguration.get_claimsCacheTimeToLiveMinutes(),
-                        this.customClaimsProvider,
-                        this.loggerFactory);
-                this.container.registerSingleton("ClaimsCache", cache);
+                        this._oauthConfiguration.get_claimsCacheTimeToLiveMinutes(),
+                        this._customClaimsProvider,
+                        this._loggerFactory);
+                this._container.registerSingleton("ClaimsCache", cache);
             }
 
             // Use a global object that caches JWKS keys if using this strategy
-            if (this.oauthConfiguration.get_tokenValidationStrategy().equals("jwt")) {
+            if (this._oauthConfiguration.get_tokenValidationStrategy().equals("jwt")) {
 
-                var jwksUri = new URI(this.oauthConfiguration.get_jwksEndpoint());
+                var jwksUri = new URI(this._oauthConfiguration.get_jwksEndpoint());
                 var jwksKeySet = new RemoteJWKSet<>(jwksUri.toURL());
-                this.container.registerSingleton("JWKSKeySet", jwksKeySet);
+                this._container.registerSingleton("JWKSKeySet", jwksKeySet);
             }
 
         } catch (Throwable ex) {

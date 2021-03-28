@@ -27,15 +27,15 @@ import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class JwtValidator implements TokenValidator {
 
-    private final OAuthConfiguration configuration;
-    private final RemoteJWKSet<SecurityContext> jwksKeys;
+    private final OAuthConfiguration _configuration;
+    private final RemoteJWKSet<SecurityContext> _jwksKeys;
 
     public JwtValidator(
             final OAuthConfiguration configuration,
             final RemoteJWKSet<SecurityContext> jwksKeys) {
 
-        this.configuration = configuration;
-        this.jwksKeys = jwksKeys;
+        this._configuration = configuration;
+        this._jwksKeys = jwksKeys;
     }
 
     /*
@@ -64,7 +64,7 @@ public class JwtValidator implements TokenValidator {
 
         } catch (Throwable e) {
 
-            throw ErrorUtils.fromIntrospectionError(e, this.configuration.get_introspectEndpoint().toString());
+            throw ErrorUtils.fromIntrospectionError(e, this._configuration.get_introspectEndpoint().toString());
         }
     }
 
@@ -97,7 +97,7 @@ public class JwtValidator implements TokenValidator {
             var selector = new JWKSelector(matcher);
 
             // Get the key from the cache or download it if needed
-            var keys = this.jwksKeys.get(selector, new SimpleSecurityContext());
+            var keys = this._jwksKeys.get(selector, new SimpleSecurityContext());
             if (keys.size() != 1) {
                 String message = String.format("Key with identifier: %s not found in JWKS download", keyIdentifier);
                 throw ErrorFactory.createClient401Error(message);
@@ -108,7 +108,7 @@ public class JwtValidator implements TokenValidator {
 
         } catch (Throwable e) {
 
-            throw ErrorUtils.fromTokenSigningKeysDownloadError(e, this.configuration.get_jwksEndpoint());
+            throw ErrorUtils.fromTokenSigningKeysDownloadError(e, this._configuration.get_jwksEndpoint());
         }
     }
 
@@ -141,8 +141,8 @@ public class JwtValidator implements TokenValidator {
      */
     private DefaultJWTClaimsVerifier<SecurityContext> createClaimsVerifier() {
 
-        var issuer = new JWTClaimsSet.Builder().issuer(this.configuration.get_issuer()).build();
-        var audience =  this.configuration.get_audience();
+        var issuer = new JWTClaimsSet.Builder().issuer(this._configuration.get_issuer()).build();
+        var audience =  this._configuration.get_audience();
         if (StringUtils.hasLength(audience)) {
 
             // If there is an audience claim configured then verify it

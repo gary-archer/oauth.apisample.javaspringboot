@@ -17,20 +17,22 @@ import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 
 /*
- * A helper class to manage creating OAuth related objects at runtime
+ * A helper class to manage creating strategy based OAuth objects at runtime
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class OAuthInjector {
 
-    private final ConfigurableListableBeanFactory container;
-    private final OAuthConfiguration configuration;
+    private final ConfigurableListableBeanFactory _container;
+    private final OAuthConfiguration _configuration;
 
-    public OAuthInjector(final ConfigurableApplicationContext context) {
+    public OAuthInjector(
+            final ConfigurableApplicationContext context,
+            final OAuthConfiguration configuration) {
 
-        this.container = context.getBeanFactory();
-        this.configuration = this.container.getBean(OAuthConfiguration.class);
+        this._container = context.getBeanFactory();
+        this._configuration = configuration;
     }
 
     /*
@@ -40,18 +42,18 @@ public class OAuthInjector {
     @Scope(value = CustomRequestScope.NAME)
     public Authorizer createAuthorizer() {
 
-        if (this.configuration.get_strategy().equals("claims-caching")) {
+        if (this._configuration.get_strategy().equals("claims-caching")) {
 
-            var cache = this.container.getBean(ClaimsCache.class);
-            var authenticator = this.container.getBean(OAuthAuthenticator.class);
-            var customClaimsProvider = this.container.getBean(CustomClaimsProvider.class);
-            var logEntry = this.container.getBean(LogEntryImpl.class);
+            var cache = this._container.getBean(ClaimsCache.class);
+            var authenticator = this._container.getBean(OAuthAuthenticator.class);
+            var customClaimsProvider = this._container.getBean(CustomClaimsProvider.class);
+            var logEntry = this._container.getBean(LogEntryImpl.class);
             return new ClaimsCachingAuthorizer(cache, authenticator, customClaimsProvider, logEntry);
 
         } else {
 
-            var authenticator = this.container.getBean(OAuthAuthenticator.class);
-            var customClaimsProvider = this.container.getBean(CustomClaimsProvider.class);
+            var authenticator = this._container.getBean(OAuthAuthenticator.class);
+            var customClaimsProvider = this._container.getBean(CustomClaimsProvider.class);
             return new StandardAuthorizer(authenticator, customClaimsProvider);
         }
     }
@@ -63,14 +65,14 @@ public class OAuthInjector {
     @Scope(value = CustomRequestScope.NAME)
     public TokenValidator createTokenValidator() {
 
-        if (this.configuration.get_tokenValidationStrategy().equals("introspection")) {
+        if (this._configuration.get_tokenValidationStrategy().equals("introspection")) {
 
-            return new IntrospectionValidator(this.configuration);
+            return new IntrospectionValidator(this._configuration);
 
         } else {
 
-            var jwksKeySet = this.container.getBean(RemoteJWKSet.class);
-            return new JwtValidator(this.configuration, jwksKeySet);
+            var jwksKeySet = this._container.getBean(RemoteJWKSet.class);
+            return new JwtValidator(this._configuration, jwksKeySet);
         }
     }
 }

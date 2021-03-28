@@ -15,11 +15,11 @@ public final class ServerErrorImpl extends ServerError {
     private static final int MIN_ERROR_ID = 10000;
     private static final int MAX_ERROR_ID = 99999;
 
-    private final HttpStatus statusCode;
-    private final String utcTime;
-    private final String errorCode;
-    private final int instanceId;
-    private JsonNode details;
+    private final HttpStatus _statusCode;
+    private final String _utcTime;
+    private final String _errorCode;
+    private final int _instanceId;
+    private JsonNode _details;
 
     /*
      * Construct from an error code and user message
@@ -34,25 +34,25 @@ public final class ServerErrorImpl extends ServerError {
     public ServerErrorImpl(final String errorCode, final String userMessage, final Throwable cause) {
         super(userMessage, cause);
 
-        this.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-        this.errorCode = errorCode;
-        this.instanceId = (int) Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID);
-        this.utcTime = Instant.now().toString();
+        this._statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        this._errorCode = errorCode;
+        this._instanceId = (int) Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID);
+        this._utcTime = Instant.now().toString();
     }
 
     @Override
     public String getErrorCode() {
-        return this.errorCode;
+        return this._errorCode;
     }
 
     @Override
     public int getInstanceId() {
-        return this.instanceId;
+        return this._instanceId;
     }
 
     @Override
     public void setDetails(final JsonNode details) {
-        this.details = details;
+        this._details = details;
     }
 
     /*
@@ -64,16 +64,16 @@ public final class ServerErrorImpl extends ServerError {
         var error = mapper.createObjectNode();
 
         // Add what we returned to the caller
-        error.put("statusCode", this.statusCode.value());
+        error.put("statusCode", this._statusCode.value());
         error.set("clientError", this.toClientError(apiName).toResponseFormat());
 
         // Add service details
         var serviceError = mapper.createObjectNode();
-        serviceError.put("errorCode", this.errorCode);
+        serviceError.put("errorCode", this._errorCode);
 
         // Details can be supplied as either an object node or a string
-        if (this.details != null) {
-            serviceError.set("details", this.details);
+        if (this._details != null) {
+            serviceError.set("details", this._details);
         }
 
         // Output the stack trace of the original error
@@ -98,10 +98,10 @@ public final class ServerErrorImpl extends ServerError {
     public ClientError toClientError(final String apiName) {
 
         // Set a generic client error code for the server exception
-        var error = ErrorFactory.createClientError(this.statusCode, this.errorCode, this.getMessage());
+        var error = ErrorFactory.createClientError(this._statusCode, this._errorCode, this.getMessage());
 
         // Also indicate which part of the system, where in logs and when the error occurred
-        error.setExceptionDetails(apiName, this.instanceId, this.utcTime);
+        error.setExceptionDetails(apiName, this._instanceId, this._utcTime);
         return error;
     }
 

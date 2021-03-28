@@ -10,12 +10,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public final class ClientErrorImpl extends ClientError {
 
-    private final HttpStatus statusCode;
-    private final String errorCode;
-    private JsonNode logContext;
-    private String area;
-    private int id;
-    private String utcTime;
+    private final HttpStatus _statusCode;
+    private final String _errorCode;
+    private JsonNode _logContext;
+    private String _area;
+    private int _id;
+    private String _utcTime;
 
     /*
      * Construct from mandatory fields
@@ -24,21 +24,21 @@ public final class ClientErrorImpl extends ClientError {
 
         // Set mandatory fields
         super(message);
-        this.statusCode = statusCode;
-        this.errorCode = errorCode;
+        this._statusCode = statusCode;
+        this._errorCode = errorCode;
 
         // Initialise optional fields
-        this.logContext = null;
-        this.area = null;
-        this.id = 0;
-        this.utcTime = null;
+        this._logContext = null;
+        this._area = null;
+        this._id = 0;
+        this._utcTime = null;
     }
 
     /*
      * As above but supports more detailed info
      */
     public void setLogContext(final JsonNode context) {
-        this.logContext = context;
+        this._logContext = context;
     }
 
     /*
@@ -46,19 +46,19 @@ public final class ClientErrorImpl extends ClientError {
      */
     @Override
     public void setExceptionDetails(final String area, final int instanceId, final String utcTime) {
-        this.area = area;
-        this.id = instanceId;
-        this.utcTime = utcTime;
+        this._area = area;
+        this._id = instanceId;
+        this._utcTime = utcTime;
     }
 
     @Override
     public HttpStatus getStatusCode() {
-        return this.statusCode;
+        return this._statusCode;
     }
 
     @Override
     public String getErrorCode() {
-        return this.errorCode;
+        return this._errorCode;
     }
 
     /*
@@ -69,13 +69,13 @@ public final class ClientErrorImpl extends ClientError {
 
         var mapper = new ObjectMapper();
         var error = mapper.createObjectNode();
-        error.put("code", this.errorCode);
+        error.put("code", this._errorCode);
         error.put("message", this.getMessage());
 
-        if (this.id > 0 && this.area != null && this.utcTime != null) {
-            error.put("area", this.area);
-            error.put("id", this.id);
-            error.put("utcTime", this.utcTime);
+        if (this._id > 0 && this._area != null && this._utcTime != null) {
+            error.put("area", this._area);
+            error.put("id", this._id);
+            error.put("utcTime", this._utcTime);
         }
 
         return error;
@@ -92,8 +92,8 @@ public final class ClientErrorImpl extends ClientError {
         error.put("statusCode", this.getStatusCode().value());
         error.set("clientError", this.toResponseFormat());
 
-        if (this.logContext != null) {
-            error.set("context", this.logContext);
+        if (this._logContext != null) {
+            error.set("context", this._logContext);
         }
 
         return error;

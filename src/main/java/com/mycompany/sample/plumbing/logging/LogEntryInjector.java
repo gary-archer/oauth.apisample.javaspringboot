@@ -15,10 +15,10 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class LogEntryInjector {
 
-    private final LoggerFactoryImpl loggerFactory;
+    private final LoggerFactoryImpl _loggerFactory;
 
     public LogEntryInjector(final LoggerFactoryImpl loggerFactory) {
-        this.loggerFactory = loggerFactory;
+        this._loggerFactory = loggerFactory;
     }
 
     /*
@@ -27,6 +27,6 @@ public class LogEntryInjector {
     @Bean
     @Scope(value = CustomRequestScope.NAME)
     public LogEntryImpl createLogEntry() {
-        return this.loggerFactory.createLogEntry();
+        return this._loggerFactory.createLogEntry();
     }
 }

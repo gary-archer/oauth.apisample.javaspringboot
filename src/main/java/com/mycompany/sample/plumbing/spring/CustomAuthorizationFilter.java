@@ -18,10 +18,10 @@ import com.mycompany.sample.plumbing.oauth.Authorizer;
  */
 public final class CustomAuthorizationFilter extends OncePerRequestFilter {
 
-    private final BeanFactory container;
+    private final BeanFactory _container;
 
     public CustomAuthorizationFilter(final BeanFactory container) {
-        this.container = container;
+        this._container = container;
     }
 
     /*
@@ -35,11 +35,11 @@ public final class CustomAuthorizationFilter extends OncePerRequestFilter {
 
         try {
             // For secured requests, API logging starts here
-            var logEntry = this.container.getBean(LogEntryImpl.class);
+            var logEntry = this._container.getBean(LogEntryImpl.class);
             logEntry.start(request);
 
             // Get the authorizer for this HTTP request
-            var authorizer = this.container.getBean(Authorizer.class);
+            var authorizer = this._container.getBean(Authorizer.class);
 
             // Do the OAuth work in plain Java classes and return our customised claims
             var claims = authorizer.execute(request);
@@ -56,7 +56,7 @@ public final class CustomAuthorizationFilter extends OncePerRequestFilter {
         } catch (Throwable ex) {
 
             // Ensure that authorization errors return the correct exception and CORS details
-            var handler = this.container.getBean(UnhandledExceptionHandler.class);
+            var handler = this._container.getBean(UnhandledExceptionHandler.class);
             handler.handleFilterException(request, response, ex);
         }
     }

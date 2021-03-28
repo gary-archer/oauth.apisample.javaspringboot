@@ -8,13 +8,13 @@ import lombok.Getter;
 public final class PerformanceThreshold {
 
     @Getter
-    private String name;
+    private String _name;
 
     @Getter
-    private int milliseconds;
+    private int _milliseconds;
 
     public PerformanceThreshold(final String name, final int milliseconds) {
-        this.name = name;
-        this.milliseconds = milliseconds;
+        this._name = name;
+        this._milliseconds = milliseconds;
     }
 }
