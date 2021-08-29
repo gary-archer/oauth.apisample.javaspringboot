@@ -1,0 +1,24 @@
+#
+# The certificate used by our API inside the cluster
+#
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: demoapi-svc-internal-cert
+spec:
+  secretName: demoapi-svc-internal-cert
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: demoapi-svc.default.svc
+  dnsNames:
+  - demoapi-svc
+  - demoapi-svc.default.svc
+  - demoapi-svc.default.svc.cluster.local
+  keystores:
+    pkcs12:
+      create: true
+      passwordSecretRef:
+        name: demoapi-pkcs12-password
+        key: password

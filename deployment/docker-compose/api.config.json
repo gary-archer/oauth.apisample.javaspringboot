@@ -1,0 +1,55 @@
+{
+    "api": {
+        "port": 8000,
+        "sslCertificateFileName": "./certs/mycompany.internal.ssl.p12",
+        "sslCertificatePassword": "Password1",
+        "useProxy": false,
+        "proxyUrl": "",
+        "webTrustedOrigins": [
+            "https://web.mycompany.com"
+        ]
+    },
+    "logging": {
+        "apiName": "SampleApi",
+        "production": {
+            "level": "info",
+            "appenders": [
+                {
+                    "type": "console",
+                    "prettyPrint": false
+                },
+                {
+                    "type": "file",
+                    "filePrefix": "api",
+                    "dirname": "./logs",
+                    "totalLogSizeMB": "1024",
+                    "maxFiles": "100"
+                }
+            ],
+            "performanceThresholdsMilliseconds": {
+                "default": 250
+            }
+        },
+        "development": {
+            "level": "info",
+            "namespace": "com.mycompany.sample",
+            "appenders": [
+                {
+                    "type": "console"
+                }
+            ]
+        }
+    },
+    "oauth": {
+        "strategy":                      "standard",
+        "issuer":                        "https://login.mycompany.com/oauth/v2/oauth-anonymous",
+        "audience":                      "api.mycompany.com",
+        "tokenValidationStrategy":       "jwt",
+        "jwksEndpoint":                  "https://login.mycompany.internal:8443/oauth/v2/oauth-anonymous/jwks",
+        "introspectEndpoint":            "",
+        "introspectClientId":            "",
+        "introspectClientSecret":        "",
+        "userInfoEndpoint":              "",
+        "claimsCacheTimeToLiveMinutes":  0
+    }
+}
