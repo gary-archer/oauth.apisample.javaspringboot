@@ -12,7 +12,7 @@ The Final Java API code sample using OAuth and Open Id Connect, from my blog at 
 - The API also implements other [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/), to enable productivity and quality
 
 ### Quick Start
-The setup script downloads SSL certificates, after which run the standard maven commands:
+The setup script downloads SSL certificates, after which run the standard commands:
 
 - ./setup.sh
 - mvn clean install
