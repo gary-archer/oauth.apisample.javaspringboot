@@ -20,6 +20,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.13</maven.compiler.target>
+        <maven.compiler.source>1.13</maven.compiler.source>
     </properties>
 
     <dependencies>
@@ -50,9 +52,8 @@
         <!-- The certified security library we are using for our OAuth 2.0 security -->
         <dependency>
             <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>9.15.2</version>
-            <scope>runtime</scope>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+            <version>9.5.1</version>
         </dependency>
         <dependency>
             <groupId>net.minidev</groupId>

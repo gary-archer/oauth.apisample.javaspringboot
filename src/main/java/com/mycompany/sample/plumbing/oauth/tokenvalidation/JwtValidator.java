@@ -55,7 +55,7 @@ public class JwtValidator implements TokenValidator {
 
         } catch (Throwable e) {
 
-            throw ErrorUtils.fromIntrospectionError(e, this.configuration.getIntrospectEndpoint().toString());
+            throw ErrorUtils.fromIntrospectionError(e, this.configuration.getIntrospectEndpoint());
         }
     }
 
@@ -118,7 +118,7 @@ public class JwtValidator implements TokenValidator {
 
             // Next check the issuer and audience
             var jwtClaims = jwt.getJWTClaimsSet();
-            this.createClaimsVerifier().verify(jwtClaims);
+            this.createClaimsVerifier().verify(jwtClaims, null);
             return jwtClaims;
 
         } catch (Throwable e) {

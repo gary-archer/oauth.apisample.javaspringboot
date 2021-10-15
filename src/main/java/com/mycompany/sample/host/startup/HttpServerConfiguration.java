@@ -113,6 +113,7 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
         var configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(this.apiConfiguration.getWebTrustedOrigins()));
         configuration.applyPermitDefaultValues();
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration(this.apiRequestPaths, configuration);
