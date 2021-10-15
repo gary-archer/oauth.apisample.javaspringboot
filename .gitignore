@@ -1,7 +1,7 @@
 # General
 logs
 .DS_Store
-.certs
+certs
 /target/*
 .idea
 .mvn

@@ -3,8 +3,8 @@
 #
 # Download SSL certificates from a central repo if needed
 #
-if [ ! -d '.certs' ]; then
-    git clone https://github.com/gary-archer/oauth.developmentcertificates ./.certs
+if [ ! -d 'certs' ]; then
+    git clone https://github.com/gary-archer/oauth.developmentcertificates ./certs
 fi
 
 #
