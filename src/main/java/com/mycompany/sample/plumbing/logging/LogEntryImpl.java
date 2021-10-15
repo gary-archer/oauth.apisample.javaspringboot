@@ -2,7 +2,6 @@ package com.mycompany.sample.plumbing.logging;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -26,13 +25,12 @@ public final class LogEntryImpl implements LogEntry {
     private final LogEntryData data;
     private boolean started;
     private boolean finished;
-    private final Function<String, Integer> performanceThresholdCallback;
 
     /*
      * The default constructor
      */
     public LogEntryImpl(final String apiName, final Logger logger) {
-        this(apiName, logger, null);
+        this(apiName, logger, 1000);
     }
 
     /*
@@ -41,20 +39,18 @@ public final class LogEntryImpl implements LogEntry {
     public LogEntryImpl(
             final String apiName,
             final Logger logger,
-            final Function<String, Integer> performanceThresholdCallback) {
+            final int performanceThresholdMilliseconds) {
 
         // Store the logger and initialise state
         this.logger = logger;
-        this.performanceThresholdCallback = performanceThresholdCallback;
         this.started = false;
         this.finished = false;
 
         // Initialise log data
         this.data = new LogEntryData();
-
-        // Set initial fields
         this.data.setApiName(apiName);
         this.data.setHostName(Hostname.getHostname());
+        this.data.setPerformanceThresholdMilliseconds(performanceThresholdMilliseconds);
     }
 
     /*
@@ -204,13 +200,7 @@ public final class LogEntryImpl implements LogEntry {
 
         var handlerInfo = this.getOperationHandlerInfo(request, handlerMapping);
         if (handlerInfo != null) {
-
-            // Set the operation name
             this.data.setOperationName(handlerInfo.getMethod().getName());
-
-            // Also ensure that the correct performance threshold is set for the operation name
-            this.data.setPerformanceThresholdMilliseconds(
-                    this.performanceThresholdCallback.apply(this.data.getOperationName()));
         }
     }
 

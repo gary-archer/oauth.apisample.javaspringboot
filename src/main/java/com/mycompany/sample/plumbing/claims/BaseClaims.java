@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jose.JWTClaimsSet;
 import lombok.Getter;
 
 /*

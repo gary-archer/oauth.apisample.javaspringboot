@@ -1,6 +1,5 @@
 package com.mycompany.sample.plumbing.logging;
 
-import java.util.ArrayList;
 import org.slf4j.Logger;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -11,7 +10,6 @@ import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.errors.ServerError;
@@ -25,10 +23,10 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     private static final String PRODUCTION_LOGGER_NAME = "PRODUCTION_LOGGER";
 
     private String apiName;
+    private int performanceThresholdMilliseconds;
     private String developmentNamespace;
     private boolean isInitialized;
-    private int defaultPerformanceThresholdMilliseconds;
-    private final ArrayList<PerformanceThreshold> thresholdOverrides;
+
 
     /*
      * Set logging defaults when constructed
@@ -37,9 +35,8 @@ public final class LoggerFactoryImpl implements LoggerFactory {
 
         this.isInitialized = false;
         this.apiName = "";
+        this.performanceThresholdMilliseconds = 1000;
         this.developmentNamespace = "";
-        this.defaultPerformanceThresholdMilliseconds = 1000;
-        this.thresholdOverrides = new ArrayList<>();
     }
 
     /*
@@ -52,10 +49,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
 
         // Initialise the production logger
         var prodConfiguration = configuration.getProduction();
-        var prodLevelNode = prodConfiguration.get("level");
-        var productionLevel = Level.toLevel(prodLevelNode.asText().toUpperCase(), Level.INFO);
-        this.configureProductionLogger(productionLevel, prodConfiguration.get("appenders"));
-        this.loadPerformanceThresholds(prodConfiguration);
+        this.configureProductionLogger(prodConfiguration.get("appenders"));
 
         // Initialise any development loggers
         var devConfiguration = configuration.getDevelopment();
@@ -73,7 +67,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
 
         // Create the logger if needed
         if (!this.isInitialized) {
-            this.configureProductionLogger(Level.INFO, null);
+            this.configureProductionLogger(null);
         }
 
         // Get the error into a loggable format
@@ -103,22 +97,20 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         return new LogEntryImpl(
                 this.apiName,
                 this.getProductionLogger(),
-                this::getPerformanceThreshold);
+                this.performanceThresholdMilliseconds);
     }
 
     /*
      * Create the production logger, which logs a bare JSON object
      */
-    private void configureProductionLogger(final Level productionLevel, final JsonNode appendersConfig) {
+    private void configureProductionLogger(final JsonNode appendersConfig) {
 
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
         // Get the production logger and turn off inheritance so that it no longer uses text logging
         var logger = context.getLogger(PRODUCTION_LOGGER_NAME);
         logger.setAdditive(false);
-
-        // Set the level from configuration
-        logger.setLevel(productionLevel);
+        logger.setLevel(Level.INFO);
 
         // Add the console appender if required
         var consoleAppender = this.createProductionConsoleAppender(appendersConfig, context);
@@ -285,48 +277,5 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         }
 
         return null;
-    }
-
-    /*
-     * Extract performance details from the log configuration, for use later when creating log entries
-     */
-    private void loadPerformanceThresholds(final ObjectNode prodConfiguration) {
-
-        // Read the default performance threshold
-        var thresholds = prodConfiguration.get("performanceThresholdsMilliseconds");
-        this.defaultPerformanceThresholdMilliseconds =
-                thresholds.get("default").asInt(this.defaultPerformanceThresholdMilliseconds);
-
-        // Set operation specific overrides
-        var operationOverrides = thresholds.get("operationOverrides");
-        if (operationOverrides != null) {
-
-            var fields = operationOverrides.fields();
-            while (fields.hasNext()) {
-
-                // Read the operation name and threshold
-                var field = fields.next();
-                var name = field.getKey();
-                var threshold = field.getValue().asInt(this.defaultPerformanceThresholdMilliseconds);
-
-                // Add to our data
-                this.thresholdOverrides.add(new PerformanceThreshold(name, threshold));
-            }
-        }
-    }
-
-    /*
-     * Given an operation name, return its performance threshold
-     */
-    private int getPerformanceThreshold(final String name) {
-
-        var found = this.thresholdOverrides.stream().filter(
-                p -> p.getName().equalsIgnoreCase(name)).findFirst();
-
-        if (found.isPresent()) {
-            return found.get().getMilliseconds();
-        }
-
-        return this.defaultPerformanceThresholdMilliseconds;
     }
 }
