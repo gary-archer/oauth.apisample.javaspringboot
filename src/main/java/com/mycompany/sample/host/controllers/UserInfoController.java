@@ -23,7 +23,7 @@ public class UserInfoController {
     private final UserInfoClaims userInfoClaims;
 
     /*
-     * The claims resolver is injected into the controller after OAuth processing
+     * Claims are injected into the controller after OAuth processing
      */
     public UserInfoController(final BaseClaims baseClaims, final UserInfoClaims userInfoClaims) {
         this.baseClaims = baseClaims;

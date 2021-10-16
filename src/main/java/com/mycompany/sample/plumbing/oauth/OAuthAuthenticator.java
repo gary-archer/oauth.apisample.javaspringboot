@@ -1,10 +1,21 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashSet;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
@@ -12,6 +23,7 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
+import com.mycompany.sample.plumbing.utilities.ErrorResponseReader;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
@@ -25,11 +37,6 @@ import com.nimbusds.jose.proc.SimpleSecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
-import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoRequest;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 
 /*
  * The entry point for calls to the Authorization Server
@@ -73,34 +80,51 @@ public class OAuthAuthenticator {
     }
 
     /*
-     * Perform OAuth user info lookup
+     * Perform OAuth user info lookup via a plain HTTP request
      */
     public UserInfoClaims getUserInfo(final String accessToken) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
-            // Make the request
-            var userInfoUrl = new URI(this.configuration.getUserInfoEndpoint());
-            HTTPResponse httpResponse = new UserInfoRequest(userInfoUrl, new BearerAccessToken(accessToken))
-                    .toHTTPRequest()
-                    .send();
+            // Prepare headers for a user info request
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.setBearerAuth(accessToken);
+            var entity = new HttpEntity<>("body", headers);
 
-            // Handle errors returned in the response body
-            var userInfoResponse = UserInfoResponse.parse(httpResponse);
-            if (!userInfoResponse.indicatesSuccess()) {
-                var errorResponse = UserInfoErrorResponse.parse(httpResponse);
+            // Send the request and get the response as text
+            var userInfoUrl = new URI(this.configuration.getUserInfoEndpoint());
+            var userInfoClient = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+            var response = userInfoClient.exchange(userInfoUrl, HttpMethod.POST, entity, String.class);
+
+            // Check for a valid response
+            if (response.getStatusCode() != HttpStatus.OK) {
+                var errorData = ErrorResponseReader.tryReadJson(response.hasBody() ? response.getBody() : "");
                 throw ErrorUtils.fromUserInfoError(
-                        errorResponse.getErrorObject(),
+                        response.getStatusCode(),
+                        errorData,
                         this.configuration.getUserInfoEndpoint());
             }
 
-            // Get claims from the response
-            var payload = userInfoResponse.toSuccessResponse().getUserInfo();
-            return ClaimsReader.userInfoClaims(payload);
+            // Parse the fields into an object
+            var jsonText = response.getBody();
+            var mapper = new ObjectMapper();
+            var data = mapper.readValue(jsonText, ObjectNode.class);
+            return ClaimsReader.userInfoClaims(data);
+
+        } catch (HttpStatusCodeException e) {
+
+            // Report exceptions where we have a response body
+            var errorData = ErrorResponseReader.tryReadJson(e.getResponseBodyAsString());
+            throw ErrorUtils.fromUserInfoError(
+                    e.getStatusCode(),
+                    errorData,
+                    this.configuration.getUserInfoEndpoint());
 
         } catch (Throwable e) {
 
-            // Report exceptions
+            // Report other exceptions
             throw ErrorUtils.fromUserInfoError(e, this.configuration.getUserInfoEndpoint());
         }
     }
@@ -182,12 +206,12 @@ public class OAuthAuthenticator {
         var audience =  this.configuration.getAudience();
         if (StringUtils.hasLength(audience)) {
 
-            // If there is an audience claim configured then verify it
+            // If there is an audience claim configured then include it
             return new DefaultJWTClaimsVerifier<>(audience, issuer, new HashSet<>());
 
         } else {
 
-            // Otherwise only verify the issuer
+            // Cognito does not include an audience claim
             return new DefaultJWTClaimsVerifier<>(issuer, new HashSet<>());
         }
     }

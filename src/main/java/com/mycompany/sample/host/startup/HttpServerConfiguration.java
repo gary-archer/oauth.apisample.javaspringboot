@@ -63,8 +63,8 @@ public class HttpServerConfiguration extends WebSecurityConfigurerAdapter implem
                     .anyRequest().authenticated()
                     .and()
                 .addFilterBefore(
-                        authorizationFilter,
-                        AbstractPreAuthenticatedProcessingFilter.class)
+                    authorizationFilter,
+                    AbstractPreAuthenticatedProcessingFilter.class)
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

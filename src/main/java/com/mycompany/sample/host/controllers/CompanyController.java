@@ -30,7 +30,7 @@ public class CompanyController {
     private final BaseClaims claims;
 
     /*
-     * The claims resolver is injected into the controller after OAuth processing
+     * Claims are injected into the controller after OAuth processing
      */
     public CompanyController(final CompanyService service, final BaseClaims claims) {
         this.service = service;

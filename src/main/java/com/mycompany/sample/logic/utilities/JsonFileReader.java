@@ -55,15 +55,8 @@ public class JsonFileReader {
      */
     private CompletableFuture<String> readJsonFromFile(final String filePath) {
 
-        // Try to load the file
         var path = Paths.get(filePath);
-        if (path != null) {
-            var bytes = await(AsyncFiles.readAllBytes(path));
-            return completedFuture(new String(bytes));
-        }
-
-        // We shouldn't get here but throw if the data was not found
-        var message = String.format("The resource at path %s was not found", filePath);
-        throw new IllegalStateException(message);
+        var bytes = await(AsyncFiles.readAllBytes(path));
+        return completedFuture(new String(bytes));
     }
 }

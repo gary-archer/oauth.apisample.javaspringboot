@@ -5,8 +5,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.CachedClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
-import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
 /*

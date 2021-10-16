@@ -2,9 +2,9 @@ package com.mycompany.sample.plumbing.claims;
 
 import java.text.ParseException;
 import org.springframework.util.StringUtils;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 /*
  * A utility to read claims values from objects
@@ -39,11 +39,11 @@ public final class ClaimsReader {
     /*
      * Return the user info claims from a User Info Lookup
      */
-    public static UserInfoClaims userInfoClaims(final UserInfo claimsSet) {
+    public static UserInfoClaims userInfoClaims(final ObjectNode claims) {
 
-        var givenName = ClaimsReader.getStringClaim(claimsSet, "given_name");
-        var familyName = ClaimsReader.getStringClaim(claimsSet, "family_name");
-        var email = ClaimsReader.getStringClaim(claimsSet, "email");
+        var givenName = ClaimsReader.getStringClaim(claims, "given_name");
+        var familyName = ClaimsReader.getStringClaim(claims, "family_name");
+        var email = ClaimsReader.getStringClaim(claims, "email");
         return new UserInfoClaims(givenName, familyName, email);
     }
 
@@ -69,9 +69,9 @@ public final class ClaimsReader {
     /*
      * Get a string claim from a user info response
      */
-    private static String getStringClaim(final UserInfo data, final String name) {
+    private static String getStringClaim(final ObjectNode data, final String name) {
 
-        var claim = data.getStringClaim(name);
+        var claim = data.get(name).asText();
         if (!StringUtils.hasLength(name)) {
             throw ErrorUtils.fromMissingClaim(name);
         }

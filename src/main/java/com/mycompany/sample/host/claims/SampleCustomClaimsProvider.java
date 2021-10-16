@@ -3,8 +3,8 @@ package com.mycompany.sample.host.claims;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.BaseClaims;
-import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 
 /*

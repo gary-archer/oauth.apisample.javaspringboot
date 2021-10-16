@@ -6,15 +6,15 @@
 
 ### Overview 
 
-The Final Java API code sample using OAuth and Open Id Connect, from my blog at https://authguidance.com:
+The Final OAuth secured Java API code sample, referenced in my blog at https://authguidance.com:
 
-- The API takes finer control over OAuth processing via a filter, implemented with a certified library
-- The API also implements other [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/), to enable productivity and quality
+- The API takes finer control over OAuth processing via a filter, implemented with a certified JOSE library
+- The API provides two mechanisms for authorizing via domain specific claims
+- The API also implements other [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/), for good technical quality
 
 ### Quick Start
 
-Ensure that maven and Java 13 are installed.\
-Then run the start script to begin listening over SSL:
+Ensure that Java 13 and maven are installed, then run the start script to begin listening over SSL:
 
 - ./start.sh
 
@@ -29,8 +29,8 @@ Then run the start script to begin listening over SSL:
 
 ### Middleware Used
 
-* The Tomcat web server hosts the API over SSL
+* The Tomcat web server hosts the API over SSL port 443
 * AWS Cognito is used as the default Authorization Server
-* The [Nimbus SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk) is used to implement the OAuth custom filter
+* The [Nimbus JOSE JWT](https://connect2id.com/products/nimbus-jose-jwt) library is used to manage in memory validation of JWTs
 * [EA Async](https://github.com/electronicarts/ea-async) is used to implement a Non Blocking API with simple code
 * API logs can be aggregated to [Elastic Search](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
