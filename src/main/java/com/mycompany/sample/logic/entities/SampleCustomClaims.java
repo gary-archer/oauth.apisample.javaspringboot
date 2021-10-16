@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mycompany.sample.plumbing.claims.ClaimParser;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
-import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.Getter;
 
 /*
@@ -39,17 +37,6 @@ public final class SampleCustomClaims extends CustomClaims {
         });
 
         return new SampleCustomClaims(userDatabaseId, userRole, userRegions.toArray(String[]::new));
-    }
-
-    /*
-     * Receive a claims principal after processing the access token
-     */
-    public SampleCustomClaims(final JWTClaimsSet claimsSet) {
-
-        this.userId = ClaimParser.getStringClaim(claimsSet, "user_id");
-        this.userRole = ClaimParser.getStringClaim(claimsSet, "user_role");
-        this.userRegions = ClaimParser.getStringArrayClaim(claimsSet, "user_regions");
-
     }
 
     /*

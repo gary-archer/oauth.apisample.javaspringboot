@@ -7,6 +7,10 @@ import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mycompany.sample.plumbing.errors.ErrorCodes;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
 
 /*
@@ -14,18 +18,18 @@ import com.mycompany.sample.plumbing.logging.LoggerFactory;
  */
 public final class ClaimsCache {
 
-    private Cache<String, String> cache;
-    private int timeToLiveMinutes;
-    private final ClaimsProvider serializer;
+    private final Cache<String, String> cache;
+    private final int timeToLiveMinutes;
+    private final ClaimsProvider customClaimsProvider;
     private final Logger debugLogger;
 
     public ClaimsCache(
             final int timeToLiveMinutes,
-            final ClaimsProvider serializer,
+            final ClaimsProvider customClaimsProvider,
             final LoggerFactory loggerFactory) {
 
         this.timeToLiveMinutes = timeToLiveMinutes;
-        this.serializer = serializer;
+        this.customClaimsProvider = customClaimsProvider;
         this.debugLogger = loggerFactory.getDevelopmentLogger(ClaimsCache.class);
 
         // Output expiry debug messages here if required
@@ -46,40 +50,14 @@ public final class ClaimsCache {
     }
 
     /*
-     * Get claims from the cache for this token's hash, or return null if not found
-     * Almost simultaneous requests from the same user could return null for the same token
-     */
-    public ApiClaims getClaimsForToken(final String accessTokenHash) {
-
-        // Return null if there are no cached claims
-        var claimsText = cache.get(accessTokenHash);
-        if (!StringUtils.hasLength(claimsText)) {
-            this.debugLogger.debug(
-                    String.format("New token will be added to claims cache (hash: %s)", accessTokenHash));
-            return null;
-        }
-
-        // Otherwise return cached claims
-        this.debugLogger.debug(
-                String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
-        return this.serializer.deserializeFromCache(claimsText);
-    }
-
-    /*
      * Add claims to the cache until the token's time to live
      */
-    public void addClaimsForToken(final String accessTokenHash, final ApiClaims claims) {
+    public void setExtraUserClaims(final String accessTokenHash, final CachedClaims claims, final int expiry) {
 
         // Use the exp field returned from introspection to work out the token expiry time
         var epochSeconds = Instant.now().getEpochSecond();
-        var secondsToCache = claims.getToken().getExpiry() - epochSeconds;
+        var secondsToCache = expiry - epochSeconds;
         if (secondsToCache > 0) {
-
-            // Get the hash and output debug info
-            this.debugLogger.debug(String.format(
-                    "Token to be cached will expire in %d seconds (hash: %s)",
-                    secondsToCache,
-                    accessTokenHash));
 
             // Do not exceed the maximum time we configured
             final var secondsMultiplier = 60;
@@ -89,15 +67,61 @@ public final class ClaimsCache {
                 secondsToCache = maxExpirySeconds;
             }
 
-            // Add to the cache, which requires an absolute time in the future in milliseconds
+            // Serialize the data
+            var mapper = new ObjectMapper();
+            var data = mapper.createObjectNode();
+            data.set("userInfo", claims.getUserInfo().exportData());
+            data.set("custom", claims.getCustom().exportData());
+            var claimsText = data.toString();
+
+            // Output debug info
             this.debugLogger.debug(String.format(
                     "Adding token to claims cache for %d seconds (hash: %s)",
                     secondsToCache,
                     accessTokenHash));
 
+            // Do the write
             final var futureExpiryMilliseconds = (epochSeconds + secondsToCache) * 1000;
-            var claimsText = this.serializer.serializeToCache(claims);
             cache.invoke(accessTokenHash, e -> e.setValue(claimsText).setExpiryTime(futureExpiryMilliseconds));
+        }
+    }
+
+    /*
+     * Get claims from the cache for this token's hash, or return null if not found
+     * Almost simultaneous requests from the same user could return null for the same token
+     */
+    public CachedClaims getExtraUserClaims(final String accessTokenHash) {
+
+        // Return null if there are no cached claims
+        var claimsText = cache.get(accessTokenHash);
+        if (!StringUtils.hasLength(claimsText)) {
+            this.debugLogger.debug(
+                    String.format("New token will be added to claims cache (hash: %s)", accessTokenHash));
+            return null;
+        }
+
+        try {
+
+            // Deserialize the data
+            var mapper = new ObjectMapper();
+            var data = mapper.readValue(claimsText, ObjectNode.class);
+            var userInfo = UserInfoClaims.importData(data.get("userInfo"));
+            var custom = this.customClaimsProvider.deserialize(data.get("custom"));
+
+            // Output debug info
+            this.debugLogger.debug(
+                    String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
+
+            // Return the result
+            return new CachedClaims(userInfo, custom);
+
+        } catch (Throwable ex) {
+
+            // Report error details
+            throw ErrorFactory.createServerError(
+                    ErrorCodes.JSON_PARSE_ERROR,
+                    "Problem encountered parsing JSON claims data",
+                    ex);
         }
     }
 }

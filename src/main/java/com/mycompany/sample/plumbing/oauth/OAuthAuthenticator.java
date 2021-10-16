@@ -5,7 +5,8 @@ import java.util.HashSet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.claims.ClaimParser;
+import com.mycompany.sample.plumbing.claims.ClaimsReader;
+import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
@@ -74,7 +75,7 @@ public class OAuthAuthenticator {
     /*
      * Perform OAuth user info lookup
      */
-    public JWTClaimsSet getUserInfo(final String accessToken) {
+    public UserInfoClaims getUserInfo(final String accessToken) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
@@ -94,14 +95,8 @@ public class OAuthAuthenticator {
             }
 
             // Get claims from the response
-            var data = userInfoResponse.toSuccessResponse().getUserInfo();
-
-            // Return a claims set object with results
-            return new JWTClaimsSet.Builder()
-                    .claim("given_name", ClaimParser.getStringClaim(data, "given_name"))
-                    .claim("family_name", ClaimParser.getStringClaim(data, "family_name"))
-                    .claim("email", ClaimParser.getStringClaim(data, "email"))
-                    .build();
+            var payload = userInfoResponse.toSuccessResponse().getUserInfo();
+            return ClaimsReader.userInfoClaims(payload);
 
         } catch (Throwable e) {
 

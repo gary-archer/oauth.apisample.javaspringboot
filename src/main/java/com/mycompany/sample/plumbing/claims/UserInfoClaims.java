@@ -3,7 +3,6 @@ package com.mycompany.sample.plumbing.claims;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.Getter;
 
 /*
@@ -30,16 +29,6 @@ public class UserInfoClaims {
         var familyNameValue = data.get("family_name").asText();
         var emailValue = data.get("email").asText();
         return new UserInfoClaims(givenNameValue, familyNameValue, emailValue);
-    }
-
-    /*
-     * Receive a claims set
-     */
-    public UserInfoClaims(final JWTClaimsSet claimsSet) {
-
-        this.givenName = ClaimParser.getStringClaim(claimsSet, "given_name");
-        this.familyName = ClaimParser.getStringClaim(claimsSet, "family_name");
-        this.email = ClaimParser.getStringClaim(claimsSet, "email");
     }
 
     /*

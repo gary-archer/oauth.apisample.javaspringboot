@@ -4,7 +4,7 @@ import org.springframework.security.core.AuthenticatedPrincipal;
 import lombok.Getter;
 
 /*
- * An extensible claims object for APIs
+ * The total set of claims for this API
  */
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ApiClaims implements AuthenticatedPrincipal {
@@ -28,7 +28,7 @@ public class ApiClaims implements AuthenticatedPrincipal {
         this.custom = custom;
     }
 
-    // Use the access token subject claim as the technical user name
+    // Use the access token subject claim as the technical username
     @Override
     public String getName() {
         return this.token.getSubject();

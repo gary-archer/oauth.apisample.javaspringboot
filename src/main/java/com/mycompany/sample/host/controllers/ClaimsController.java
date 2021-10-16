@@ -30,13 +30,13 @@ public class ClaimsController {
 
     /*
      * This is called during token issuance by the Authorization Server when using the StandardAuthorizer
-     * The custom claims are then included in the access token
+     * The Authorization Server will then include these claims in the JWT access token
      */
     @GetMapping(value = "{subject}")
     public CompletableFuture<ObjectNode> getCustomClaims(
             @PathVariable("subject") final String subject) {
 
-        var claims = this.claimsProvider.supplyCustomClaimsFromSubject(subject);
+        var claims = this.claimsProvider.issue(subject);
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
