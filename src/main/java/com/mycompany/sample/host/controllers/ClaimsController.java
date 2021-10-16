@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mycompany.sample.host.claims.SampleClaimsProvider;
+import com.mycompany.sample.host.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
@@ -22,10 +22,10 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsController {
 
-    private final SampleClaimsProvider claimsProvider;
+    private final SampleCustomClaimsProvider customClaimsProvider;
 
-    public ClaimsController(final SampleClaimsProvider claimsProvider) {
-        this.claimsProvider = claimsProvider;
+    public ClaimsController(final SampleCustomClaimsProvider customClaimsProvider) {
+        this.customClaimsProvider = customClaimsProvider;
     }
 
     /*
@@ -36,7 +36,7 @@ public class ClaimsController {
     public CompletableFuture<ObjectNode> getCustomClaims(
             @PathVariable("subject") final String subject) {
 
-        var claims = this.claimsProvider.issue(subject);
+        var claims = this.customClaimsProvider.issue(subject);
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();

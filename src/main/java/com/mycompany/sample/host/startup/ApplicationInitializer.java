@@ -5,7 +5,7 @@ import java.net.URL;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.host.claims.SampleClaimsProvider;
+import com.mycompany.sample.host.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
@@ -52,7 +52,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         // Register common code dependencies
         new BaseCompositionRoot(container)
                 .useOAuth(configuration.getOauth())
-                .withClaimsProvider(new SampleClaimsProvider())
+                .withClaimsProvider(new SampleCustomClaimsProvider())
                 .withLogging(configuration.getLogging(), loggerFactory)
                 .register();
 

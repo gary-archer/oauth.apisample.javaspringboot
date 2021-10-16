@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
-import com.mycompany.sample.plumbing.claims.ClaimsProvider;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
@@ -38,7 +38,7 @@ public class OAuthInjector {
     public Authorizer createAuthorizer() {
 
         var authenticator = this.container.getBean(OAuthAuthenticator.class);
-        var customClaimsProvider = this.container.getBean(ClaimsProvider.class);
+        var customClaimsProvider = this.container.getBean(CustomClaimsProvider.class);
 
         if (this.configuration.getProvider().equals("cognito")) {
 

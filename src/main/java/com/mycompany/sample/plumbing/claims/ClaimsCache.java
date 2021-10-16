@@ -20,12 +20,12 @@ public final class ClaimsCache {
 
     private final Cache<String, String> cache;
     private final int timeToLiveMinutes;
-    private final ClaimsProvider customClaimsProvider;
+    private final CustomClaimsProvider customClaimsProvider;
     private final Logger debugLogger;
 
     public ClaimsCache(
             final int timeToLiveMinutes,
-            final ClaimsProvider customClaimsProvider,
+            final CustomClaimsProvider customClaimsProvider,
             final LoggerFactory loggerFactory) {
 
         this.timeToLiveMinutes = timeToLiveMinutes;

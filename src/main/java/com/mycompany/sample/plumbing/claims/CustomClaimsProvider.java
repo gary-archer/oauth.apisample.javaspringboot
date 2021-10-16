@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /*
  * A class to deal with domain specific claims, needed for business authorization
  */
-public class ClaimsProvider {
+public class CustomClaimsProvider {
 
     /*
      * This can be overridden by derived classes and is used at the time of token issuance

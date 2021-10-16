@@ -3,14 +3,14 @@ package com.mycompany.sample.host.claims;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.BaseClaims;
-import com.mycompany.sample.plumbing.claims.ClaimsProvider;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 
 /*
  * A provider of domain specific claims
  */
-public final class SampleClaimsProvider extends ClaimsProvider {
+public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
     /*
      * When using the StandardAuthorizer this is called at the time of token issuance by the ClaimsController

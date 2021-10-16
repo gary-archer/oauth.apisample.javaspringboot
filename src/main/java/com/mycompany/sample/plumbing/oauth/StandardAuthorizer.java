@@ -2,8 +2,8 @@ package com.mycompany.sample.plumbing.oauth;
 
 import javax.servlet.http.HttpServletRequest;
 import com.mycompany.sample.plumbing.claims.ApiClaims;
-import com.mycompany.sample.plumbing.claims.ClaimsProvider;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
 /*
@@ -13,14 +13,14 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public final class StandardAuthorizer implements Authorizer {
 
     private final OAuthAuthenticator authenticator;
-    private final ClaimsProvider claimsProvider;
+    private final CustomClaimsProvider customClaimsProvider;
 
     public StandardAuthorizer(
             final OAuthAuthenticator authenticator,
-            final ClaimsProvider claimsProvider) {
+            final CustomClaimsProvider customClaimsProvider) {
 
         this.authenticator = authenticator;
-        this.claimsProvider = claimsProvider;
+        this.customClaimsProvider = customClaimsProvider;
     }
 
     /*
@@ -35,13 +35,13 @@ public final class StandardAuthorizer implements Authorizer {
             throw ErrorFactory.createClient401Error("No access token was supplied in the bearer header");
         }
 
-        // Do the token validation work
+        // On every API request we validate the JWT, in a zero trust manner
         var payload = this.authenticator.validateToken(accessToken);
 
         // Then read all claims from the token
         var baseClaims = ClaimsReader.baseClaims(payload);
         var userInfo = ClaimsReader.userInfoClaims(payload);
-        var customClaims = this.claimsProvider.get(accessToken, baseClaims, userInfo);
+        var customClaims = this.customClaimsProvider.get(accessToken, baseClaims, userInfo);
         return new ApiClaims(baseClaims, userInfo, customClaims);
     }
 }

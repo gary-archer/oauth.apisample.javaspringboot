@@ -5,7 +5,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.mycompany.sample.plumbing.claims.ApiClaims;
 import com.mycompany.sample.plumbing.claims.CachedClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
-import com.mycompany.sample.plumbing.claims.ClaimsProvider;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -16,12 +16,12 @@ public final class ClaimsCachingAuthorizer implements Authorizer {
 
     private final ClaimsCache cache;
     private final OAuthAuthenticator authenticator;
-    private final ClaimsProvider customClaimsProvider;
+    private final CustomClaimsProvider customClaimsProvider;
 
     public ClaimsCachingAuthorizer(
             final ClaimsCache cache,
             final OAuthAuthenticator authenticator,
-            final ClaimsProvider customClaimsProvider) {
+            final CustomClaimsProvider customClaimsProvider) {
 
         this.cache = cache;
         this.authenticator = authenticator;

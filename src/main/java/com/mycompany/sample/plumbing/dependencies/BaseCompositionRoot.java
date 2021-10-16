@@ -3,7 +3,7 @@ package com.mycompany.sample.plumbing.dependencies;
 import java.net.URI;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.mycompany.sample.plumbing.claims.ClaimsCache;
-import com.mycompany.sample.plumbing.claims.ClaimsProvider;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
@@ -16,13 +16,13 @@ public final class BaseCompositionRoot {
 
     private final ConfigurableListableBeanFactory container;
     private OAuthConfiguration oauthConfiguration;
-    private ClaimsProvider claimsProvider;
+    private CustomClaimsProvider customClaimsProvider;
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
 
     public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
-        this.claimsProvider = null;
+        this.customClaimsProvider = null;
     }
 
     /*
@@ -37,8 +37,8 @@ public final class BaseCompositionRoot {
     /*
      * Consumers can provide an object for providing custom claims
      */
-    public BaseCompositionRoot withClaimsProvider(final ClaimsProvider provider) {
-        this.claimsProvider = provider;
+    public BaseCompositionRoot withClaimsProvider(final CustomClaimsProvider customClaimsProvider) {
+        this.customClaimsProvider = customClaimsProvider;
         return this;
     }
 
@@ -83,14 +83,14 @@ public final class BaseCompositionRoot {
         try {
 
             this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
-            this.container.registerSingleton("CustomClaimsProvider", this.claimsProvider);
+            this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
 
             // Inject the claims cache if using this strategy
             if (this.oauthConfiguration.getProvider().equals("cognito")) {
 
                 var cache = new ClaimsCache(
                         this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
-                        this.claimsProvider,
+                        this.customClaimsProvider,
                         this.loggerFactory);
                 this.container.registerSingleton("ClaimsCache", cache);
             }
