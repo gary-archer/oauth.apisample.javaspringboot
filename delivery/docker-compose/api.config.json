@@ -38,14 +38,11 @@
         }
     },
     "oauth": {
-        "strategy":                      "standard",
+        "provider":                      "standard",
         "issuer":                        "https://login.mycompany.com/oauth/v2/oauth-anonymous",
         "audience":                      "api.mycompany.com",
-        "tokenValidationStrategy":       "jwt",
+        "algorithm":                     "RS256",
         "jwksEndpoint":                  "https://login.mycompany.internal:8443/oauth/v2/oauth-anonymous/jwks",
-        "introspectEndpoint":            "",
-        "introspectClientId":            "",
-        "introspectClientSecret":        "",
         "userInfoEndpoint":              "",
         "claimsCacheTimeToLiveMinutes":  0
     }

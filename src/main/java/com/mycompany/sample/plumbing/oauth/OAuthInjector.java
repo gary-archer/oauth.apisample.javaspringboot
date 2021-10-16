@@ -10,10 +10,6 @@ import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.oauth.tokenvalidation.IntrospectionValidator;
-import com.mycompany.sample.plumbing.oauth.tokenvalidation.JwtValidator;
-import com.mycompany.sample.plumbing.oauth.tokenvalidation.TokenValidator;
-import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 
 /*
  * A helper class to manage creating strategy based OAuth objects at runtime
@@ -44,7 +40,7 @@ public class OAuthInjector {
         var authenticator = this.container.getBean(OAuthAuthenticator.class);
         var customClaimsProvider = this.container.getBean(ClaimsProvider.class);
 
-        if (this.configuration.getStrategy().equals("claims-caching")) {
+        if (this.configuration.getProvider().equals("cognito")) {
 
             var cache = this.container.getBean(ClaimsCache.class);
             return new ClaimsCachingAuthorizer(cache, authenticator, customClaimsProvider);
@@ -52,24 +48,6 @@ public class OAuthInjector {
         } else {
 
             return new StandardAuthorizer(authenticator, customClaimsProvider);
-        }
-    }
-
-    /*
-     * Create the configured type of token validator at runtime
-     */
-    @Bean
-    @Scope(value = CustomRequestScope.NAME)
-    public TokenValidator createTokenValidator() {
-
-        if (this.configuration.getTokenValidationStrategy().equals("introspection")) {
-
-            return new IntrospectionValidator(this.configuration);
-
-        } else {
-
-            var jwksKeySet = this.container.getBean(RemoteJWKSet.class);
-            return new JwtValidator(this.configuration, jwksKeySet);
         }
     }
 }
