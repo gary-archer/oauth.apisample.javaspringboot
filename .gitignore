@@ -1,0 +1,14 @@
+# General
+logs
+.DS_Store
+certs
+/target/*
+.idea
+.mvn
+.settings
+*.iws
+*.iml
+*.ipr
+.classpath
+.factorypath
+.project
