@@ -1,7 +1,7 @@
 {
     "api": {
         "port": 445,
-        "sslCertificateFileName": "./certs/mycompany.ssl.p12",
+        "sslCertificateFileName": "./certs/authsamples-dev.ssl.p12",
         "sslCertificatePassword": "Password1",
         "useProxy": false,
         "proxyUrl": "http://127.0.0.1:8888"
