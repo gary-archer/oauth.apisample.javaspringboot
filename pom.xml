@@ -132,7 +132,7 @@
     <build>
         <plugins>
 
-            <!-- A maven plugin to compile code to Java 17 -->
+            <!-- A maven plugin to compile code for the Java version being used -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
