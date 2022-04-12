@@ -95,12 +95,7 @@
             <version>4.5.13</version>
         </dependency>
 
-        <!-- Async await syntax and support for async file reading -->
-        <dependency>
-            <groupId>com.ea.async</groupId>
-            <artifactId>ea-async</artifactId>
-            <version>1.2.3</version>
-        </dependency>
+        <!-- Async file reading support -->
         <dependency>
             <groupId>com.github.javasync</groupId>
             <artifactId>AsyncFileRw</artifactId>
@@ -137,7 +132,7 @@
     <build>
         <plugins>
 
-            <!-- A maven plugin to compile code to Java 13 -->
+            <!-- A maven plugin to compile code to Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -148,7 +143,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Set the main class when building to a JAR file with 'mvn clean install' -->
+            <!-- Set the main class when building to a JAR file with 'mvn package' -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -163,23 +158,7 @@
                 </configuration>
             </plugin>
 
-            <!-- When building a JAR file, rewrite code to remove ea.async references
-                 Calls to await will be replaced with the more complex 'then' / 'handle' continuations
-                 However, when coding we can use the simpler and more readable syntax -->
-            <plugin>
-                <groupId>com.ea.async</groupId>
-                <artifactId>ea-async-maven-plugin</artifactId>
-                <version>1.2.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>instrument</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- This enables 'mvn clean install' to package a single large JAR file -->
+            <!-- This enables 'mvn package' to produce a single large JAR file -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
