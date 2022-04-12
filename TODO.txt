@@ -1,0 +1,7 @@
+1. Update JsonFileReader
+
+2. Update CompanyRepository (tricky)
+
+3. Remove EA async references
+
+4. Update pom.xml to Java 17
