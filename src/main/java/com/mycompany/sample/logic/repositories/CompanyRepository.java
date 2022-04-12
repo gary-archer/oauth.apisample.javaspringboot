@@ -127,7 +127,7 @@ public class CompanyRepository {
             .thenCompose(company -> {
                 foundCompanyRef.set(company);
                 return this.jsonReader.readFile("data/companyTransactions.json", CompanyTransactions[].class)
-                        .handle(transactionsCallback);
+                    .handle(transactionsCallback);
             });
     }
 
