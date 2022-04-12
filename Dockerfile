@@ -5,7 +5,7 @@
 #
 
 # Use the Open JDK 17 runtime image
-FROM azul/zulu-openjdk-alpine:17.32.13-jre
+FROM azul/zulu-openjdk-alpine:17.0.2-jre
 
 # Set the API folder
 WORKDIR /usr/api
