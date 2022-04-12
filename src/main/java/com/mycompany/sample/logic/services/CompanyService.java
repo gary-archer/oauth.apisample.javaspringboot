@@ -4,12 +4,12 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import static com.ea.async.Async.await;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
@@ -40,14 +40,13 @@ public class CompanyService {
      */
     public CompletableFuture<List<Company>> getCompanyList() {
 
-        // Use a micro services approach of getting all data
-        var companies = await(this.repository.getCompanyList());
+        Function<List<Company>, CompletableFuture<List<Company>>> callback = data ->
+            completedFuture(data.stream()
+                    .filter(this::isUserAuthorizedForCompany)
+                    .collect(Collectors.toList()));
 
-        // Filter on what the user is allowed to access
-        return completedFuture(
-                companies.stream()
-                         .filter(this::isUserAuthorizedForCompany)
-                         .collect(Collectors.toList()));
+        // Use a micro services approach of getting all data
+        return this.repository.getCompanyList().thenCompose(callback);
     }
 
     /*
@@ -55,13 +54,17 @@ public class CompanyService {
      */
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
-        // Deny access if required
-        var data = await(this.repository.getCompanyTransactions(companyId));
-        if (data == null || !this.isUserAuthorizedForCompany(data.getCompany())) {
-            throw this.unauthorizedError(companyId);
-        }
+        Function<CompanyTransactions, CompletableFuture<CompanyTransactions>> callback = data -> {
 
-        return completedFuture(data);
+            // Deny access if required
+            if (data == null || !this.isUserAuthorizedForCompany(data.getCompany())) {
+                throw this.unauthorizedError(companyId);
+            }
+
+            return completedFuture(data);
+        };
+
+        return this.repository.getCompanyTransactions(companyId).thenCompose(callback);
     }
 
     /*

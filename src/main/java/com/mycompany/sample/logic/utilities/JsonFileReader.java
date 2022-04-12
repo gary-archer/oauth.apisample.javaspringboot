@@ -3,11 +3,11 @@ package com.mycompany.sample.logic.utilities;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import static com.ea.async.Async.await;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
@@ -25,22 +25,23 @@ public class JsonFileReader {
      */
     public <T> CompletableFuture<T> readFile(final String resourcePath, final Class<T> runtimeType) {
 
-        try {
+        Function<String, CompletableFuture<T>> callback = json -> {
 
-            // Do the reading and deserialization
-            var json = await(this.readJsonFromFile(resourcePath));
-            var mapper = this.createObjectMapper();
-            var data = mapper.readValue(json, runtimeType);
-            return completedFuture(data);
+            try {
+                var mapper = this.createObjectMapper();
+                return completedFuture(mapper.readValue(json, runtimeType));
 
-        } catch (Throwable ex) {
+            } catch (Throwable mapException) {
 
-            // Report the error including an error code and exception details
-            throw ErrorFactory.createServerError(
-                    SampleErrorCodes.FILE_READ_ERROR,
-                    "Problem encountered reading data",
-                    ex);
-        }
+                throw ErrorFactory.createServerError(
+                        SampleErrorCodes.FILE_READ_ERROR,
+                        "Problem encountered mapping file data",
+                        mapException);
+            }
+        };
+
+        return this.readJsonFromFile(resourcePath)
+           .thenCompose(callback);
     }
 
     /*
@@ -55,8 +56,20 @@ public class JsonFileReader {
      */
     private CompletableFuture<String> readJsonFromFile(final String filePath) {
 
-        var path = Paths.get(filePath);
-        var bytes = await(AsyncFiles.readAllBytes(path));
-        return completedFuture(new String(bytes));
+        Function<byte[], CompletableFuture<String>> callback = bytes ->
+            completedFuture(new String(bytes));
+
+        try {
+
+            var path = Paths.get(filePath);
+            return AsyncFiles.readAllBytes(path).thenCompose(callback);
+
+        } catch (Throwable ex) {
+
+            throw ErrorFactory.createServerError(
+                    SampleErrorCodes.FILE_READ_ERROR,
+                    "Problem encountered reading file data",
+                    ex);
+        }
     }
 }

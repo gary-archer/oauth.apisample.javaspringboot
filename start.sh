@@ -26,7 +26,7 @@ rm -rf ./resources
 #
 # Build the app
 #
-mvn clean install
+mvn clean package
 if [ $? -ne 0 ]; then
     echo 'Problem encountered building the API'
     exit
