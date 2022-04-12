@@ -59,7 +59,7 @@ public class CompanyRepository {
 
     /*
      * Read the transactions from a database, which does 2 async reads surrounded by a performance breakdown
-     * Java currently requires horrific syntax when performing multiple async operations
+     * Java currently requires unpleasant syntax when performing multiple async operations
      */
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
