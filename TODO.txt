@@ -1,9 +1,7 @@
-1. Update JsonFileReader
-
-2. Update CompanyRepository (tricky)
-
 3. Remove EA async references
 
 4. Checkstylee
 
 4. Update pom.xml to Java 17 and use newer identifiers for Java 17
+
+5. Exception in ApplicationInitializer not caught, if wrong config file is read

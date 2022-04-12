@@ -3,7 +3,6 @@ package com.mycompany.sample.logic.utilities;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -26,18 +25,11 @@ public class JsonFileReader {
      */
     public <T> CompletableFuture<T> readFile(final String resourcePath, final Class<T> runtimeType) {
 
-        BiFunction<String, Throwable, T> callback = (json, readException) -> {
-
-            if (readException != null) {
-                throw ErrorFactory.createServerError(
-                    SampleErrorCodes.FILE_READ_ERROR,
-                    "Problem encountered reading file data",
-                        readException);
-            }
+        Function<String, CompletableFuture<T>> callback = json -> {
 
             try {
                 var mapper = this.createObjectMapper();
-                return mapper.readValue(json, runtimeType);
+                return completedFuture(mapper.readValue(json, runtimeType));
 
             } catch (Throwable mapException) {
 
@@ -49,7 +41,7 @@ public class JsonFileReader {
         };
 
         return this.readJsonFromFile(resourcePath)
-           .handle(callback);
+           .thenCompose(callback);
     }
 
     /*
@@ -65,9 +57,19 @@ public class JsonFileReader {
     private CompletableFuture<String> readJsonFromFile(final String filePath) {
 
         Function<byte[], CompletableFuture<String>> callback = bytes ->
-                completedFuture(new String(bytes));
+            completedFuture(new String(bytes));
 
-        var path = Paths.get(filePath);
-        return AsyncFiles.readAllBytes(path).thenCompose(callback);
+        try {
+
+            var path = Paths.get(filePath);
+            return AsyncFiles.readAllBytes(path).thenCompose(callback);
+
+        } catch (Throwable ex) {
+
+            throw ErrorFactory.createServerError(
+                    SampleErrorCodes.FILE_READ_ERROR,
+                    "Problem encountered reading file data",
+                    ex);
+        }
     }
 }

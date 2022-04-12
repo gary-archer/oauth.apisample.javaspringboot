@@ -38,7 +38,7 @@ public class CompanyService {
     /*
      * Forward to the repository to get the company list
      */
-    public CompletableFuture getCompanyList() {
+    public CompletableFuture<List<Company>> getCompanyList() {
 
         Function<List<Company>, CompletableFuture<List<Company>>> callback = data ->
             completedFuture(data.stream()
