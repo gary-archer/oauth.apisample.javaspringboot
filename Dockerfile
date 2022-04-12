@@ -4,8 +4,8 @@
 # - docker run -it finalapi:v1 sh
 #
 
-# Use the Open JDK 13 runtime image
-FROM azul/zulu-openjdk-alpine:13.0.3-jre
+# Use the Open JDK 17 runtime image
+FROM azul/zulu-openjdk-alpine:17.32.13-jre
 
 # Set the API folder
 WORKDIR /usr/api
@@ -22,7 +22,7 @@ RUN adduser -u 1001 -G apigroup -h /home/apiuser -D apiuser
 COPY trusted.ca.pem /usr/local/share/ca-certificates/trusted.ca.pem
 RUN apk --no-cache add ca-certificates
 RUN update-ca-certificates
-RUN /usr/lib/jvm/zulu13-ca/bin/keytool -import -alias internalroot.ca -cacerts -file /usr/local/share/ca-certificates/trusted.ca.pem -storepass changeit -noprompt
+RUN /usr/lib/jvm/zulu17-ca/bin/keytool -import -alias internalroot.ca -cacerts -file /usr/local/share/ca-certificates/trusted.ca.pem -storepass changeit -noprompt
 
 # When a container is run with this image, run the API as the above user
 USER apiuser
