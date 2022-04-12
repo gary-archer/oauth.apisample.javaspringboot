@@ -4,4 +4,6 @@
 
 3. Remove EA async references
 
-4. Update pom.xml to Java 17
+4. Checkstylee
+
+4. Update pom.xml to Java 17 and use newer identifiers for Java 17
