@@ -7,6 +7,8 @@ import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.lang.JoseException;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 
 /*
  * A token issuer for testing
@@ -19,6 +21,12 @@ public final class TokenIssuer {
      * Do the key setup during construction
      */
     public TokenIssuer() throws JoseException {
+
+        // Reduce the library's log level
+        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
+        context.getLogger("org.jose4j").setLevel(Level.WARN);
+
+        // Generate a JSON Web Key for our token issuing
         this.jwk = RsaJwkGenerator.generateJwk(2048);
         this.jwk.setKeyId("1");
         this.jwk.setAlgorithm("RS256");
@@ -28,9 +36,9 @@ public final class TokenIssuer {
      * Issue an access token with the supplied subject claim
      * https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
      */
-    public String issueAccessToken(String sub) throws JoseException {
+    public String issueAccessToken(final String sub) throws JoseException {
 
-        var claims = new JwtClaims();
+     var claims = new JwtClaims();
         claims.setSubject(sub);
         claims.setIssuer("testissuer.com");
         claims.setAudience("api.mycompany.com");
@@ -43,9 +51,7 @@ public final class TokenIssuer {
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
         jws.setPayload(claims.toJson());
         jws.setKey(this.jwk.getPrivateKey());
-        String jwt = jws.getCompactSerialization();
-        System.out.println(jwt);
-        return jwt;
+        return jws.getCompactSerialization();
     }
 
     /*

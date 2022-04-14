@@ -36,7 +36,6 @@ public class OAuthApiTests {
 
         // Register a mock keyset the API will use to validate JWTs
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
-        System.out.println(String.format("Keyset is %s", keyset));
     }
 
     /*
@@ -50,11 +49,11 @@ public class OAuthApiTests {
      * Test getting claims
      */
     @Test
+    @SuppressWarnings(value = "MethodName")
     public void GetUserClaims_ReturnsSingleRegion_ForStandardUser() throws JoseException {
 
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
-        logger.info(String.format("Access token issued is %s", accessToken));
 
         Assertions.assertEquals("hello", "hello");
         logger.info("GetUserClaims_ReturnsSingleRegion_ForStandardUser");
@@ -64,14 +63,11 @@ public class OAuthApiTests {
      * Test getting claims for the admin user
      */
     @Test
+    @SuppressWarnings(value = "MethodName")
     public void GetUserClaims_ReturnsAllRegions_ForAdminUser() throws JoseException {
 
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
-        logger.info(String.format("Access token issued is %s", accessToken));
-
-        var jwks = tokenIssuer.getTokenSigningPublicKeys();
-        logger.info(String.format("*** JWKS is %s", jwks));
 
         Assertions.assertEquals("goodbye", "goodbye");
         logger.info("GetUserClaims_ReturnsAllRegions_ForAdminUser");
