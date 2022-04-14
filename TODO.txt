@@ -1,10 +1,15 @@
-1. Get wiremock library integrated and some code written
+1. Call API from tests using newer HTTP client and failing
+   Basic code for ApiClient
+   API returns regions so that test can assert properly
+   First test failing with a status such as 502
 
-2. Add a test.sh script to spin up the API
-   Environments folder and test configuration file
+2. Get wiremock library integrated and concept proven
+   First test basically working
 
-3. Call API from tests
+3. ApiClient to be written properly, in line with Node.js
+   First test behaving properly
 
-4. Better presentation of test output in the logger, perhaps with colour or a tick / cross
+4. All tests completed in line with Node.js
 
-5. Finalize README
+5. Better presentation of test output in the logger, perhaps with colour or a tick / cross
+   Finalize README

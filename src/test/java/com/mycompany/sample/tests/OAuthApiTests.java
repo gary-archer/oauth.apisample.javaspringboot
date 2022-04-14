@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.Suite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 
 @Suite
@@ -16,6 +17,7 @@ public class OAuthApiTests {
     private static String guestUserId;
     private static String guestAdminId;
     private static TokenIssuer tokenIssuer;
+    private static ApiClient apiClient;
     private static Logger logger;
 
     /*
@@ -36,6 +38,10 @@ public class OAuthApiTests {
 
         // Register a mock keyset the API will use to validate JWTs
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
+
+        // Create the API client
+        String apiBaseUrl = "https://api.authsamples-dev.com:445";
+        apiClient = new ApiClient(apiBaseUrl);
     }
 
     /*
@@ -55,21 +61,10 @@ public class OAuthApiTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        Assertions.assertEquals("hello", "hello");
+        // Call the API
+        var response = apiClient.getUserInfoClaims(accessToken);
+
+        Assertions.assertEquals(response.getGivenName(), "Guest");
         logger.info("GetUserClaims_ReturnsSingleRegion_ForStandardUser");
-    }
-
-    /*
-     * Test getting claims for the admin user
-     */
-    @Test
-    @SuppressWarnings(value = "MethodName")
-    public void GetUserClaims_ReturnsAllRegions_ForAdminUser() throws JoseException {
-
-        // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
-
-        Assertions.assertEquals("goodbye", "goodbye");
-        logger.info("GetUserClaims_ReturnsAllRegions_ForAdminUser");
     }
 }
