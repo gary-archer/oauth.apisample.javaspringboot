@@ -1,6 +1,5 @@
 package com.mycompany.sample.tests;
 
-import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +23,7 @@ public class OAuthApiTests {
      * Setup that runs at the start of the test run
      */
     @BeforeAll
-    public static void setup() throws JoseException {
+    public static void setup() throws Throwable {
 
         // The real subject claim values for my two online test users
         guestUserId = "a6b404b1-98af-41a2-8e7f-e4061dc0bf86";
@@ -56,7 +55,7 @@ public class OAuthApiTests {
      */
     @Test
     @SuppressWarnings(value = "MethodName")
-    public void GetUserClaims_ReturnsSingleRegion_ForStandardUser() throws JoseException {
+    public void GetUserClaims_ReturnsSingleRegion_ForStandardUser() throws Throwable {
 
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);

@@ -1,12 +1,15 @@
-1. Call API from tests using newer HTTP client and failing
+1. Call API from tests using newer HTTP client
    Basic code for ApiClient
-   API returns regions so that test can assert properly
-   First test failing with a status such as 502
+   HTTP Proxy works and I can view request
+   SSL trust added to README
+   No async
+   Use of Jackson to get the response in a generic way
 
-2. Get wiremock library integrated and concept proven
-   First test basically working
+2. Get wiremock library integrated and first test passing
 
 3. ApiClient to be written properly, in line with Node.js
+   API returns regions so that test can assert properly
+   Consider use of async and completable futures
    First test behaving properly
 
 4. All tests completed in line with Node.js
