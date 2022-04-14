@@ -1,0 +1,10 @@
+0. Get jose4j log output under control
+   Fix and understand squiggly red stuff in Intellij
+
+1. Get wiremock library integrated and some code written
+
+2. Add a test.sh script to spin up the API
+
+2. Call API from tests
+
+4. Update README
