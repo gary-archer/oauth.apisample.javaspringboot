@@ -55,14 +55,15 @@ The API then runs some integration tests to demonstrate key API behaviour:
 Waiting for API endpoints to come up ...
 Running integration tests ...
 
-  OAuth API Tests
-    ✔ Get user claims returns a single region for the standard user
-    ✔ Get user claims returns all regions for the admin user
-    ✔ Get companies list returns 2 items for the standard user
-    ✔ Get companies list returns all items for the admin user
-    ✔ Get transactions is allowed for companies that match the regions claim
-    ✔ Get transactions returns 404 for companies that do not match the regions claim
-    ✔ API exceptions return 500 with a supportable error response
+INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.mycompany.sample.tests.IntegrationTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.289 s - in com.mycompany.sample.tests.IntegrationTests
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
 ```
 
 ### Further Details

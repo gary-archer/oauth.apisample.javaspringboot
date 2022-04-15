@@ -33,6 +33,26 @@ public final class ApiClient {
         return this.callApi(options);
     }
 
+    public ApiResponse getCompanies(final String accessToken) throws Throwable {
+
+        var options = new ApiRequestOptions();
+        options.setMethod("GET");
+        options.setPath("/api/companies");
+        options.setAccessToken(accessToken);
+
+        return this.callApi(options);
+    }
+
+    public ApiResponse getTransactions(final String accessToken, final int companyId) throws Throwable {
+
+        var options = new ApiRequestOptions();
+        options.setMethod("GET");
+        options.setPath(String.format("/api/companies/%d/transactions", companyId));
+        options.setAccessToken(accessToken);
+
+        return this.callApi(options);
+    }
+
     private ApiResponse callApi(final ApiRequestOptions options) throws Throwable {
 
         var operationUrl = String.format("%s%s", this.baseUrl, options.getPath());

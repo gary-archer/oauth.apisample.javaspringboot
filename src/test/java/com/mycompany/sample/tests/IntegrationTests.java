@@ -90,4 +90,142 @@ public class IntegrationTests {
         var regionsNode = (ArrayNode) body.get("regions");
         Assertions.assertEquals(1, regionsNode.size());
     }
+
+    /*
+     * Test getting claims
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void GetUserClaims_ReturnsAllRegions_ForAdminUser() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
+
+        // Register the Authorization Server response to a user info request from the API
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+        data.put("given_name", "Admin");
+        data.put("family_name", "User");
+        data.put("email", "guestadmin@mycompany.com");
+        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+
+        // Call the API and ensure a 200 response
+        var response = apiClient.getUserInfoClaims(accessToken);
+        Assertions.assertEquals(200, response.getStatusCode());
+
+        // Read the response regions and assert the count
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var regionsNode = (ArrayNode) body.get("regions");
+        Assertions.assertEquals(3, regionsNode.size());
+    }
+
+    /*
+     * Test getting companies
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void GetCompanies_ReturnsTwoItems_ForStandardUser() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+
+        // Register the Authorization Server response to a user info request from the API
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+        data.put("given_name", "Guest");
+        data.put("family_name", "User");
+        data.put("email", "guestuser@mycompany.com");
+        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+
+        // Call the API and ensure a 200 response
+        var response = apiClient.getCompanies(accessToken);
+        Assertions.assertEquals(200, response.getStatusCode());
+
+        // Read the response and assert the count
+        var body = mapper.readValue(response.getBody(), ArrayNode.class);
+        Assertions.assertEquals(2, body.size());
+    }
+
+    /*
+     * Test getting companies for the admin user
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void GetCompanies_ReturnsAllItems_ForAdminUser() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
+
+        // Register the Authorization Server response to a user info request from the API
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+        data.put("given_name", "Admin");
+        data.put("family_name", "User");
+        data.put("email", "guestadmin@mycompany.com");
+        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+
+        // Call the API and ensure a 200 response
+        var response = apiClient.getCompanies(accessToken);
+        Assertions.assertEquals(200, response.getStatusCode());
+
+        // Read the response and assert the count
+        var body = mapper.readValue(response.getBody(), ArrayNode.class);
+        Assertions.assertEquals(4, body.size());
+    }
+
+    /*
+     * Test getting allowed transactions
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void GetTransactions_ReturnsAllowedItems_ForCompaniesMatchingTheRegionClaim() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
+
+        // Register the Authorization Server response to a user info request from the API
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+        data.put("given_name", "Guest");
+        data.put("family_name", "User");
+        data.put("email", "guestuser@mycompany.com");
+        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+
+        // Call the API and ensure a 200 response
+        var response = apiClient.getTransactions(accessToken, 2);
+        Assertions.assertEquals(200, response.getStatusCode());
+
+        // Read the response and assert the count
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var transactionsNode = (ArrayNode) body.get("transactions");
+        Assertions.assertEquals(8, transactionsNode.size());
+    }
+
+    /*
+     * Test getting unauthorized transactions
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void GetTransactions_ReturnsNotFoundForUser_ForCompaniesNotMatchingTheRegionClaim() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+
+        // Register the Authorization Server response to a user info request from the API
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+        data.put("given_name", "Guest");
+        data.put("family_name", "User");
+        data.put("email", "guestuser@mycompany.com");
+        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+
+        // Call the API and ensure a 200 response
+        var response = apiClient.getTransactions(accessToken, 3);
+        Assertions.assertEquals(404, response.getStatusCode());
+
+        // Read the response and assert the count
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("company_not_found", errorCode.asText());
+    }
 }

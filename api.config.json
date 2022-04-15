@@ -35,10 +35,10 @@
     },
     "oauth": {
         "provider":                      "cognito",
-        "issuer":                        "testissuer.com",
-        "audience":                      "api.mycompany.com",
-        "jwksEndpoint":                  "http://login.mycompany.com/.well-known/jwks.json",
-        "userInfoEndpoint":              "http://login.mycompany.com/oauth2/userInfo",
+        "issuer":                        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "audience":                      "",
+        "jwksEndpoint":                  "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
+        "userInfoEndpoint":              "https://login.authsamples.com/oauth2/userInfo",
         "claimsCacheTimeToLiveMinutes":  30
     }
 }
