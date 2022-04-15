@@ -15,4 +15,8 @@ public class ClientUserInfo {
     @Getter
     @Setter
     private String familyName;
+
+    @Getter
+    @Setter
+    private String[] regions;
 }

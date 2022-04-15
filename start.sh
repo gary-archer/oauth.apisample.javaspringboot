@@ -26,7 +26,7 @@ rm -rf ./resources
 #
 # Build the app
 #
-mvn clean package
+mvn clean package -DskipTests
 if [ $? -ne 0 ]; then
     echo 'Problem encountered building the API'
     exit
