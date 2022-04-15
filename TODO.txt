@@ -1,16 +1,8 @@
-1. Call API from tests using newer HTTP client
-   Basic code for ApiClient
-   HTTP Proxy works and I can view request
-   SSL trust added to README
-   No async
-   Use of Jackson to get the response in a generic way
+1. Get wiremock library integrated so that first test gets a 200
 
-2. Get wiremock library integrated and first test passing
+2. Use of Jackson to read the response body
 
-3. ApiClient to be written properly, in line with Node.js
-   API returns regions so that test can assert properly
-   Consider use of async and completable futures
-   First test behaving properly
+3. Node.js - set options in the ApiClient rather than outside
 
 4. All tests completed in line with Node.js
 

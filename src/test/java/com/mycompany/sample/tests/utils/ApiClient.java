@@ -1,7 +1,7 @@
 package com.mycompany.sample.tests.utils;
 
-import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -13,29 +13,40 @@ public final class ApiClient {
 
     private final String baseUrl;
 
-    public ApiClient(final String baseUrl) {
+    public ApiClient(final String baseUrl, final Boolean useProxy) throws Throwable {
+
         this.baseUrl = baseUrl;
+        if (useProxy) {
+            var url = new URL("http://127.0.0.1:8888");
+            System.setProperty("http.proxyHost", url.getHost());
+            System.setProperty("http.proxyPort", String.valueOf(url.getPort()));
+        }
     }
 
-    public UserInfoClaims getUserInfoClaims(final String accessToken) {
-        return new UserInfoClaims("Guest", "User", "guestuser@mycompany.com");
+    public ApiResponse getUserInfoClaims(final String accessToken) throws Throwable {
+
+        var options = new ApiRequestOptions();
+        options.setMethod("GET");
+        options.setPath("/api/userinfo");
+        options.setAccessToken(accessToken);
+
+        return this.callApi(options);
     }
 
-    private void callApi(final String path, final String accessToken) throws Throwable {
+    private ApiResponse callApi(final ApiRequestOptions options) throws Throwable {
 
-        var operationUrl = String.format("%s/%s", this.baseUrl, path);
+        var operationUrl = String.format("%s%s", this.baseUrl, options.getPath());
         var request = HttpRequest.newBuilder()
                 .uri(new URI(operationUrl))
                 .GET()
-                .headers("Authorization", String.format("Bearer %s"), accessToken)
+                .headers("Authorization", String.format("Bearer %s", options.getAccessToken()))
                 .build();
 
         var client = HttpClient.newBuilder()
                 // .proxy(ProxySelector.getDefault())
                 .build();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
 
-        // TODO: return a JsonNode generic response
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return new ApiResponse(response);
     }
 }

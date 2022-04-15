@@ -11,7 +11,7 @@ import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 
 @Suite
-public class OAuthApiTests {
+public class IntegrationTests {
 
     private static String guestUserId;
     private static String guestAdminId;
@@ -33,14 +33,14 @@ public class OAuthApiTests {
         tokenIssuer = new TokenIssuer();
 
         // A custom logger to show test output when running 'mvn test'
-        logger = LoggerFactory.getLogger(OAuthApiTests.class);
+        logger = LoggerFactory.getLogger(IntegrationTests.class);
 
         // Register a mock keyset the API will use to validate JWTs
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:445";
-        apiClient = new ApiClient(apiBaseUrl);
+        apiClient = new ApiClient(apiBaseUrl, true);
     }
 
     /*
@@ -63,7 +63,7 @@ public class OAuthApiTests {
         // Call the API
         var response = apiClient.getUserInfoClaims(accessToken);
 
-        Assertions.assertEquals(response.getGivenName(), "Guest");
+        Assertions.assertEquals(response.getStatusCode(), 401);
         logger.info("GetUserClaims_ReturnsSingleRegion_ForStandardUser");
     }
 }

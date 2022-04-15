@@ -29,6 +29,18 @@ Add host names for the API and Authorization Server to your hosts file:
 ::1           localhost
 ```
 
+Also trust the development root certificate by running this command from a terminal in the repo's root folder:
+
+```bash
+sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
+```
+
+Revoke trust when required via this command:
+
+```bash
+sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass changeit -noprompt
+```
+
 ## Run Integration Tests
 
 To test the API's endpoints, stop the API if it is running, then run the test script:
