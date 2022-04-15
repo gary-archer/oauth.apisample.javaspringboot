@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mycompany.sample.logic.entities.ClientUserInfo;
+import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.BaseClaims;
+import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
@@ -22,13 +24,19 @@ public class UserInfoController {
 
     private final BaseClaims baseClaims;
     private final UserInfoClaims userInfoClaims;
+    private final SampleCustomClaims customClaims;
 
     /*
      * Claims are injected into the controller after OAuth processing
      */
-    public UserInfoController(final BaseClaims baseClaims, final UserInfoClaims userInfoClaims) {
+    public UserInfoController(
+            final BaseClaims baseClaims,
+            final UserInfoClaims userInfoClaims,
+            final CustomClaims customClaims) {
+
         this.baseClaims = baseClaims;
         this.userInfoClaims = userInfoClaims;
+        this.customClaims = (SampleCustomClaims) customClaims;
     }
 
     /*
@@ -44,6 +52,7 @@ public class UserInfoController {
         var userInfo = new ClientUserInfo();
         userInfo.setGivenName(this.userInfoClaims.getGivenName());
         userInfo.setFamilyName(this.userInfoClaims.getFamilyName());
+        userInfo.setRegions(this.customClaims.getUserRegions());
         return CompletableFuture.completedFuture(userInfo);
     }
 }

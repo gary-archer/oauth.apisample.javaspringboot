@@ -5,8 +5,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.Suite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 
@@ -16,8 +24,8 @@ public class IntegrationTests {
     private static String guestUserId;
     private static String guestAdminId;
     private static TokenIssuer tokenIssuer;
+    private static WireMockServer wiremock;
     private static ApiClient apiClient;
-    private static Logger logger;
 
     /*
      * Setup that runs at the start of the test run
@@ -32,11 +40,15 @@ public class IntegrationTests {
         // A class to issue our own JWTs for testing
         tokenIssuer = new TokenIssuer();
 
-        // A custom logger to show test output when running 'mvn test'
-        logger = LoggerFactory.getLogger(IntegrationTests.class);
+        // Start Wiremock to mock the Authorization Server and reduce log output
+        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
+        context.getLogger("org.eclipse.jetty").setLevel(Level.WARN);
+        wiremock = new WireMockServer(80);
+        wiremock.start();
 
         // Register a mock keyset the API will use to validate JWTs
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
+        wiremock.stubFor(get(urlEqualTo("/.well-known/jwks.json")).willReturn(aResponse().withBody(keyset)));
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:445";
@@ -48,6 +60,7 @@ public class IntegrationTests {
      */
     @AfterAll
     public static void teardown() {
+        wiremock.stop();
     }
 
     /*
@@ -60,10 +73,21 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // Call the API
-        var response = apiClient.getUserInfoClaims(accessToken);
+        // Register the Authorization Server response to a user info request from the API
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+        data.put("given_name", "Guest");
+        data.put("family_name", "User");
+        data.put("email", "guestuser@mycompany.com");
+        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
 
-        Assertions.assertEquals(response.getStatusCode(), 401);
-        logger.info("GetUserClaims_ReturnsSingleRegion_ForStandardUser");
+        // Call the API and ensure a 200 response
+        var response = apiClient.getUserInfoClaims(accessToken);
+        Assertions.assertEquals(200, response.getStatusCode());
+
+        // Read the response regions and assert the count
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var regionsNode = (ArrayNode) body.get("regions");
+        Assertions.assertEquals(1, regionsNode.size());
     }
 }

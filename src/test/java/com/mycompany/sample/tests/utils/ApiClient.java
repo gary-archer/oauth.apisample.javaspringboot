@@ -43,7 +43,6 @@ public final class ApiClient {
                 .build();
 
         var client = HttpClient.newBuilder()
-                // .proxy(ProxySelector.getDefault())
                 .build();
 
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());

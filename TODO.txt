@@ -1,10 +1,17 @@
-1. Get wiremock library integrated so that first test gets a 200
+STAGE 1
+-------
+1. Test only works first time, since next time there is a new JWK
+   So I need to restart the API on every test run
 
-2. Use of Jackson to read the response body
+2. All tests completed in line with Node.js
 
-3. Node.js - set options in the ApiClient rather than outside
+BACKLOG
+-------
+1. Use HttpClient for user info lookup
+   Get rid of Apache dependency
 
-4. All tests completed in line with Node.js
+2. Node.js - set options in the ApiClient rather than outside
+   Copy file down in test code, rather than in bash script
 
-5. Better presentation of test output in the logger, perhaps with colour or a tick / cross
+4. Better presentation of test output in the logger, perhaps with colour or a tick / cross
    Finalize README
