@@ -11,10 +11,10 @@ The final OAuth secured Java API code sample, referenced in my blog at https://a
 - The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
 - The API also implements other [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/), for good technical quality
 
-### Build the API
+### Build and Run the API
 
-Ensure that Java 17 and maven are installed, then run the start script to build the API and start listening over HTTPS.\
-Development SSL certificates must be downloaded before `npm start` will work.
+Ensure that Java 17 is installed, then run the start script to build the API and start listening over HTTPS.\
+The script downloads development SSL certificates associated to test domains.
 
 ```bash
 ./start.sh
@@ -35,21 +35,21 @@ Also trust the development root certificate by running this command from a termi
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
 ```
 
-Revoke trust when required via this command:
-
-```bash
-sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass changeit -noprompt
-```
-
-Then run the following command, to run the API with a test configuration:
+Stop the API if it is listening, then run this command to run the API with a test configuration:
 
 ```bash
 ./testsetup.sh
 ```
 
+Later, when finished testing, revoke trust via this command:
+
+```bash
+sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass changeit -noprompt
+```
+
 ## Run Integration Tests
 
-To run integration tests that call the API's HTTPS endpoints, run this command:
+Next run integration tests that call the running API's HTTPS endpoints, via this command:
 
 ```bash
 ./gradlew test --rerun-tasks
@@ -70,7 +70,7 @@ com.mycompany.sample.tests.IntegrationTests
 
 ### Further Details
 
-* See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for further details on running the API
+* See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for further details on the API behaviour
 * See the [OAuth Integration Page](https://authguidance.com/2019/03/24/java-spring-boot-api-coding-key-points/) for key implementation details
 
 ### Programming Languages
