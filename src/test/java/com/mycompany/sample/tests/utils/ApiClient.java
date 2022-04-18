@@ -34,7 +34,7 @@ public final class ApiClient {
     public ApiResponse getCompanies(final ApiRequestOptions options) throws Throwable {
 
         options.setMethod("GET");
-        options.setPath("/api/companies");;
+        options.setPath("/api/companies");
 
         return this.callApi(options);
     }

@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 public class ApiRequestOptions {
 
-    public ApiRequestOptions(String accessToken) {
+    public ApiRequestOptions(final String accessToken) {
         this.accessToken = accessToken;
         this.rehearseException = false;
     }
