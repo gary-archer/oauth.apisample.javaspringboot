@@ -1,8 +1,8 @@
 #!/bin/bash
 
-###################################################
-# A script to run integration tests against the API
-###################################################
+#############################################################
+# A script to build and run the API with a test configuration
+#############################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
@@ -30,9 +30,9 @@ esac
 #
 echo 'Running API ...'
 if [ "$PLATFORM" == 'MACOS' ]; then
-    open -a Terminal ./test/run_api.sh
+    open -a Terminal ./run_api.sh
 else
-    "$GIT_BASH" -c ./test/run_api.sh &
+    "$GIT_BASH" -c ./run_api.sh &
 fi
 
 #
@@ -45,12 +45,11 @@ while [ "$(curl -k -s -X GET -o /dev/null -w '%{http_code}' "$API_URL")" != '401
 done
 
 #
-# Run the integration tests
-#
-echo 'Running integration tests ...'
-mvn test
-
-#
-# Restore the API configuration
+# Restore the API configuration once the API is loaded
 #
 cp environments/api.config.json ./api.config.json
+
+#
+# Indicate success
+#
+echo "Start tests via 'mvn test' ..."

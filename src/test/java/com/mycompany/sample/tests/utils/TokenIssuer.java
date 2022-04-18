@@ -1,5 +1,6 @@
 package com.mycompany.sample.tests.utils;
 
+import java.util.UUID;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
@@ -16,6 +17,7 @@ import ch.qos.logback.classic.LoggerContext;
 public final class TokenIssuer {
 
     private final RsaJsonWebKey jwk;
+    private final String keyId;
 
     /*
      * Do the key setup during construction
@@ -28,7 +30,8 @@ public final class TokenIssuer {
 
         // Generate a JSON Web Key for our token issuing
         this.jwk = RsaJwkGenerator.generateJwk(2048);
-        this.jwk.setKeyId("1");
+        this.keyId = UUID.randomUUID().toString();
+        this.jwk.setKeyId(this.keyId);
         this.jwk.setAlgorithm("RS256");
     }
 
@@ -47,7 +50,7 @@ public final class TokenIssuer {
         claims.setNotBeforeMinutesInThePast(1);
 
         var jws = new JsonWebSignature();
-        jws.setKeyIdHeaderValue("1");
+        jws.setKeyIdHeaderValue(this.keyId);
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
         jws.setPayload(claims.toJson());
         jws.setKey(this.jwk.getPrivateKey());

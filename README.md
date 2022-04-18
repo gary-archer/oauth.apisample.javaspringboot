@@ -13,8 +13,8 @@ The final OAuth secured Java API code sample, referenced in my blog at https://a
 
 ### Build the API
 
-Ensure that Java 17 and maven are installed, then run the start script to begin listening over HTTPS.\
-You need to run the script at least once in order to download development SSL certificates.
+Ensure that Java 17 and maven are installed, then run the start script to build the API and start listening over HTTPS.\
+Development SSL certificates must be downloaded before `npm start` will work.
 
 ```bash
 ./start.sh
@@ -41,15 +41,19 @@ Revoke trust when required via this command:
 sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass changeit -noprompt
 ```
 
-## Run Integration Tests
-
-To test the API's endpoints, stop the API if it is running, then run the test script:
+Then run the following command, to run the API with a test configuration:
 
 ```bash
-./test.sh
+./testsetup.sh
 ```
 
-The API then runs some integration tests to demonstrate key API behaviour:
+## Run Integration Tests
+
+To run integration tests that call the API's HTTPS endpoints, run this command:
+
+```bash
+mnv test
+```
 
 ```text
 Waiting for API endpoints to come up ...

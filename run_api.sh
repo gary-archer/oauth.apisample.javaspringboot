@@ -5,10 +5,22 @@
 #############################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-cd ..
 
 #
-# Build then run the API
+# Build the API code if needed
+#
+mvn clean package -DskipTests
+if [ $? -ne 0 ]; then
+    echo 'Problem encountered building the API'
+    exit
+fi
+
+#
+# Run the API's JAR file'
 #
 mvn clean package -DskipTests
 java -jar target/sampleapi-0.0.1-SNAPSHOT.jar
+if [ $? -ne 0 ]; then
+    echo 'Problem encountered running the API'
+    exit
+fi
