@@ -18,13 +18,14 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.ApiResponse;
+import com.mycompany.sample.tests.utils.TokenIssuer;
 
 @Suite
 public class IntegrationTests {
 
     private static String guestUserId;
     private static String guestAdminId;
-    private static ApiResponse.TokenIssuer tokenIssuer;
+    private static TokenIssuer tokenIssuer;
     private static WireMockServer wiremock;
     private static ApiClient apiClient;
 
@@ -39,7 +40,7 @@ public class IntegrationTests {
         guestAdminId = "77a97e5b-b748-45e5-bb6f-658e85b2df91";
 
         // A class to issue our own JWTs for testing
-        tokenIssuer = new ApiResponse.TokenIssuer();
+        tokenIssuer = new TokenIssuer();
 
         // Start Wiremock to mock the Authorization Server and reduce log output
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
