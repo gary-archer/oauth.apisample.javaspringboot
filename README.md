@@ -4,14 +4,14 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot?targetFile=build.gradle)
 
-### Overview 
+## Overview 
 
 The final OAuth secured Java API code sample, referenced in my blog at https://authguidance.com:
 
 - The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
 - The API also implements other [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/), for good technical quality
 
-### Build and Run the API
+## Build and Run the API
 
 Ensure that Java 17 is installed, then run the start script to build the API and start listening over HTTPS.\
 The script downloads development SSL certificates associated to test domains.
@@ -68,16 +68,16 @@ com.mycompany.sample.tests.IntegrationTests
   Test FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() PASSED
 ```
 
-### Further Details
+## Further Details
 
 * See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for further details on the API behaviour
 * See the [OAuth Integration Page](https://authguidance.com/2019/03/24/java-spring-boot-api-coding-key-points/) for key implementation details
 
-### Programming Languages
+## Programming Languages
 
 * Java 17 and Spring Boot 2.6 are used to implement the REST API
 
-### Middleware Used
+## Middleware Used
 
 * The Tomcat web server hosts the API over SSL port 443
 * AWS Cognito is used as the default Authorization Server
