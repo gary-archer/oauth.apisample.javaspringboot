@@ -280,7 +280,7 @@ public class IntegrationTests {
         // Call the API and ensure a 500 response
         var options = new ApiRequestOptions(accessToken);
         options.setRehearseException(true);
-        var response = apiClient.getTransactions(options, 3);
+        var response = apiClient.getTransactions(options, 2);
         Assertions.assertEquals(500, response.getStatusCode());
 
         // Read the response and assert the error code
