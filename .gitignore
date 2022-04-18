@@ -3,9 +3,10 @@ logs
 .DS_Store
 resources
 certs
-/target/*
+build
+target
 .idea
-.mvn
+.gradle
 .settings
 *.iws
 *.iml
