@@ -58,14 +58,14 @@ To run integration tests that call the API's HTTPS endpoints, run this command:
 ```text
 com.mycompany.sample.tests.IntegrationTests
 
-  Test GetCompanies_Returns401_ForMaliciousJwt() PASSED
-  Test GetTransactions_ReturnsNotFoundForUser_ForCompaniesNotMatchingTheRegionClaim() PASSED
-  Test GetTransactions_ReturnsAllowedItems_ForCompaniesMatchingTheRegionClaim() PASSED
-  Test GetCompanies_ReturnsAllItems_ForAdminUser() PASSED
-  Test GetCompanies_ReturnsTwoItems_ForStandardUser() PASSED
-  Test FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() PASSED
   Test GetUserClaims_ReturnsSingleRegion_ForStandardUser() PASSED
   Test GetUserClaims_ReturnsAllRegions_ForAdminUser() PASSED
+  Test GetCompanies_ReturnsTwoItems_ForStandardUser() PASSED
+  Test GetCompanies_ReturnsAllItems_ForAdminUser() PASSED
+  Test GetCompanies_Returns401_ForMaliciousJwt() PASSED
+  Test GetTransactions_ReturnsAllowedItems_ForCompaniesMatchingTheRegionClaim() PASSED
+  Test GetTransactions_ReturnsNotFoundForUser_ForCompaniesNotMatchingTheRegionClaim() PASSED
+  Test FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() PASSED
 ```
 
 ### Further Details
