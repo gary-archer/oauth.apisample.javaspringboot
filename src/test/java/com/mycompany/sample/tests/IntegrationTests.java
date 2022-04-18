@@ -48,7 +48,7 @@ public class IntegrationTests {
         wiremock = new WireMockServer(80);
         wiremock.start();
 
-        // Register a mock keyset the API will use to validate JWTs
+        // The API will call the Authorization Server to get a JSON Web Key Set, so register a mock response
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
         wiremock.stubFor(get(urlEqualTo("/.well-known/jwks.json")).willReturn(aResponse().withBody(keyset)));
 
@@ -75,7 +75,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // Register the Authorization Server response to a user info request from the API
+        // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("given_name", "Guest");
@@ -104,7 +104,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
 
-        // Register the Authorization Server response to a user info request from the API
+        // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("given_name", "Admin");
@@ -133,7 +133,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // Register the Authorization Server response to a user info request from the API
+        // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("given_name", "Guest");
@@ -161,7 +161,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
 
-        // Register the Authorization Server response to a user info request from the API
+        // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("given_name", "Admin");
@@ -211,7 +211,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
 
-        // Register the Authorization Server response to a user info request from the API
+        // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("given_name", "Guest");
@@ -240,7 +240,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // Register the Authorization Server response to a user info request from the API
+        // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("given_name", "Guest");
@@ -269,7 +269,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // Register the Authorization Server response to a user info request from the API
+        // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("given_name", "Guest");
