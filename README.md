@@ -52,12 +52,21 @@ Then run the following command, to run the API with a test configuration:
 To run integration tests that call the API's HTTPS endpoints, run this command:
 
 ```bash
-mnv test
+./gradlew test --rerun-tasks
 ```
 
 ```text
-Waiting for API endpoints to come up ...
-Running integration tests ...
+com.mycompany.sample.tests.IntegrationTests
+
+  Test GetCompanies_Returns401_ForMaliciousJwt() PASSED
+  Test GetTransactions_ReturnsNotFoundForUser_ForCompaniesNotMatchingTheRegionClaim() PASSED
+  Test GetTransactions_ReturnsAllowedItems_ForCompaniesMatchingTheRegionClaim() PASSED
+  Test GetCompanies_ReturnsAllItems_ForAdminUser() PASSED
+  Test GetCompanies_ReturnsTwoItems_ForStandardUser() PASSED
+  Test FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() PASSED
+  Test GetUserClaims_ReturnsSingleRegion_ForStandardUser() PASSED
+  Test GetUserClaims_ReturnsAllRegions_ForAdminUser() PASSED
+
 
 INFO] -------------------------------------------------------
 [INFO]  T E S T S

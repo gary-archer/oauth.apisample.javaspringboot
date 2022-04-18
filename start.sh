@@ -17,7 +17,7 @@ fi
 #
 # Build the API if needed
 #
-mvn clean package -DskipTests
+./gradlew clean && ./gradlew bootRun
 if [ $? -ne 0 ]; then
     echo 'Problem encountered building the API'
     exit
