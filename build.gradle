@@ -1,7 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.6.6'
-    //id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'com.adarshr.test-logger' version '3.2.0'
 }
 
 group = 'oauth.apisample.javaspringboot'
@@ -67,6 +68,10 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testImplementation "org.junit.platform:junit-platform-suite-engine:$junit_platform_suite_version"
     testImplementation "com.github.tomakehurst:wiremock:$wiremock_version"
+
+    // Test compiler dependencies
+    testCompileOnly "org.projectlombok:lombok:$lombok_version"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombok_version"
 }
 
 tasks.named('test') {
