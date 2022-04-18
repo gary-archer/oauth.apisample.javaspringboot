@@ -1,30 +1,21 @@
 #!/bin/bash
 
-###########################################################################
-# A script to download SSL certificates, then build and run the API locally
-###########################################################################
+################################################################
+# A script to build the API's code, then run it locally over SSL
+################################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Download SSL certificates from a central repo if needed
+# Download development SSL certificates if required
 #
-rm -rf ./resources
-git clone https://github.com/gary-archer/oauth.developmentcertificates ./resources
+./downloadcerts.sh
 if [ $? -ne 0 ]; then
-    echo 'Problem encountered downloading development certificates'
     exit
 fi
 
 #
-# Move authsamples-dev certificates to this folder
-#
-rm -rf certs
-mv ./resources/authsamples-dev ./certs
-rm -rf ./resources
-
-#
-# Build the app
+# Build the API if needed
 #
 mvn clean package -DskipTests
 if [ $? -ne 0 ]; then

@@ -16,14 +16,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mycompany.sample.tests.utils.ApiClient;
-import com.mycompany.sample.tests.utils.TokenIssuer;
+import com.mycompany.sample.tests.utils.ApiRequestOptions;
+import com.mycompany.sample.tests.utils.ApiResponse;
 
 @Suite
 public class IntegrationTests {
 
     private static String guestUserId;
     private static String guestAdminId;
-    private static TokenIssuer tokenIssuer;
+    private static ApiResponse.TokenIssuer tokenIssuer;
     private static WireMockServer wiremock;
     private static ApiClient apiClient;
 
@@ -38,7 +39,7 @@ public class IntegrationTests {
         guestAdminId = "77a97e5b-b748-45e5-bb6f-658e85b2df91";
 
         // A class to issue our own JWTs for testing
-        tokenIssuer = new TokenIssuer();
+        tokenIssuer = new ApiResponse.TokenIssuer();
 
         // Start Wiremock to mock the Authorization Server and reduce log output
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
@@ -82,7 +83,8 @@ public class IntegrationTests {
         wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
 
         // Call the API and ensure a 200 response
-        var response = apiClient.getUserInfoClaims(accessToken);
+        var options = new ApiRequestOptions(accessToken);
+        var response = apiClient.getUserInfoClaims(options);
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response regions and assert the count
@@ -110,7 +112,8 @@ public class IntegrationTests {
         wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
 
         // Call the API and ensure a 200 response
-        var response = apiClient.getUserInfoClaims(accessToken);
+        var options = new ApiRequestOptions(accessToken);
+        var response = apiClient.getUserInfoClaims(options);
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response regions and assert the count
@@ -138,7 +141,8 @@ public class IntegrationTests {
         wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
 
         // Call the API and ensure a 200 response
-        var response = apiClient.getCompanies(accessToken);
+        var options = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(options);
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response and assert the count
@@ -165,12 +169,35 @@ public class IntegrationTests {
         wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
 
         // Call the API and ensure a 200 response
-        var response = apiClient.getCompanies(accessToken);
+        var options = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(options);
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response and assert the count
         var body = mapper.readValue(response.getBody(), ArrayNode.class);
         Assertions.assertEquals(4, body.size());
+    }
+
+    /*
+     * Test getting companies for the admin user
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void GetCompanies_Returns401_ForMaliciousJwt() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var accessToken = tokenIssuer.issueMaliciousAccessToken(guestAdminId);
+
+        // Call the API and ensure a 401 response
+        var options = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(options);
+        Assertions.assertEquals(401, response.getStatusCode());
+
+        // Read the response and assert the expected error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("unauthorized", errorCode.asText());
     }
 
     /*
@@ -192,7 +219,8 @@ public class IntegrationTests {
         wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
 
         // Call the API and ensure a 200 response
-        var response = apiClient.getTransactions(accessToken, 2);
+        var options = new ApiRequestOptions(accessToken);
+        var response = apiClient.getTransactions(options, 2);
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response and assert the count
@@ -219,13 +247,44 @@ public class IntegrationTests {
         data.put("email", "guestuser@mycompany.com");
         wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
 
-        // Call the API and ensure a 200 response
-        var response = apiClient.getTransactions(accessToken, 3);
+        // Call the API and ensure a 404 response
+        var options = new ApiRequestOptions(accessToken);
+        var response = apiClient.getTransactions(options, 3);
         Assertions.assertEquals(404, response.getStatusCode());
 
-        // Read the response and assert the count
+        // Read the response and assert the error code
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
         Assertions.assertEquals("company_not_found", errorCode.asText());
+    }
+
+    /*
+     * Test rehearsing a 500 error when there is an exception in the API
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+
+        // Register the Authorization Server response to a user info request from the API
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+        data.put("given_name", "Guest");
+        data.put("family_name", "User");
+        data.put("email", "guestuser@mycompany.com");
+        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+
+        // Call the API and ensure a 500 response
+        var options = new ApiRequestOptions(accessToken);
+        options.setRehearseException(true);
+        var response = apiClient.getTransactions(options, 3);
+        Assertions.assertEquals(500, response.getStatusCode());
+
+        // Read the response and assert the error code
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("exception_simulation", errorCode.asText());
     }
 }

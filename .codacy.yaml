@@ -3,5 +3,5 @@ exclude_paths: [
     '*',    
     'certs/**',
     'data/**',
-    'deployment/**'
+    'environments/**'
 ]
