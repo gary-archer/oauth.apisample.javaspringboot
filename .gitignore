@@ -4,7 +4,7 @@ logs
 resources
 certs
 build
-target
+bin
 .idea
 .gradle
 .settings
