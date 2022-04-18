@@ -7,6 +7,14 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
+# Download development SSL certificates if required
+#
+./downloadcerts.sh
+if [ $? -ne 0 ]; then
+    exit
+fi
+
+#
 # Copy down the test configuration, to point the API to Wiremock rather than AWS Cognito
 #
 cp environments/test.config.json ./api.config.json
@@ -52,4 +60,4 @@ cp environments/api.config.json ./api.config.json
 #
 # Indicate success
 #
-echo "Start tests via 'gradlew test --rerun-tasks' ..."
+echo "Start tests via './gradlew test --rerun-tasks' ..."
