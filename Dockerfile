@@ -11,7 +11,7 @@ FROM azul/zulu-openjdk-alpine:17.0.2-jre
 WORKDIR /usr/api
 
 # Copy the packaged jar and other files into our docker image
-COPY target/sampleapi-0.0.1-SNAPSHOT.jar /usr/api/
+COPY build/libs/sampleapi-0.0.1-SNAPSHOT.jar /usr/api/
 COPY data/*                              /usr/api/data/
 
 # Create a low privilege user to run the API
