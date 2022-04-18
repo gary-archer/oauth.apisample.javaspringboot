@@ -66,16 +66,6 @@ com.mycompany.sample.tests.IntegrationTests
   Test FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() PASSED
   Test GetUserClaims_ReturnsSingleRegion_ForStandardUser() PASSED
   Test GetUserClaims_ReturnsAllRegions_ForAdminUser() PASSED
-
-
-INFO] -------------------------------------------------------
-[INFO]  T E S T S
-[INFO] -------------------------------------------------------
-[INFO] Running com.mycompany.sample.tests.IntegrationTests
-[INFO] 
-[INFO] Results:
-[INFO] 
-[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
 ```
 
 ### Further Details
