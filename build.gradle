@@ -17,7 +17,7 @@ ext {
     // API dependency versions
     spring_boot_starter_version = '2.6.6'
     spring_security_version = '5.6.2'
-    spring_beans_version = '5.3.19'
+    spring_vulnerability_version = '5.3.19'
     jose4j_version = '0.7.11'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
@@ -41,7 +41,11 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web:$spring_boot_starter_version"
     implementation "org.springframework.security:spring-security-config:$spring_security_version"
     implementation "org.springframework.security:spring-security-web:$spring_security_version"
-    implementation "org.springframework:spring-beans:$spring_beans_version"
+
+    // For the short term, also specify these versions to prevent Snyk vulnerability warnings
+    implementation "org.springframework:spring-beans:$spring_vulnerability_version"
+    implementation "org.springframework:spring-expression:$spring_vulnerability_version"
+    implementation "org.springframework:spring-context:$spring_vulnerability_version"
 
     // OAuth and caching dependencies
     implementation "org.bitbucket.b_c:jose4j:$jose4j_version"
