@@ -1,6 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '2.6.6'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    //id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
@@ -30,7 +30,7 @@ ext {
     // Test dependency versions
     junit_jupiter_version = '5.8.2'
     junit_platform_suite_version = '1.8.2'
-    wiremock_version = '2.7.2'
+    wiremock_version = '2.27.2'
 }
 
 dependencies {
@@ -55,9 +55,12 @@ dependencies {
     implementation "org.apache.httpcomponents:httpclient:$apache_http_client_version"
     implementation "com.github.javasync:AsyncFileRw:$async_file_version"
     implementation "net.logstash.logback:logstash-logback-encoder:$logback_version"
-    implementation "org.projectlombok:lombok:$lombok_version"
     implementation "com.google.guava:guava:$guava_version"
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
+
+    // Compiler dependencies
+    compileOnly "org.projectlombok:lombok:$lombok_version"
+    annotationProcessor "org.projectlombok:lombok:$lombok_version"
 
     // Test dependencies
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"

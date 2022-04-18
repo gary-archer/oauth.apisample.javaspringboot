@@ -52,4 +52,4 @@ cp environments/api.config.json ./api.config.json
 #
 # Indicate success
 #
-echo "Start tests via 'mvn test' ..."
+echo "Start tests via 'gradlew test --rerun-tasks' ..."
