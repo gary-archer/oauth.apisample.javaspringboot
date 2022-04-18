@@ -23,32 +23,26 @@ public final class ApiClient {
         }
     }
 
-    public ApiResponse getUserInfoClaims(final String accessToken) throws Throwable {
+    public ApiResponse getUserInfoClaims(final ApiRequestOptions options) throws Throwable {
 
-        var options = new ApiRequestOptions();
         options.setMethod("GET");
         options.setPath("/api/userinfo");
-        options.setAccessToken(accessToken);
 
         return this.callApi(options);
     }
 
-    public ApiResponse getCompanies(final String accessToken) throws Throwable {
+    public ApiResponse getCompanies(final ApiRequestOptions options) throws Throwable {
 
-        var options = new ApiRequestOptions();
         options.setMethod("GET");
-        options.setPath("/api/companies");
-        options.setAccessToken(accessToken);
+        options.setPath("/api/companies");;
 
         return this.callApi(options);
     }
 
-    public ApiResponse getTransactions(final String accessToken, final int companyId) throws Throwable {
+    public ApiResponse getTransactions(final ApiRequestOptions options, final int companyId) throws Throwable {
 
-        var options = new ApiRequestOptions();
         options.setMethod("GET");
         options.setPath(String.format("/api/companies/%d/transactions", companyId));
-        options.setAccessToken(accessToken);
 
         return this.callApi(options);
     }
@@ -56,12 +50,16 @@ public final class ApiClient {
     private ApiResponse callApi(final ApiRequestOptions options) throws Throwable {
 
         var operationUrl = String.format("%s%s", this.baseUrl, options.getPath());
-        var request = HttpRequest.newBuilder()
+        var requestBuilder = HttpRequest.newBuilder()
                 .uri(new URI(operationUrl))
                 .GET()
-                .headers("Authorization", String.format("Bearer %s", options.getAccessToken()))
-                .build();
+                .headers("Authorization", String.format("Bearer %s", options.getAccessToken()));
 
+        if (options.getRehearseException()) {
+            requestBuilder.headers("x-mycompany-test-exception", "SampleApi");
+        }
+
+        var request = requestBuilder.build();
         var client = HttpClient.newBuilder()
                 .build();
 

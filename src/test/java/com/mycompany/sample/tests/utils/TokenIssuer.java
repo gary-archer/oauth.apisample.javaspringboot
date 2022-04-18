@@ -36,6 +36,15 @@ public final class TokenIssuer {
     }
 
     /*
+     * Get the token signing public keys as a JSON Web Keyset
+     */
+    public String getTokenSigningPublicKeys() {
+
+        var jsonWebKeySet = new JsonWebKeySet(this.jwk);
+        return jsonWebKeySet.toJson();
+    }
+
+    /*
      * Issue an access token with the supplied subject claim
      * https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
      */
@@ -57,12 +66,30 @@ public final class TokenIssuer {
         return jws.getCompactSerialization();
     }
 
-    /*
-     * Get the token signing public keys as a JSON Web Keyset
-     */
-    public String getTokenSigningPublicKeys() {
 
-        var jsonWebKeySet = new JsonWebKeySet(this.jwk);
-        return jsonWebKeySet.toJson();
+
+    /*
+     * Issue an access token signed with an untrusted JWK
+     */
+    public String issueMaliciousAccessToken(final String sub) throws JoseException {
+
+        var maliciousKeys = RsaJwkGenerator.generateJwk(2048);
+        maliciousKeys.setKeyId(this.keyId);
+        maliciousKeys.setAlgorithm("RS256");
+
+        var claims = new JwtClaims();
+        claims.setSubject(sub);
+        claims.setIssuer("testissuer.com");
+        claims.setAudience("api.mycompany.com");
+        claims.setStringClaim("scope", "openid profile email https://api.authsamples.com/api/transactions_read");
+        claims.setExpirationTimeMinutesInTheFuture(10);
+        claims.setNotBeforeMinutesInThePast(1);
+
+        var jws = new JsonWebSignature();
+        jws.setKeyIdHeaderValue(this.keyId);
+        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+        jws.setPayload(claims.toJson());
+        jws.setKey(maliciousKeys.getPrivateKey());
+        return jws.getCompactSerialization();
     }
 }
