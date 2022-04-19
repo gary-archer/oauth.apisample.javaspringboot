@@ -9,7 +9,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 #
 # Build the API code if needed
 #
-./gradlew clean && ./gradlew bootRun
+./gradlew clean && ./gradlew bootJar
 if [ $? -ne 0 ]; then
     echo 'Problem encountered building the API'
     exit
