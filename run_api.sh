@@ -18,7 +18,7 @@ fi
 #
 # Run the API's JAR file'
 #
-java -jar target/sampleapi-0.0.1-SNAPSHOT.jar
+java -jar build/libs/sampleapi-0.0.1-SNAPSHOT.jar
 if [ $? -ne 0 ]; then
     echo 'Problem encountered running the API'
     exit
