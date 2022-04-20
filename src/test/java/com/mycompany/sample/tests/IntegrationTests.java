@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
-import com.mycompany.sample.tests.utils.ApiResponse;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 
 @Suite
