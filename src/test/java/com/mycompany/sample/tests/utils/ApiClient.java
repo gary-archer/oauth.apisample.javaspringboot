@@ -1,10 +1,13 @@
 package com.mycompany.sample.tests.utils;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 /*
  * A utility class to call the API in a parameterized manner
@@ -23,7 +26,7 @@ public final class ApiClient {
         }
     }
 
-    public ApiResponse getUserInfoClaims(final ApiRequestOptions options) throws Throwable {
+    public CompletableFuture<ApiResponse> getUserInfoClaims(final ApiRequestOptions options) {
 
         options.setMethod("GET");
         options.setPath("/api/userinfo");
@@ -31,7 +34,7 @@ public final class ApiClient {
         return this.callApi(options);
     }
 
-    public ApiResponse getCompanies(final ApiRequestOptions options) throws Throwable {
+    public CompletableFuture<ApiResponse> getCompanies(final ApiRequestOptions options) {
 
         options.setMethod("GET");
         options.setPath("/api/companies");
@@ -39,7 +42,7 @@ public final class ApiClient {
         return this.callApi(options);
     }
 
-    public ApiResponse getTransactions(final ApiRequestOptions options, final int companyId) throws Throwable {
+    public CompletableFuture<ApiResponse> getTransactions(final ApiRequestOptions options, final int companyId) {
 
         options.setMethod("GET");
         options.setPath(String.format("/api/companies/%d/transactions", companyId));
@@ -47,11 +50,15 @@ public final class ApiClient {
         return this.callApi(options);
     }
 
-    private ApiResponse callApi(final ApiRequestOptions options) throws Throwable {
+    /*
+     * Parameterized code to do the async work of calling the API
+     */
+    private CompletableFuture<ApiResponse> callApi(final ApiRequestOptions options) {
 
+        // Prepare the request
         var operationUrl = String.format("%s%s", this.baseUrl, options.getPath());
         var requestBuilder = HttpRequest.newBuilder()
-                .uri(new URI(operationUrl))
+                .uri(this.stringToUri(operationUrl))
                 .GET()
                 .headers("Authorization", String.format("Bearer %s", options.getAccessToken()));
 
@@ -63,7 +70,30 @@ public final class ApiClient {
         var client = HttpClient.newBuilder()
                 .build();
 
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return new ApiResponse(response);
+        // Handle the response
+        BiFunction<HttpResponse<String>, Throwable, ApiResponse> callback = (response, ex) -> {
+
+            // Handle read errors
+            if (ex != null) {
+                throw new RuntimeException(ex);
+            }
+
+            return new ApiResponse(response);
+        };
+
+        // Send the request
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).handle(callback);
+    }
+
+    /*
+     * Prevent the need for throws declarations in calling code
+     */
+    private URI stringToUri(final String uri) {
+
+        try {
+            return new URI(uri);
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

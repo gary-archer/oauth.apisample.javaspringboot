@@ -1,12 +1,15 @@
 package com.mycompany.sample.tests;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.common.base.Strings;
 import com.mycompany.sample.tests.utils.ApiClient;
+import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.ApiResponse;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 
@@ -155,6 +159,168 @@ public class LoadTest {
         var requests = new ArrayList<Supplier<CompletableFuture<ApiResponse>>>();
         for (int index = 0; index < 100; index++) {
             System.out.println(COLOR_GREEN + String.format("Load Test item %d", index));
+
+            // Create a 401 error on request 10, by making the access token act expired
+            var accessToken = accessTokens.get(index % 5);
+            if (index == 10) {
+                accessToken += "x";
+            }
+
+            // Create some promises for various API endpoints
+            if (index % 5 == 0) {
+
+                requests.add(createUserInfoRequest(accessToken));
+
+            } else if (index % 5 == 1) {
+
+                requests.add(createTransactionsRequest(accessToken, 2));
+
+            } else if (index % 5 == 2) {
+
+                // On request 71 try to access unauthorized data for company 3, to create a 404 error
+                var companyId = (index == 72) ? 3 : 2;
+                requests.add(createTransactionsRequest(accessToken, companyId));
+
+            } else {
+
+                requests.add(createCompaniesRequest(accessToken));
+            }
         }
+
+        // Fire the API requests in batches
+        executeApiRequests(requests);
+    }
+
+    /*
+     * Prepare a get user info API request callback
+     */
+    private Supplier<CompletableFuture<ApiResponse>> createUserInfoRequest(final String accessToken) {
+
+        var options = new ApiRequestOptions(accessToken);
+        this.initializeApiRequest(options);
+        return () -> apiClient.getUserInfoClaims(options);
+    }
+
+    /*
+     * Prepare a get companies API request callback
+     */
+    private Supplier<CompletableFuture<ApiResponse>> createCompaniesRequest(final String accessToken) {
+
+        var options = new ApiRequestOptions(accessToken);
+        this.initializeApiRequest(options);
+        return () -> apiClient.getCompanies(options);
+    }
+
+    /*
+     * Prepare a get transactions API request callback
+     */
+    private Supplier<CompletableFuture<ApiResponse>> createTransactionsRequest(
+            final String accessToken,
+            final int companyId) {
+
+        var options = new ApiRequestOptions(accessToken);
+        this.initializeApiRequest(options);
+        return () -> apiClient.getTransactions(options, companyId);
+    }
+
+    /*
+     * Set any special logic before sending an API request
+     */
+    private void initializeApiRequest(ApiRequestOptions options) {
+
+        // On request 85 we'll simulate a 500 error via a custom header
+        totalCount++;
+        if (totalCount == 85) {
+            options.setRehearseException(true);
+        }
+    }
+
+    /*
+     * Issue API requests in batches of 5, to avoid excessive queueing on a development computer
+     * By default there is a limit of 5 concurrent outgoing requests to a single host
+     */
+    private void executeApiRequests(final List<Supplier<CompletableFuture<ApiResponse>>> requests) {
+
+        // Set counters
+        var total = requests.size();
+        var batchSize = 5;
+        var current = 0;
+
+        // Process one batch at a time
+        while (current < total) {
+
+            // Get a batch of requests
+            var requestBatch=
+                    requests.subList(current, Math.min(current + batchSize, total));
+
+            // Start the batch of requests and return create a collection of futures
+            var batchFutures = requestBatch.stream().map(this::executeApiRequest).toList();
+
+            // Wait for all requests in this batch to complete
+            var compositeFuture = CompletableFuture.allOf(batchFutures.toArray(new CompletableFuture<?>[0]));
+            compositeFuture.thenApply(v -> batchFutures.stream()
+                    .map(CompletableFuture::join)
+                    .collect(Collectors.toList())
+            ).join();
+
+            // Add to results
+            current += batchSize;
+        }
+    }
+
+    /*
+     * Start execution and return a success promise regardless of whether the API call succeeded
+     */
+    private CompletableFuture<ApiResponse> executeApiRequest(Supplier<CompletableFuture<ApiResponse>> resultCallback) {
+
+        Function<ApiResponse, CompletableFuture<ApiResponse>> callback = response -> {
+
+            // Handle read errors
+            if (response.getStatusCode() >= 200 && response.getStatusCode() <= 299) {
+
+                // Report successful requests
+                System.out.println(COLOR_GREEN + formatMetrics(response));
+
+            } else {
+
+                // Report failed requests
+                System.out.println(COLOR_RED + formatMetrics(response));
+                errorCount++;
+            }
+
+            return completedFuture(response);
+        };
+
+        return resultCallback.get().thenCompose(callback);
+    }
+
+    /*
+     * Get metrics as a table row
+     */
+    private String formatMetrics(ApiResponse response) {
+
+        return "RESULT";
+
+        /*let errorCode = '';
+        let errorId   = '';
+
+        if (response.statusCode >= 400 && response.body.code) {
+            errorCode = response.body.code;
+        }
+
+        if (response.statusCode >= 500 && response.body.id) {
+            errorId = response.body.id.toString();
+        }
+
+        const values = [
+        response.metrics.operation.padEnd(25),
+                response.metrics.correlationId.padEnd(38),
+                response.metrics.startTime.toISOString().padEnd(28),
+                response.metrics.millisecondsTaken.toString().padEnd(21),
+                response.statusCode.toString().padEnd(14),
+                errorCode.padEnd(24),
+                errorId.padEnd(12),
+        ];
+        return values.join('');*/
     }
 }
