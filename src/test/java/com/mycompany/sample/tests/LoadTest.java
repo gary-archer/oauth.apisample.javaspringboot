@@ -21,6 +21,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.common.base.Strings;
 import com.mycompany.sample.tests.utils.ApiClient;
@@ -158,7 +159,6 @@ public class LoadTest {
         // Next produce some requests that will run in parallel
         var requests = new ArrayList<Supplier<CompletableFuture<ApiResponse>>>();
         for (int index = 0; index < 100; index++) {
-            System.out.println(COLOR_GREEN + String.format("Load Test item %d", index));
 
             // Create a 401 error on request 10, by making the access token act expired
             var accessToken = accessTokens.get(index % 5);
@@ -226,7 +226,7 @@ public class LoadTest {
     /*
      * Set any special logic before sending an API request
      */
-    private void initializeApiRequest(ApiRequestOptions options) {
+    private void initializeApiRequest(final ApiRequestOptions options) {
 
         // On request 85 we'll simulate a 500 error via a custom header
         totalCount++;
@@ -250,7 +250,7 @@ public class LoadTest {
         while (current < total) {
 
             // Get a batch of requests
-            var requestBatch=
+            var requestBatch =
                     requests.subList(current, Math.min(current + batchSize, total));
 
             // Start the batch of requests and return create a collection of futures
@@ -271,7 +271,8 @@ public class LoadTest {
     /*
      * Start execution and return a success promise regardless of whether the API call succeeded
      */
-    private CompletableFuture<ApiResponse> executeApiRequest(Supplier<CompletableFuture<ApiResponse>> resultCallback) {
+    private CompletableFuture<ApiResponse> executeApiRequest(
+            final Supplier<CompletableFuture<ApiResponse>> resultCallback) {
 
         Function<ApiResponse, CompletableFuture<ApiResponse>> callback = response -> {
 
@@ -297,23 +298,32 @@ public class LoadTest {
     /*
      * Get metrics as a table row
      */
-    private String formatMetrics(ApiResponse response) {
+    private String formatMetrics(final ApiResponse response) {
 
-        return "RESULT";
+        ObjectNode errorBody = null;
+        var errorCode = "";
+        var errorId   = "";
 
-        /*let errorCode = '';
-        let errorId   = '';
-
-        if (response.statusCode >= 400 && response.body.code) {
-            errorCode = response.body.code;
+        if (response.getStatusCode() >= 400) {
+            errorBody = this.deserializeErrorBody(response.getBody());
         }
 
-        if (response.statusCode >= 500 && response.body.id) {
-            errorId = response.body.id.toString();
+        if (response.getStatusCode() >= 400 && errorBody != null) {
+            errorCode = errorBody.get("code").asText();
         }
 
-        const values = [
-        response.metrics.operation.padEnd(25),
+        if (response.getStatusCode() >= 500 && errorBody != null) {
+            errorId = errorBody.get("id").asText();
+        }
+
+        var values = new String[] {
+                "RESULT",
+                errorCode,
+                errorId
+        };
+        return String.join("", values);
+
+        /*response.metrics.operation.padEnd(25),
                 response.metrics.correlationId.padEnd(38),
                 response.metrics.startTime.toISOString().padEnd(28),
                 response.metrics.millisecondsTaken.toString().padEnd(21),
@@ -321,6 +331,28 @@ public class LoadTest {
                 errorCode.padEnd(24),
                 errorId.padEnd(12),
         ];
-        return values.join('');*/
+
+        var values = new String[]{
+                Strings.padEnd("OPERATION", 25, ' '),
+                Strings.padEnd("CORRELATION-ID", 38, ' '),
+                Strings.padEnd("START-TIME", 28, ' '),
+                Strings.padEnd("MILLISECONDS-TAKEN", 21, ' '),
+                Strings.padEnd("STATUS-CODE", 14, ' '),
+                Strings.padEnd("ERROR-CODE", 24, ' '),
+                Strings.padEnd("ERROR-ID", 12, ' ')
+        };*/
+    }
+
+    /*
+     * Avoid async calling code needing to use checked exceptions
+     */
+    private ObjectNode deserializeErrorBody(final String body) {
+
+        try {
+            var mapper = new ObjectMapper();
+            return mapper.readValue(body, ObjectNode.class);
+        } catch (Throwable ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

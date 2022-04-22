@@ -86,7 +86,7 @@ public final class ApiClient {
     }
 
     /*
-     * Prevent the need for throws declarations in calling code
+     * Avoid async calling code needing to use checked exceptions
      */
     private URI stringToUri(final String uri) {
 
