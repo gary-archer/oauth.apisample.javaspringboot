@@ -1,9 +1,8 @@
 package com.mycompany.sample.tests.utils;
 
+import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.Instant;
 
 /*
  * Some metrics once an API call completes
