@@ -24,8 +24,8 @@ public final class ApiClient {
         this.baseUrl = baseUrl;
         if (useProxy) {
             var url = new URL("http://127.0.0.1:8888");
-            System.setProperty("http.proxyHost", url.getHost());
-            System.setProperty("http.proxyPort", String.valueOf(url.getPort()));
+            System.setProperty("https.proxyHost", url.getHost());
+            System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
         }
     }
 

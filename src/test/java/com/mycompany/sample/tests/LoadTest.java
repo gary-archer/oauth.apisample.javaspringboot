@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -81,7 +80,7 @@ public class LoadTest {
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:445";
         sessionId = UUID.randomUUID().toString();
-        apiClient = new ApiClient(apiBaseUrl, true);
+        apiClient = new ApiClient(apiBaseUrl, false);
 
         // Initialise counts
         totalCount = 0;
@@ -166,7 +165,7 @@ public class LoadTest {
                 accessToken += "x";
             }
 
-            // Create some promises for various API endpoints
+            // Create some futures for various API endpoints
             if (index % 5 == 0) {
 
                 requests.add(createUserInfoRequest(accessToken));
@@ -250,18 +249,13 @@ public class LoadTest {
         while (current < total) {
 
             // Get a batch of requests
-            var requestBatch =
-                    requests.subList(current, Math.min(current + batchSize, total));
+            var requestBatch = requests.subList(current, Math.min(current + batchSize, total));
 
-            // Start the batch of requests and return create a collection of futures
+            // Start each API request in the batch concurrently, and return create a collection of futures
             var batchFutures = requestBatch.stream().map(this::executeApiRequest).toList();
 
-            // Wait for all requests in this batch to complete
-            var compositeFuture = CompletableFuture.allOf(batchFutures.toArray(new CompletableFuture<?>[0]));
-            compositeFuture.thenApply(v -> batchFutures.stream()
-                    .map(CompletableFuture::join)
-                    .collect(Collectors.toList())
-            ).join();
+            // Wait for all requests in the batch to complete
+            CompletableFuture.allOf(batchFutures.toArray(new CompletableFuture<?>[0])).join();
 
             // Add to results
             current += batchSize;
@@ -269,7 +263,7 @@ public class LoadTest {
     }
 
     /*
-     * Start execution and return a success promise regardless of whether the API call succeeded
+     * Start execution and return a success future regardless of whether the API call succeeded
      */
     private CompletableFuture<ApiResponse> executeApiRequest(
             final Supplier<CompletableFuture<ApiResponse>> resultCallback) {
