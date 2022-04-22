@@ -6,16 +6,20 @@ import lombok.Getter;
 /*
  * Model a test API response
  */
-public class ApiResponse {
+public final class ApiResponse {
 
-    public ApiResponse(final HttpResponse<String> response) {
+    public ApiResponse(final HttpResponse<String> response, final ApiResponseMetrics metrics) {
         this.statusCode = response.statusCode();
         this.body = response.body();
+        this.metrics = metrics;
     }
 
     @Getter
-    private int statusCode;
+    private final int statusCode;
 
     @Getter
-    private String body;
+    private final String body;
+
+    @Getter
+    private final ApiResponseMetrics metrics;
 }

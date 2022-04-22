@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
-import com.mycompany.sample.tests.utils.ApiResponse;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 
 @Suite
@@ -85,7 +84,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getUserInfoClaims(options);
+        var response = apiClient.getUserInfoClaims(options).join();
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response regions and assert the count
@@ -114,7 +113,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getUserInfoClaims(options);
+        var response = apiClient.getUserInfoClaims(options).join();
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response regions and assert the count
@@ -143,7 +142,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanies(options);
+        var response = apiClient.getCompanies(options).join();
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response and assert the count
@@ -171,7 +170,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanies(options);
+        var response = apiClient.getCompanies(options).join();
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response and assert the count
@@ -191,7 +190,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 401 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanies(options);
+        var response = apiClient.getCompanies(options).join();
         Assertions.assertEquals(401, response.getStatusCode());
 
         // Read the response and assert the expected error code
@@ -221,7 +220,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getTransactions(options, 2);
+        var response = apiClient.getCompanyTransactions(options, 2).join();
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response and assert the count
@@ -250,7 +249,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 404 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getTransactions(options, 3);
+        var response = apiClient.getCompanyTransactions(options, 3).join();
         Assertions.assertEquals(404, response.getStatusCode());
 
         // Read the response and assert the error code
@@ -280,7 +279,7 @@ public class IntegrationTests {
         // Call the API and ensure a 500 response
         var options = new ApiRequestOptions(accessToken);
         options.setRehearseException(true);
-        var response = apiClient.getTransactions(options, 2);
+        var response = apiClient.getCompanyTransactions(options, 2).join();
         Assertions.assertEquals(500, response.getStatusCode());
 
         // Read the response and assert the error code

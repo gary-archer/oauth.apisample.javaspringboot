@@ -6,7 +6,7 @@ import lombok.Setter;
 /*
  * Options when calling an API
  */
-public class ApiRequestOptions {
+public final class ApiRequestOptions {
 
     public ApiRequestOptions(final String accessToken) {
         this.accessToken = accessToken;

@@ -79,6 +79,15 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:$lombok_version"
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+    include '**/IntegrationTests.class'
+    testLogging.showStandardStreams = true
+}
+
+// In Intellij select "Build, Execution, Deployment > Build Tools > gradle > Run Tests using: Intellij IDEA"
+tasks.register('loadtest', Test) {
+    useJUnitPlatform()
+    include '**/LoadTest.class'
+    testLogging.showStandardStreams = true
 }
