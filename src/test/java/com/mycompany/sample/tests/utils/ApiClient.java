@@ -6,6 +6,9 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
@@ -31,7 +34,8 @@ public final class ApiClient {
         options.setMethod("GET");
         options.setPath("/api/userinfo");
 
-        return this.callApi(options);
+        var metrics = new ApiResponseMetrics("getUserInfoClaims");
+        return this.callApi(options, metrics);
     }
 
     public CompletableFuture<ApiResponse> getCompanies(final ApiRequestOptions options) {
@@ -39,21 +43,27 @@ public final class ApiClient {
         options.setMethod("GET");
         options.setPath("/api/companies");
 
-        return this.callApi(options);
+        var metrics = new ApiResponseMetrics("getCompanies");
+        return this.callApi(options, metrics);
     }
 
-    public CompletableFuture<ApiResponse> getTransactions(final ApiRequestOptions options, final int companyId) {
+    public CompletableFuture<ApiResponse> getCompanyTransactions(final ApiRequestOptions options, final int companyId) {
 
         options.setMethod("GET");
         options.setPath(String.format("/api/companies/%d/transactions", companyId));
 
-        return this.callApi(options);
+        var metrics = new ApiResponseMetrics("getCompanyTransactions");
+        return this.callApi(options, metrics);
     }
 
     /*
      * Parameterized code to do the async work of calling the API
      */
-    private CompletableFuture<ApiResponse> callApi(final ApiRequestOptions options) {
+    private CompletableFuture<ApiResponse> callApi(final ApiRequestOptions options, final ApiResponseMetrics metrics) {
+
+        // Initialize metrics
+        metrics.setStartTime(Instant.now());
+        metrics.setCorrelationId(UUID.randomUUID().toString());
 
         // Prepare the request
         var operationUrl = String.format("%s%s", this.baseUrl, options.getPath());
@@ -73,12 +83,16 @@ public final class ApiClient {
         // Handle the response
         BiFunction<HttpResponse<String>, Throwable, ApiResponse> callback = (response, ex) -> {
 
-            // Handle read errors
+            // Record the time taken in all cases
+            metrics.setMillisecondsTaken(Duration.between(metrics.getStartTime(), Instant.now()).toMillis());
+
+            // Connection errors will abort the test
             if (ex != null) {
                 throw new RuntimeException(ex);
             }
 
-            return new ApiResponse(response);
+            // Return both success and error responses received from the API
+            return new ApiResponse(response, metrics);
         };
 
         // Send the request

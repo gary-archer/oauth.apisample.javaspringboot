@@ -116,7 +116,7 @@ public class LoadTest {
         var headings = new String[]{
                 Strings.padEnd("OPERATION", 25, ' '),
                 Strings.padEnd("CORRELATION-ID", 38, ' '),
-                Strings.padEnd("START-TIME", 28, ' '),
+                Strings.padEnd("START-TIME", 30, ' '),
                 Strings.padEnd("MILLISECONDS-TAKEN", 21, ' '),
                 Strings.padEnd("STATUS-CODE", 14, ' '),
                 Strings.padEnd("ERROR-CODE", 24, ' '),
@@ -220,7 +220,7 @@ public class LoadTest {
 
         var options = new ApiRequestOptions(accessToken);
         this.initializeApiRequest(options);
-        return () -> apiClient.getTransactions(options, companyId);
+        return () -> apiClient.getCompanyTransactions(options, companyId);
     }
 
     /*
@@ -316,31 +316,16 @@ public class LoadTest {
             errorId = errorBody.get("id").asText();
         }
 
-        var values = new String[] {
-                "RESULT",
-                errorCode,
-                errorId
+        var values = new String[]{
+                Strings.padEnd(response.getMetrics().getOperation(), 25, ' '),
+                Strings.padEnd(response.getMetrics().getCorrelationId(), 38, ' '),
+                Strings.padEnd(response.getMetrics().getStartTime().toString(), 30, ' '),
+                Strings.padEnd(String.valueOf(response.getMetrics().getMillisecondsTaken()), 21, ' '),
+                Strings.padEnd(String.valueOf(response.getStatusCode()), 14, ' '),
+                Strings.padEnd(errorCode, 24, ' '),
+                Strings.padEnd(errorId, 12, ' ')
         };
         return String.join("", values);
-
-        /*response.metrics.operation.padEnd(25),
-                response.metrics.correlationId.padEnd(38),
-                response.metrics.startTime.toISOString().padEnd(28),
-                response.metrics.millisecondsTaken.toString().padEnd(21),
-                response.statusCode.toString().padEnd(14),
-                errorCode.padEnd(24),
-                errorId.padEnd(12),
-        ];
-
-        var values = new String[]{
-                Strings.padEnd("OPERATION", 25, ' '),
-                Strings.padEnd("CORRELATION-ID", 38, ' '),
-                Strings.padEnd("START-TIME", 28, ' '),
-                Strings.padEnd("MILLISECONDS-TAKEN", 21, ' '),
-                Strings.padEnd("STATUS-CODE", 14, ' '),
-                Strings.padEnd("ERROR-CODE", 24, ' '),
-                Strings.padEnd("ERROR-ID", 12, ' ')
-        };*/
     }
 
     /*

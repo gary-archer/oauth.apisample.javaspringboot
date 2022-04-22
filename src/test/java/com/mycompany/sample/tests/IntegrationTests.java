@@ -220,7 +220,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getTransactions(options, 2).join();
+        var response = apiClient.getCompanyTransactions(options, 2).join();
         Assertions.assertEquals(200, response.getStatusCode());
 
         // Read the response and assert the count
@@ -249,7 +249,7 @@ public class IntegrationTests {
 
         // Call the API and ensure a 404 response
         var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getTransactions(options, 3).join();
+        var response = apiClient.getCompanyTransactions(options, 3).join();
         Assertions.assertEquals(404, response.getStatusCode());
 
         // Read the response and assert the error code
@@ -279,7 +279,7 @@ public class IntegrationTests {
         // Call the API and ensure a 500 response
         var options = new ApiRequestOptions(accessToken);
         options.setRehearseException(true);
-        var response = apiClient.getTransactions(options, 2).join();
+        var response = apiClient.getCompanyTransactions(options, 2).join();
         Assertions.assertEquals(500, response.getStatusCode());
 
         // Read the response and assert the error code
