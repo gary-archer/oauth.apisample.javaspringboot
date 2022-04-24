@@ -8,9 +8,9 @@
 
 The final OAuth secured Java API code sample, referenced in my blog at https://authguidance.com:
 
-- The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
-- The API uses JSON request logging and Elasticsearch log aggregation, for measurability
-- The API uses non-blocking code, dependency injection, and request scoped ClaimsPrincipal / LogEntry objects
+* The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
+* The API uses JSON request logging and Elasticsearch log aggregation, for measurability
+* The API uses non-blocking code with request scoped ClaimsPrincipal / LogEntry objects
 
 ## API integrates with UI Clients
 
@@ -29,7 +29,7 @@ For productive test driven development, the API instead mocks the Authorization 
 ## API can be Load Tested
 
 A basic load test uses Completable Futures to fire 5 parallel requests at a time at the API.\
-This ensures no concurrency problems and use error rehearsal to ensure that the API is supportable:
+This ensures no concurrency problems, and error rehearsal is used to verify that the API is supportable:
 
 ![Load Test](./doc/loadtest.png)
 
@@ -37,7 +37,7 @@ This ensures no concurrency problems and use error rehearsal to ensure that the 
 
 * See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for instructions on how to run the API
 * See the [OAuth Integration Page](https://authguidance.com/2019/03/24/java-spring-boot-api-coding-key-points/) for the security implementation
-- See the [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/) page for a summary of overall qualities
+* See the [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/) page for a summary of overall qualities
 
 ## Programming Languages
 
