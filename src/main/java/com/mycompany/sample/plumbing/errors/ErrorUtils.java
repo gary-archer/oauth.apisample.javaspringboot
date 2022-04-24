@@ -96,14 +96,14 @@ public final class ErrorUtils {
      * Handle exceptions during user info lookup when we may have error details
      */
     public static RuntimeException fromUserInfoError(
-            final HttpStatus status,
+            final int status,
             final @Nullable ObjectNode responseData,
             final String url) {
 
         // Collect error parts to get details
         var parts = new ArrayList<String>();
         parts.add("User info lookup failed");
-        parts.add(String.format("Status: %s", status.value()));
+        parts.add(String.format("Status: %d", status));
         if (responseData != null) {
             var errorCodeNode = responseData.get("error");
             if (errorCodeNode != null) {
@@ -118,7 +118,7 @@ public final class ErrorUtils {
         var details = String.join(", ", parts);
 
         // Report 401 errors where the access token is rejected
-        if (status == HttpStatus.UNAUTHORIZED) {
+        if (status == HttpStatus.UNAUTHORIZED.value()) {
             return ErrorFactory.createClient401Error(details);
         }
 

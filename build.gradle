@@ -21,7 +21,6 @@ ext {
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
     jackson_version = '2.13.2'
-    apache_http_client_version = '4.5.13'
     async_file_version = '1.1.2'
     logback_version = '7.0.1'
     lombok_version = '1.18.22'
@@ -57,7 +56,6 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version.2"
 
     // Utilities
-    implementation "org.apache.httpcomponents:httpclient:$apache_http_client_version"
     implementation "com.github.javasync:AsyncFileRw:$async_file_version"
     implementation "net.logstash.logback:logstash-logback-encoder:$logback_version"
     implementation "com.google.guava:guava:$guava_version"
@@ -81,7 +79,6 @@ test {
     useJUnitPlatform()
     include '**/IntegrationTests.class'
     testLogging.showStandardStreams = true
-    jvmArgs "-Djavax.net.ssl.trustStore=certs/authsamples-dev.ssl.p12 -Djavax.net.ssl.trustStorePassword=Password1 -Dsun.net.http.allowRestrictedHeaders=true"
 }
 
 // In Intellij select "Build, Execution, Deployment > Build Tools > gradle > Run Tests using: Intellij IDEA"

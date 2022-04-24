@@ -1,7 +1,9 @@
 package com.mycompany.sample.plumbing.oauth;
 
 import java.net.URI;
-import java.util.Collections;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jwt.JwtClaims;
@@ -9,16 +11,9 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
@@ -89,45 +84,37 @@ public class OAuthAuthenticator {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("userInfoLookup")) {
 
-            // Prepare headers for a user info request
-            var headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            headers.setBearerAuth(accessToken);
-            var entity = new HttpEntity<>("body", headers);
-
-            // Send the request and get the response as text
+            // Construct the request
             var userInfoUrl = new URI(this.configuration.getUserInfoEndpoint());
-            var userInfoClient = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-            var response = userInfoClient.exchange(userInfoUrl, HttpMethod.POST, entity, String.class);
+            var request = HttpRequest.newBuilder()
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .uri(userInfoUrl)
+                    .header("accept", "application/json")
+                    .header("authorization", String.format("Bearer %s", accessToken))
+                    .build();
 
-            // Check for a valid response
-            if (response.getStatusCode() != HttpStatus.OK) {
-                var errorData = ErrorResponseReader.tryReadJson(response.hasBody() ? response.getBody() : "");
+            // Send it and get the response
+            var client = HttpClient.newBuilder().build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Handle errors returned from the server
+            if (response.statusCode() != HttpStatus.OK.value()) {
+                var errorData = ErrorResponseReader.tryReadJson(response.body());
                 throw ErrorUtils.fromUserInfoError(
-                        response.getStatusCode(),
+                        response.statusCode(),
                         errorData,
                         this.configuration.getUserInfoEndpoint());
             }
 
             // Parse the fields into an object
-            var jsonText = response.getBody();
+            var jsonText = response.body();
             var mapper = new ObjectMapper();
             var data = mapper.readValue(jsonText, ObjectNode.class);
             return ClaimsReader.userInfoClaims(data);
 
-        } catch (HttpStatusCodeException ex) {
-
-            // Report exceptions where we have a response body
-            var errorData = ErrorResponseReader.tryReadJson(ex.getResponseBodyAsString());
-            throw ErrorUtils.fromUserInfoError(
-                    ex.getStatusCode(),
-                    errorData,
-                    this.configuration.getUserInfoEndpoint());
-
         } catch (Throwable ex) {
 
-            // Report other exceptions
+            // Report connectivity errors
             throw ErrorUtils.fromUserInfoError(ex, this.configuration.getUserInfoEndpoint());
         }
     }
