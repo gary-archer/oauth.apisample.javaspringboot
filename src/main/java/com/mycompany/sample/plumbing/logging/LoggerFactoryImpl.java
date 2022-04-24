@@ -25,7 +25,6 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     private String apiName;
     private int performanceThresholdMilliseconds;
     private String developmentNamespace;
-    private boolean isInitialized;
 
 
     /*
@@ -33,7 +32,6 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      */
     public LoggerFactoryImpl() {
 
-        this.isInitialized = false;
         this.apiName = "";
         this.performanceThresholdMilliseconds = 1000;
         this.developmentNamespace = "";
@@ -54,26 +52,21 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         // Initialise any development loggers
         var devConfiguration = configuration.getDevelopment();
         this.configureDevelopmentLoggers(devConfiguration);
-
-        // Indicate successful configuration
-        this.isInitialized = true;
     }
 
     /*
-     * Special handling for startup errors
+     * Special handling for startup errors, where loggers may not be initialized yet
      */
     @Override
     public void logStartupError(final Throwable exception) {
 
-        // Create the logger if needed
-        if (!this.isInitialized) {
-            this.configureProductionLogger(null);
-        }
+        // Ensure that there is a production logger
+        this.configureDefaultProductionLogger();
 
-        // Get the error into a loggable format
+        // Get the error
         var error = (ServerError) ErrorUtils.fromException(exception);
 
-        // Create a log entry and set error details
+        // Write it as a log entry
         var logEntry = new LogEntryImpl(this.apiName, this.getProductionLogger());
         logEntry.setOperationName("startup");
         logEntry.setServerError(error);
@@ -111,6 +104,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var logger = context.getLogger(PRODUCTION_LOGGER_NAME);
         logger.setAdditive(false);
 
+        // Create the logger based on configuration
         var prodLevelNode = productionLogConfig.get("level");
         this.performanceThresholdMilliseconds = productionLogConfig.get("performanceThresholdMilliseconds").asInt();
         var prodLevel = Level.toLevel(prodLevelNode.asText().toUpperCase(), Level.INFO);
@@ -127,6 +121,33 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var fileAppender = this.createProductionFileAppender(appendersConfig, context);
         if (fileAppender != null) {
             logger.addAppender(fileAppender);
+        }
+    }
+
+    /*
+     * Create a logger for errors before the system has been initialized
+     */
+    private void configureDefaultProductionLogger() {
+
+        // The logger is additive when the above method has not been called yet
+        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
+        var logger = context.getLogger(PRODUCTION_LOGGER_NAME);
+        if (logger.isAdditive()) {
+
+            // Configure the JSON layout
+            var layout = new BareJsonLoggingLayout(true);
+            layout.setContext(context);
+            layout.start();
+
+            // Create an appender that uses the layout
+            var appender = new ConsoleAppender<ILoggingEvent>();
+            appender.setContext(context);
+            appender.setLayout(layout);
+            appender.start();
+
+            // Update the logger with the appender
+            logger.setAdditive(false);
+            logger.addAppender(appender);
         }
     }
 
