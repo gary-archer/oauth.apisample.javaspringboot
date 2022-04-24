@@ -112,6 +112,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         logger.setAdditive(false);
 
         var prodLevelNode = productionLogConfig.get("level");
+        this.performanceThresholdMilliseconds = productionLogConfig.get("performanceThresholdMilliseconds").asInt();
         var prodLevel = Level.toLevel(prodLevelNode.asText().toUpperCase(), Level.INFO);
         logger.setLevel(prodLevel);
 

@@ -64,8 +64,7 @@ public class CompanyRepository {
         var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyTransactions");
 
         // Since there are multiple async calls, use an operation class to wrap them
-        try (var operation = new GetTransactionsOperation(this.jsonReader, companyId, breakdown)) {
-            return operation.execute();
-        }
+        var operation = new GetTransactionsOperation(this.jsonReader, companyId, breakdown);
+        return operation.execute();
     }
 }

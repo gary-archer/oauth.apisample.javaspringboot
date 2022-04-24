@@ -1,6 +1,5 @@
 package com.mycompany.sample.logic.repositories;
 
-import java.io.Closeable;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -13,7 +12,7 @@ import com.mycompany.sample.plumbing.logging.PerformanceBreakdown;
 /*
  * A dedicated class for encapsulating multiple async calls
  */
-public final class GetTransactionsOperation implements Closeable {
+public final class GetTransactionsOperation {
 
     private final JsonFileReader jsonReader;
     private final int companyId;
@@ -46,20 +45,13 @@ public final class GetTransactionsOperation implements Closeable {
     }
 
     /*
-     * Dispose the performance breakdown on completion
-     */
-    @Override
-    public void close() {
-        this.breakdown.close();
-    }
-
-    /*
      * Run the first async operation
      */
     public Company getAndFilterCompanies(final Company[] companiesData, final Throwable ex) {
 
-        // End the performance breakdown when there is a companies read error
+        // End the performance breakdown for the case when there is an error during the initial read
         if (ex != null) {
+            this.breakdown.close();
             throw ErrorUtils.fromException(ex);
         }
 
@@ -76,9 +68,10 @@ public final class GetTransactionsOperation implements Closeable {
             final CompanyTransactions[] transactionsData,
             final Throwable ex) {
 
-        // End the performance breakdown for the error case during transaction reads
+        // End the performance breakdown upon completion
+        this.breakdown.close();
+
         if (ex != null) {
-            breakdown.close();
             throw ErrorUtils.fromException(ex);
         }
 
