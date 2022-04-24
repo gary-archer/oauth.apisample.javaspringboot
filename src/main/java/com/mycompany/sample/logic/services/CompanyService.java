@@ -40,12 +40,12 @@ public class CompanyService {
      */
     public CompletableFuture<List<Company>> getCompanyList() {
 
+        // Filter on authorized items
         Function<List<Company>, CompletableFuture<List<Company>>> callback = data ->
             completedFuture(data.stream()
                     .filter(this::isUserAuthorizedForCompany)
                     .collect(Collectors.toList()));
 
-        // Use a micro services approach of getting all data
         return this.repository.getCompanyList().thenCompose(callback);
     }
 
@@ -54,9 +54,9 @@ public class CompanyService {
      */
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
+        // Deny access to individual items
         Function<CompanyTransactions, CompletableFuture<CompanyTransactions>> callback = data -> {
 
-            // Deny access if required
             if (data == null || !this.isUserAuthorizedForCompany(data.getCompany())) {
                 throw this.unauthorizedError(companyId);
             }
@@ -68,7 +68,7 @@ public class CompanyService {
     }
 
     /*
-     * A simple example of applying domain specific claims
+     * A simple example of applying domain specific claims to items
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 

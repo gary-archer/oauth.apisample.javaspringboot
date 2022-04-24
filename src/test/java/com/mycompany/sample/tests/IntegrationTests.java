@@ -53,7 +53,7 @@ public class IntegrationTests {
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:445";
-        apiClient = new ApiClient(apiBaseUrl, true);
+        apiClient = new ApiClient(apiBaseUrl, false);
     }
 
     /*

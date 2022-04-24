@@ -68,8 +68,8 @@ public final class ApiClient {
         // Prepare the request
         var operationUrl = String.format("%s%s", this.baseUrl, options.getPath());
         var requestBuilder = HttpRequest.newBuilder()
+                .method(options.getMethod(), HttpRequest.BodyPublishers.noBody())
                 .uri(this.stringToUri(operationUrl))
-                .GET()
                 .headers("Authorization", String.format("Bearer %s", options.getAccessToken()));
 
         if (options.getRehearseException()) {
@@ -88,6 +88,7 @@ public final class ApiClient {
 
             // Connection errors will abort the test
             if (ex != null) {
+                ex.printStackTrace();
                 throw new RuntimeException(ex);
             }
 

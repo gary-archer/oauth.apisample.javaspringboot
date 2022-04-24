@@ -80,7 +80,7 @@ public class CompanyRepository {
             }
 
             // Find the requested company and return it
-            var companies = Arrays.stream(companiesData).collect(Collectors.toList());
+            var companies = Arrays.stream(companiesData).toList();
             var found = companies.stream().filter(c -> c.getId() == companyId).findFirst();
             return found.orElse(null);
         };
