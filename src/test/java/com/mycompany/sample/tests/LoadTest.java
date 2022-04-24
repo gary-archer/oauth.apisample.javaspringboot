@@ -17,6 +17,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,10 +60,14 @@ public class LoadTest {
         // A class to issue our own JWTs for testing
         tokenIssuer = new TokenIssuer();
 
-        // Start Wiremock to mock the Authorization Server and reduce log output
+        // Reduce Wiremock output before starting it
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
         context.getLogger("org.eclipse.jetty").setLevel(Level.WARN);
-        wiremock = new WireMockServer(80);
+
+        // Start Wiremock to mock the Authorization Server, which will listen on http://login.authsamples-dev.com:446
+        var wiremockOptions = options()
+                .port(446);
+        wiremock = new WireMockServer(wiremockOptions);
         wiremock.start();
 
         // The API will call the Authorization Server to get a JSON Web Key Set, so register a mock response

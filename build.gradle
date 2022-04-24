@@ -82,6 +82,7 @@ test {
     useJUnitPlatform()
     include '**/IntegrationTests.class'
     testLogging.showStandardStreams = true
+    jvmArgs "-Djavax.net.ssl.trustStore=certs/authsamples-dev.ssl.p12 -Djavax.net.ssl.trustStorePassword=Password1 -Dsun.net.http.allowRestrictedHeaders=true"
 }
 
 // In Intellij select "Build, Execution, Deployment > Build Tools > gradle > Run Tests using: Intellij IDEA"

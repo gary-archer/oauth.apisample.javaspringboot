@@ -10,7 +10,7 @@ import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.PerformanceBreakdown;
 
 /*
- * A dedicated class for encapsulating multiple async calls
+ * A 'Class per Async Operation' to demonstrate managing multiple async calls with futures
  */
 public final class GetTransactionsOperation {
 
@@ -49,7 +49,7 @@ public final class GetTransactionsOperation {
      */
     public Company getAndFilterCompanies(final Company[] companiesData, final Throwable ex) {
 
-        // End the performance breakdown for the case when there is an error during the initial read
+        // End the performance breakdown for the case when there is an error during the companies read
         if (ex != null) {
             this.breakdown.close();
             throw ErrorUtils.fromException(ex);
@@ -68,30 +68,27 @@ public final class GetTransactionsOperation {
             final CompanyTransactions[] transactionsData,
             final Throwable ex) {
 
-        // End the performance breakdown upon completion
-        this.breakdown.close();
-
+        // End the performance breakdown for the case when there is an error during the transactions read
         if (ex != null) {
+            this.breakdown.close();
             throw ErrorUtils.fromException(ex);
         }
 
-        // End the performance breakdown when no companies are found
-        if (this.foundCompany == null) {
-            return null;
+        CompanyTransactions result = null;
+        if (this.foundCompany != null) {
+
+            // Find the transactions for the requested company
+            Optional<CompanyTransactions> foundTransactions =
+                    Arrays.stream(transactionsData).filter(t -> t.getId() == companyId).findFirst();
+            if (foundTransactions.isPresent()) {
+
+                // Return the result for the success case
+                result = foundTransactions.get();
+                result.setCompany(this.foundCompany);
+            }
         }
 
-        // Find the transactions for the requested company
-        Optional<CompanyTransactions> foundTransactions =
-                Arrays.stream(transactionsData).filter(t -> t.getId() == companyId).findFirst();
-        if (foundTransactions.isPresent()) {
-
-            // Return the result for the success case
-            var result = foundTransactions.get();
-            result.setCompany(this.foundCompany);
-            return result;
-        }
-
-        // Return null when transactions are not found
-        return null;
+        this.breakdown.close();
+        return result;
     }
 }
