@@ -13,21 +13,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.Suite;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.common.base.Strings;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.ApiResponse;
 import com.mycompany.sample.tests.utils.TokenIssuer;
+import com.mycompany.sample.tests.utils.WiremockAdmin;
 
 /*
  * A basic load test to ensure that the API behaves correctly when there are concurrent requests
@@ -36,7 +29,7 @@ import com.mycompany.sample.tests.utils.TokenIssuer;
 public class LoadTest {
 
     private static TokenIssuer tokenIssuer;
-    private static WireMockServer wiremock;
+    private static WiremockAdmin wiremock;
     private static ApiClient apiClient;
     private static String sessionId;
     private static String guestUserId;
@@ -57,22 +50,18 @@ public class LoadTest {
         // The real subject claim value for my online load test user
         guestUserId = "a6b404b1-98af-41a2-8e7f-e4061dc0bf86";
 
+        // Uncomment to view HTTPS requests initiated from tests in an HTTP proxy
+        // var url = new URL("http://127.0.0.1:8888");
+        // System.setProperty("https.proxyHost", url.getHost());
+        // System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
+
         // A class to issue our own JWTs for testing
         tokenIssuer = new TokenIssuer();
-
-        // Reduce Wiremock output before starting it
-        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
-        context.getLogger("org.eclipse.jetty").setLevel(Level.WARN);
-
-        // Start Wiremock to mock the Authorization Server, which will listen on http://login.authsamples-dev.com:446
-        var wiremockOptions = options()
-                .port(446);
-        wiremock = new WireMockServer(wiremockOptions);
-        wiremock.start();
+        wiremock = new WiremockAdmin();
 
         // The API will call the Authorization Server to get a JSON Web Key Set, so register a mock response
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
-        wiremock.stubFor(get(urlEqualTo("/.well-known/jwks.json")).willReturn(aResponse().withBody(keyset)));
+        wiremock.registerJsonWebWeys(keyset);
 
         // The API will call the Authorization Server to get user info for the token, so register a mock response
         var mapper = new ObjectMapper();
@@ -80,12 +69,12 @@ public class LoadTest {
         data.put("given_name", "Guest");
         data.put("family_name", "User");
         data.put("email", "guestuser@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:445";
         sessionId = UUID.randomUUID().toString();
-        apiClient = new ApiClient(apiBaseUrl, false);
+        apiClient = new ApiClient(apiBaseUrl);
 
         // Initialise counts
         totalCount = 0;
@@ -97,7 +86,8 @@ public class LoadTest {
      */
     @AfterAll
     public static void teardown() {
-        wiremock.stop();
+        wiremock.unregisterJsonWebWeys();
+        wiremock.unregisterUserInfo();
     }
 
     /*

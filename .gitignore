@@ -11,6 +11,7 @@ bin
 *.iws
 *.iml
 *.ipr
+*.jar
 .classpath
 .factorypath
 .project

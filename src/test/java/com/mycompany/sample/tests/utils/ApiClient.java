@@ -2,7 +2,6 @@ package com.mycompany.sample.tests.utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -19,14 +18,8 @@ public final class ApiClient {
 
     private final String baseUrl;
 
-    public ApiClient(final String baseUrl, final Boolean useProxy) throws Throwable {
-
+    public ApiClient(final String baseUrl) throws Throwable {
         this.baseUrl = baseUrl;
-        if (useProxy) {
-            var url = new URL("http://127.0.0.1:8888");
-            System.setProperty("https.proxyHost", url.getHost());
-            System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
-        }
     }
 
     public CompletableFuture<ApiResponse> getUserInfoClaims(final ApiRequestOptions options) {

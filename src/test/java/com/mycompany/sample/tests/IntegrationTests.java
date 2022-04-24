@@ -5,20 +5,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.Suite;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.TokenIssuer;
+import com.mycompany.sample.tests.utils.WiremockAdmin;
 
 @Suite
 public class IntegrationTests {
@@ -26,7 +19,7 @@ public class IntegrationTests {
     private static String guestUserId;
     private static String guestAdminId;
     private static TokenIssuer tokenIssuer;
-    private static WireMockServer wiremock;
+    private static WiremockAdmin wiremock;
     private static ApiClient apiClient;
 
     /*
@@ -39,26 +32,22 @@ public class IntegrationTests {
         guestUserId = "a6b404b1-98af-41a2-8e7f-e4061dc0bf86";
         guestAdminId = "77a97e5b-b748-45e5-bb6f-658e85b2df91";
 
+        // Uncomment to view HTTPS requests initiated from tests in an HTTP proxy
+        // var url = new URL("http://127.0.0.1:8888");
+        // System.setProperty("https.proxyHost", url.getHost());
+        // System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
+
         // A class to issue our own JWTs for testing
         tokenIssuer = new TokenIssuer();
-
-        // Reduce Wiremock output before starting it
-        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
-        context.getLogger("org.eclipse.jetty").setLevel(Level.WARN);
-
-        // Start Wiremock to mock the Authorization Server, which will listen on http://login.authsamples-dev.com:446
-        var wiremockOptions = options()
-                .port(446);
-        wiremock = new WireMockServer(wiremockOptions);
-        wiremock.start();
+        wiremock = new WiremockAdmin();
 
         // The API will call the Authorization Server to get a JSON Web Key Set, so register a mock response
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
-        wiremock.stubFor(get(urlEqualTo("/.well-known/jwks.json")).willReturn(aResponse().withBody(keyset)));
+        wiremock.registerJsonWebWeys(keyset);
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:445";
-        apiClient = new ApiClient(apiBaseUrl, false);
+        apiClient = new ApiClient(apiBaseUrl);
     }
 
     /*
@@ -66,7 +55,7 @@ public class IntegrationTests {
      */
     @AfterAll
     public static void teardown() {
-        wiremock.stop();
+        wiremock.unregisterJsonWebWeys();
     }
 
     /*
@@ -85,7 +74,7 @@ public class IntegrationTests {
         data.put("given_name", "Guest");
         data.put("family_name", "User");
         data.put("email", "guestuser@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -114,7 +103,7 @@ public class IntegrationTests {
         data.put("given_name", "Admin");
         data.put("family_name", "User");
         data.put("email", "guestadmin@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -143,7 +132,7 @@ public class IntegrationTests {
         data.put("given_name", "Guest");
         data.put("family_name", "User");
         data.put("email", "guestuser@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -171,7 +160,7 @@ public class IntegrationTests {
         data.put("given_name", "Admin");
         data.put("family_name", "User");
         data.put("email", "guestadmin@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -221,7 +210,7 @@ public class IntegrationTests {
         data.put("given_name", "Guest");
         data.put("family_name", "User");
         data.put("email", "guestuser@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -250,7 +239,7 @@ public class IntegrationTests {
         data.put("given_name", "Guest");
         data.put("family_name", "User");
         data.put("email", "guestuser@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Call the API and ensure a 404 response
         var options = new ApiRequestOptions(accessToken);
@@ -279,7 +268,7 @@ public class IntegrationTests {
         data.put("given_name", "Guest");
         data.put("family_name", "User");
         data.put("email", "guestuser@mycompany.com");
-        wiremock.stubFor(post(urlEqualTo("/oauth2/userInfo")).willReturn(aResponse().withBody(data.toString())));
+        wiremock.registerUserInfo(data.toString());
 
         // Call the API and ensure a 500 response
         var options = new ApiRequestOptions(accessToken);

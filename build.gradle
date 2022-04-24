@@ -71,7 +71,6 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testImplementation "org.junit.platform:junit-platform-suite-engine:$junit_platform_suite_version"
-    testImplementation "com.github.tomakehurst:wiremock:$wiremock_version"
 
     // Test compiler dependencies
     testCompileOnly "org.projectlombok:lombok:$lombok_version"
