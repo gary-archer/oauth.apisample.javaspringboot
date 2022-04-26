@@ -173,7 +173,7 @@ public class IntegrationTests {
     }
 
     /*
-     * Test getting companies for the admin user
+     * Test getting companies with a malicious JWT access token
      */
     @Test
     @SuppressWarnings(value = "MethodName")
