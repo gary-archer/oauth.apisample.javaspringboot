@@ -45,7 +45,7 @@ This ensures no concurrency problems, and error rehearsal is used to verify that
 
 ## Middleware Used
 
-* The Tomcat web server hosts the API over SSL port 443
+* The Tomcat web server hosts the API over SSL
 * AWS Cognito is used as the default Authorization Server
 * The [Jose4j Library](https://bitbucket.org/b_c/jose4j/wiki/Home) library is used to manage in memory validation of JWTs
 * API logs can be aggregated to [Elasticsearch](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
