@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -41,7 +42,9 @@ public class HttpServerConfiguration {
                         .addFilterBefore(
                             authorizationFilter,
                             AbstractPreAuthenticatedProcessingFilter.class))
-                .sessionManagement().disable();
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         return http.build();
     }
 
@@ -56,7 +59,10 @@ public class HttpServerConfiguration {
         http
                 .antMatcher(ResourcePaths.CUSTOMCLAIMS)
                 .authorizeRequests(authorize ->
-                        authorize.anyRequest().permitAll());
+                        authorize.anyRequest().permitAll())
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         return http.build();
     }
 
