@@ -59,7 +59,7 @@ public class IntegrationTests {
     }
 
     /*
-     * Test getting claims
+     * Test getting claims as the standard user
      */
     @Test
     @SuppressWarnings(value = "MethodName")
@@ -79,16 +79,16 @@ public class IntegrationTests {
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getUserInfoClaims(options).join();
-        Assertions.assertEquals(200, response.getStatusCode());
+        Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response regions and assert the count
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var regionsNode = (ArrayNode) body.get("regions");
-        Assertions.assertEquals(1, regionsNode.size());
+        Assertions.assertEquals(1, regionsNode.size(), "Unexpected regions claim");
     }
 
     /*
-     * Test getting claims
+     * Test getting claims as the admin user
      */
     @Test
     @SuppressWarnings(value = "MethodName")
@@ -108,16 +108,16 @@ public class IntegrationTests {
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getUserInfoClaims(options).join();
-        Assertions.assertEquals(200, response.getStatusCode());
+        Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response regions and assert the count
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var regionsNode = (ArrayNode) body.get("regions");
-        Assertions.assertEquals(3, regionsNode.size());
+        Assertions.assertEquals(3, regionsNode.size(), "Unexpected regions claim");
     }
 
     /*
-     * Test getting companies
+     * Test getting companies as the standard user
      */
     @Test
     @SuppressWarnings(value = "MethodName")
@@ -137,11 +137,11 @@ public class IntegrationTests {
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanies(options).join();
-        Assertions.assertEquals(200, response.getStatusCode());
+        Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
         var body = mapper.readValue(response.getBody(), ArrayNode.class);
-        Assertions.assertEquals(2, body.size());
+        Assertions.assertEquals(2, body.size(), "Unexpected companies list");
     }
 
     /*
@@ -165,11 +165,11 @@ public class IntegrationTests {
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanies(options).join();
-        Assertions.assertEquals(200, response.getStatusCode());
+        Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
         var body = mapper.readValue(response.getBody(), ArrayNode.class);
-        Assertions.assertEquals(4, body.size());
+        Assertions.assertEquals(4, body.size(), "Unexpected companies list");
     }
 
     /*
@@ -185,13 +185,13 @@ public class IntegrationTests {
         // Call the API and ensure a 401 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanies(options).join();
-        Assertions.assertEquals(401, response.getStatusCode());
+        Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the expected error code
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("unauthorized", errorCode.asText());
+        Assertions.assertEquals("unauthorized", errorCode.asText(), "Unexpected error code");
     }
 
     /*
@@ -215,12 +215,12 @@ public class IntegrationTests {
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanyTransactions(options, 2).join();
-        Assertions.assertEquals(200, response.getStatusCode());
+        Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var transactionsNode = (ArrayNode) body.get("transactions");
-        Assertions.assertEquals(8, transactionsNode.size());
+        Assertions.assertEquals(8, transactionsNode.size(), "Unexpected transactions");
     }
 
     /*
@@ -244,12 +244,12 @@ public class IntegrationTests {
         // Call the API and ensure a 404 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanyTransactions(options, 3).join();
-        Assertions.assertEquals(404, response.getStatusCode());
+        Assertions.assertEquals(404, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the error code
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("company_not_found", errorCode.asText());
+        Assertions.assertEquals("company_not_found", errorCode.asText(), "Unexpected error code");
     }
 
     /*
@@ -274,11 +274,11 @@ public class IntegrationTests {
         var options = new ApiRequestOptions(accessToken);
         options.setRehearseException(true);
         var response = apiClient.getCompanyTransactions(options, 2).join();
-        Assertions.assertEquals(500, response.getStatusCode());
+        Assertions.assertEquals(500, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the error code
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("exception_simulation", errorCode.asText());
+        Assertions.assertEquals("exception_simulation", errorCode.asText(), "Unexpected error code");
     }
 }
