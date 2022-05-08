@@ -17,9 +17,17 @@ import java.util.function.BiFunction;
 public final class ApiClient {
 
     private final String baseUrl;
+    private final String clientName;
+    private final String sessionId;
 
-    public ApiClient(final String baseUrl) throws Throwable {
+    public ApiClient(
+            final String baseUrl,
+            final String clientName,
+            final String sessionId) {
+
         this.baseUrl = baseUrl;
+        this.clientName = clientName;
+        this.sessionId = sessionId;
     }
 
     public CompletableFuture<ApiResponse> getUserInfoClaims(final ApiRequestOptions options) {
@@ -55,15 +63,19 @@ public final class ApiClient {
     private CompletableFuture<ApiResponse> callApi(final ApiRequestOptions options, final ApiResponseMetrics metrics) {
 
         // Initialize metrics
+        var correlationId = UUID.randomUUID().toString();
         metrics.setStartTime(Instant.now());
-        metrics.setCorrelationId(UUID.randomUUID().toString());
+        metrics.setCorrelationId(correlationId);
 
         // Prepare the request
         var operationUrl = String.format("%s%s", this.baseUrl, options.getPath());
         var requestBuilder = HttpRequest.newBuilder()
                 .method(options.getMethod(), HttpRequest.BodyPublishers.noBody())
                 .uri(this.stringToUri(operationUrl))
-                .headers("Authorization", String.format("Bearer %s", options.getAccessToken()));
+                .headers("Authorization", String.format("Bearer %s", options.getAccessToken()))
+                .headers("x-mycompany-api-client", this.clientName)
+                .headers("x-mycompany-session-id", this.sessionId)
+                .headers("x-mycompany-correlation-id", correlationId);
 
         if (options.getRehearseException()) {
             requestBuilder.headers("x-mycompany-test-exception", "SampleApi");

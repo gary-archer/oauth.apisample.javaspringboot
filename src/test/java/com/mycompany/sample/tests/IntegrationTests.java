@@ -1,5 +1,6 @@
 package com.mycompany.sample.tests;
 
+import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,7 +48,8 @@ public class IntegrationTests {
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:445";
-        apiClient = new ApiClient(apiBaseUrl);
+        var sessionId = UUID.randomUUID().toString();
+        apiClient = new ApiClient(apiBaseUrl, "IntegrationTests", sessionId);
     }
 
     /*

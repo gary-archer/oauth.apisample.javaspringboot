@@ -75,7 +75,7 @@ public final class LogEntryImpl implements LogEntry {
             }
 
             // Use the correlation id from request headers or create one
-            var correlationId = request.getHeader("'x-mycompany-correlation-id");
+            var correlationId = request.getHeader("x-mycompany-correlation-id");
             if (StringUtils.hasLength(correlationId)) {
                 this.data.setCorrelationId(correlationId);
             } else {
