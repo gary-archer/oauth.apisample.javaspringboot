@@ -14,7 +14,7 @@ The final OAuth secured Java API code sample, referenced in my blog at https://a
 
 ## API integrates with UI Clients
 
-The API can run as part of an OAuth end-to-end setup, to server my blog's UI code samples.\
+The API can run as part of an OAuth end-to-end setup, to serve my blog's UI code samples.\
 Running the API in this manner forces it to be consumer focused to its clients:
 
 ![SPA and API](./doc/spa-and-api.png)
