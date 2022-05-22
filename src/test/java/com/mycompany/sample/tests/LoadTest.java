@@ -51,9 +51,9 @@ public class LoadTest {
         guestUserId = "a6b404b1-98af-41a2-8e7f-e4061dc0bf86";
 
         // Uncomment to view HTTPS requests initiated from tests in an HTTP proxy
-        var url = new java.net.URL("http://127.0.0.1:8888");
-        System.setProperty("https.proxyHost", url.getHost());
-        System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
+        // var url = new java.net.URL("http://127.0.0.1:8888");
+        // System.setProperty("https.proxyHost", url.getHost());
+        // System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
 
         // A class to issue our own JWTs for testing
         tokenIssuer = new TokenIssuer();

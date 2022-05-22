@@ -20,3 +20,10 @@ curl -O -s $WIREMOCK_DOWNLOAD_URL
 #
 java -jar $WIREMOCK_JAR_FILE --https-port 446 --disable-http \
 --https-keystore './certs/authsamples-dev.ssl.p12' --keystore-type 'pkcs12' --keystore-password 'Password1' --key-manager-password 'Password1'
+
+#
+# Prevent automatic terminal closure on Linux
+#
+if [ "$(uname -s)" == 'Linux' ]; then
+  read -n 1
+fi

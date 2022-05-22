@@ -11,7 +11,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 #
 ./downloadcerts.sh
 if [ $? -ne 0 ]; then
-    exit
+  exit
 fi
 
 #
@@ -19,15 +19,24 @@ fi
 #
 ./gradlew clean && ./gradlew bootJar
 if [ $? -ne 0 ]; then
-    echo 'Problem encountered building the API'
-    exit
+  echo 'Problem encountered building the API'
+  exit
 fi
 
 #
-# Then start listening
+# Run the API
+# On Linux first ensure that you have first granted Node.js permissions to listen on port 445:
+# - sudo setcap 'cap_net_bind_service=+ep' /usr/lib/jvm/zulu-17-amd64/bin/java
 #
 java -jar build/libs/sampleapi-0.0.1-SNAPSHOT.jar
 if [ $? -ne 0 ]; then
-    echo 'Problem encountered running the API'
-    exit
+  echo 'Problem encountered running the API'
+  exit
+fi
+
+#
+# Prevent automatic terminal closure on Linux
+#
+if [ "$(uname -s)" == 'Linux' ]; then
+  read -n 1
 fi
