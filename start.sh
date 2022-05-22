@@ -25,7 +25,7 @@ fi
 
 #
 # Run the API
-# On Linux first ensure that you have first granted Node.js permissions to listen on port 445:
+# On Linux first ensure that you have first granted Java permissions to listen on port 445:
 # - sudo setcap 'cap_net_bind_service=+ep' /usr/lib/jvm/zulu-17-amd64/bin/java
 #
 java -jar build/libs/sampleapi-0.0.1-SNAPSHOT.jar
