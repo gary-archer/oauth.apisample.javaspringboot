@@ -8,5 +8,4 @@ services:
       - 445:8000
     volumes:
       - ../environments/dockercompose.config.json:/usr/api/api.config.json
-      - ./trusted.ca.pem:/usr/local/share/ca-certificates/trusted.ca.crt
       - ../certs/authsamples-dev.ssl.p12:/usr/api/certs/authsamples-dev.ssl.p12

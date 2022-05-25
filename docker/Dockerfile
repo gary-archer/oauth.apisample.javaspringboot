@@ -1,10 +1,10 @@
 FROM azul/zulu-openjdk-alpine:17.0.2-jre
 
-# One or more root CAs are trusted at build time
+# Run a script from a runtime argument to do initialization of trusted certificates when required
 ARG TRUSTED_CA_CERTS
 COPY $TRUSTED_CA_CERTS /usr/local/share/certificates/trusted.ca.crt
-RUN apk --no-cache add ca-certificates && update-ca-certificates
-RUN /usr/lib/jvm/zulu17-ca/bin/keytool -import -alias internalroot.ca -cacerts -file /usr/local/share/certificates/trusted.ca.crt -storepass changeit -noprompt
+COPY docker/docker-init.sh /tmp/
+RUN chmod +x /tmp/docker-init.sh && /tmp/docker-init.sh
 
 # Copy libraries and other files into our docker image
 WORKDIR /usr/api
