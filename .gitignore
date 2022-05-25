@@ -3,6 +3,7 @@ logs
 .DS_Store
 resources
 certs
+trusted.ca.pem
 build
 bin
 .idea
