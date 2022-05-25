@@ -78,9 +78,9 @@ while [ "$(curl -k -s -X GET -o /dev/null -w '%{http_code}' "$API_URL")" != '401
 done
 
 #
-# Restore the API configuration once the API is loaded
+# Restore the development configuration once the API is loaded
 #
-cp environments/api.config.json ./api.config.json
+cp environments/dev.config.json ./api.config.json
 
 #
 # Indicate success
