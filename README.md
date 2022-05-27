@@ -41,7 +41,7 @@ This ensures no concurrency problems, and error rehearsal is used to verify that
 
 ## Programming Languages
 
-* Java 17 and Spring Boot 2.6 are used to implement the REST API
+* Java 17 and Spring Boot 2.7 are used to implement the REST API
 
 ## Middleware Used
 
