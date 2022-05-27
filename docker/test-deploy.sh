@@ -17,6 +17,15 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Download certificates if required
+#
+./downloadcerts.sh
+if [ $? -ne 0 ]; then
+  echo 'Problem encountered downloading certificates'
+  exit
+fi
+
+#
 # Prepare root CA certificates that the Docker container will trust
 #
 cp ./certs/authsamples-dev.ca.pem docker/trusted.ca.pem
