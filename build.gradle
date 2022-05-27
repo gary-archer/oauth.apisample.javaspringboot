@@ -1,7 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.6'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'org.springframework.boot' version '2.7.0'
+    //id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "com.adarshr.test-logger" version "3.2.0"
 }
 
@@ -15,16 +15,16 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '2.6.6'
-    spring_security_version = '5.6.2'
-    spring_vulnerability_version = '5.3.19'
-    jose4j_version = '0.7.11'
+    spring_boot_starter_version = '2.7.0'
+    spring_security_version = '5.7.1'
+    //spring_vulnerability_version = '5.3.19'
+    jose4j_version = '0.7.12'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
-    jackson_version = '2.13.2'
+    jackson_version = '2.13.3'
     async_file_version = '1.1.2'
-    logback_version = '7.0.1'
-    lombok_version = '1.18.22'
+    logback_version = '7.1.1'
+    lombok_version = '1.18.24'
     guava_version = '31.1-jre'
     gethostname4j_version = '1.0.0'
 
@@ -41,9 +41,9 @@ dependencies {
     implementation "org.springframework.security:spring-security-web:$spring_security_version"
 
     // For the short term, also specify these versions to prevent Snyk vulnerability warnings
-    implementation "org.springframework:spring-beans:$spring_vulnerability_version"
-    implementation "org.springframework:spring-expression:$spring_vulnerability_version"
-    implementation "org.springframework:spring-context:$spring_vulnerability_version"
+    //implementation "org.springframework:spring-beans:$spring_vulnerability_version"
+    //implementation "org.springframework:spring-expression:$spring_vulnerability_version"
+    //implementation "org.springframework:spring-context:$spring_vulnerability_version"
 
     // OAuth and caching dependencies
     implementation "org.bitbucket.b_c:jose4j:$jose4j_version"
@@ -53,7 +53,7 @@ dependencies {
     // Jackson dependencies
     implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version.2"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
 
     // Utilities
     implementation "com.github.javasync:AsyncFileRw:$async_file_version"
