@@ -38,11 +38,6 @@ dependencies {
     implementation "org.springframework.security:spring-security-config:$spring_security_version"
     implementation "org.springframework.security:spring-security-web:$spring_security_version"
 
-    // For the short term, also specify these versions to prevent Snyk vulnerability warnings
-    //implementation "org.springframework:spring-beans:$spring_vulnerability_version"
-    //implementation "org.springframework:spring-expression:$spring_vulnerability_version"
-    //implementation "org.springframework:spring-context:$spring_vulnerability_version"
-
     // OAuth and caching dependencies
     implementation "org.bitbucket.b_c:jose4j:$jose4j_version"
     implementation "org.cache2k:cache2k-base-bom:$cache2k_version"
