@@ -18,7 +18,7 @@ public final class WiremockAdmin {
     private final String userInfoId;
 
     public WiremockAdmin() {
-        this.baseUrl = "https://login.authsamples-dev.com:446/__admin/mappings";
+        this.baseUrl = "https://login.authsamples-dev.com:447/__admin/mappings";
         this.jsonWebKeysId = UUID.randomUUID().toString();
         this.userInfoId = UUID.randomUUID().toString();
     }

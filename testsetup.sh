@@ -66,13 +66,13 @@ fi
 # Wait for endpoints to become available
 #
 echo 'Waiting for Wiremock endpoints to come up ...'
-WIREMOCK_URL='https://login.authsamples-dev.com:446/__admin/mappings'
+WIREMOCK_URL='https://login.authsamples-dev.com:447/__admin/mappings'
 while [ "$(curl -k -s -X GET -o /dev/null -w '%{http_code}' "$WIREMOCK_URL")" != '200' ]; do
   sleep 2
 done
 
 echo 'Waiting for API endpoints to come up ...'
-API_URL='https://api.authsamples-dev.com:445/api/companies'
+API_URL='https://api.authsamples-dev.com:446/api/companies'
 while [ "$(curl -k -s -X GET -o /dev/null -w '%{http_code}' "$API_URL")" != '401' ]; do
   sleep 2
 done
