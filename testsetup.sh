@@ -53,6 +53,7 @@ if [ "$PLATFORM" == 'MACOS' ]; then
 
 elif [ "$PLATFORM" == 'WINDOWS' ]; then
 
+  GIT_BASH='C:\Program Files\Git\git-bash.exe'
   "$GIT_BASH" -c ./run_wiremock.sh &
   "$GIT_BASH" -c ./run_api.sh &
 
