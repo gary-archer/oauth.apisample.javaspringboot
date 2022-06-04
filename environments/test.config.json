@@ -1,6 +1,6 @@
 {
     "api": {
-        "port": 445,
+        "port": 446,
         "sslCertificateFileName": "./certs/authsamples-dev.ssl.p12",
         "sslCertificatePassword": "Password1",
         "useProxy": false,
@@ -37,8 +37,8 @@
         "provider":                      "cognito",
         "issuer":                        "testissuer.com",
         "audience":                      "api.mycompany.com",
-        "jwksEndpoint":                  "https://login.authsamples-dev.com:446/.well-known/jwks.json",
-        "userInfoEndpoint":              "https://login.authsamples-dev.com:446/oauth2/userInfo",
+        "jwksEndpoint":                  "https://login.authsamples-dev.com:447/.well-known/jwks.json",
+        "userInfoEndpoint":              "https://login.authsamples-dev.com:447/oauth2/userInfo",
         "claimsCacheTimeToLiveMinutes":  30
     }
 }

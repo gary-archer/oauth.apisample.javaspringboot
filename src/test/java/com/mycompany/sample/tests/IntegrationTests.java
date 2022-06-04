@@ -47,7 +47,7 @@ public class IntegrationTests {
         wiremock.registerJsonWebWeys(keyset);
 
         // Create the API client
-        String apiBaseUrl = "https://api.authsamples-dev.com:445";
+        String apiBaseUrl = "https://api.authsamples-dev.com:446";
         var sessionId = UUID.randomUUID().toString();
         apiClient = new ApiClient(apiBaseUrl, "IntegrationTests", sessionId);
     }

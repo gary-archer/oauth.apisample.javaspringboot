@@ -72,7 +72,7 @@ public class LoadTest {
         wiremock.registerUserInfo(data.toString());
 
         // Create the API client
-        String apiBaseUrl = "https://api.authsamples-dev.com:445";
+        String apiBaseUrl = "https://api.authsamples-dev.com:446";
         sessionId = UUID.randomUUID().toString();
         apiClient = new ApiClient(apiBaseUrl, "LoadTest", sessionId);
 

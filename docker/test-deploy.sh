@@ -8,27 +8,50 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ..
 
 #
-# Build the code
+# Get the platform
 #
-./gradlew bootJar
-if [ $? -ne 0 ]; then
-  echo '*** Java API build problem encountered'
-  exit 1
-fi
+case "$(uname -s)" in
+
+  Darwin)
+    PLATFORM="MACOS"
+ 	;;
+
+  MINGW64*)
+    PLATFORM="WINDOWS"
+	;;
+  Linux)
+    PLATFORM="LINUX"
+	;;
+esac
 
 #
 # Download certificates if required
 #
 ./downloadcerts.sh
 if [ $? -ne 0 ]; then
-  echo 'Problem encountered downloading certificates'
   exit
+fi
+
+#
+# Build the code
+#
+./gradlew bootJar
+if [ $? -ne 0 ]; then
+  echo 'Java API build problem encountered'
+  exit 1
 fi
 
 #
 # Prepare root CA certificates that the Docker container will trust
 #
 cp ./certs/authsamples-dev.ca.pem docker/trusted.ca.pem
+
+#
+# On Windows, fix problems with trailing newline characters in Docker scripts
+#
+if [ "$PLATFORM" == 'WINDOWS' ]; then
+  sed -i 's/\r$//' docker/docker-init.sh
+fi
 
 #
 # Build the docker image
@@ -52,7 +75,7 @@ fi
 # Wait for it to become available
 #
 echo 'Waiting for API to become available ...'
-BASE_URL='https://api.authsamples-dev.com:445'
+BASE_URL='https://api.authsamples-dev.com:446'
 while [ "$(curl -k -s -o /dev/null -w ''%{http_code}'' "$BASE_URL/api/companies")" != '401' ]; do
   sleep 2
 done
