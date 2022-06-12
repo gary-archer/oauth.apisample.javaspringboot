@@ -35,7 +35,7 @@ This ensures no concurrency problems, and error rehearsal is used to verify that
 
 ## Quick Start
 
-Ensure that a Java 17+ SDK is installed, then run the API in isolation with these commands:
+Ensure that a Java 17+ SDK is installed, then run the API in isolation with this command:
 
 ```bash
 ./start.sh
