@@ -12,6 +12,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 ./gradlew clean && ./gradlew bootJar
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API'
+  read -n 1
   exit
 fi
 
@@ -21,6 +22,7 @@ fi
 java -jar build/libs/sampleapi-0.0.1-SNAPSHOT.jar
 if [ $? -ne 0 ]; then
   echo 'Problem encountered running the API'
+  read -n 1
   exit
 fi
 
