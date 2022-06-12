@@ -33,9 +33,44 @@ This ensures no concurrency problems, and error rehearsal is used to verify that
 
 ![Load Test](./doc/loadtest.png)
 
+## Quick Start
+
+Ensure that a Java 17+ SDK is installed, then run the API in isolation with these commands:
+
+```bash
+./start.sh
+```
+
+Then call an endpoint over port 446:
+
+```bash
+curl -k https://localhost:446/api/companies
+```
+
+Configure DNS by adding these domains to your hosts file:
+
+```text
+127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
+::1       localhost
+```
+
+Configure SSL trust by running this command:
+
+```bash
+sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
+```
+
+Then run API tests via these commands:
+
+```bash
+./testsetup.sh
+./gradlew test --rerun-tasks
+./gradlew loadtest --rerun-tasks
+```
+
 ## Further Details
 
-* See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for instructions on how to run the API
+* See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for further details on running the API in end-to-end setups
 * See the [OAuth Integration Page](https://authguidance.com/2019/03/24/java-spring-boot-api-coding-key-points/) for the security implementation
 * See the [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/) page for a summary of overall qualities
 
