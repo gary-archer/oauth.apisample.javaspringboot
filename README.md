@@ -78,7 +78,7 @@ Then run API tests via these commands:
 
 * Java 17 and Spring Boot 2.7 are used to implement the REST API
 
-## Middleware Used
+## Infrastructure
 
 * The Tomcat web server hosts the API over SSL
 * AWS Cognito is used as the default Authorization Server
