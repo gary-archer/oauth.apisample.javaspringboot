@@ -33,7 +33,7 @@ This ensures no concurrency problems, and error rehearsal is used to verify that
 
 ![Load Test](./doc/loadtest.png)
 
-## Quick Start
+## Local Development Quick Start
 
 Ensure that a Java 17+ SDK is installed, then run the API in isolation with this command:
 
