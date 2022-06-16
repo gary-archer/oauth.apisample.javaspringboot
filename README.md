@@ -51,7 +51,6 @@ Configure DNS by adding these domains to your hosts file:
 
 ```text
 127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
-::1       localhost
 ```
 
 Configure SSL trust by running this command:
