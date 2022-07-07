@@ -41,16 +41,16 @@ Ensure that a Java 17+ SDK is installed, then run the API in isolation with this
 ./start.sh
 ```
 
-Then call an endpoint over port 446:
-
-```bash
-curl -k https://localhost:446/api/companies
-```
-
 Configure DNS by adding these domains to your hosts file:
 
 ```text
 127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
+```
+
+Then call an endpoint over port 446:
+
+```bash
+curl -k https://api.authsamples-dev.com:446/api/companies
 ```
 
 Configure SSL trust by running this command:
@@ -59,10 +59,15 @@ Configure SSL trust by running this command:
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
 ```
 
-Then run API tests via these commands:
+Next stop the API, then re-run it with a test configuration:
 
 ```bash
 ./testsetup.sh
+```
+
+Then run integration tests and a load test:
+
+```bash
 ./gradlew test --rerun-tasks
 ./gradlew loadtest --rerun-tasks
 ```
