@@ -4,7 +4,7 @@ Deployment resources are organized into the following folders:
 
 ## docker
 
-The main Dockerfile used in all Docker and Kubernetes deployment scenarios.
+The main API Dockerfile used in all Docker and Kubernetes deployment scenarios.
 
 ## docker-local
 
@@ -19,18 +19,18 @@ cd deployment/docker-local
 
 ## environments
 
-A number of copies of the API configuration file for different setups:
+A number of environments exist for various setups, with different configuration files:
 
-| Filename | Usage |
-| -------- | ----- |
-| dev.config.json | Used for local development against the AWS Cognito Authorization Server |
-| test.config.json | Used by API tests, which point to Wiremock as a mock Authorization Server |
-| docker-local.config.json | The configuration file for local standalone testing |
-| kubernetes-local.config.json | The configuration file for local KIND testing |
+| Environment | Description |
+| ----------- | ----------- |
+| dev | Local development of the API component |
+| test | Used by API tests, which point to Wiremock as a mock Authorization Server |
+| docker-local | A deployment of the OAuth Agent and OAuth Proxy to support local SPA to API routing |
+| kubernetes-local | A deployment of the OAuth Agent and OAuth Proxy for an end-to-end KIND setup |
 
 ## kubernetes
 
-Resources used in all Kubernetes deployment scenarios
+Resources used in all Kubernetes deployment scenarios.
 
 ## kubernetes-local
 
