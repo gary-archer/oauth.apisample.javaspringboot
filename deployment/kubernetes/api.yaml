@@ -1,0 +1,69 @@
+#
+# The Kubernetes resources for the final API, which serves business data to the SPA
+#
+kind: Certificate
+apiVersion: cert-manager.io/v1
+metadata:
+  name: finalapi-cert
+spec:
+  secretName: finalapi-pkcs12
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: finalapi-svc.default.svc
+  dnsNames:
+  - finalapi-svc
+  - finalapi-svc.default.svc
+  - finalapi-svc.default.svc.cluster.local
+  keystores:
+    pkcs12:
+      create: true
+      passwordSecretRef:
+        name: finalapi-pkcs12-password
+        key: password
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: finalapi
+  labels:
+    app: finalapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finalapi
+  template:
+    metadata:
+      labels:
+        app: finalapi
+    spec:
+      containers:
+      - name: finalapi
+        image: finaljavaapi:v1
+        volumeMounts:
+          - name: api-config
+            mountPath: /usr/api/api.config.json
+            subPath: api.config.json
+            readOnly: true
+          - name: api-ssl-cert
+            mountPath: /usr/api/certs
+            readOnly: true
+      volumes:
+        - name: api-config
+          configMap:
+            name: api-config
+        - name: api-ssl-cert
+          secret:
+            secretName: finalapi-pkcs12
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: finalapi-svc
+spec:
+  selector:
+    app: finalapi
+  ports:
+  - protocol: "TCP"
+    port: 8101
