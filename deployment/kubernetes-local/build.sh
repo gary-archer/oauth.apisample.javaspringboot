@@ -61,7 +61,7 @@ fi
 #
 # Load it into kind's Docker registry
 #
-kind load docker-image finalnodejsapi:v1 --name oauth
+kind load docker-image finaljavaapi:v1 --name oauth
 if [ $? -ne 0 ]; then
   echo '*** API docker deploy problem encountered'
   exit 1
