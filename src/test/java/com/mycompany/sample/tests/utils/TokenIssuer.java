@@ -12,16 +12,16 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 
 /*
-    * A token issuer for testing
-    */
+ * A token issuer for testing
+ */
 public final class TokenIssuer {
 
     private final RsaJsonWebKey jwk;
     private final String keyId;
 
     /*
-        * Do the key setup during construction
-        */
+     * Do the key setup during construction
+     */
     public TokenIssuer() throws JoseException {
 
         // Reduce the library's log level
@@ -36,8 +36,8 @@ public final class TokenIssuer {
     }
 
     /*
-        * Get the token signing public keys as a JSON Web Keyset
-        */
+     * Get the token signing public keys as a JSON Web Keyset
+     */
     public String getTokenSigningPublicKeys() {
 
         var jsonWebKeySet = new JsonWebKeySet(this.jwk);
@@ -45,9 +45,9 @@ public final class TokenIssuer {
     }
 
     /*
-        * Issue an access token with the supplied subject claim
-        * https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
-        */
+     * Issue an access token with the supplied subject claim
+     * https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
+     */
     public String issueAccessToken(final String sub) throws JoseException {
 
         var claims = new JwtClaims();
@@ -66,11 +66,9 @@ public final class TokenIssuer {
         return jws.getCompactSerialization();
     }
 
-
-
     /*
-        * Issue an access token signed with an untrusted JWK
-        */
+     * Issue an access token signed with an untrusted JWK
+     */
     public String issueMaliciousAccessToken(final String sub) throws JoseException {
 
         var maliciousKeys = RsaJwkGenerator.generateJwk(2048);
