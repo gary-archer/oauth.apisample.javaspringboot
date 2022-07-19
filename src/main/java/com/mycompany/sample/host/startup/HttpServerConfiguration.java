@@ -26,7 +26,10 @@ public class HttpServerConfiguration {
     }
 
     /*
-     * Configure API security via a custom authorization filter which allows us to take full control
+     * Spring is a web backend technology stack by default, and activates lots of web related behaviour
+     * This includes cookie defenses, headers related to web hosting and so on
+     * In my architecture these concerns are dealt with in an OAuth Proxy or Web Host, so I disable them here
+     * The API needs only to validate JWTs and apply authorization based on claims
      */
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
@@ -36,12 +39,23 @@ public class HttpServerConfiguration {
 
         http
                 .antMatcher(ResourcePaths.ALL)
+
+                // Customize OAuth processing to use a filter that validates JWTs using the jose4j library
+                // This also builds a useful ClaimsPrincipal that is not limited to claims in the JWT access token
                 .authorizeRequests(authorize ->
                         authorize.anyRequest().authenticated()
                         .and()
                         .addFilterBefore(
                             authorizationFilter,
                             AbstractPreAuthenticatedProcessingFilter.class))
+
+                // CSRF is dealt with in an OAuth Proxy called from the browser
+                .csrf().disable()
+
+                // Security headers are returned from a web host to the browser
+                .headers().disable()
+
+                // The API would save session data to a database
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -60,6 +74,8 @@ public class HttpServerConfiguration {
                 .antMatcher(ResourcePaths.CUSTOMCLAIMS)
                 .authorizeRequests(authorize ->
                         authorize.anyRequest().permitAll())
+                .csrf().disable()
+                .headers().disable()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
