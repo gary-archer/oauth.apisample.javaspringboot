@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -16,6 +16,7 @@ import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
  * A class to manage HTTP configuration for our server
  */
 @Configuration
+@EnableWebSecurity
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class HttpServerConfiguration {
 
@@ -27,7 +28,7 @@ public class HttpServerConfiguration {
 
     /*
      * Spring is a web backend technology stack by default, and activates lots of web related behaviour
-     * This includes cookie defenses, headers related to web hosting and so on
+     * EnableWebSecurity by default results in cookie defenses, headers related to web hosting and so on
      * In my architecture these concerns are dealt with in an OAuth Proxy or Web Host, so I disable them here
      * The API needs only to validate JWTs and apply authorization based on claims
      */
@@ -41,7 +42,7 @@ public class HttpServerConfiguration {
                 .antMatcher(ResourcePaths.ALL)
 
                 // Customize OAuth processing to use a filter that validates JWTs using the jose4j library
-                // This also builds a useful ClaimsPrincipal that is not limited to claims in the JWT access token
+                // This also builds a useful ClaimsPrincipal, which includes domain specific claims
                 .authorizeRequests(authorize ->
                         authorize.anyRequest().authenticated()
                         .and()
@@ -49,21 +50,20 @@ public class HttpServerConfiguration {
                             authorizationFilter,
                             AbstractPreAuthenticatedProcessingFilter.class))
 
-                // CSRF is dealt with in an OAuth Proxy called from the browser
+                // Disable web host and API gateway concerns
                 .csrf().disable()
-
-                // Security headers are returned from a web host to the browser
                 .headers().disable()
-
-                // The API would save session data to a database
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .requestCache().disable()
+                .securityContext().disable()
+                .logout().disable()
+                .exceptionHandling().disable()
+                .sessionManagement().disable();
 
         return http.build();
     }
 
     /*
-     * For the time being the route to look up custom claims allows anonymous access
+     * For the time being the route to look up custom claims uses anonymous access
      * https://github.com/spring-projects/spring-security/issues/10938
      */
     @Bean
@@ -74,10 +74,15 @@ public class HttpServerConfiguration {
                 .antMatcher(ResourcePaths.CUSTOMCLAIMS)
                 .authorizeRequests(authorize ->
                         authorize.anyRequest().permitAll())
+
+                // Disable web host and API gateway concerns
                 .csrf().disable()
                 .headers().disable()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .requestCache().disable()
+                .securityContext().disable()
+                .logout().disable()
+                .exceptionHandling().disable()
+                .sessionManagement().disable();
 
         return http.build();
     }
