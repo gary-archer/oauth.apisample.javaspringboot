@@ -73,10 +73,9 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: finalapi-ingress
   annotations:
-    kubernetes.io/ingress.class: 'nginx'
-    nginx.ingress.kubernetes.io/secure-backends: 'true'
-    nginx.ingress.kubernetes.io/backend-protocol: 'HTTPS'
+    konghq.com/protocol: https
 spec:
+  ingressClassName: kong
   tls:
     - hosts:
         - api.mycluster.com
