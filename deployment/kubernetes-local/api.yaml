@@ -67,3 +67,28 @@ spec:
   ports:
   - protocol: "TCP"
     port: 8101
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: finalapi-ingress
+  annotations:
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/secure-backends: 'true'
+    nginx.ingress.kubernetes.io/backend-protocol: 'HTTPS'
+spec:
+  tls:
+    - hosts:
+        - api.mycluster.com
+      secretName: mycluster-com-tls
+  rules:
+    - host: api.mycluster.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: finalapi-svc
+                port:
+                  number: 8101
