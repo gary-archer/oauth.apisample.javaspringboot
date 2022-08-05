@@ -2,12 +2,12 @@
 
 ## environments
 
-A number of environments exist for various setups, with different configuration files:
+A number of configuration files exist for various development setups:
 
 | Environment | Description |
 | ----------- | ----------- |
 | dev | Local development of the API component |
-| test | Used by API tests, which point to Wiremock as a mock Authorization Server |
+| test | Used by API tests, which use Wiremock as a mock Authorization Server |
 | docker-local | Used to test Docker deployment for the API |
 | kubernetes-local | An end-to-end deployment of SPA, API and token handler components that runs in a KIND cluster |
 
