@@ -1,6 +1,15 @@
 # Deployment Resources
 
-Deployment resources are organized into the following folders:
+## environments
+
+A number of environments exist for various setups, with different configuration files:
+
+| Environment | Description |
+| ----------- | ----------- |
+| dev | Local development of the API component |
+| test | Used by API tests, which point to Wiremock as a mock Authorization Server |
+| docker-local | Used to test Docker deployment for the API |
+| kubernetes-local | An end-to-end deployment of SPA, API and token handler components that runs in a KIND cluster |
 
 ## docker
 
@@ -17,21 +26,6 @@ cd deployment/docker-local
 ./teardown.sh
 ```
 
-## environments
-
-A number of environments exist for various setups, with different configuration files:
-
-| Environment | Description |
-| ----------- | ----------- |
-| dev | Local development of the API component |
-| test | Used by API tests, which point to Wiremock as a mock Authorization Server |
-| docker-local | A deployment of the OAuth Agent and OAuth Proxy to support local SPA to API routing |
-| kubernetes-local | A deployment of the OAuth Agent and OAuth Proxy for an end-to-end KIND setup |
-
-## kubernetes
-
-Resources used in all Kubernetes deployment scenarios.
-
 ## kubernetes-local
 
-Scripts for deploying this component in an end-to-end local KIND setup.
+Scripts invoked using parent scripts from the [Cloud Native Deployment](https://github.com/gary-archer/oauth.cloudnative.deployment) project.
