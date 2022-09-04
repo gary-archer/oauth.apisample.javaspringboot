@@ -88,4 +88,4 @@ Then run integration tests and a load test:
 * AWS Cognito is used as the default Authorization Server
 * The [Jose4j Library](https://bitbucket.org/b_c/jose4j/wiki/Home) library is used to manage in memory validation of JWTs
 * API logs can be aggregated to [Elasticsearch](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
-* The API is designed for [cloud native deployment](https://github.com/gary-archer/oauth.cloudnative.deployment) to Kubernetes
+* The API is designed for [cloud native deployment](https://github.com/gary-archer/oauth.cloudnative.local) to Kubernetes
