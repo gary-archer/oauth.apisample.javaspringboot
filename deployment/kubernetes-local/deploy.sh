@@ -40,7 +40,7 @@ fi
 #
 export API_DOMAIN_NAME='api.mycluster.com'
 export API_DOCKER_IMAGE='finalnodejsapi:v1'
-envsubst < '../shared/api.yaml.template' > '../shared/api.yaml'
+envsubst < '../shared/api.yaml-template' > '../shared/api.yaml'
 if [ $? -ne 0 ]; then
   echo '*** Problem encountered running envsubst to produce the final Kubernetes api.yaml file'
   exit 1
@@ -49,8 +49,8 @@ fi
 #
 # Trigger deployment of the API to the Kubernetes cluster
 #
-kubectl -n applications delete -f api.yaml 2>/dev/null
-kubectl -n applications apply  -f api.yaml
+kubectl -n applications delete -f ../shared/api.yaml 2>/dev/null
+kubectl -n applications apply  -f ../shared/api.yaml
 if [ $? -ne 0 ]; then
   echo '*** API Kubernetes deployment problem encountered'
   exit 1
