@@ -1,0 +1,37 @@
+{
+    "api": {
+        "port": 8101,
+        "sslCertificateFileName": "./certs/keystore.p12",
+        "sslCertificatePassword": "Password1",
+        "useProxy": false,
+        "proxyUrl": ""
+    },
+    "logging": {
+        "apiName": "SampleApi",
+        "production": {
+            "level": "info",
+            "performanceThresholdMilliseconds": 500,
+            "appenders": [
+                {
+                    "type": "console",
+                    "prettyPrint": false
+                }
+            ]
+        },
+        "development": {
+            "level": "info",
+            "namespace": "com.mycompany.sample",
+            "overrideLevels": {
+                "ClaimsCache": "info"
+            }
+        }
+    },
+    "oauth": {
+        "provider":                      "cognito",
+        "issuer":                        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "audience":                      "",
+        "jwksEndpoint":                  "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
+        "userInfoEndpoint":              "https://login.authsamples.com/oauth2/userInfo",
+        "claimsCacheTimeToLiveMinutes":  30
+    }
+}
