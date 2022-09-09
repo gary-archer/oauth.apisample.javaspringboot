@@ -45,19 +45,19 @@ fi
 #
 # Prepare root CA certificates that the Docker container will trust
 #
-cp ./certs/authsamples-dev.ca.pem deployment/docker-local/trusted.ca.pem
+cp ./certs/authsamples-dev.ca.pem deployment/shared/trusted.ca.pem
 
 #
 # On Windows, fix problems with trailing newline characters in Docker scripts
 #
 if [ "$PLATFORM" == 'WINDOWS' ]; then
-  sed -i 's/\r$//' deployment/docker/docker-init.sh
+  sed -i 's/\r$//' deployment/shared/docker-init.sh
 fi
 
 #
 # Build the docker image
 #
-docker build -f deployment/docker/Dockerfile --build-arg TRUSTED_CA_CERTS='deployment/docker-local/trusted.ca.pem' -t finaljavaapi:v1 .
+docker build -f deployment/shared/Dockerfile --build-arg TRUSTED_CA_CERTS='deployment/shared/trusted.ca.pem' -t finaljavaapi:v1 .
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API docker image'
   exit

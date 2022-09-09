@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
       - name: finalapi
-        image: finaljavaapi:v1
+        image: $API_DOCKER_IMAGE
         volumeMounts:
           - name: api-config
             mountPath: /usr/api/api.config.json
@@ -67,7 +67,8 @@ spec:
   selector:
     app: finalapi
   ports:
-  - protocol: "TCP"
+  - name: https
+    protocol: "TCP"
     port: 8101
 ---
 kind: Ingress
@@ -78,9 +79,9 @@ spec:
   ingressClassName: kong
   tls:
     - hosts:
-        - api.mycluster.com
+        - $API_DOMAIN_NAME
   rules:
-    - host: api.mycluster.com
+    - host: $API_DOMAIN_NAME
       http:
         paths:
           - path: /
@@ -89,4 +90,4 @@ spec:
               service:
                 name: finalapi-svc
                 port:
-                  number: 8101
+                  name: https
