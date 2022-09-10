@@ -13,13 +13,15 @@ cd ../..
 #
 # Check preconditions
 #
-if [ "$DOCKERHUB_ACCOUNT" == '' ]; then
-  echo '*** The DOCKERHUB_ACCOUNT environment variable has not been configured'
-  exit 1
+if [ "$CLUSTER_TYPE" != 'local' ]; then
+  if [ "$DOCKERHUB_ACCOUNT" == '' ]; then
+    echo '*** The DOCKERHUB_ACCOUNT environment variable has not been configured'
+    exit 1
+  fi
 fi
 
 #
-# Get the platform
+# Get the local computer platform
 #
 case "$(uname -s)" in
 
@@ -60,29 +62,26 @@ fi
 #
 # Build the Docker container
 #
-docker build --no-cache -f deployment/shared/Dockerfile --build-arg TRUSTED_CA_CERTS='deployment/shared/trusted.ca.pem' -t "$DOCKERHUB_ACCOUNT/finaljavaapi:v1" .
+docker build --no-cache -f deployment/shared/Dockerfile --build-arg TRUSTED_CA_CERTS='deployment/shared/trusted.ca.pem' -t finaljavaapi:v1 .
 if [ $? -ne 0 ]; then
   echo '*** API docker build problem encountered'
   exit 1
 fi
 
 #
-# Produce the final YAML using the envsubst tool
+# Push the API docker image
 #
-export API_DOMAIN_NAME='api.mycluster.com'
-export API_DOCKER_IMAGE="$DOCKERHUB_ACCOUNT/finaljavaapi:v1"
-envsubst < '../shared/api.yaml.template' > '../shared/api.yaml'
-if [ $? -ne 0 ]; then
-  echo '*** Problem encountered running envsubst to produce the final Kubernetes api.yaml file'
-  exit 1
-fi
+if [ "$CLUSTER_TYPE" == 'local' ]; then
+  
+  kind load docker-image finaljavaapi:v1 --name oauth
 
-#
-# Push it to DockerHub
-#
-docker image rm -f "$DOCKERHUB_ACCOUNT/finaljavaapi:v1" 2>/dev/null
-docker image push "$DOCKERHUB_ACCOUNT/finaljavaapi:v1"
+else
+  
+  docker image rm -f "$DOCKERHUB_ACCOUNT/finaljavaapi:v1" 2>/dev/null
+  docker image push "$DOCKERHUB_ACCOUNT/finaljavaapi:v1"
+
+fi
 if [ $? -ne 0 ]; then
-  echo '*** API docker deploy problem encountered'
+  echo '*** API docker push problem encountered'
   exit 1
 fi
