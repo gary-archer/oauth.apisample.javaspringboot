@@ -72,14 +72,9 @@ fi
 # Push the API docker image
 #
 if [ "$CLUSTER_TYPE" == 'local' ]; then
-  
   kind load docker-image finaljavaapi:v1 --name oauth
-
 else
-  
-  docker image rm -f "$DOCKERHUB_ACCOUNT/finaljavaapi:v1" 2>/dev/null
   docker image push "$DOCKERHUB_ACCOUNT/finaljavaapi:v1"
-
 fi
 if [ $? -ne 0 ]; then
   echo '*** API docker push problem encountered'
