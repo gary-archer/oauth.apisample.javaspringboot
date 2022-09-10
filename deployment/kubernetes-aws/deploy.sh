@@ -46,7 +46,7 @@ fi
 #
 # Produce the final YAML using the envsubst tool
 #
-export API_DOMAIN_NAME='api.mycluster.com'
+export API_DOMAIN_NAME='api.authsamples-k8s.com'
 export API_DOCKER_IMAGE="$DOCKERHUB_ACCOUNT/finaljavaapi:v1"
 envsubst < '../shared/api.yaml.template' > '../shared/api.yaml'
 if [ $? -ne 0 ]; then
