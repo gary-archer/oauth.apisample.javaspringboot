@@ -9,7 +9,6 @@
 #
 TRUSTED_CA_CERTS='/usr/local/share/certificates/trusted.ca.crt'
 
-
 #
 # Add the certificates tool
 #

@@ -8,24 +8,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
 
 #
-# Get the platform
-#
-case "$(uname -s)" in
-
-  Darwin)
-    PLATFORM="MACOS"
- 	;;
-
-  MINGW64*)
-    PLATFORM="WINDOWS"
-	;;
-
-  Linux)
-    PLATFORM="LINUX"
-	;;
-esac
-
-#
 # Download certificates if required
 #
 ./downloadcerts.sh
@@ -46,13 +28,6 @@ fi
 # Prepare root CA certificates that the Docker container will trust
 #
 cp ./certs/authsamples-dev.ca.pem deployment/shared/trusted.ca.pem
-
-#
-# On Windows, fix problems with trailing newline characters in Docker scripts
-#
-if [ "$PLATFORM" == 'WINDOWS' ]; then
-  sed -i 's/\r$//' deployment/shared/docker-init.sh
-fi
 
 #
 # Build the docker image
