@@ -97,7 +97,7 @@ cd oauth.websample.final
 
 ### Query API Logs
 
-Deploy Elasticsearch with these commands, signing in to Kibana with credentials `kibana / Password1`:
+Deploy Elasticsearch with these commands, signing in to Kibana with credentials `elastic / Password1`:
 
 ```bash
 cd ..
