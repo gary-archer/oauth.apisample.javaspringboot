@@ -35,7 +35,8 @@ This ensures no concurrency problems, and error rehearsal is used to verify that
 
 ### API is Supportable
 
-API logs can be analysed by running [Technical Support Queries](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/):
+API logs can be analysed in use case based manner by running Elasticsearch SQL and Lucene queries.\
+Follow the [Technical Support Queries](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/) for some people friendly examples:
 
 ![Support Queries](./images/support-queries.png)
 
