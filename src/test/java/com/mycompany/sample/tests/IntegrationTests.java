@@ -14,7 +14,7 @@ import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 import com.mycompany.sample.tests.utils.WiremockAdmin;
 
-@Suite
+@Suite(failIfNoTests=false)
 public class IntegrationTests {
 
     private static String guestUserId;

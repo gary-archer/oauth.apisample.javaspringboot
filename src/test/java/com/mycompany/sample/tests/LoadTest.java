@@ -25,7 +25,7 @@ import com.mycompany.sample.tests.utils.WiremockAdmin;
 /*
  * A basic load test to ensure that the API behaves correctly when there are concurrent requests
  */
-@Suite
+@Suite(failIfNoTests=false)
 public class LoadTest {
 
     private static TokenIssuer tokenIssuer;
