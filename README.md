@@ -60,7 +60,7 @@ curl -k https://api.authsamples-dev.com:446/api/companies
 Configure DNS by adding these domains to your hosts file:
 
 ```text
-127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com logs.authsamples-dev.com 
+127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com web.authsamples-dev.com tokenhandler.authsamples-dev.com logs.authsamples-dev.com 
 ```
 
 Configure SSL trust by running this command:
@@ -97,7 +97,7 @@ cd oauth.websample.final
 
 ### Query API Logs
 
-Deploy Elasticsearch with these commands, signing in to Kibana with credentials `kibana / Password1`:
+Deploy Elasticsearch with these commands, signing in to Kibana with credentials `elastic / Password1`:
 
 ```bash
 cd ..
