@@ -4,7 +4,7 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot?targetFile=build.gradle)
 
-## Overview 
+## Behaviour
 
 The final OAuth secured Java API code sample, referenced in my blog at https://authguidance.com:
 
@@ -12,39 +12,41 @@ The final OAuth secured Java API code sample, referenced in my blog at https://a
 * The API uses JSON request logging and Elasticsearch log aggregation, for measurability
 * The API uses non-blocking code with request scoped ClaimsPrincipal / LogEntry objects
 
-## API integrates with UI Clients
+### API integrates with UI Clients
 
 The API can run as part of an OAuth end-to-end setup, to serve my blog's UI code samples.\
 Running the API in this manner forces it to be consumer focused to its clients:
 
-![SPA and API](./doc/spa-and-api.png)
+![SPA and API](./images/spa-and-api.png)
 
-## API can be Productively Tested
+### API can be Productively Tested
 
 The API's clients are UIs, which get user level access tokens by running an OpenID Connect code flow.\
 For productive test driven development, the API instead mocks the Authorization Server:
 
-![Test Driven Development](./doc/tests.png)
+![Test Driven Development](./images/tests.png)
 
-## API can be Load Tested
+### API can be Load Tested
 
 A basic load test uses Completable Futures to fire 5 parallel requests at a time at the API.\
 This ensures no concurrency problems, and error rehearsal is used to verify that the API is supportable:
 
-![Load Test](./doc/loadtest.png)
+![Load Test](./images/loadtest.png)
 
-## Local Development Quick Start
+### API is Supportable
+
+API logs can be analysed according using these [Technical Support Queries](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/):
+
+![Support Queries](./images/support-queries.png)
+
+## Commands
+
+### Run the API
 
 Ensure that a Java 17+ SDK is installed, then run the API in isolation with this command:
 
 ```bash
 ./start.sh
-```
-
-Configure DNS by adding these domains to your hosts file:
-
-```text
-127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
 ```
 
 Then call an endpoint over port 446:
@@ -53,13 +55,23 @@ Then call an endpoint over port 446:
 curl -k https://api.authsamples-dev.com:446/api/companies
 ```
 
+### Configure DNS and SSL
+
+Configure DNS by adding these domains to your hosts file:
+
+```text
+127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com logs.authsamples-dev.com 
+```
+
 Configure SSL trust by running this command:
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
 ```
 
-Next stop the API, then re-run it with a test configuration:
+### Test the API
+
+Stop the API, then re-run it with a test configuration:
 
 ```bash
 ./testsetup.sh
@@ -70,6 +82,28 @@ Then run integration tests and a load test:
 ```bash
 ./gradlew test --rerun-tasks
 ./gradlew loadtest --rerun-tasks
+```
+
+### Run an SPA Client
+
+Run these commands, then login to the SPA with credentials `guestuser@mycompany.com / GuestPassword1`:
+
+```bash
+cd ..
+git clone https://github.com/gary-archer/oauth.websample.final
+cd oauth.websample.final
+./build.sh LOCALAPI && ./run.sh LOCALAPI
+```
+
+### Query API Logs
+
+Deploy Elasticsearch with these commands, signing in to Kibana with credentials `kibana / Password1`:
+
+```bash
+cd ..
+git clone https://github.com/gary-archer/logaggregation.elasticsearch
+cd logaggregation.elasticsearch
+./deployment/docker-local/deploy.sh
 ```
 
 ## Further Details
@@ -87,5 +121,4 @@ Then run integration tests and a load test:
 * The Tomcat web server hosts the API over SSL
 * AWS Cognito is used as the default Authorization Server
 * The [Jose4j Library](https://bitbucket.org/b_c/jose4j/wiki/Home) library is used to manage in memory validation of JWTs
-* API logs can be aggregated to [Elasticsearch](https://authguidance.com/2019/07/19/log-aggregation-setup/) to support [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
 * The API is designed for [cloud native deployment](https://github.com/gary-archer/oauth.cloudnative.local) to Kubernetes
