@@ -35,7 +35,7 @@ This ensures no concurrency problems, and error rehearsal is used to verify that
 
 ### API is Supportable
 
-API logs can be analysed according using these [Technical Support Queries](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/):
+API logs can be analysed by running [Technical Support Queries](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/):
 
 ![Support Queries](./images/support-queries.png)
 
@@ -86,7 +86,8 @@ Then run integration tests and a load test:
 
 ### Run an SPA Client
 
-Run these commands, then login to the SPA with credentials `guestuser@mycompany.com / GuestPassword1`:
+Re-run the API with `start.sh`, then run the SPA via the following commands.\
+Then login to the SPA with credentials `guestuser@mycompany.com / GuestPassword1`:
 
 ```bash
 cd ..
