@@ -121,4 +121,4 @@ cd logaggregation.elasticsearch
 * The Tomcat web server hosts the API over SSL
 * AWS Cognito is used as the default Authorization Server
 * The [Jose4j Library](https://bitbucket.org/b_c/jose4j/wiki/Home) library is used to manage in memory validation of JWTs
-* The API is designed for [cloud native deployment](https://github.com/gary-archer/oauth.cloudnative.local) to Kubernetes
+* The API is designed for [Cloud Native Deployment](https://github.com/gary-archer/oauth.cloudnative.local) to Kubernetes
