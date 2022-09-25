@@ -87,8 +87,8 @@ Then run integration tests and a load test:
 
 ### Run an SPA Client
 
-Re-run the API with `start.sh`, then run the SPA via the following commands.\
-Then login to the SPA with credentials `guestuser@mycompany.com / GuestPassword1`:
+Re-run the API with `start.sh`, then run the SPA with the following commands.\
+Login to the PSA at https://web.authsamples-dev.com/spa with credentials `guestuser@mycompany.com / GuestPassword1`:
 
 ```bash
 cd ..
@@ -99,7 +99,8 @@ cd oauth.websample.final
 
 ### Query API Logs
 
-Deploy Elasticsearch with these commands, signing in to Kibana with credentials `elastic / Password1`:
+Deploy the Elastic Stack with the following commands.\
+Login to Kibana at https://logs.authsamples-dev.com:5601 with credentials `elastic / Password1`:
 
 ```bash
 cd ..
