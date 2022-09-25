@@ -85,10 +85,12 @@ Then run integration tests and a load test:
 ./gradlew loadtest --rerun-tasks
 ```
 
+## End-to-End Testing
+
 ### Run an SPA Client
 
 Re-run the API with `start.sh`, then run the SPA with the following commands.\
-Login to the PSA at https://web.authsamples-dev.com/spa with credentials `guestuser@mycompany.com / GuestPassword1`:
+Login to the SPA at https://web.authsamples-dev.com/spa as `guestuser@mycompany.com / GuestPassword1`:
 
 ```bash
 cd ..
@@ -100,13 +102,20 @@ cd oauth.websample.final
 ### Query API Logs
 
 Deploy the Elastic Stack with the following commands.\
-Login to Kibana at https://logs.authsamples-dev.com:5601 with credentials `elastic / Password1`:
+Login to Kibana at https://logs.authsamples-dev.com:5601 as `elastic / Password1`:
 
 ```bash
 cd ..
 git clone https://github.com/gary-archer/logaggregation.elasticsearch
 cd logaggregation.elasticsearch
 ./deployment/docker-local/deploy.sh
+```
+
+### Free Docker Resources
+
+```bash
+../oauth.websample.final/teardown.sh LOCALAPI
+../logaggregation.elasticsearch/deployment/docker-local/teardown.sh
 ```
 
 ## Further Details
