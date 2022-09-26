@@ -42,9 +42,11 @@ Follow the [Technical Support Queries](https://authguidance.com/2019/08/02/intel
 
 ## Commands
 
+First ensure that a Java 17+ SDK and gradle are installed.
+
 ### Run the API
 
-Ensure that a Java 17+ SDK is installed, then run the API in isolation with this command:
+Then run the API in isolation with this command:
 
 ```bash
 ./start.sh
@@ -86,6 +88,13 @@ Then run integration tests and a load test:
 ```
 
 ## End-to-End Testing
+
+First ensure that these tools are installed:
+
+- [Node.js](https://nodejs.org/en/download/)
+- A Docker Engine such as [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [openssl](https://www.openssl.org/)
+- [envsubst](https://github.com/a8m/envsubst)
 
 ### Run an SPA Client
 
