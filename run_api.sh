@@ -17,6 +17,17 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Ensure that log folders exist
+#
+if [ ! -d '../oauth.logs' ]; then
+  mkdir '../oauth.logs'
+fi
+if [ -d '../oauth.logs/api' ]; then
+  rm -rf '../oauth.logs/api'
+fi
+mkdir '../oauth.logs/api'
+
+#
 # Run the API's JAR file'
 #
 java -jar build/libs/sampleapi-0.0.1-SNAPSHOT.jar

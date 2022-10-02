@@ -24,6 +24,17 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Ensure that log folders exist
+#
+if [ ! -d '../oauth.logs' ]; then
+  mkdir '../oauth.logs'
+fi
+if [ -d '../oauth.logs/api' ]; then
+  rm -rf '../oauth.logs/api'
+fi
+mkdir '../oauth.logs/api'
+
+#
 # Run the API
 # On Linux first ensure that you have first granted Java permissions to listen on port 446:
 # - sudo setcap 'cap_net_bind_service=+ep' /usr/lib/jvm/zulu-17-amd64/bin/java
