@@ -29,10 +29,9 @@ fi
 if [ ! -d '../oauth.logs' ]; then
   mkdir '../oauth.logs'
 fi
-if [ -d '../oauth.logs/api' ]; then
-  rm -rf '../oauth.logs/api'
+if [ ! -d '../oauth.logs/api' ]; then
+  mkdir '../oauth.logs/api'
 fi
-mkdir '../oauth.logs/api'
 
 #
 # Run the API
