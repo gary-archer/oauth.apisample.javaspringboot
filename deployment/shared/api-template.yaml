@@ -13,8 +13,8 @@ spec:
   commonName: finalapi-svc.default.svc
   dnsNames:
   - finalapi-svc
-  - finalapi-svc.default.svc
-  - finalapi-svc.default.svc.cluster.local
+  - finalapi-svc.applications.svc
+  - finalapi-svc.applications.svc.cluster.local
   keystores:
     pkcs12:
       create: true
