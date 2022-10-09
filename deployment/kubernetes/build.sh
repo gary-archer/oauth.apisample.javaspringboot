@@ -38,7 +38,7 @@ fi
 #
 # Copy in the internal cluster root CA from the parent project, to be trusted within the container
 #
-cp ../certs/default.svc.cluster.local.ca.pem deployment/shared/trusted.ca.pem
+cp ../certs/cluster.internal.ca.pem deployment/shared/trusted.ca.pem
 
 #
 # Build the Docker container

@@ -10,7 +10,7 @@ spec:
   issuerRef:
     name: ca-issuer
     kind: Issuer
-  commonName: finalapi-svc.default.svc
+  commonName: finalapi-svc
   dnsNames:
   - finalapi-svc
   - finalapi-svc.applications.svc
