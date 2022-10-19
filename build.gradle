@@ -14,9 +14,9 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '2.7.3'
-    spring_security_version = '5.7.3'
-    jose4j_version = '0.8.0'
+    spring_boot_starter_version = '2.7.4'
+    spring_security_version = '5.7.4'
+    jose4j_version = '0.9.1'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
     jackson_version = '2.13.4'
@@ -46,7 +46,7 @@ dependencies {
     // Jackson dependencies
     implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version.2"
 
     // Utilities
     implementation "com.github.javasync:AsyncFileRw:$async_file_version"
@@ -55,7 +55,7 @@ dependencies {
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
 
     // Temporary dependencies to fix security warnings
-    implementation "org.yaml:snakeyaml:1.32"
+    // implementation "org.yaml:snakeyaml:1.32"
     
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
