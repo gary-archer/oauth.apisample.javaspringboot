@@ -14,8 +14,8 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '2.7.4'
-    spring_security_version = '5.7.4'
+    spring_boot_starter_version = '2.7.5'
+    spring_security_version = '5.7.5'
     jose4j_version = '0.9.1'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
@@ -55,7 +55,7 @@ dependencies {
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
 
     // Temporary dependencies to fix security warnings
-    implementation "org.yaml:snakeyaml:1.32"
+    implementation "org.yaml:snakeyaml:1.33"
     
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
