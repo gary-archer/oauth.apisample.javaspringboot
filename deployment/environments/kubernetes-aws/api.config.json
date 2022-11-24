@@ -27,11 +27,11 @@
         }
     },
     "oauth": {
-        "provider":                      "cognito",
+        "provider":                      "standard",
         "issuer":                        "https://login.authsamples-k8s.com/~",
         "audience":                      "api.mycompany.com",
         "jwksEndpoint":                  "https://curity-idsvr-runtime-svc.curity.svc:8443/~/jwks",
         "userInfoEndpoint":              "https://curity-idsvr-runtime-svc.curity.svc:8443/oauth/v2/oauth-userinfo",
-        "claimsCacheTimeToLiveMinutes":  30
+        "claimsCacheTimeToLiveMinutes":  0
     }
 }
