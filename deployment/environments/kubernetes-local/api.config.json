@@ -28,10 +28,10 @@
     },
     "oauth": {
         "provider":                      "cognito",
-        "issuer":                        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
-        "audience":                      "",
-        "jwksEndpoint":                  "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
-        "userInfoEndpoint":              "https://login.authsamples.com/oauth2/userInfo",
+        "issuer":                        "https://login.mycluster.com/~",
+        "audience":                      "api.mycompany.com",
+        "jwksEndpoint":                  "https://curity-idsvr-runtime-svc.curity.svc:8443/~/jwks",
+        "userInfoEndpoint":              "https://curity-idsvr-runtime-svc.curity.svc:8443/oauth/v2/oauth-userinfo",
         "claimsCacheTimeToLiveMinutes":  30
     }
 }
