@@ -35,7 +35,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
     }
 
     /*
-     * When using the ClaimsCachingAuthorizer this is called when an API first receives the access token
+     * When using the ClaimsCachingAuthorizer, this is called to get extra claims when the token is first received
      */
     @Override
     public SampleCustomClaims get(
