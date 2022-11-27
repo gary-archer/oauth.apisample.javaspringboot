@@ -1,5 +1,6 @@
 package com.mycompany.sample.plumbing.errors;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -49,7 +50,7 @@ public final class ErrorFactory {
             final HttpStatus statusCode,
             final String errorCode,
             final String userMessage,
-            final ObjectNode logContext) {
+            final JsonNode logContext) {
 
         var error = new ClientErrorImpl(statusCode, errorCode, userMessage);
         error.setLogContext(logContext);

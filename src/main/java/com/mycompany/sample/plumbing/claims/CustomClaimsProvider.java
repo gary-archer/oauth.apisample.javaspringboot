@@ -12,7 +12,7 @@ public class CustomClaimsProvider {
      * When using the StandardAuthorizer this is overridden at the time of token issuance
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims issue(final String subject) {
+    public CustomClaims issue(final String subject, final String email) {
         return new CustomClaims();
     }
 

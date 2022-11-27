@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.utilities;
+package com.mycompany.sample.plumbing.errors;
 
 import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -3,6 +3,7 @@ package com.mycompany.sample.plumbing.errors;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.annotation.Nullable;
+
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -146,12 +147,14 @@ public final class ErrorUtils {
     /*
      * The error thrown if we cannot find an expected claim during OAuth processing
      */
-    public static ServerError fromMissingClaim(final String claimName) {
+    public static ClientError fromMissingClaim(final String claimName) {
 
-        var error = ErrorFactory.createServerError(ErrorCodes.CLAIMS_FAILURE, "Authorization data not found");
-        var message = String.format("An empty value was found for the expected claim '%s'", claimName);
-        error.setDetails(new TextNode(message));
-        return error;
+        var message = String.format("Missing claim in input: '%s'", claimName);
+        return ErrorFactory.createClientErrorWithContext(
+                HttpStatus.BAD_REQUEST,
+                ErrorCodes.CLAIMS_FAILURE,
+                "Authorization data not found",
+                new TextNode(message));
     }
 
     /*
