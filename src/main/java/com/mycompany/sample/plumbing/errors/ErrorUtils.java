@@ -3,7 +3,6 @@ package com.mycompany.sample.plumbing.errors;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.annotation.Nullable;
-
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.node.ObjectNode;

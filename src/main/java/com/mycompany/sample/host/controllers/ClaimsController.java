@@ -2,9 +2,6 @@ package com.mycompany.sample.host.controllers;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.concurrent.CompletableFuture;
-
-import com.mycompany.sample.host.claims.IdentityClaims;
-import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mycompany.sample.host.claims.IdentityClaims;
 import com.mycompany.sample.host.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
+import com.mycompany.sample.plumbing.errors.ErrorUtils;
 
 /*
  * A controller called during token issuing to ask the API for custom claim values
@@ -48,7 +47,9 @@ public class ClaimsController {
         }
 
         // Look up domain specific attributes about the user, from the identity attributes
-        var claims = (SampleCustomClaims) this.customClaimsProvider.issue(identityClaims.getSubject(), identityClaims.getEmail());
+        var claims = (SampleCustomClaims) this.customClaimsProvider.issue(
+                identityClaims.getSubject(),
+                identityClaims.getEmail());
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
