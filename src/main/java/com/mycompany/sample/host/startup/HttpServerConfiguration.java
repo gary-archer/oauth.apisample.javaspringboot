@@ -8,8 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.security.web.firewall.StrictHttpFirewall;
 import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
 
 /*
@@ -85,16 +83,5 @@ public class HttpServerConfiguration {
                 .sessionManagement().disable();
 
         return http.build();
-    }
-
-    /*
-     * My current Authorization Server calls the claims controller without URL encoding so allow this temporarily
-     */
-    @Bean
-    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
-
-        var firewall = new StrictHttpFirewall();
-        firewall.setAllowUrlEncodedPercent(true);
-        return firewall;
     }
 }

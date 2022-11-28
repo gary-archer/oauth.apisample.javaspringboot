@@ -20,9 +20,9 @@ import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
+import com.mycompany.sample.plumbing.errors.ErrorResponseReader;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
-import com.mycompany.sample.plumbing.utilities.ErrorResponseReader;
 
 /*
  * The entry point for calls to the Authorization Server

@@ -15,11 +15,11 @@ import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
     /*
-     * When using the StandardAuthorizer this is called at the time of token issuance by the ClaimsController
+     * When using the StandardAuthorizer this is called at the time of token issuance
      */
     @Override
-    public CustomClaims issue(final String subject) {
-        return this.getCustomClaims(subject);
+    public CustomClaims issue(final String subject, final String email) {
+        return this.getCustomClaims(subject, email);
     }
 
     /*
@@ -30,12 +30,12 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
         var userId = ClaimsReader.getStringClaim(payload, "user_id");
         var userRole = ClaimsReader.getStringClaim(payload, "user_role");
-        var userRegions = ClaimsReader.getStringArrayClaim(payload, "user_role");
+        var userRegions = ClaimsReader.getStringArrayClaim(payload, "user_regions");
         return new SampleCustomClaims(userId, userRole, userRegions);
     }
 
     /*
-     * When using the ClaimsCachingAuthorizer this is called when an API first receives the access token
+     * When using the ClaimsCachingAuthorizer, this is called to get extra claims when the token is first received
      */
     @Override
     public SampleCustomClaims get(
@@ -43,7 +43,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
             final BaseClaims baseClaims,
             final UserInfoClaims userInfo) {
 
-        return (SampleCustomClaims) this.getCustomClaims(baseClaims.getSubject());
+        return (SampleCustomClaims) this.getCustomClaims(baseClaims.getSubject(), userInfo.getEmail());
     }
 
     /*
@@ -55,11 +55,11 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
     }
 
     /*
-     * Determine the user in business terms from the Authorization Server's subject claim
+     * Receive user attributes from identity data, and return user attributes from business data
      */
-    private CustomClaims getCustomClaims(final String subject) {
+    private CustomClaims getCustomClaims(final String subject, final String email) {
 
-        var isAdmin = subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91");
+        var isAdmin = email.contains("admin");
         if (isAdmin) {
 
             // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions

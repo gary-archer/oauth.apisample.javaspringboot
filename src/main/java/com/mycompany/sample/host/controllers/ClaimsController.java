@@ -3,15 +3,18 @@ package com.mycompany.sample.host.controllers;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.context.annotation.Scope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mycompany.sample.host.claims.IdentityClaims;
 import com.mycompany.sample.host.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
+import com.mycompany.sample.plumbing.errors.ErrorUtils;
 
 /*
  * A controller called during token issuing to ask the API for custom claim values
@@ -30,14 +33,23 @@ public class ClaimsController {
     }
 
     /*
-     * This is called during token issuance by the Authorization Server when using the StandardAuthorizer
-     * The Authorization Server will then include these claims in the JWT access token
+     * This is called during token issuance when the Authorization Server supports it
+     * The Authorization Server will then include domain specific claims in the JWT access token
      */
-    @GetMapping(value = "{subject}")
-    public CompletableFuture<ObjectNode> getCustomClaims(
-            @PathVariable("subject") final String subject) {
+    @PostMapping
+    public CompletableFuture<ObjectNode> getCustomClaims(final @RequestBody IdentityClaims identityClaims) {
 
-        var claims = (SampleCustomClaims) this.customClaimsProvider.issue(subject);
+        if (!StringUtils.hasLength(identityClaims.getSubject())) {
+            throw ErrorUtils.fromMissingClaim("subject");
+        }
+        if (!StringUtils.hasLength(identityClaims.getEmail())) {
+            throw ErrorUtils.fromMissingClaim("email");
+        }
+
+        // Look up domain specific attributes about the user, from the identity attributes
+        var claims = (SampleCustomClaims) this.customClaimsProvider.issue(
+                identityClaims.getSubject(),
+                identityClaims.getEmail());
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
