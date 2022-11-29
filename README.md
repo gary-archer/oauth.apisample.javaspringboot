@@ -42,7 +42,7 @@ Follow the [Technical Support Queries](https://authguidance.com/2019/08/02/intel
 
 ## Commands
 
-First ensure that a Java 17+ SDK and gradle are installed.
+First ensure that a Java 17+ SDK is installed.
 
 ### Run the API
 
