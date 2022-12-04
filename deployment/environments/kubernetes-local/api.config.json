@@ -28,7 +28,7 @@
     },
     "oauth": {
         "provider":                      "standard",
-        "issuer":                        "https://login.mycluster.com/~",
+        "issuer":                        "https://login.mycluster.com//oauth/v2/oauth-anonymous",
         "audience":                      "api.mycompany.com",
         "jwksEndpoint":                  "https://curity-idsvr-runtime-svc.curity.svc:8443/~/jwks",
         "userInfoEndpoint":              "https://curity-idsvr-runtime-svc.curity.svc:8443/oauth/v2/oauth-userinfo",
