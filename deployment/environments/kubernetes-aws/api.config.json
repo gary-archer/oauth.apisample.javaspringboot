@@ -30,7 +30,7 @@
         "provider":                      "standard",
         "issuer":                        "https://login.authsamples-k8s.com/oauth/v2/oauth-anonymous",
         "audience":                      "api.mycompany.com",
-        "jwksEndpoint":                  "https://curity-idsvr-runtime-svc.curity.svc:8443/~/jwks",
+        "jwksEndpoint":                  "https://curity-idsvr-runtime-svc.curity.svc:8443/oauth/v2/oauth-anonymous/jwks",
         "userInfoEndpoint":              "https://curity-idsvr-runtime-svc.curity.svc:8443/oauth/v2/oauth-userinfo",
         "claimsCacheTimeToLiveMinutes":  0
     }
