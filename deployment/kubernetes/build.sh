@@ -20,10 +20,10 @@ if [ "$CLUSTER_TYPE" != 'local' ]; then
     exit 1
   fi
 
-  DOCKER_IMAGE_NAME="$DOCKERHUB_ACCOUNT/finaljavaapi:v1"
+  DOCKER_IMAGE_NAME="$DOCKERHUB_ACCOUNT/finaljavaapi:1.0"
 else
 
-  DOCKER_IMAGE_NAME='finaljavaapi:v1'
+  DOCKER_IMAGE_NAME='finaljavaapi:1.0'
 fi
 
 #
