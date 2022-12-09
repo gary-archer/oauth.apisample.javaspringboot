@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.claims;
+package com.mycompany.sample.logic.claims;
 
 import lombok.Getter;
 import lombok.Setter;

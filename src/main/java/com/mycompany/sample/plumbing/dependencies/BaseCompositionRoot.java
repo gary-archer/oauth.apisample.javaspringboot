@@ -89,7 +89,7 @@ public final class BaseCompositionRoot {
             if (this.oauthConfiguration.getProvider().equals("cognito")) {
 
                 var cache = new ClaimsCache(
-                        this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
+                        this.oauthConfiguration.getClaimsCache().getTimeToLiveMinutes(),
                         this.customClaimsProvider,
                         this.loggerFactory);
                 this.container.registerSingleton("ClaimsCache", cache);

@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.claims;
+package com.mycompany.sample.logic.claims;
 
 import org.jose4j.jwt.JwtClaims;
 import com.fasterxml.jackson.databind.JsonNode;

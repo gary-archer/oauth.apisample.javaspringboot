@@ -1,17 +1,13 @@
 package com.mycompany.sample.plumbing.configuration;
 
+import com.mycompany.sample.host.configuration.ApiConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 
 /*
- * OAuth configuration settings
+ * Configuration settings to enable standard security and extensible use of claims
  */
 public class OAuthConfiguration {
-
-    // Certain behaviour may be triggered by a provider's capabilities
-    @Getter
-    @Setter
-    private String provider;
 
     // The expected issuer in JWT access tokens received
     @Getter
@@ -28,13 +24,13 @@ public class OAuthConfiguration {
     @Setter
     private String jwksEndpoint;
 
-    // The URL to the Authorization Server's user info endpoint, if needed
+    // How to manage domain specific claims
     @Getter
     @Setter
-    private String userInfoEndpoint;
+    private String claimsStrategy;
 
-    // The maximum number of minutes for which to cache claims, when applicable
+    // Optional claims caching configuration
     @Getter
     @Setter
-    private int claimsCacheTimeToLiveMinutes;
+    private ClaimsCacheConfiguration claimsCache;
 }

@@ -34,11 +34,13 @@
         }
     },
     "oauth": {
-        "provider":                      "cognito",
-        "issuer":                        "testissuer.com",
-        "audience":                      "api.mycompany.com",
-        "jwksEndpoint":                  "https://login.authsamples-dev.com:447/.well-known/jwks.json",
-        "userInfoEndpoint":              "https://login.authsamples-dev.com:447/oauth2/userInfo",
-        "claimsCacheTimeToLiveMinutes":  30
+        "issuer":         "testissuer.com",
+        "audience":       "api.mycompany.com",
+        "jwksEndpoint":   "https://login.authsamples-dev.com:447/.well-known/jwks.json",
+        "claimsStrategy": "apiLookup",
+        "claimsCache": {
+            "userInfoEndpoint":   "https://login.authsamples-dev.com:447/oauth2/userInfo",
+            "timeToLiveMinutes":  30
+        }
     }
 }
