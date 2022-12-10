@@ -3,11 +3,11 @@ package com.mycompany.sample.plumbing.dependencies;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
+import com.mycompany.sample.plumbing.oauth.claimsCaching.ClaimsCache;
 
 /*
  * A class to manage composing core API behaviour
@@ -64,6 +64,7 @@ public final class BaseCompositionRoot {
 
         // Register runtime dependencies for OAuth and claims handling
         this.registerOAuthDependencies();
+        this.registerClaimsDependencies();
     }
 
     /*
@@ -82,18 +83,8 @@ public final class BaseCompositionRoot {
 
         try {
 
+            // Register the configuration
             this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
-            this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
-
-            // Inject the claims cache if using this strategy
-            if (this.oauthConfiguration.getProvider().equals("cognito")) {
-
-                var cache = new ClaimsCache(
-                        this.oauthConfiguration.getClaimsCache().getTimeToLiveMinutes(),
-                        this.customClaimsProvider,
-                        this.loggerFactory);
-                this.container.registerSingleton("ClaimsCache", cache);
-            }
 
             // Register a global object that caches JWKS keys
             var httpsJkws = new HttpsJwks(this.oauthConfiguration.getJwksEndpoint());
@@ -103,6 +94,25 @@ public final class BaseCompositionRoot {
         } catch (Throwable ex) {
 
             throw new RuntimeException("Problem encountered registering OAuth dependencies", ex);
+        }
+    }
+
+    /*
+     * Register Claims related dependencies
+     */
+    private void registerClaimsDependencies() {
+
+        // Register an object to provide custom claims
+        this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
+
+        // Register extra objects if using claims caching
+        if (this.oauthConfiguration.getClaimsStrategy().equals("apiLookup")) {
+
+            var cache = new ClaimsCache(
+                    this.oauthConfiguration.getClaimsCache().getTimeToLiveMinutes(),
+                    this.customClaimsProvider,
+                    this.loggerFactory);
+            this.container.registerSingleton("ClaimsCache", cache);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.claims;
+package com.mycompany.sample.plumbing.oauth.claimsCaching;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mycompany.sample.plumbing.claims.CachedClaims;
+import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
+import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;

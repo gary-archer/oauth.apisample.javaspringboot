@@ -15,6 +15,11 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Restore the development configuration once the API is loaded
+#
+cp deployment/environments/dev/api.config.json ./api.config.json
+
+#
 # Build the API if needed
 #
 ./gradlew clean && ./gradlew bootJar

@@ -1,6 +1,5 @@
 package com.mycompany.sample.plumbing.configuration;
 
-import com.mycompany.sample.host.configuration.ApiConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 

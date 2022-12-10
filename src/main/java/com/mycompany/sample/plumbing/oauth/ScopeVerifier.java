@@ -17,11 +17,18 @@ public final class ScopeVerifier {
 
         var foundScope = Arrays.stream(scopes).filter(s -> s.contains(requiredScope)).findFirst();
         if (!foundScope.isPresent()) {
-
-            throw ErrorFactory.createClientError(
-                    HttpStatus.FORBIDDEN,
-                    ErrorCodes.INSUFFICIENT_SCOPE,
-                    "Access token does not have a valid scope for this API endpoint");
+            ScopeVerifier.deny();
         }
+    }
+
+    /*
+     * Return the 403 forbidden error
+     */
+    public static void deny() {
+
+        throw ErrorFactory.createClientError(
+                HttpStatus.FORBIDDEN,
+                ErrorCodes.INSUFFICIENT_SCOPE,
+                "Access to this API endpoint is forbidden");
     }
 }

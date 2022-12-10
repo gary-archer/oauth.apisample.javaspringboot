@@ -13,8 +13,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.logic.claims.IdentityClaims;
 import com.mycompany.sample.logic.claims.SampleCustomClaimsProvider;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
+import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
+import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
 
 /*
  * A controller called during token issuing to ask the API for custom claim values
@@ -26,9 +28,14 @@ import com.mycompany.sample.plumbing.errors.ErrorUtils;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsController {
 
+    private final OAuthConfiguration configuration;
     private final SampleCustomClaimsProvider customClaimsProvider;
 
-    public ClaimsController(final SampleCustomClaimsProvider customClaimsProvider) {
+    public ClaimsController(
+            final OAuthConfiguration configuration,
+            final SampleCustomClaimsProvider customClaimsProvider) {
+
+        this.configuration = configuration;
         this.customClaimsProvider = customClaimsProvider;
     }
 
@@ -39,6 +46,12 @@ public class ClaimsController {
     @PostMapping
     public CompletableFuture<ObjectNode> getCustomClaims(final @RequestBody IdentityClaims identityClaims) {
 
+        // The endpoint is only enabled when this claims strategy is used
+        if (!this.configuration.getClaimsStrategy().equals("jwt")) {
+            ScopeVerifier.deny();
+        }
+
+        // Sanity checks on required input
         if (!StringUtils.hasLength(identityClaims.getSubject())) {
             throw ErrorUtils.fromMissingClaim("subject");
         }
@@ -46,11 +59,12 @@ public class ClaimsController {
             throw ErrorUtils.fromMissingClaim("email");
         }
 
-        // Look up domain specific attributes about the user, from the identity attributes
+        // Send identity claims and receive domain specific claims
         var claims = (SampleCustomClaims) this.customClaimsProvider.issue(
                 identityClaims.getSubject(),
                 identityClaims.getEmail());
 
+        // Extract and return values
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
         data.put("user_id", claims.getUserId());
