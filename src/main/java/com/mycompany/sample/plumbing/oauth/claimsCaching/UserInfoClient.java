@@ -44,11 +44,14 @@ public class UserInfoClient {
             // Construct the request
             var userInfoUrl = new URI(this.configuration.getClaimsCache().getUserInfoEndpoint());
             var request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .GET()
                     .uri(userInfoUrl)
                     .header("accept", "application/json")
                     .header("authorization", String.format("Bearer %s", accessToken))
                     .build();
+
+            System.out.println("*** GET USER INFO");
+            System.out.println(accessToken);
 
             // Send it and get the response
             var client = HttpClient.newBuilder().build();
@@ -65,6 +68,7 @@ public class UserInfoClient {
 
             // Parse the fields into an object
             var jsonText = response.body();
+            System.out.println(jsonText);
             var mapper = new ObjectMapper();
             var data = mapper.readValue(jsonText, ObjectNode.class);
             return ClaimsReader.userInfoClaims(data);

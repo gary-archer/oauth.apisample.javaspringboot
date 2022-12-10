@@ -1,10 +1,7 @@
 package com.mycompany.sample.tests;
 
 import java.util.UUID;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.platform.suite.api.Suite;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -14,7 +11,7 @@ import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.TokenIssuer;
 import com.mycompany.sample.tests.utils.WiremockAdmin;
 
-@Suite(failIfNoTests=false)
+@Suite(failIfNoTests = false)
 public class IntegrationTests {
 
     private static String guestUserId;
@@ -27,7 +24,7 @@ public class IntegrationTests {
      * Setup that runs at the start of the test run
      */
     @BeforeAll
-    public static void setup() throws Throwable {
+    public static void setupSuite() throws Throwable {
 
         // The real subject claim values for my two online test users
         guestUserId = "a6b404b1-98af-41a2-8e7f-e4061dc0bf86";
@@ -56,8 +53,13 @@ public class IntegrationTests {
      * Teardown that runs when all tests have completed
      */
     @AfterAll
-    public static void teardown() {
+    public static void teardownSuite() {
         wiremock.unregisterJsonWebWeys();
+    }
+
+    @AfterEach
+    public void teardownTest() {
+        wiremock.unregisterUserInfo();
     }
 
     /*

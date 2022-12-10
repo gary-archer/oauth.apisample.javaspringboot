@@ -66,7 +66,7 @@ public final class WiremockAdmin {
         data.put("priority", 1);
 
         var request = mapper.createObjectNode();
-        request.put("method", "POST");
+        request.put("method", "GET");
         request.put("url", "/oauth2/userInfo");
         data.set("request", request);
 
@@ -119,8 +119,6 @@ public final class WiremockAdmin {
      */
     private void unregister(final String id) {
 
-        HttpResponse<String> response;
-
         try {
 
             var url = String.format("%s/%s", this.baseUrl, id);
@@ -132,15 +130,10 @@ public final class WiremockAdmin {
             var client = HttpClient.newBuilder()
                     .build();
 
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            client.send(request, HttpResponse.BodyHandlers.ofString());
 
         } catch (Throwable ex) {
             throw new RuntimeException(ex);
-        }
-
-        if (response.statusCode() != 200) {
-            var message = String.format("Failed to delete Wiremock stub: status %d", response.statusCode());
-            throw new RuntimeException(message);
         }
     }
 }
