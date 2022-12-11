@@ -1,0 +1,37 @@
+{
+  "api": {
+    "port": 8000,
+    "sslCertificateFileName": "./certs/authsamples-dev.ssl.p12",
+    "sslCertificatePassword": "Password1",
+    "useProxy": false,
+    "proxyUrl": "http://host.docker.internal:8888"
+  },
+  "logging": {
+    "apiName": "SampleApi",
+    "production": {
+      "level": "info",
+      "performanceThresholdMilliseconds": 500,
+      "appenders": [{
+        "type": "console",
+        "prettyPrint": false
+      }]
+    },
+    "development": {
+      "level": "info",
+      "namespace": "com.mycompany.sample",
+      "overrideLevels": {
+        "ClaimsCache": "info"
+      }
+    }
+  },
+  "oauth": {
+    "issuer":         "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+    "audience":       "",
+    "jwksEndpoint":   "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
+    "claimsStrategy": "apiLookup",
+    "claimsCache": {
+      "userInfoEndpoint":   "https://login.authsamples.com/oauth2/userInfo",
+      "timeToLiveMinutes":  30
+    }
+  }
+}

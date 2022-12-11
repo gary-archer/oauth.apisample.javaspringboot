@@ -1,0 +1,33 @@
+{
+  "api": {
+    "port": 8101,
+    "sslCertificateFileName": "./certs/keystore.p12",
+    "sslCertificatePassword": "Password1",
+    "useProxy": false,
+    "proxyUrl": ""
+  },
+  "logging": {
+    "apiName": "SampleApi",
+    "production": {
+      "level": "info",
+      "performanceThresholdMilliseconds": 500,
+      "appenders": [{
+        "type": "console",
+        "prettyPrint": false
+      }]
+    },
+    "development": {
+      "level": "info",
+      "namespace": "com.mycompany.sample",
+      "overrideLevels": {
+        "ClaimsCache": "info"
+      }
+    }
+  },
+  "oauth": {
+    "issuer":         "https://login.mycluster.com/oauth/v2/oauth-anonymous",
+    "audience":       "api.mycompany.com",
+    "jwksEndpoint":   "https://curity-idsvr-runtime-svc.curity.svc:8443/oauth/v2/oauth-anonymous/jwks",
+    "claimsStrategy": "jwt"
+  }
+}

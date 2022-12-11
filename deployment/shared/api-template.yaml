@@ -1,0 +1,93 @@
+#
+# The Kubernetes resources for the final API, which serves business data to the SPA
+#
+kind: Certificate
+apiVersion: cert-manager.io/v1
+metadata:
+  name: finalapi-cert
+spec:
+  secretName: finalapi-pkcs12
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: finalapi-svc
+  dnsNames:
+  - finalapi-svc
+  - finalapi-svc.applications.svc
+  - finalapi-svc.applications.svc.cluster.local
+  keystores:
+    pkcs12:
+      create: true
+      passwordSecretRef:
+        name: finalapi-pkcs12-password
+        key: password
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: finalapi
+  labels:
+    app: finalapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finalapi
+  template:
+    metadata:
+      labels:
+        app: finalapi
+    spec:
+      containers:
+      - name: finalapi
+        image: $API_DOCKER_IMAGE
+        volumeMounts:
+          - name: api-config
+            mountPath: /usr/api/api.config.json
+            subPath: api.config.json
+            readOnly: true
+          - name: api-ssl-cert
+            mountPath: /usr/api/certs
+            readOnly: true
+      volumes:
+        - name: api-config
+          configMap:
+            name: api-config
+        - name: api-ssl-cert
+          secret:
+            secretName: finalapi-pkcs12
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: finalapi-svc
+  annotations:
+    konghq.com/protocol: https
+spec:
+  selector:
+    app: finalapi
+  ports:
+  - name: https
+    protocol: "TCP"
+    port: 8101
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: finalapi-ingress
+spec:
+  ingressClassName: kong
+  tls:
+    - hosts:
+        - $API_DOMAIN_NAME
+  rules:
+    - host: $API_DOMAIN_NAME
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: finalapi-svc
+                port:
+                  name: https
