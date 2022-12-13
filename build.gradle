@@ -54,6 +54,9 @@ dependencies {
     implementation "com.google.guava:guava:$guava_version"
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
     
+    // Temporary dependencies to reduce security warnings
+    implementation "org.yaml:snakeyaml:1.33"
+    
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
     annotationProcessor "org.projectlombok:lombok:$lombok_version"
