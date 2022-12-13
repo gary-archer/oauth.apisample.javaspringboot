@@ -1,4 +1,4 @@
-plugins {
+imoplugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.6'
     id "com.adarshr.test-logger" version "3.2.0"
@@ -53,9 +53,6 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:$logback_version"
     implementation "com.google.guava:guava:$guava_version"
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
-
-    // Temporary dependencies to fix security warnings
-    implementation "org.yaml:snakeyaml:1.33"
     
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
