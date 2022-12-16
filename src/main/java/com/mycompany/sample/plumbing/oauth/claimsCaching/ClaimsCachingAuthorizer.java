@@ -1,6 +1,6 @@
 package com.mycompany.sample.plumbing.oauth.claimsCaching;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import com.mycompany.sample.plumbing.claims.CachedClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;

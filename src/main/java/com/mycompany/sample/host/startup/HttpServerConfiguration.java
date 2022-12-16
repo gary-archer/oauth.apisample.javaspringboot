@@ -8,8 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
 
 /*
  * A class to manage HTTP configuration for our server

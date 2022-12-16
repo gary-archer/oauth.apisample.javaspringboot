@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.6'
+    id 'org.springframework.boot' version '3.0.0'
     id "com.adarshr.test-logger" version "3.2.0"
 }
 
@@ -14,8 +14,8 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '2.7.6'
-    spring_security_version = '5.8.0'
+    spring_boot_starter_version = '3.0.0'
+    spring_security_version = '6.0.0'
     jose4j_version = '0.9.2'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
