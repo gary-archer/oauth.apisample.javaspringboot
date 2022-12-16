@@ -1,4 +1,4 @@
-imoplugins {
+plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.6'
     id "com.adarshr.test-logger" version "3.2.0"
