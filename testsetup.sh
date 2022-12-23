@@ -39,7 +39,7 @@ esac
 
 #
 # First ensure that SSL trust has been configured via this command
-# sudo /usr/lib/jvm/zulu-17-amd64/bin/keytool -import -alias authsamples-dev -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
+# sudo $JAVA_HOME/bin/keytool -import -alias authsamples-dev -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
 # - 
 
 #

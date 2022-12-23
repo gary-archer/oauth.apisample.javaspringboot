@@ -1,9 +1,9 @@
 package com.mycompany.sample.plumbing.interceptors;
 
 import java.util.Map;
-import javax.servlet.DispatcherType;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerInterceptor;

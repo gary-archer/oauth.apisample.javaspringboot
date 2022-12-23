@@ -95,7 +95,7 @@ Then run integration tests and a load test:
 
 ## Programming Languages
 
-* Java 17 and Spring Boot 2.7 are used to implement the REST API
+* Java 17 and Spring Boot 3 are used to implement the REST API
 
 ## Infrastructure
 

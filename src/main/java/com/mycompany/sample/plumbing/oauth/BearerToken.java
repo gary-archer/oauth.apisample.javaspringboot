@@ -1,6 +1,6 @@
 package com.mycompany.sample.plumbing.oauth;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /*
  * A simple utility class to read the access token

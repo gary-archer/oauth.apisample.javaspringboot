@@ -1,7 +1,7 @@
 package com.mycompany.sample.plumbing.utilities;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import com.mycompany.sample.plumbing.errors.ClientError;
 
 /*

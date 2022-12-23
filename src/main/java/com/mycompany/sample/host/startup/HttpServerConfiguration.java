@@ -1,5 +1,6 @@
 package com.mycompany.sample.host.startup;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,8 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
 
 /*
  * A class to manage HTTP configuration for our server
@@ -38,10 +39,15 @@ public class HttpServerConfiguration {
         var authorizationFilter = new CustomAuthorizationFilter(container);
 
         http
-                // Configure OAuth API security for these endpoints
                 .securityMatcher(new AntPathRequestMatcher(ResourcePaths.ALL))
                 .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().authenticated()
+
+                        // This seems to be required in Spring Boot 3, to work around cryptic async errors
+                        // https://github.com/spring-projects/spring-security/issues/11962
+                        authorize.dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
+
+                        // The OAuth security for the API is applied via these settings
+                        .anyRequest().authenticated()
                         .and()
                         .addFilterBefore(
                                 authorizationFilter,

@@ -2,8 +2,8 @@ package com.mycompany.sample.plumbing.logging;
 
 import java.util.Map;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
