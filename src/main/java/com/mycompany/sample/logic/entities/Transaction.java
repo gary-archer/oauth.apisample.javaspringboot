@@ -10,7 +10,7 @@ public class Transaction {
 
     @Getter
     @Setter
-    private int id;
+    private String id;
 
     @Getter
     @Setter
