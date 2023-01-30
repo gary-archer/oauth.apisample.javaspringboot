@@ -4,3 +4,7 @@ ignore:
     - '*':
       reason: Disable Spring warning until snakeyaml is updated
       expires: '2024-01-01T00:00:00.000Z'
+  SNYK-JAVA-ORGYAML-3152153:
+    - '*':
+      reason: Disable Spring warning until snakeyaml is updated
+      expires: '2024-01-01T00:00:00.000Z'
