@@ -3,3 +3,4 @@ ignore:
   CVE-2022-1471
     - '*':
       reason: Disable Spring warning until snakeyaml is updated
+      expires: '2024-01-01T00:00:00.000Z'
