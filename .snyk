@@ -1,0 +1,5 @@
+# Ignore warnings that are based on (Spring) library code and not my own
+ignore:
+  CVE-2022-1471
+    - '*':
+      reason: Disable Spring warning until snakeyaml is updated
