@@ -84,7 +84,7 @@ spec:
     - host: $API_DOMAIN_NAME
       http:
         paths:
-          - path: /
+          - path: /investments
             pathType: Prefix
             backend:
               service:
