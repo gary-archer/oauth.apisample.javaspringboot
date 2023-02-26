@@ -33,7 +33,7 @@ public final class ApiClient {
     public CompletableFuture<ApiResponse> getUserInfoClaims(final ApiRequestOptions options) {
 
         options.setMethod("GET");
-        options.setPath("/api/userinfo");
+        options.setPath("/investments/userinfo");
 
         var metrics = new ApiResponseMetrics("getUserInfoClaims");
         return this.callApi(options, metrics);
@@ -42,7 +42,7 @@ public final class ApiClient {
     public CompletableFuture<ApiResponse> getCompanies(final ApiRequestOptions options) {
 
         options.setMethod("GET");
-        options.setPath("/api/companies");
+        options.setPath("/investments/companies");
 
         var metrics = new ApiResponseMetrics("getCompanies");
         return this.callApi(options, metrics);
@@ -51,7 +51,7 @@ public final class ApiClient {
     public CompletableFuture<ApiResponse> getCompanyTransactions(final ApiRequestOptions options, final int companyId) {
 
         options.setMethod("GET");
-        options.setPath(String.format("/api/companies/%d/transactions", companyId));
+        options.setPath(String.format("/investments/companies/%d/transactions", companyId));
 
         var metrics = new ApiResponseMetrics("getCompanyTransactions");
         return this.callApi(options, metrics);

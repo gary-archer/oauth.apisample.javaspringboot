@@ -23,7 +23,7 @@ import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
  */
 @RestController()
 @Scope(value = CustomRequestScope.NAME)
-@RequestMapping(value = "api/companies")
+@RequestMapping(value = "investments/companies")
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyController {
 

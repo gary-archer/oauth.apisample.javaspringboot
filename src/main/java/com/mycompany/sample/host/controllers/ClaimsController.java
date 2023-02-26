@@ -24,7 +24,7 @@ import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
  */
 @RestController()
 @Scope(value = CustomRequestScope.NAME)
-@RequestMapping(value = "api/customclaims")
+@RequestMapping(value = "investments/customclaims")
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsController {
 
