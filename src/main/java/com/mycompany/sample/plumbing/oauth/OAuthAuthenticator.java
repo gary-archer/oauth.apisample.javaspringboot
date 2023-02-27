@@ -41,6 +41,7 @@ public class OAuthAuthenticator {
      */
     public JwtClaims validateToken(final String accessToken) {
 
+        System.out.println("*** ACCESS TOKEN: " + accessToken);
         try (var breakdown = this.logEntry.createPerformanceBreakdown("validateToken")) {
 
             var builder = new JwtConsumerBuilder()

@@ -47,6 +47,7 @@ public class ClaimsController {
     public CompletableFuture<ObjectNode> getCustomClaims(final @RequestBody IdentityClaims identityClaims) {
 
         // The endpoint is only enabled when this claims strategy is used
+        System.out.println("*** ISSUE CUSTOM CLAIMS");
         if (!this.configuration.getClaimsStrategy().equals("jwt")) {
             ScopeVerifier.deny();
         }
@@ -60,6 +61,7 @@ public class ClaimsController {
         }
 
         // Send identity claims and receive domain specific claims
+        System.out.println("*** ISSUE CUSTOM CLAIMS: GOOD");
         var claims = (SampleCustomClaims) this.customClaimsProvider.issue(
                 identityClaims.getSubject(),
                 identityClaims.getEmail());
