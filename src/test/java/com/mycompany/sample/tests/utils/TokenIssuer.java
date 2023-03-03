@@ -54,7 +54,7 @@ public final class TokenIssuer {
         claims.setSubject(sub);
         claims.setIssuer("testissuer.com");
         claims.setAudience("api.mycompany.com");
-        claims.setStringClaim("scope", "openid profile email https://api.authsamples.com/investments");
+        claims.setStringClaim("scope", "openid profile email investments");
         claims.setExpirationTimeMinutesInTheFuture(10);
         claims.setNotBeforeMinutesInThePast(1);
 
@@ -79,7 +79,7 @@ public final class TokenIssuer {
         claims.setSubject(sub);
         claims.setIssuer("testissuer.com");
         claims.setAudience("api.mycompany.com");
-        claims.setStringClaim("scope", "openid profile email https://api.authsamples.com/investments");
+        claims.setStringClaim("scope", "openid profile email investments");
         claims.setExpirationTimeMinutesInTheFuture(10);
         claims.setNotBeforeMinutesInThePast(1);
 
