@@ -3,7 +3,7 @@ services:
 
   finalapi:
     image: finaljavaapi:v1
-    hostname: api.authsamples-dev.com
+    hostname: apilocal.authsamples-dev.com
     ports:
       - 446:8000
     volumes:
