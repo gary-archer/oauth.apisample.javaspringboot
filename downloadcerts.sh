@@ -18,14 +18,7 @@ if [ ! -d 'certs' ]; then
     exit 1
   fi
 
-  #
-  # TODO: delete after merge
-  #
-  cd resources
-  git checkout feature/urls
-  cd ..
-
   rm -rf certs
-   mv ./resources/authsamples-dev ./certs
+  mv ./resources/authsamples-dev ./certs
   rm -rf ./resources
 fi
