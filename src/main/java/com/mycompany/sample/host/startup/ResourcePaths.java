@@ -8,6 +8,6 @@ public final class ResourcePaths {
     private ResourcePaths() {
     }
 
-    public static final String ALL = "/api/**";
-    public static final String CUSTOMCLAIMS = "/api/customclaims/**";
+    public static final String ALL = "/investments/**";
+    public static final String CUSTOMCLAIMS = "/investments/customclaims/**";
 }

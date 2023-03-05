@@ -8,9 +8,10 @@
 
 The final OAuth secured Java API code sample, referenced in my blog at https://authguidance.com:
 
-* The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
-* The API uses JSON request logging and Elasticsearch log aggregation, for measurability
-* The API uses non-blocking code with request scoped ClaimsPrincipal / LogEntry objects
+- The API has a basic business theme of `investments`, but simply returns hard coded data
+- The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
+- The API uses JSON request logging and Elasticsearch log aggregation, for measurability
+- The API uses non-blocking code with request scoped ClaimsPrincipal / LogEntry objects
 
 ### API integrates with UI Clients
 
@@ -57,13 +58,13 @@ Then run the API in isolation with this command:
 Configure DNS by adding these domains to your hosts file:
 
 ```text
-127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
+127.0.0.1 localhost apilocal.authsamples-dev.com login.authsamples-dev.com
 ```
 
 Then call an endpoint over port 446:
 
 ```bash
-curl -k https://api.authsamples-dev.com:446/api/companies
+curl -k https://apilocal.authsamples-dev.com:446/investments/companies
 ```
 
 Configure SSL trust by running this command:

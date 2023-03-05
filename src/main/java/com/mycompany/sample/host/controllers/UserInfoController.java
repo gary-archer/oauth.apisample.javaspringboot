@@ -18,7 +18,7 @@ import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
  */
 @RestController
 @Scope(value = CustomRequestScope.NAME)
-@RequestMapping(value = "api/userinfo")
+@RequestMapping(value = "investments/userinfo")
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class UserInfoController {
 

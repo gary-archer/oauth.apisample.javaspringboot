@@ -23,7 +23,7 @@ import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
  */
 @RestController()
 @Scope(value = CustomRequestScope.NAME)
-@RequestMapping(value = "api/companies")
+@RequestMapping(value = "investments/companies")
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyController {
 
@@ -45,7 +45,7 @@ public class CompanyController {
     public CompletableFuture<List<Company>> getCompanyList() {
 
         // First check scopes
-        ScopeVerifier.enforce(this.claims.getScopes(), "transactions_read");
+        ScopeVerifier.enforce(this.claims.getScopes(), "investments");
 
         // Next return filtered data based on claims
         return this.service.getCompanyList();
@@ -59,7 +59,7 @@ public class CompanyController {
             @PathVariable("companyId") final String companyId) {
 
         // First check scopes
-        ScopeVerifier.enforce(this.claims.getScopes(), "transactions_read");
+        ScopeVerifier.enforce(this.claims.getScopes(), "investments");
 
         // Throw a 400 error if we have an invalid id
         var idValue = Ints.tryParse(companyId);

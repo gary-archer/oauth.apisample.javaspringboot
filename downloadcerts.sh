@@ -19,6 +19,6 @@ if [ ! -d 'certs' ]; then
   fi
 
   rm -rf certs
-   mv ./resources/authsamples-dev ./certs
+  mv ./resources/authsamples-dev ./certs
   rm -rf ./resources
 fi

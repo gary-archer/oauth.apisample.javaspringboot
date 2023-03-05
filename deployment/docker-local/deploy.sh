@@ -19,7 +19,7 @@ fi
 # Wait for it to become available
 #
 echo 'Waiting for API to become available ...'
-BASE_URL='https://api.authsamples-dev.com:446'
-while [ "$(curl -k -s -o /dev/null -w ''%{http_code}'' "$BASE_URL/api/companies")" != '401' ]; do
+BASE_URL='https://apilocal.authsamples-dev.com:446'
+while [ "$(curl -k -s -o /dev/null -w ''%{http_code}'' "$BASE_URL/investments/companies")" != '401' ]; do
   sleep 2
 done

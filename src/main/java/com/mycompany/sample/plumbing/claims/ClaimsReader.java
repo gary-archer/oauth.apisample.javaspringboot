@@ -71,7 +71,7 @@ public final class ClaimsReader {
     public static String[] getStringArrayClaim(final JwtClaims data, final String name) {
 
         try {
-            return data.getClaimValue(name, String[].class);
+            return data.getStringListClaimValue(name).toArray(String[]::new);
 
         } catch (MalformedClaimException ex) {
             throw ErrorUtils.fromMissingClaim(name);
