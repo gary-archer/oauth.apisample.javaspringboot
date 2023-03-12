@@ -92,7 +92,7 @@ Then run integration tests and a load test:
 
 * See the [Overview Page](https://authguidance.com/2019/03/24/java-spring-boot-api-overview/) for further details on running the API in end-to-end setups
 * See the [OAuth Integration Page](https://authguidance.com/2019/03/24/java-spring-boot-api-coding-key-points/) for the security implementation
-* See the [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/) page for a summary of overall qualities
+* See the [API Platform Design](https://authguidance.com/api-platform-design/) for details on scaling the design to many APIs
 
 ## Programming Languages
 
