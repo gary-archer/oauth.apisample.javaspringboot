@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-debian:17.0.4-jre
+FROM azul/zulu-openjdk-debian:17-jre-latest
 
 # Configure trusted root certificate authorities
 ARG TRUSTED_CA_CERTS
