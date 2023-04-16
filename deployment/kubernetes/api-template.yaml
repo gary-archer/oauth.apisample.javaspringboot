@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: finalapi
-        image: $API_DOCKER_IMAGE
+        image: $DOCKER_IMAGE
         volumeMounts:
           - name: api-config
             mountPath: /usr/api/api.config.json
@@ -47,7 +47,7 @@ spec:
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: idsvr-runtime-mtls
+  name: finalapi-mtls
 spec:
   selector:
     matchLabels:

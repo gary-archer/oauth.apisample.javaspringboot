@@ -11,24 +11,20 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Manage environment specific differences and set up environment variables used by envsubst
+# Check prerequisites
 #
-if [ "$CLUSTER_TYPE" == 'local' ]; then
-  
-  ENVIRONMENT_FOLDER='kubernetes-local';
-  export API_DOMAIN_NAME='api.mycluster.com'
-  export API_DOCKER_IMAGE='finaljavaapi:1.0'
+if [ "$ENVIRONMENT_FOLDER" == "" ]; then
+  echo '*** Environment variables neeed by the deploy API script have not been supplied'
+  exit 1
+fi
 
+#
+# Support different docker repositories
+#
+if [ "$DOCKER_REPOSITORY" == "" ]; then
+  DOCKER_IMAGE='finaljavaapi:1.0.0'
 else
-
-  if [ "$DOCKERHUB_ACCOUNT" == '' ]; then
-    echo '*** The DOCKERHUB_ACCOUNT environment variable has not been configured'
-    exit 1
-  fi
-
-  ENVIRONMENT_FOLDER='kubernetes-aws';
-  export API_DOMAIN_NAME='api.authsamples-k8s.com'
-  export API_DOCKER_IMAGE="$DOCKERHUB_ACCOUNT/finaljavaapi:1.0"
+  DOCKER_IMAGE="$DOCKER_REPOSITORY/finaljavaapi:1.0.0"
 fi
 
 #
