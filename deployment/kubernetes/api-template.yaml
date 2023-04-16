@@ -16,8 +16,6 @@ spec:
     metadata:
       labels:
         app: finalapi
-      annotations:
-        sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: finalapi
@@ -43,14 +41,3 @@ spec:
   - name: http
     protocol: "TCP"
     port: 8000
----
-apiVersion: security.istio.io/v1beta1
-kind: PeerAuthentication
-metadata:
-  name: finalapi-mtls
-spec:
-  selector:
-    matchLabels:
-      role: finalapi
-  mtls:
-    mode: STRICT

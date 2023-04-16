@@ -27,7 +27,6 @@ else
   export DOCKER_IMAGE="$DOCKER_REPOSITORY/finaljavaapi:1.0.0"
 fi
 
-
 #
 # Create a configmap for the API's JSON configuration file
 #
