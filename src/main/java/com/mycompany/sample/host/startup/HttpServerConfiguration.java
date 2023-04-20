@@ -66,7 +66,8 @@ public class HttpServerConfiguration {
     }
 
     /*
-     * For the time being the route to look up custom claims uses anonymous access
+     * This route runs in a Kubernetes cluster to look up custom claims
+     * It uses mTLS via the platform so Spring is configured to use anonymous access
      * https://github.com/spring-projects/spring-security/issues/10938
      */
     @Bean
