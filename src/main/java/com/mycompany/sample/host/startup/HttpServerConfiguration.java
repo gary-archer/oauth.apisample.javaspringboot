@@ -29,7 +29,7 @@ public class HttpServerConfiguration {
     /*
      * Spring is a web backend technology stack by default, and activates lots of web related behaviour
      * EnableWebSecurity by default results in cookie defenses, headers related to web hosting and so on
-     * In my architecture these concerns are dealt with in an OAuth Proxy or Web Host, so I disable them here
+     * In my blog's architecture these concerns are dealt with in an API gateway or Web host, so I disable them here
      * The API needs only to validate JWTs and apply authorization based on claims
      */
     @Bean
