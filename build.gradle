@@ -14,8 +14,8 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '3.0.5'
-    spring_security_version = '6.0.2'
+    spring_boot_starter_version = '3.0.6'
+    spring_security_version = '6.0.3'
     jose4j_version = '0.9.3'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
