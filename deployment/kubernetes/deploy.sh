@@ -11,24 +11,20 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Manage environment specific differences and set up environment variables used by envsubst
+# Check prerequisites
 #
-if [ "$CLUSTER_TYPE" == 'local' ]; then
-  
-  ENVIRONMENT_FOLDER='kubernetes-local';
-  export API_DOMAIN_NAME='api.mycluster.com'
-  export API_DOCKER_IMAGE='finaljavaapi:1.0'
+if [ "$ENVIRONMENT_FOLDER" == "" ]; then
+  echo '*** Environment variables neeed by the deploy API script have not been supplied'
+  exit 1
+fi
 
+#
+# Support different docker repositories
+#
+if [ "$DOCKER_REPOSITORY" == "" ]; then
+  export DOCKER_IMAGE='finaljavaapi:1.0.0'
 else
-
-  if [ "$DOCKERHUB_ACCOUNT" == '' ]; then
-    echo '*** The DOCKERHUB_ACCOUNT environment variable has not been configured'
-    exit 1
-  fi
-
-  ENVIRONMENT_FOLDER='kubernetes-aws';
-  export API_DOMAIN_NAME='api.authsamples-k8s.com'
-  export API_DOCKER_IMAGE="$DOCKERHUB_ACCOUNT/finaljavaapi:1.0"
+  export DOCKER_IMAGE="$DOCKER_REPOSITORY/finaljavaapi:1.0.0"
 fi
 
 #
@@ -42,19 +38,9 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Create a secret for the private key password of the certificate file cert-manager will create
-#
-kubectl -n applications delete secret finalapi-pkcs12-password 2>/dev/null
-kubectl -n applications create secret generic finalapi-pkcs12-password --from-literal=password='Password1'
-if [ $? -ne 0 ]; then
-  echo '*** Problem encountered creating the API certificate secret'
-  exit 1
-fi
-
-#
 # Produce the final YAML using the envsubst tool
 #
-envsubst < ../shared/api-template.yaml > ../shared/api.yaml
+envsubst < ./api-template.yaml > ./api.yaml
 if [ $? -ne 0 ]; then
   echo '*** Problem encountered running envsubst to produce the final Kubernetes api.yaml file'
   exit 1
@@ -63,8 +49,8 @@ fi
 #
 # Trigger deployment of the API to the Kubernetes cluster
 #
-kubectl -n applications delete -f ../shared/api.yaml 2>/dev/null
-kubectl -n applications apply  -f ../shared/api.yaml
+kubectl -n applications delete -f ./api.yaml 2>/dev/null
+kubectl -n applications apply  -f ./api.yaml
 if [ $? -ne 0 ]; then
   echo '*** API Kubernetes deployment problem encountered'
   exit 1
