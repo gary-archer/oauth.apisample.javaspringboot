@@ -8,7 +8,6 @@
 # Ensure that we are in the root folder
 #
 cd "$(dirname "${BASH_SOURCE[0]}")"
-cd ../..
 
 #
 # Use a timestamp based tag and support both KIND and DockerHub repositories
@@ -24,6 +23,7 @@ fi
 #
 # Build the Java API
 #
+cd ../..
 ./gradlew bootJar
 if [ $? -ne 0 ]; then
   echo '*** Java API build problem encountered'
