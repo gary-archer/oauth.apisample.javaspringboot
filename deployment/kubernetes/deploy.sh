@@ -19,12 +19,13 @@ if [ "$ENVIRONMENT_FOLDER" == "" ]; then
 fi
 
 #
-# Support different docker repositories
+# Use a timestamp based tag and support both KIND and DockerHub repositories
 #
+TAG=$(cat ./dockertag.txt)
 if [ "$DOCKER_REPOSITORY" == "" ]; then
-  export DOCKER_IMAGE='finaljavaapi:1.0.0'
+  export DOCKER_IMAGE="finaljavaapi:$TAG"
 else
-  export DOCKER_IMAGE="$DOCKER_REPOSITORY/finaljavaapi:1.0.0"
+  export DOCKER_IMAGE="$DOCKER_REPOSITORY/finaljavaapi:$TAG"
 fi
 
 #

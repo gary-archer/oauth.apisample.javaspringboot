@@ -11,12 +11,14 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
 
 #
-# Support different docker repositories
+# Use a timestamp based tag and support both KIND and DockerHub repositories
 #
+TAG=$(date +%Y%m%d%H%M%S)
+echo $TAG > ./dockertag.txt
 if [ "$DOCKER_REPOSITORY" == "" ]; then
-  DOCKER_IMAGE='finaljavaapi:1.0.0'
+  DOCKER_IMAGE="finaljavaapi:$TAG"
 else
-  DOCKER_IMAGE="$DOCKER_REPOSITORY/finaljavaapi:1.0.0"
+  DOCKER_IMAGE="$DOCKER_REPOSITORY/finaljavaapi:$TAG"
 fi
 
 #
