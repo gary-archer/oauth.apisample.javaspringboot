@@ -81,10 +81,6 @@ public final class ErrorUtils {
 
         } else {
 
-            System.out.println(ex);
-            System.out.println(ex.getMessage());
-            System.out.println(ex.getOriginalMessage());
-
             // Report problems due to invalid tokens sent by the client
             parts.add(ErrorUtils.getSanitizedJose4JErrorMessage(ex.getMessage()));
             for (var item : ex.getErrorDetails()) {
