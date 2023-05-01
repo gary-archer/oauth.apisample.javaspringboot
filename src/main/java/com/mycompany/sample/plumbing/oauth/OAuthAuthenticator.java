@@ -52,8 +52,9 @@ public class OAuthAuthenticator {
                 .setExpectedIssuer(this.configuration.getIssuer());
 
             // Allow for AWS Cognito, which does not include an audience claim in access tokens
+            System.out.println(accessToken);
             if (StringUtils.hasLength(this.configuration.getAudience())) {
-                builder.setExpectedAudience(this.configuration.getAudience());
+                builder.setExpectedAudience(true, this.configuration.getAudience());
             }
 
             // Validate the token and get its claims
