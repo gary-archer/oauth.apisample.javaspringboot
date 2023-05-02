@@ -58,7 +58,7 @@ public final class ClaimsCachingAuthorizer implements Authorizer {
 
         // In Cognito we cannot issue custom claims so the API looks them up when the access token is first received
         var userInfo = this.userInfoClient.getUserInfo(accessToken);
-        var customClaims = customClaimsProvider.get(accessToken, baseClaims, userInfo);
+        var customClaims = customClaimsProvider.getFromLookup(accessToken, baseClaims, userInfo);
         var claimsToCache = new CachedClaims(userInfo, customClaims);
 
         // Cache the extra claims for subsequent requests with the same access token

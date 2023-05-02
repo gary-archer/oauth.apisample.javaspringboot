@@ -41,7 +41,7 @@ public final class StandardAuthorizer implements Authorizer {
         // Then read all claims from the token
         var baseClaims = ClaimsReader.baseClaims(payload);
         var userInfo = ClaimsReader.userInfoClaims(payload);
-        var customClaims = this.customClaimsProvider.get(payload);
+        var customClaims = this.customClaimsProvider.getFromPayload(payload);
         return new ClaimsPrincipal(baseClaims, userInfo, customClaims);
     }
 }

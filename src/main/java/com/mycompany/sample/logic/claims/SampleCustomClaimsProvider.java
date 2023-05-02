@@ -26,7 +26,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
      * When using the StandardAuthorizer this is called to read custom claims from the JWT
      */
     @Override
-    public CustomClaims get(final JwtClaims payload) {
+    public CustomClaims getFromPayload(final JwtClaims payload) {
 
         var userId = ClaimsReader.getStringClaim(payload, "user_id");
         var userRole = ClaimsReader.getStringClaim(payload, "user_role");
@@ -38,7 +38,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
      * When using the ClaimsCachingAuthorizer, this is called to get extra claims when the token is first received
      */
     @Override
-    public SampleCustomClaims get(
+    public SampleCustomClaims getFromLookup(
             final String accessToken,
             final BaseClaims baseClaims,
             final UserInfoClaims userInfo) {

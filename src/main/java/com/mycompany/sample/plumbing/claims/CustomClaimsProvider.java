@@ -20,7 +20,7 @@ public class CustomClaimsProvider {
      * When using the StandardAuthorizer this is overridden to read claims from a received JWT
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims get(final JwtClaims payload) {
+    public CustomClaims getFromPayload(final JwtClaims payload) {
         return new CustomClaims();
     }
 
@@ -28,7 +28,7 @@ public class CustomClaimsProvider {
      * When using the ClaimsCaching authorizer this gets custom claims when a token is first received
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims get(final String accessToken, final BaseClaims baseClaims, final UserInfoClaims userInfo) {
+    public CustomClaims getFromLookup(final String accessToken, final BaseClaims baseClaims, final UserInfoClaims userInfo) {
         return new CustomClaims();
     }
 
