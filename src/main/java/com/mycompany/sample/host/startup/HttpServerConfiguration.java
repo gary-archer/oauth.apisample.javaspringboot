@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -48,19 +49,17 @@ public class HttpServerConfiguration {
 
                         // The OAuth security for the API is applied via these settings
                         .anyRequest().authenticated()
-                        .and()
-                        .addFilterBefore(
-                                authorizationFilter,
-                                AbstractPreAuthenticatedProcessingFilter.class))
+                )
+                .addFilterBefore(authorizationFilter, AbstractPreAuthenticatedProcessingFilter.class)
 
                 // Disable web host and API gateway concerns
-                .csrf().disable()
-                .headers().disable()
-                .requestCache().disable()
-                .securityContext().disable()
-                .logout().disable()
-                .exceptionHandling().disable()
-                .sessionManagement().disable();
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(AbstractHttpConfigurer::disable)
+                .requestCache(AbstractHttpConfigurer::disable)
+                .securityContext(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .exceptionHandling(AbstractHttpConfigurer::disable)
+                .sessionManagement(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -78,16 +77,17 @@ public class HttpServerConfiguration {
                 // Configure anonymous security for this endpoint
                 .securityMatcher(new AntPathRequestMatcher(ResourcePaths.CUSTOMCLAIMS))
                 .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().permitAll())
+                        authorize.anyRequest().permitAll()
+                )
 
                 // Disable web host and API gateway concerns
-                .csrf().disable()
-                .headers().disable()
-                .requestCache().disable()
-                .securityContext().disable()
-                .logout().disable()
-                .exceptionHandling().disable()
-                .sessionManagement().disable();
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(AbstractHttpConfigurer::disable)
+                .requestCache(AbstractHttpConfigurer::disable)
+                .securityContext(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .exceptionHandling(AbstractHttpConfigurer::disable)
+                .sessionManagement(AbstractHttpConfigurer::disable);
 
         return http.build();
     }

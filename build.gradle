@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.5'
+    id 'org.springframework.boot' version '3.1.0'
     id "com.adarshr.test-logger" version "3.2.0"
 }
 
@@ -14,8 +14,8 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '3.0.6'
-    spring_security_version = '6.0.3'
+    spring_boot_starter_version = '3.1.0'
+    spring_security_version = '6.1.0'
     jose4j_version = '0.9.3'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
@@ -53,7 +53,10 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:$logback_version"
     implementation "com.google.guava:guava:$guava_version"
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
-    
+
+    // Prevent a CVE by including a newer version of this dependency than Spring uses
+    implementation 'org.yaml:snakeyaml:2.0'
+
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
     annotationProcessor "org.projectlombok:lombok:$lombok_version"
