@@ -38,7 +38,7 @@
     "claimsStrategy": "apiLookup",
     "claimsCache": {
       "userInfoEndpoint":   "https://login.authsamples-dev.com:447/oauth2/userInfo",
-      "timeToLiveMinutes":  30
+      "timeToLiveMinutes":  15
     }
   }
 }
