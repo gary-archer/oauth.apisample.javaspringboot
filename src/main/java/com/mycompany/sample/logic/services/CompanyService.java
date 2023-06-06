@@ -38,16 +38,16 @@ public class CompanyService {
     /*
      * Forward to the repository to get the company list
      */
-public CompletableFuture<List<Company>> getCompanyList() {
+    public CompletableFuture<List<Company>> getCompanyList() {
 
-    // Filter on authorized items
-    Function<List<Company>, CompletableFuture<List<Company>>> callback = data ->
-        completedFuture(data.stream()
+        // Filter on authorized items
+        Function<List<Company>, CompletableFuture<List<Company>>> callback = data ->
+            completedFuture(data.stream()
                 .filter(this::isUserAuthorizedForCompany)
                 .collect(Collectors.toList()));
 
-    return this.repository.getCompanyList().thenCompose(callback);
-}
+        return this.repository.getCompanyList().thenCompose(callback);
+    }
 
     /*
      * Forward to the repository to get the company transactions
