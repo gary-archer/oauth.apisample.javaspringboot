@@ -23,7 +23,6 @@ import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
 public class UserInfoController {
 
     private final BaseClaims baseClaims;
-    private final UserInfoClaims userInfoClaims;
     private final SampleCustomClaims customClaims;
 
     /*
@@ -31,11 +30,9 @@ public class UserInfoController {
      */
     public UserInfoController(
             final BaseClaims baseClaims,
-            final UserInfoClaims userInfoClaims,
             final CustomClaims customClaims) {
 
         this.baseClaims = baseClaims;
-        this.userInfoClaims = userInfoClaims;
         this.customClaims = (SampleCustomClaims) customClaims;
     }
 
@@ -50,8 +47,6 @@ public class UserInfoController {
 
         // Next return the user info
         var userInfo = new ClientUserInfo();
-        userInfo.setGivenName(this.userInfoClaims.getGivenName());
-        userInfo.setFamilyName(this.userInfoClaims.getFamilyName());
         userInfo.setRole(this.customClaims.getUserRole());
         userInfo.setRegions(this.customClaims.getUserRegions());
         return CompletableFuture.completedFuture(userInfo);
