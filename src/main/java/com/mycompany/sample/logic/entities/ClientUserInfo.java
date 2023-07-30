@@ -18,5 +18,9 @@ public class ClientUserInfo {
 
     @Getter
     @Setter
+    private String role;
+
+    @Getter
+    @Setter
     private String[] regions;
 }

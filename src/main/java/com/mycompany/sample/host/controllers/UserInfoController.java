@@ -52,6 +52,7 @@ public class UserInfoController {
         var userInfo = new ClientUserInfo();
         userInfo.setGivenName(this.userInfoClaims.getGivenName());
         userInfo.setFamilyName(this.userInfoClaims.getFamilyName());
+        userInfo.setRole(this.customClaims.getUserRole());
         userInfo.setRegions(this.customClaims.getUserRegions());
         return CompletableFuture.completedFuture(userInfo);
     }
