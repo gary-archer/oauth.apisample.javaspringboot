@@ -9,7 +9,6 @@ import com.mycompany.sample.logic.entities.ClientUserInfo;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.BaseClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
-import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
 

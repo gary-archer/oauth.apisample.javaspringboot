@@ -9,14 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class CustomClaimsProvider {
 
     /*
-     * When using the StandardAuthorizer this is overridden at the time of token issuance
-     */
-    @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims issue(final String subject, final String email) {
-        return new CustomClaims();
-    }
-
-    /*
      * When using the StandardAuthorizer this is overridden to read claims from a received JWT
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
@@ -28,7 +20,7 @@ public class CustomClaimsProvider {
      * When using the ClaimsCaching authorizer this gets custom claims when a token is first received
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims getFromLookup(final String accessToken, final BaseClaims baseClaims, final UserInfoClaims userInfo) {
+    public CustomClaims getFromLookup(final String accessToken, final BaseClaims baseClaims) {
         return new CustomClaims();
     }
 

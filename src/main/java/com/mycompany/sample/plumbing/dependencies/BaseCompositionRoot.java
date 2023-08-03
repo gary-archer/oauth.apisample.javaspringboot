@@ -7,7 +7,7 @@ import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
-import com.mycompany.sample.plumbing.oauth.claimsCaching.ClaimsCache;
+import com.mycompany.sample.plumbing.oauth.ClaimsCache;
 
 /*
  * A class to manage composing core API behaviour

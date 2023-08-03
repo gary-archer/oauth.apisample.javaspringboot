@@ -13,18 +13,10 @@ public class ClaimsPrincipal implements AuthenticatedPrincipal {
     private final BaseClaims token;
 
     @Getter
-    private final UserInfoClaims userInfo;
-
-    @Getter
     private final CustomClaims custom;
 
-    public ClaimsPrincipal(
-            final BaseClaims token,
-            final UserInfoClaims userInfo,
-            final CustomClaims custom) {
-
+    public ClaimsPrincipal(final BaseClaims token, final CustomClaims custom) {
         this.token = token;
-        this.userInfo = userInfo;
         this.custom = custom;
     }
 

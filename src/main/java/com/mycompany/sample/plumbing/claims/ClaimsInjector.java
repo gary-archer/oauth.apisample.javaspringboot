@@ -31,21 +31,6 @@ public class ClaimsInjector {
     }
 
     /*
-     * Inject user info claims
-     */
-    @Bean
-    @Scope(value = CustomRequestScope.NAME)
-    public UserInfoClaims getUserInfoClaims() {
-
-        var claims = this.getClaimsPrincipal();
-        if (claims != null) {
-            return claims.getUserInfo();
-        }
-
-        return null;
-    }
-
-    /*
      * Inject custom claims
      */
     @Bean

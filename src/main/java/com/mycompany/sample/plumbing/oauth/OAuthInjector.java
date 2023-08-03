@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.oauth.claimsCaching.ClaimsCache;
-import com.mycompany.sample.plumbing.oauth.claimsCaching.ClaimsCachingAuthorizer;
-import com.mycompany.sample.plumbing.oauth.claimsCaching.UserInfoClient;
 
 /*
  * A helper class to manage creating strategy based OAuth objects at runtime
@@ -40,13 +37,12 @@ public class OAuthInjector {
     public Authorizer createAuthorizer() {
 
         var authenticator = this.container.getBean(OAuthAuthenticator.class);
-        var userInfoClient = this.container.getBean(UserInfoClient.class);
         var customClaimsProvider = this.container.getBean(CustomClaimsProvider.class);
 
         if (this.configuration.getClaimsStrategy().equals("apiLookup")) {
 
             var cache = this.container.getBean(ClaimsCache.class);
-            return new ClaimsCachingAuthorizer(cache, authenticator, userInfoClient, customClaimsProvider);
+            return new ClaimsCachingAuthorizer(cache, authenticator, customClaimsProvider);
 
         } else {
 

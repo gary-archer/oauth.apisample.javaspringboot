@@ -9,16 +9,9 @@ import lombok.Getter;
 public class CachedClaims {
 
     @Getter
-    private final UserInfoClaims userInfo;
-
-    @Getter
     private final CustomClaims custom;
 
-    public CachedClaims(
-            final UserInfoClaims userInfo,
-            final CustomClaims custom) {
-
-        this.userInfo = userInfo;
+    public CachedClaims(final CustomClaims custom) {
         this.custom = custom;
     }
 }

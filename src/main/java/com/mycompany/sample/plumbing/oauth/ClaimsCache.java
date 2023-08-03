@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.oauth.claimsCaching;
+package com.mycompany.sample.plumbing.oauth;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.plumbing.claims.CachedClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
-import com.mycompany.sample.plumbing.claims.UserInfoClaims;
 import com.mycompany.sample.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
@@ -73,7 +72,6 @@ public final class ClaimsCache {
             // Serialize the data
             var mapper = new ObjectMapper();
             var data = mapper.createObjectNode();
-            data.set("userInfo", claims.getUserInfo().exportData());
             data.set("custom", claims.getCustom().exportData());
             var claimsText = data.toString();
 
@@ -108,7 +106,6 @@ public final class ClaimsCache {
             // Deserialize the data
             var mapper = new ObjectMapper();
             var data = mapper.readValue(claimsText, ObjectNode.class);
-            var userInfo = UserInfoClaims.importData(data.get("userInfo"));
             var custom = this.customClaimsProvider.deserialize(data.get("custom"));
 
             // Output debug info
@@ -116,7 +113,7 @@ public final class ClaimsCache {
                     String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
 
             // Return the result
-            return new CachedClaims(userInfo, custom);
+            return new CachedClaims(custom);
 
         } catch (Throwable ex) {
 
