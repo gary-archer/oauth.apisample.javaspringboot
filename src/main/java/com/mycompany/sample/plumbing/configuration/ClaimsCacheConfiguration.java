@@ -8,11 +8,6 @@ import lombok.Setter;
  */
 public class ClaimsCacheConfiguration {
 
-    // The URL to the Authorization Server's user info endpoint, if needed
-    @Getter
-    @Setter
-    private String userInfoEndpoint;
-
     // The maximum number of minutes for which to cache claims, when applicable
     @Getter
     @Setter

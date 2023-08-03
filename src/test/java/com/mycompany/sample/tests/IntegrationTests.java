@@ -57,11 +57,6 @@ public class IntegrationTests {
         wiremock.unregisterJsonWebWeys();
     }
 
-    @AfterEach
-    public void teardownTest() {
-        wiremock.unregisterUserInfo();
-    }
-
     /*
      * Test getting claims as the standard user
      */
@@ -72,20 +67,13 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Guest");
-        data.put("family_name", "User");
-        data.put("email", "guestuser@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getUserInfoClaims(options).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response regions and assert the count
+        var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var regionsNode = (ArrayNode) body.get("regions");
         Assertions.assertEquals(1, regionsNode.size(), "Unexpected regions claim");
@@ -101,20 +89,13 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Admin");
-        data.put("family_name", "User");
-        data.put("email", "guestadmin@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getUserInfoClaims(options).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response regions and assert the count
+        var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var regionsNode = (ArrayNode) body.get("regions");
         Assertions.assertEquals(3, regionsNode.size(), "Unexpected regions claim");
@@ -130,20 +111,13 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Guest");
-        data.put("family_name", "User");
-        data.put("email", "guestuser@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanies(options).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
+        var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ArrayNode.class);
         Assertions.assertEquals(2, body.size(), "Unexpected companies list");
     }
@@ -158,20 +132,13 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Admin");
-        data.put("family_name", "User");
-        data.put("email", "guestadmin@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanies(options).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
+        var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ArrayNode.class);
         Assertions.assertEquals(4, body.size(), "Unexpected companies list");
     }
@@ -208,20 +175,13 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Guest");
-        data.put("family_name", "User");
-        data.put("email", "guestuser@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanyTransactions(options, 2).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
+        var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var transactionsNode = (ArrayNode) body.get("transactions");
         Assertions.assertEquals(8, transactionsNode.size(), "Unexpected transactions");
@@ -237,20 +197,13 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Guest");
-        data.put("family_name", "User");
-        data.put("email", "guestuser@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Call the API and ensure a 404 response
         var options = new ApiRequestOptions(accessToken);
         var response = apiClient.getCompanyTransactions(options, 3).join();
         Assertions.assertEquals(404, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the error code
+        var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
         Assertions.assertEquals("company_not_found", errorCode.asText(), "Unexpected error code");
@@ -266,14 +219,6 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var accessToken = tokenIssuer.issueAccessToken(guestUserId);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Guest");
-        data.put("family_name", "User");
-        data.put("email", "guestuser@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Call the API and ensure a 500 response
         var options = new ApiRequestOptions(accessToken);
         options.setRehearseException(true);
@@ -281,6 +226,7 @@ public class IntegrationTests {
         Assertions.assertEquals(500, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the error code
+        var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
         Assertions.assertEquals("exception_simulation", errorCode.asText(), "Unexpected error code");

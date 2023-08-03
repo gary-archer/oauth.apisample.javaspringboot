@@ -63,14 +63,6 @@ public class LoadTest {
         var keyset = tokenIssuer.getTokenSigningPublicKeys();
         wiremock.registerJsonWebWeys(keyset);
 
-        // The API will call the Authorization Server to get user info for the token, so register a mock response
-        var mapper = new ObjectMapper();
-        var data = mapper.createObjectNode();
-        data.put("given_name", "Guest");
-        data.put("family_name", "User");
-        data.put("email", "guestuser@mycompany.com");
-        wiremock.registerUserInfo(data.toString());
-
         // Create the API client
         String apiBaseUrl = "https://apilocal.authsamples-dev.com:446";
         sessionId = UUID.randomUUID().toString();
@@ -87,7 +79,6 @@ public class LoadTest {
     @AfterAll
     public static void teardown() {
         wiremock.unregisterJsonWebWeys();
-        wiremock.unregisterUserInfo();
     }
 
     /*

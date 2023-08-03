@@ -55,37 +55,6 @@ public final class WiremockAdmin {
     }
 
     /*
-     * Register a user at the start of a test
-     */
-    public void registerUserInfo(final String userJson) {
-
-        var mapper = new ObjectMapper();
-
-        var data = mapper.createObjectNode();
-        data.put("id", this.userInfoId);
-        data.put("priority", 1);
-
-        var request = mapper.createObjectNode();
-        request.put("method", "GET");
-        request.put("url", "/oauth2/userInfo");
-        data.set("request", request);
-
-        var response = mapper.createObjectNode();
-        response.put("status", 200);
-        response.put("body", userJson);
-        data.set("response", response);
-
-        this.register(data);
-    }
-
-    /*
-     * Unregister a user at the end of a test
-     */
-    public void unregisterUserInfo() {
-        this.unregister(this.userInfoId);
-    }
-
-    /*
      * Add a stubbed response to Wiremock via its Admin API
      */
     private void register(final ObjectNode stubbedResponse) {
