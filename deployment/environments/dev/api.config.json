@@ -32,7 +32,7 @@
     }
   },
   "oauth": {
-    "issuer":         "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+    "issuer":           "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
       "audience":       "",
       "jwksEndpoint":   "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
       "claimsStrategy": "apiLookup",
