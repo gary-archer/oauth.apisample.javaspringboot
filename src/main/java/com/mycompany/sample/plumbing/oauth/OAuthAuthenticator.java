@@ -72,7 +72,7 @@ public class OAuthAuthenticator {
                 throw ErrorFactory.createClientError(
                         HttpStatus.FORBIDDEN,
                         ErrorCodes.INSUFFICIENT_SCOPE,
-                        "Access to this API endpoint is forbidden");
+                        "The token does not contain sufficient scope for this API");
             }
 
             return claims;

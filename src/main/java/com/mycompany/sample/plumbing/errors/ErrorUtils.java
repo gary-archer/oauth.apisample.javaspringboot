@@ -3,6 +3,7 @@ package com.mycompany.sample.plumbing.errors;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.InvalidJwtSignatureException;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.node.TextNode;
 
@@ -79,19 +80,17 @@ public final class ErrorUtils {
 
         } else {
 
-            // Otherwise process the JWT exception
+            // Collect log information about the JWT exception but do not capture any confidential details
             var context = new StringBuilder();
-            if (ex.getClass() == InvalidJwtException.class) {
+            var errors = ex.getErrorDetails();
+            for (var error: errors) {
 
-                var jwtException = (InvalidJwtException) ex;
-                var errors = jwtException.getErrorDetails();
-                for (var error: errors) {
-                    var message = String.format(
-                            "%s : %s",
-                            error.getErrorCode(),
-                            error.getErrorMessage());
-                    context.append(message);
+                var errorMessage = error.getErrorMessage();
+                if (ex.getClass() == InvalidJwtSignatureException.class) {
+                    errorMessage = "Invalid JWS Signature";
                 }
+                var message = String.format("%s : %s",error.getErrorCode(), errorMessage);
+                context.append(message);
             }
 
             return ErrorFactory.createClient401Error(context.toString());
