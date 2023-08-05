@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.oauth;
+package com.mycompany.sample.plumbing.claims;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mycompany.sample.plumbing.claims.CachedClaims;
-import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.errors.ErrorCodes;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
@@ -18,7 +16,8 @@ import com.mycompany.sample.plumbing.logging.LoggerFactory;
 /*
  * A singleton in memory claims cache for our API
  */
-public final class ClaimsCache {
+@SuppressWarnings(value = "checkstyle:DesignForExtension")
+public class ClaimsCache {
 
     private final Cache<String, String> cache;
     private final int timeToLiveMinutes;
@@ -54,7 +53,7 @@ public final class ClaimsCache {
     /*
      * Add claims to the cache until the token's time to live
      */
-    public void setExtraUserClaims(final String accessTokenHash, final CachedClaims claims, final int expiry) {
+    public void setExtraUserClaims(final String accessTokenHash, final CustomClaims claims, final int expiry) {
 
         // Use the exp field to work out the token expiry time
         var epochSeconds = Instant.now().getEpochSecond();
@@ -72,7 +71,7 @@ public final class ClaimsCache {
             // Serialize the data
             var mapper = new ObjectMapper();
             var data = mapper.createObjectNode();
-            data.set("custom", claims.getCustom().exportData());
+            data.set("custom", claims.exportData());
             var claimsText = data.toString();
 
             // Output debug info
@@ -91,7 +90,7 @@ public final class ClaimsCache {
      * Get claims from the cache for this token's hash, or return null if not found
      * Almost simultaneous requests from the same user could return null for the same token
      */
-    public CachedClaims getExtraUserClaims(final String accessTokenHash) {
+    public CustomClaims getExtraUserClaims(final String accessTokenHash) {
 
         // Return null if there are no cached claims
         var claimsText = cache.get(accessTokenHash);
@@ -106,14 +105,14 @@ public final class ClaimsCache {
             // Deserialize the data
             var mapper = new ObjectMapper();
             var data = mapper.readValue(claimsText, ObjectNode.class);
-            var custom = this.customClaimsProvider.deserializeFromCache(data.get("custom"));
+            var claims = this.customClaimsProvider.deserializeFromCache(data.get("custom"));
 
             // Output debug info
             this.debugLogger.debug(
                     String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
 
             // Return the result
-            return new CachedClaims(custom);
+            return claims;
 
         } catch (Throwable ex) {
 

@@ -3,11 +3,11 @@ package com.mycompany.sample.plumbing.dependencies;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.logging.LoggerFactory;
-import com.mycompany.sample.plumbing.oauth.ClaimsCache;
 
 /*
  * A class to manage composing core API behaviour

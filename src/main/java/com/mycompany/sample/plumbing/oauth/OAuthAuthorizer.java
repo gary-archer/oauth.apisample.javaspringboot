@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import com.mycompany.sample.plumbing.claims.CachedClaims;
+import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
@@ -49,17 +49,16 @@ public final class OAuthAuthorizer implements Authorizer {
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        var cachedClaims = this.cache.getExtraUserClaims(accessTokenHash);
-        if (cachedClaims != null) {
-            return new ClaimsPrincipal(jwtClaims, cachedClaims.getCustom());
+        var customClaims = this.cache.getExtraUserClaims(accessTokenHash);
+        if (customClaims != null) {
+            return new ClaimsPrincipal(jwtClaims, customClaims);
         }
 
         // Look up custom claims not in the JWT access token when it is first received
-        var customClaims = customClaimsProvider.lookupForNewAccessToken(accessToken, jwtClaims);
-        var claimsToCache = new CachedClaims(customClaims);
+        customClaims = customClaimsProvider.lookupForNewAccessToken(accessToken, jwtClaims);
 
         // Cache the extra claims for subsequent requests with the same access token
-        this.cache.setExtraUserClaims(accessTokenHash, claimsToCache, ClaimsReader.getExpiryClaim(jwtClaims));
+        this.cache.setExtraUserClaims(accessTokenHash, customClaims, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims
         return new ClaimsPrincipal(jwtClaims, customClaims);
