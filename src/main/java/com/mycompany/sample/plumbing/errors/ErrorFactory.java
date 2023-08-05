@@ -1,6 +1,7 @@
 package com.mycompany.sample.plumbing.errors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
@@ -60,11 +61,16 @@ public final class ErrorFactory {
      * Create a 401 error with the reason
      */
     public static ClientError createClient401Error(final String reason) {
+
         var error = new ClientErrorImpl(
                 HttpStatus.UNAUTHORIZED,
                 ErrorCodes.INVALID_TOKEN,
                 "Missing, invalid or expired access token");
-        error.setLogContext(new TextNode(reason));
+
+        if (StringUtils.hasLength(reason)) {
+            error.setLogContext(new TextNode(reason));
+        }
+
         return error;
     }
 }

@@ -79,14 +79,22 @@ public final class ErrorUtils {
 
         } else {
 
-            // Report problems due to invalid tokens sent by the client
-            parts.add(ErrorUtils.getSanitizedJose4JErrorMessage(ex.getMessage()));
-            for (var item : ex.getErrorDetails()) {
-                parts.add(String.format("Error code %d", item.getErrorCode()));
+            // Otherwise process the JWT exception
+            var context = new StringBuilder();
+            if (ex.getClass() == InvalidJwtException.class) {
+
+                var jwtException = (InvalidJwtException) ex;
+                var errors = jwtException.getErrorDetails();
+                for (var error: errors) {
+                    var message = String.format(
+                            "%s : %s",
+                            error.getErrorCode(),
+                            error.getErrorMessage());
+                    context.append(message);
+                }
             }
 
-            var details = String.join(", ", parts);
-            return ErrorFactory.createClient401Error(details);
+            return ErrorFactory.createClient401Error(context.toString());
         }
     }
 
@@ -169,19 +177,6 @@ public final class ErrorUtils {
         }
 
         return null;
-    }
-
-    /*
-     * Be careful to exclude additional information, which can contain sensitive JWT details
-     */
-    private static String getSanitizedJose4JErrorMessage(final String message) {
-
-        int pos = message.indexOf("Additional details");
-        if (pos == -1) {
-            return message;
-        }
-
-        return message.substring(0, pos);
     }
 
     /*

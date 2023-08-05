@@ -49,11 +49,183 @@ public class IntegrationTests {
     }
 
     /*
-     * Test getting claims as the standard user
+     * Test that a request without an access token is rejected
      */
     @Test
     @SuppressWarnings(value = "MethodName")
-    public void GetUserClaims_ReturnsSingleRegion_ForStandardUser() throws Throwable {
+    public void CallApi_Returns401_ForMissingJwt() throws Throwable {
+
+        // Call the API and ensure a 401 response
+        var apiOptions = new ApiRequestOptions("");
+        var response = apiClient.getCompanies(apiOptions).join();
+        Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
+
+        // Read the response and assert the expected error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+    }
+
+    /*
+     * Test that an expired access token is rejected
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void CallApi_Returns401_ForExpiredJwt() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        jwtOptions.setExpiryMinutes(-30);
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
+
+        // Call the API and ensure a 401 response
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
+        Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
+
+        // Read the response and assert the expected error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+    }
+
+    /*
+     * Test that an access token with an invalid issuer is rejected
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void CallApi_Returns401_ForInvalidIssuer() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        jwtOptions.setIssuer("https://otherissuer.com");
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
+
+        // Call the API and ensure a 401 response
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
+        Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
+
+        // Read the response and assert the expected error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+    }
+
+    /*
+     * Test that an access token with an invalid audience is rejected
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void CallApi_Returns401_ForInvalidAudience() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        jwtOptions.setAudience("api.other.com");
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
+
+        // Call the API and ensure a 401 response
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
+        Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
+
+        // Read the response and assert the expected error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+    }
+
+    /*
+     * Test that an access token with an invalid signature is rejected
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void CallApi_Returns401_ForInvalidSignature() throws Throwable {
+
+        var maliciousJwk = RsaJwkGenerator.generateJwk(2048);
+        maliciousJwk.setKeyId(authorizationServer.getKeyId());
+        maliciousJwk.setAlgorithm("RS256");
+
+        // Get an access token for the end user of this test
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions, maliciousJwk);
+
+        // Call the API and ensure a 401 response
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
+        Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
+
+        // Read the response and assert the expected error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+    }
+
+    /*
+     * Test that an access token with an invalid scope is rejected
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void CallApi_Returns403_ForInvalidScope() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        jwtOptions.setScope("openid profile");
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
+
+        // Call the API and ensure a 401 response
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
+        Assertions.assertEquals(403, response.getStatusCode(), "Unexpected HTTP status");
+
+        // Read the response and assert the expected error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("insufficient_scope", errorCode.asText(), "Unexpected error code");
+    }
+
+    /*
+     * Test rehearsing a 500 error when there is an exception in the API
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void CallApi_ReturnsSupportable500Error_ForErrorRehearsalRequest() throws Throwable {
+
+        // Get an access token for the end user of this test
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
+
+        // Call the API and ensure a 500 response
+        var apiOptions = new ApiRequestOptions(accessToken);
+        apiOptions.setRehearseException(true);
+        var response = apiClient.getCompanyTransactions(apiOptions, 2).join();
+        Assertions.assertEquals(500, response.getStatusCode(), "Unexpected HTTP status");
+
+        // Read the response and assert the error code
+        var mapper = new ObjectMapper();
+        var body = mapper.readValue(response.getBody(), ObjectNode.class);
+        var errorCode = body.get("code");
+        Assertions.assertEquals("exception_simulation", errorCode.asText(), "Unexpected error code");
+    }
+
+    /*
+     * Test getting business user attributes for the standard user
+     */
+    @Test
+    @SuppressWarnings(value = "MethodName")
+    public void GetUserInfo_ReturnsSingleRegion_ForStandardUser() throws Throwable {
 
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
@@ -73,7 +245,7 @@ public class IntegrationTests {
     }
 
     /*
-     * Test getting claims as the admin user
+     * Test getting business user attributes for the admin user
      */
     @Test
     @SuppressWarnings(value = "MethodName")
@@ -143,34 +315,6 @@ public class IntegrationTests {
     }
 
     /*
-     * Test getting companies with a malicious JWT access token
-     */
-    @Test
-    @SuppressWarnings(value = "MethodName")
-    public void GetCompanies_Returns401_ForMaliciousJwt() throws Throwable {
-
-        var maliciousJwk = RsaJwkGenerator.generateJwk(2048);
-        maliciousJwk.setKeyId(authorizationServer.getKeyId());
-        maliciousJwk.setAlgorithm("RS256");
-
-        // Get an access token for the end user of this test
-        var jwtOptions = new MockTokenOptions();
-        jwtOptions.useStandardUser();
-        var accessToken = authorizationServer.issueAccessToken(jwtOptions, maliciousJwk);
-
-        // Call the API and ensure a 401 response
-        var apiOptions = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanies(apiOptions).join();
-        Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
-
-        // Read the response and assert the expected error code
-        var mapper = new ObjectMapper();
-        var body = mapper.readValue(response.getBody(), ObjectNode.class);
-        var errorCode = body.get("code");
-        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
-    }
-
-    /*
      * Test getting allowed transactions
      */
     @Test
@@ -216,30 +360,5 @@ public class IntegrationTests {
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
         Assertions.assertEquals("company_not_found", errorCode.asText(), "Unexpected error code");
-    }
-
-    /*
-     * Test rehearsing a 500 error when there is an exception in the API
-     */
-    @Test
-    @SuppressWarnings(value = "MethodName")
-    public void FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() throws Throwable {
-
-        // Get an access token for the end user of this test
-        var jwtOptions = new MockTokenOptions();
-        jwtOptions.useStandardUser();
-        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
-
-        // Call the API and ensure a 500 response
-        var apiOptions = new ApiRequestOptions(accessToken);
-        apiOptions.setRehearseException(true);
-        var response = apiClient.getCompanyTransactions(apiOptions, 2).join();
-        Assertions.assertEquals(500, response.getStatusCode(), "Unexpected HTTP status");
-
-        // Read the response and assert the error code
-        var mapper = new ObjectMapper();
-        var body = mapper.readValue(response.getBody(), ObjectNode.class);
-        var errorCode = body.get("code");
-        Assertions.assertEquals("exception_simulation", errorCode.asText(), "Unexpected error code");
     }
 }
