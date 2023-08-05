@@ -14,7 +14,7 @@ public final class ClaimsReader {
     }
 
     /*
-     * Get a string claim from the claims payload
+     * Get a mandatory string claim from the claims payload
      */
     public static String getStringClaim(final JwtClaims data, final String name) {
 

@@ -18,19 +18,20 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
     @Override
     public CustomClaims lookupForNewAccessToken(final String accessToken, final JwtClaims jwtClaims) {
 
-        var subject = ClaimsReader.getStringClaim(jwtClaims, "sub");
-        var isAdmin = subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91");
-        if (isAdmin) {
+        // It is common to need to get a business user ID for the authenticated user
+        // In our example a manager user may be able to view information about investors
+        var managerId = this.getManagerId(jwtClaims);
 
-            // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions
-            // The CompanyService class will use these claims to return all transaction data
-            return new SampleCustomClaims("20116", "admin", new String[]{"Europe", "USA", "Asia"});
+        // A real API would use a database, but this API uses a mock implementation
+        if (managerId.equals("20116")) {
+
+            // These custom claims are used for the guestadmin@mycompany.com user account
+            return new SampleCustomClaims(managerId, "admin", new String[]{"Europe", "USA", "Asia"});
 
         } else {
 
-            // For other users we hard code this user id, assign a role of 'user' and grant access to only one region
-            // The CompanyService class will use these claims to return only transactions for the US region
-            return new SampleCustomClaims("10345", "user", new String[]{"USA"});
+            // These custom claims are used for the guestuser@mycompany.com user account
+            return new SampleCustomClaims(managerId, "user", new String[]{"USA"});
         }
     }
 
@@ -40,5 +41,38 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
     @Override
     public CustomClaims deserializeFromCache(final JsonNode claimsNode) {
         return SampleCustomClaims.importData(claimsNode);
+    }
+
+    /*
+     * Get a business user ID that corresponds to the user in the token
+     */
+    private String getManagerId(final JwtClaims jwtClaims) {
+
+        if (jwtClaims.hasClaim("manager_id")) {
+
+            // The preferred option is for the API to receive the business user identity in the JWT access token
+            return ClaimsReader.getStringClaim(jwtClaims, "manager_id");
+
+        } else {
+
+            // Otherwise the API must determine the value from the subject claim
+            var subject = ClaimsReader.getStringClaim(jwtClaims, "sub");
+            return this.lookupManagerIdFromSubjectClaim(subject);
+        }
+    }
+
+    /*
+     * The API could store a mapping from the subject claim to the business user identity
+     */
+    private String lookupManagerIdFromSubjectClaim(final String subject) {
+
+        // A real API would use a database, but this API uses a mock implementation
+        // This subject value is for the guestadmin@mycompany.com user account
+        var isAdmin = subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91");
+        if (isAdmin) {
+            return "20116";
+        } else {
+            return "10345";
+        }
     }
 }

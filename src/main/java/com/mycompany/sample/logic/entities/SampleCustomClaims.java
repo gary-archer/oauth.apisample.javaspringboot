@@ -14,39 +14,39 @@ import lombok.Getter;
 public final class SampleCustomClaims extends CustomClaims {
 
     @Getter
-    private final String userId;
+    private final String managerId;
 
     @Getter
-    private final String userRole;
+    private final String role;
 
     @Getter
-    private final String[] userRegions;
+    private final String[] regions;
 
     /*
      * Called when claims are deserialized during claims caching
      */
     public static SampleCustomClaims importData(final JsonNode data) {
 
-        var userDatabaseId = data.get("user_id").asText();
-        var userRole = data.get("user_role").asText();
+        var managerId = data.get("manager_id").asText();
+        var role = data.get("role").asText();
 
-        var regionsNode = (ArrayNode) data.get("user_regions");
-        var userRegions = new ArrayList<String>();
+        var regionsNode = (ArrayNode) data.get("regions");
+        var regions = new ArrayList<String>();
         regionsNode.forEach((n) -> {
-            userRegions.add(n.asText());
+            regions.add(n.asText());
         });
 
-        return new SampleCustomClaims(userDatabaseId, userRole, userRegions.toArray(String[]::new));
+        return new SampleCustomClaims(managerId, role, regions.toArray(String[]::new));
     }
 
     /*
      * Receive individual claims when getting claims from the cache
      */
-    public SampleCustomClaims(final String userId, final String userRole, final String[] userRegions) {
+    public SampleCustomClaims(final String managerId, final String role, final String[] regions) {
 
-        this.userId = userId;
-        this.userRole = userRole;
-        this.userRegions = userRegions;
+        this.managerId = managerId;
+        this.role = role;
+        this.regions = regions;
     }
 
     /*
@@ -57,15 +57,15 @@ public final class SampleCustomClaims extends CustomClaims {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
-        data.put("user_id", this.userId);
-        data.put("user_role", this.userRole);
+        data.put("manager_id", this.managerId);
+        data.put("role", this.role);
 
         var regionsNode = mapper.createArrayNode();
-        for (var region: this.userRegions) {
+        for (var region: this.regions) {
             regionsNode.add(region);
         }
 
-        data.set("user_regions", regionsNode);
+        data.set("regions", regionsNode);
         return data;
     }
 }

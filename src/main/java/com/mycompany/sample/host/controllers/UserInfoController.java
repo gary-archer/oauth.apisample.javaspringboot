@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.mycompany.sample.logic.entities.ClientUserInfo;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
+import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
@@ -30,14 +30,10 @@ public class UserInfoController {
     }
 
     /*
-     * Return the user info claims when the API is called
+     * Some or all of these values can be returned to API clients when required
      */
     @GetMapping(value = "")
-    public CompletableFuture<ClientUserInfo> getUserClaims() {
-
-        var userInfo = new ClientUserInfo();
-        userInfo.setRole(this.customClaims.getUserRole());
-        userInfo.setRegions(this.customClaims.getUserRegions());
-        return CompletableFuture.completedFuture(userInfo);
+    public CompletableFuture<CustomClaims> getUserInfo() {
+        return CompletableFuture.completedFuture(this.customClaims);
     }
 }
