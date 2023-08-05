@@ -19,8 +19,7 @@ import com.google.common.base.Strings;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.ApiResponse;
-import com.mycompany.sample.tests.utils.TokenIssuer;
-import com.mycompany.sample.tests.utils.WiremockAdmin;
+import com.mycompany.sample.tests.utils.MockAuthorizationServer;
 
 /*
  * A basic load test to ensure that the API behaves correctly when there are concurrent requests
@@ -28,8 +27,7 @@ import com.mycompany.sample.tests.utils.WiremockAdmin;
 @Suite(failIfNoTests=false)
 public class LoadTest {
 
-    private static TokenIssuer tokenIssuer;
-    private static WiremockAdmin wiremock;
+    private static MockAuthorizationServer authorizationServer;
     private static ApiClient apiClient;
     private static String sessionId;
     private static String guestUserId;
@@ -55,13 +53,9 @@ public class LoadTest {
         // System.setProperty("https.proxyHost", url.getHost());
         // System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
 
-        // A class to issue our own JWTs for testing
-        tokenIssuer = new TokenIssuer();
-        wiremock = new WiremockAdmin();
-
-        // The API will call the Authorization Server to get a JSON Web Key Set, so register a mock response
-        var keyset = tokenIssuer.getTokenSigningPublicKeys();
-        wiremock.registerJsonWebWeys(keyset);
+        // Create a mock authorization server
+        authorizationServer = new MockAuthorizationServer();
+        authorizationServer.start();
 
         // Create the API client
         String apiBaseUrl = "https://apilocal.authsamples-dev.com:446";
@@ -78,7 +72,7 @@ public class LoadTest {
      */
     @AfterAll
     public static void teardown() {
-        wiremock.unregisterJsonWebWeys();
+        authorizationServer.stop();
     }
 
     /*
@@ -131,7 +125,7 @@ public class LoadTest {
 
         var list = new ArrayList<String>();
         for (int index = 0; index < 5; index++) {
-            list.add(tokenIssuer.issueAccessToken(guestUserId));
+            list.add(authorizationServer.issueAccessToken(guestUserId));
         }
         return list;
     }

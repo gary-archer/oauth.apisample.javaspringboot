@@ -8,16 +8,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
-import com.mycompany.sample.tests.utils.TokenIssuer;
-import com.mycompany.sample.tests.utils.WiremockAdmin;
+import com.mycompany.sample.tests.utils.MockAuthorizationServer;
 
 @Suite(failIfNoTests = false)
 public class IntegrationTests {
 
     private static String guestUserId;
     private static String guestAdminId;
-    private static TokenIssuer tokenIssuer;
-    private static WiremockAdmin wiremock;
+    private static MockAuthorizationServer authorizationServer;
     private static ApiClient apiClient;
 
     /*
@@ -35,13 +33,9 @@ public class IntegrationTests {
         // System.setProperty("https.proxyHost", url.getHost());
         // System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
 
-        // A class to issue our own JWTs for testing
-        tokenIssuer = new TokenIssuer();
-        wiremock = new WiremockAdmin();
-
-        // The API will call the Authorization Server to get a JSON Web Key Set, so register a mock response
-        var keyset = tokenIssuer.getTokenSigningPublicKeys();
-        wiremock.registerJsonWebWeys(keyset);
+        // Create a mock authorization server
+        authorizationServer = new MockAuthorizationServer();
+        authorizationServer.start();
 
         // Create the API client
         String apiBaseUrl = "https://apilocal.authsamples-dev.com:446";
@@ -54,7 +48,7 @@ public class IntegrationTests {
      */
     @AfterAll
     public static void teardownSuite() {
-        wiremock.unregisterJsonWebWeys();
+        authorizationServer.stop();
     }
 
     /*
@@ -65,7 +59,7 @@ public class IntegrationTests {
     public void GetUserClaims_ReturnsSingleRegion_ForStandardUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+        var accessToken = authorizationServer.issueAccessToken(guestUserId);
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -87,7 +81,7 @@ public class IntegrationTests {
     public void GetUserClaims_ReturnsAllRegions_ForAdminUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
+        var accessToken = authorizationServer.issueAccessToken(guestAdminId);
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -109,7 +103,7 @@ public class IntegrationTests {
     public void GetCompanies_ReturnsTwoItems_ForStandardUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+        var accessToken = authorizationServer.issueAccessToken(guestUserId);
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -130,7 +124,7 @@ public class IntegrationTests {
     public void GetCompanies_ReturnsAllItems_ForAdminUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestAdminId);
+        var accessToken = authorizationServer.issueAccessToken(guestAdminId);
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -151,7 +145,7 @@ public class IntegrationTests {
     public void GetCompanies_Returns401_ForMaliciousJwt() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueMaliciousAccessToken(guestAdminId);
+        var accessToken = authorizationServer.issueMaliciousAccessToken(guestAdminId);
 
         // Call the API and ensure a 401 response
         var options = new ApiRequestOptions(accessToken);
@@ -173,7 +167,7 @@ public class IntegrationTests {
     public void GetTransactions_ReturnsAllowedItems_ForCompaniesMatchingTheRegionClaim() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+        var accessToken = authorizationServer.issueAccessToken(guestUserId);
 
         // Call the API and ensure a 200 response
         var options = new ApiRequestOptions(accessToken);
@@ -195,7 +189,7 @@ public class IntegrationTests {
     public void GetTransactions_ReturnsNotFoundForUser_ForCompaniesNotMatchingTheRegionClaim() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+        var accessToken = authorizationServer.issueAccessToken(guestUserId);
 
         // Call the API and ensure a 404 response
         var options = new ApiRequestOptions(accessToken);
@@ -217,7 +211,7 @@ public class IntegrationTests {
     public void FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = tokenIssuer.issueAccessToken(guestUserId);
+        var accessToken = authorizationServer.issueAccessToken(guestUserId);
 
         // Call the API and ensure a 500 response
         var options = new ApiRequestOptions(accessToken);
