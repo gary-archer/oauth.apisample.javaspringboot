@@ -13,7 +13,6 @@ import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.services.CompanyService;
-import com.mycompany.sample.plumbing.claims.BaseClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -27,14 +26,12 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyController {
 
     private final CompanyService service;
-    private final BaseClaims claims;
 
     /*
      * Claims are injected into the controller after OAuth processing
      */
-    public CompanyController(final CompanyService service, final BaseClaims claims) {
+    public CompanyController(final CompanyService service) {
         this.service = service;
-        this.claims = claims;
     }
 
     /*
@@ -42,7 +39,6 @@ public class CompanyController {
      */
     @GetMapping(value = "")
     public CompletableFuture<List<Company>> getCompanyList() {
-
         return this.service.getCompanyList();
     }
 
@@ -59,7 +55,7 @@ public class CompanyController {
             throw ErrorFactory.createClientError(
                     HttpStatus.BAD_REQUEST,
                     SampleErrorCodes.INVALID_COMPANY_ID,
-                    "The company id must be a positive numeric integer");
+                    "The company ID must be a positive numeric integer");
         }
 
         // Next authorize access based on claims

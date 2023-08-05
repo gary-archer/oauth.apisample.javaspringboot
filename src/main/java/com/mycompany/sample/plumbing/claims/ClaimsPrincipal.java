@@ -1,5 +1,6 @@
 package com.mycompany.sample.plumbing.claims;
 
+import org.jose4j.jwt.JwtClaims;
 import org.springframework.security.core.AuthenticatedPrincipal;
 import lombok.Getter;
 
@@ -10,19 +11,28 @@ import lombok.Getter;
 public class ClaimsPrincipal implements AuthenticatedPrincipal {
 
     @Getter
-    private final BaseClaims token;
+    private final JwtClaims jwtClaims;
 
     @Getter
-    private final CustomClaims custom;
+    private final CustomClaims customClaims;
 
-    public ClaimsPrincipal(final BaseClaims token, final CustomClaims custom) {
-        this.token = token;
-        this.custom = custom;
+    public ClaimsPrincipal(final JwtClaims jwtClaims, final CustomClaims customClaims) {
+        this.jwtClaims = jwtClaims;
+        this.customClaims = customClaims;
     }
 
-    // Use the access token subject claim as the technical username
+    /*
+     * Return the subject claim
+     */
+    public String getSubject() {
+        return ClaimsReader.getStringClaim(this.jwtClaims, "sub");
+    }
+
+    /*
+     * Use the access token subject claim as the technical name for the identity
+     */
     @Override
     public String getName() {
-        return this.token.getSubject();
+        return this.getSubject();
     }
 }

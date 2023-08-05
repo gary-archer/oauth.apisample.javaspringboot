@@ -45,24 +45,23 @@ public final class OAuthAuthorizer implements Authorizer {
         }
 
         // On every API request we validate the JWT, in a zero trust manner
-        var payload = this.authenticator.validateToken(accessToken);
-        var baseClaims = ClaimsReader.baseClaims(payload);
+        var jwtClaims = this.authenticator.validateToken(accessToken);
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
         var cachedClaims = this.cache.getExtraUserClaims(accessTokenHash);
         if (cachedClaims != null) {
-            return new ClaimsPrincipal(baseClaims, cachedClaims.getCustom());
+            return new ClaimsPrincipal(jwtClaims, cachedClaims.getCustom());
         }
 
         // In Cognito we cannot issue custom claims so the API looks them up when the access token is first received
-        var customClaims = customClaimsProvider.lookupForNewAccessToken(accessToken, baseClaims);
+        var customClaims = customClaimsProvider.lookupForNewAccessToken(accessToken, jwtClaims);
         var claimsToCache = new CachedClaims(customClaims);
 
         // Cache the extra claims for subsequent requests with the same access token
-        this.cache.setExtraUserClaims(accessTokenHash, claimsToCache, baseClaims.getExpiry());
+        this.cache.setExtraUserClaims(accessTokenHash, claimsToCache, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims
-        return new ClaimsPrincipal(baseClaims, customClaims);
+        return new ClaimsPrincipal(jwtClaims, customClaims);
     }
 }

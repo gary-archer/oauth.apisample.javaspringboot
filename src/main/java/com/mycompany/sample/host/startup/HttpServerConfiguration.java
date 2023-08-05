@@ -4,7 +4,6 @@ import jakarta.servlet.DispatcherType;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -49,34 +48,6 @@ public class HttpServerConfiguration {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authorizationFilter, AbstractPreAuthenticatedProcessingFilter.class)
-
-                // Disable web host and API gateway concerns
-                .csrf(AbstractHttpConfigurer::disable)
-                .headers(AbstractHttpConfigurer::disable)
-                .requestCache(AbstractHttpConfigurer::disable)
-                .securityContext(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
-                .exceptionHandling(AbstractHttpConfigurer::disable)
-                .sessionManagement(AbstractHttpConfigurer::disable);
-
-        return http.build();
-    }
-
-    /*
-     * This route runs in a Kubernetes cluster to look up custom claims
-     * It uses mTLS via the platform so Spring is configured to use anonymous access
-     * https://github.com/spring-projects/spring-security/issues/10938
-     */
-    @Bean
-    @Order(0)
-    public SecurityFilterChain anonymousRoutes(final HttpSecurity http) throws Exception {
-
-        http
-                // Configure anonymous security for this endpoint
-                .securityMatcher(new AntPathRequestMatcher(ResourcePaths.CUSTOMCLAIMS))
-                .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().permitAll()
-                )
 
                 // Disable web host and API gateway concerns
                 .csrf(AbstractHttpConfigurer::disable)

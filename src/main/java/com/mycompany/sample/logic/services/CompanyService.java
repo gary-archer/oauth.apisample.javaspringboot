@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,9 @@ public class CompanyService {
     private final CompanyRepository repository;
     private final SampleCustomClaims claims;
 
-    public CompanyService(final CompanyRepository repository, final CustomClaims claims) {
+    public CompanyService(final CompanyRepository repository, final ClaimsPrincipal claims) {
         this.repository = repository;
-        this.claims = (SampleCustomClaims) claims;
+        this.claims = (SampleCustomClaims) claims.getCustomClaims();
     }
 
     /*

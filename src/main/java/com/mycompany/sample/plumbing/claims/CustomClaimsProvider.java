@@ -1,6 +1,7 @@
 package com.mycompany.sample.plumbing.claims;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.jose4j.jwt.JwtClaims;
 
 /*
  * A class to deal with domain specific claims, needed for business authorization
@@ -11,7 +12,7 @@ public class CustomClaimsProvider {
      * Look up custom claims when details are not available in the cache, such as for a new access token
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims lookupForNewAccessToken(final String accessToken, final BaseClaims baseClaims) {
+    public CustomClaims lookupForNewAccessToken(final String accessToken, final JwtClaims jwtClaims) {
         return new CustomClaims();
     }
 

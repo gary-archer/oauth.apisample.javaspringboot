@@ -9,5 +9,4 @@ public final class ResourcePaths {
     }
 
     public static final String ALL = "/investments/**";
-    public static final String CUSTOMCLAIMS = "/investments/customclaims/**";
 }
