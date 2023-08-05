@@ -1,15 +1,15 @@
 package com.mycompany.sample.plumbing.oauth;
 
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.mycompany.sample.plumbing.claims.CachedClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /*
  * An authorizer that enables the API to add claims from its own data

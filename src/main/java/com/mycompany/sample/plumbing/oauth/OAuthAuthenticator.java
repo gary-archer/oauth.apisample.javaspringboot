@@ -1,8 +1,5 @@
 package com.mycompany.sample.plumbing.oauth;
 
-import com.mycompany.sample.plumbing.claims.ClaimsReader;
-import com.mycompany.sample.plumbing.errors.ErrorCodes;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import java.util.Arrays;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -14,8 +11,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
+import com.mycompany.sample.plumbing.errors.ErrorCodes;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
 
