@@ -188,7 +188,7 @@ public final class LogEntryData {
      */
     private void outputPerformance(final ObjectNode root) {
 
-        if (this.performance.getMillisecondsTaken() >= this.performanceThresholdMilliseconds || errorId > 0) {
+        if (this.performance.getMillisecondsTaken() >= this.performanceThresholdMilliseconds) {
             root.set("performance", this.performance.getData());
         }
     }
@@ -208,7 +208,7 @@ public final class LogEntryData {
      */
     private void outputInfo(final ObjectMapper mapper, final ObjectNode root) {
 
-        if (this.infoData.size() > 0) {
+        if (!this.infoData.isEmpty()) {
             var infoNode = mapper.createArrayNode();
             for (var info : this.infoData) {
                 infoNode.add(info);
