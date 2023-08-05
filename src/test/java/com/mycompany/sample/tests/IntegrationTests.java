@@ -1,6 +1,8 @@
 package com.mycompany.sample.tests;
 
 import java.util.UUID;
+
+import org.jose4j.jwk.RsaJwkGenerator;
 import org.junit.jupiter.api.*;
 import org.junit.platform.suite.api.Suite;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,12 +11,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.sample.tests.utils.ApiClient;
 import com.mycompany.sample.tests.utils.ApiRequestOptions;
 import com.mycompany.sample.tests.utils.MockAuthorizationServer;
+import com.mycompany.sample.tests.utils.MockTokenOptions;
 
 @Suite(failIfNoTests = false)
 public class IntegrationTests {
 
-    private static String guestUserId;
-    private static String guestAdminId;
     private static MockAuthorizationServer authorizationServer;
     private static ApiClient apiClient;
 
@@ -23,10 +24,6 @@ public class IntegrationTests {
      */
     @BeforeAll
     public static void setupSuite() throws Throwable {
-
-        // The real subject claim values for my two online test users
-        guestUserId = "a6b404b1-98af-41a2-8e7f-e4061dc0bf86";
-        guestAdminId = "77a97e5b-b748-45e5-bb6f-658e85b2df91";
 
         // Uncomment to view HTTPS requests initiated from tests in an HTTP proxy
         // var url = new URL("http://127.0.0.1:8888");
@@ -59,11 +56,13 @@ public class IntegrationTests {
     public void GetUserClaims_ReturnsSingleRegion_ForStandardUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueAccessToken(guestUserId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
-        var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getUserInfoClaims(options).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getUserInfoClaims(apiOptions).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response regions and assert the count
@@ -81,11 +80,13 @@ public class IntegrationTests {
     public void GetUserClaims_ReturnsAllRegions_ForAdminUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueAccessToken(guestAdminId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useAdminUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
-        var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getUserInfoClaims(options).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getUserInfoClaims(apiOptions).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response regions and assert the count
@@ -103,11 +104,13 @@ public class IntegrationTests {
     public void GetCompanies_ReturnsTwoItems_ForStandardUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueAccessToken(guestUserId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
-        var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanies(options).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
@@ -124,11 +127,13 @@ public class IntegrationTests {
     public void GetCompanies_ReturnsAllItems_ForAdminUser() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueAccessToken(guestAdminId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useAdminUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
-        var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanies(options).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
@@ -144,12 +149,18 @@ public class IntegrationTests {
     @SuppressWarnings(value = "MethodName")
     public void GetCompanies_Returns401_ForMaliciousJwt() throws Throwable {
 
+        var maliciousJwk = RsaJwkGenerator.generateJwk(2048);
+        maliciousJwk.setKeyId(authorizationServer.getKeyId());
+        maliciousJwk.setAlgorithm("RS256");
+
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueMaliciousAccessToken(guestAdminId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions, maliciousJwk);
 
         // Call the API and ensure a 401 response
-        var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanies(options).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanies(apiOptions).join();
         Assertions.assertEquals(401, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the expected error code
@@ -167,11 +178,13 @@ public class IntegrationTests {
     public void GetTransactions_ReturnsAllowedItems_ForCompaniesMatchingTheRegionClaim() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueAccessToken(guestUserId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
-        var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanyTransactions(options, 2).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanyTransactions(apiOptions, 2).join();
         Assertions.assertEquals(200, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the count
@@ -189,11 +202,13 @@ public class IntegrationTests {
     public void GetTransactions_ReturnsNotFoundForUser_ForCompaniesNotMatchingTheRegionClaim() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueAccessToken(guestUserId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 404 response
-        var options = new ApiRequestOptions(accessToken);
-        var response = apiClient.getCompanyTransactions(options, 3).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        var response = apiClient.getCompanyTransactions(apiOptions, 3).join();
         Assertions.assertEquals(404, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the error code
@@ -211,12 +226,14 @@ public class IntegrationTests {
     public void FailedApiCall_ReturnsSupportable500Error_ForErrorRehearsalRequest() throws Throwable {
 
         // Get an access token for the end user of this test
-        var accessToken = authorizationServer.issueAccessToken(guestUserId);
+        var jwtOptions = new MockTokenOptions();
+        jwtOptions.useStandardUser();
+        var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 500 response
-        var options = new ApiRequestOptions(accessToken);
-        options.setRehearseException(true);
-        var response = apiClient.getCompanyTransactions(options, 2).join();
+        var apiOptions = new ApiRequestOptions(accessToken);
+        apiOptions.setRehearseException(true);
+        var response = apiClient.getCompanyTransactions(apiOptions, 2).join();
         Assertions.assertEquals(500, response.getStatusCode(), "Unexpected HTTP status");
 
         // Read the response and assert the error code

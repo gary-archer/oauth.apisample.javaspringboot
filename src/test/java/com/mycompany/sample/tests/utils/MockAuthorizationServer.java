@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.UUID;
+import lombok.Getter;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
@@ -24,6 +25,8 @@ public final class MockAuthorizationServer {
 
     private final String adminBaseUrl;
     private RsaJsonWebKey jwk;
+
+    @Getter
     private String keyId;
 
     public MockAuthorizationServer() {
@@ -61,49 +64,31 @@ public final class MockAuthorizationServer {
     }
 
     /*
-     * Issue an access token with the supplied subject claim
+     * Issue an access token with the supplied user and other test options
      * https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
      */
-    public String issueAccessToken(final String sub) throws JoseException {
-
-        var claims = new JwtClaims();
-        claims.setSubject(sub);
-        claims.setIssuer("testissuer.com");
-        claims.setAudience("api.mycompany.com");
-        claims.setStringClaim("scope", "openid profile email investments");
-        claims.setExpirationTimeMinutesInTheFuture(10);
-        claims.setNotBeforeMinutesInThePast(1);
-
-        var jws = new JsonWebSignature();
-        jws.setKeyIdHeaderValue(this.keyId);
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-        jws.setPayload(claims.toJson());
-        jws.setKey(this.jwk.getPrivateKey());
-        return jws.getCompactSerialization();
+    public String issueAccessToken(final MockTokenOptions options) throws JoseException {
+        return this.issueAccessToken(options, this.jwk);
     }
 
     /*
-     * Issue an access token signed with an untrusted JWK
+     * An overload to allow a malicious key to be tested
      */
-    public String issueMaliciousAccessToken(final String sub) throws JoseException {
-
-        var maliciousKeys = RsaJwkGenerator.generateJwk(2048);
-        maliciousKeys.setKeyId(this.keyId);
-        maliciousKeys.setAlgorithm("RS256");
+    public String issueAccessToken(final MockTokenOptions options, final RsaJsonWebKey jwk) throws JoseException {
 
         var claims = new JwtClaims();
-        claims.setSubject(sub);
-        claims.setIssuer("testissuer.com");
-        claims.setAudience("api.mycompany.com");
-        claims.setStringClaim("scope", "openid profile email investments");
-        claims.setExpirationTimeMinutesInTheFuture(10);
-        claims.setNotBeforeMinutesInThePast(1);
+        claims.setIssuer(options.getIssuer());
+        claims.setAudience(options.getAudience());
+        claims.setStringClaim("scope", options.getScope());
+        claims.setSubject(options.getSubject());
+        claims.setStringClaim("manager_id", options.getManagerId());
+        claims.setExpirationTimeMinutesInTheFuture(options.getExpiryMinutes());
 
         var jws = new JsonWebSignature();
         jws.setKeyIdHeaderValue(this.keyId);
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
         jws.setPayload(claims.toJson());
-        jws.setKey(maliciousKeys.getPrivateKey());
+        jws.setKey(jwk.getPrivateKey());
         return jws.getCompactSerialization();
     }
 

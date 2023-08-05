@@ -16,10 +16,7 @@ import org.junit.platform.suite.api.Suite;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
-import com.mycompany.sample.tests.utils.ApiClient;
-import com.mycompany.sample.tests.utils.ApiRequestOptions;
-import com.mycompany.sample.tests.utils.ApiResponse;
-import com.mycompany.sample.tests.utils.MockAuthorizationServer;
+import com.mycompany.sample.tests.utils.*;
 
 /*
  * A basic load test to ensure that the API behaves correctly when there are concurrent requests
@@ -30,7 +27,6 @@ public class LoadTest {
     private static MockAuthorizationServer authorizationServer;
     private static ApiClient apiClient;
     private static String sessionId;
-    private static String guestUserId;
     private static int totalCount;
     private static int errorCount;
 
@@ -44,9 +40,6 @@ public class LoadTest {
      */
     @BeforeAll
     public static void setup() throws Throwable {
-
-        // The real subject claim value for my online load test user
-        guestUserId = "a6b404b1-98af-41a2-8e7f-e4061dc0bf86";
 
         // Uncomment to view HTTPS requests initiated from tests in an HTTP proxy
         // var url = new java.net.URL("http://127.0.0.1:8888");
@@ -125,7 +118,11 @@ public class LoadTest {
 
         var list = new ArrayList<String>();
         for (int index = 0; index < 5; index++) {
-            list.add(authorizationServer.issueAccessToken(guestUserId));
+
+            var jwtOptions = new MockTokenOptions();
+            jwtOptions.useStandardUser();
+            var accessToken = authorizationServer.issueAccessToken(jwtOptions);
+            list.add(accessToken);
         }
         return list;
     }
