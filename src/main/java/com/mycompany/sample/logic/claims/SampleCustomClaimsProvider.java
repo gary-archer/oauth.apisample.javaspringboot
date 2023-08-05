@@ -1,52 +1,23 @@
 package com.mycompany.sample.logic.claims;
 
-import org.jose4j.jwt.JwtClaims;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.BaseClaims;
-import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 
 /*
- * A provider of domain specific claims
+ * A provider of custom claims from the business data
  */
 public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
     /*
-     * When using the StandardAuthorizer this is called to read custom claims from the JWT
+     * Look up custom claims when details are not available in the cache, such as for a new access token
      */
     @Override
-    public CustomClaims getFromPayload(final JwtClaims payload) {
+    public CustomClaims lookupForNewAccessToken(final String accessToken, final BaseClaims baseClaims) {
 
-        var userId = ClaimsReader.getStringClaim(payload, "user_id");
-        var userRole = ClaimsReader.getStringClaim(payload, "user_role");
-        var userRegions = ClaimsReader.getStringArrayClaim(payload, "user_regions");
-        return new SampleCustomClaims(userId, userRole, userRegions);
-    }
-
-    /*
-     * When using the ClaimsCachingAuthorizer, this is called to get extra claims when the token is first received
-     */
-    @Override
-    public SampleCustomClaims getFromLookup(final String accessToken, final BaseClaims baseClaims) {
-        return (SampleCustomClaims) this.getCustomClaims(baseClaims.getSubject());
-    }
-
-    /*
-     * When using the ClaimsCaching authorizer this manages deserialization from the cache
-     */
-    @Override
-    public CustomClaims deserialize(final JsonNode claimsNode) {
-        return SampleCustomClaims.importData(claimsNode);
-    }
-
-    /*
-     * Receive user attributes from identity data, and return user attributes from business data
-     */
-    private CustomClaims getCustomClaims(final String subject) {
-
-        var isAdmin = subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91");
+        var isAdmin = baseClaims.getSubject().equals("77a97e5b-b748-45e5-bb6f-658e85b2df91");
         if (isAdmin) {
 
             // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions
@@ -59,5 +30,13 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
             // The CompanyService class will use these claims to return only transactions for the US region
             return new SampleCustomClaims("10345", "user", new String[]{"USA"});
         }
+    }
+
+    /*
+     * When custom claims are in the cache, deserialize them into an object
+     */
+    @Override
+    public CustomClaims deserializeFromCache(final JsonNode claimsNode) {
+        return SampleCustomClaims.importData(claimsNode);
     }
 }

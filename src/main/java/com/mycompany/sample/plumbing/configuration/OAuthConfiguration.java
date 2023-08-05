@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /*
- * Configuration settings to enable standard security and extensible use of claims
+ * Configuration settings to enable extensible use of claims
  */
 public class OAuthConfiguration {
 
@@ -23,13 +23,8 @@ public class OAuthConfiguration {
     @Setter
     private String jwksEndpoint;
 
-    // How to manage domain specific claims
+    // The maximum number of minutes for which to cache claims
     @Getter
     @Setter
-    private String claimsStrategy;
-
-    // Optional claims caching configuration
-    @Getter
-    @Setter
-    private ClaimsCacheConfiguration claimsCache;
+    private int claimsCacheTimeToLiveMinutes;
 }

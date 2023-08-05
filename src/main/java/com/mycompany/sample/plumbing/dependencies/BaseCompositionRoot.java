@@ -98,21 +98,18 @@ public final class BaseCompositionRoot {
     }
 
     /*
-     * Register Claims related dependencies
+     * Register claims related dependencies
      */
     private void registerClaimsDependencies() {
 
         // Register an object to provide custom claims
         this.container.registerSingleton("CustomClaimsProvider", this.customClaimsProvider);
 
-        // Register extra objects if using claims caching
-        if (this.oauthConfiguration.getClaimsStrategy().equals("apiLookup")) {
-
-            var cache = new ClaimsCache(
-                    this.oauthConfiguration.getClaimsCache().getTimeToLiveMinutes(),
-                    this.customClaimsProvider,
-                    this.loggerFactory);
-            this.container.registerSingleton("ClaimsCache", cache);
-        }
+        // Register a cache for custom claims the the API's own data
+        var cache = new ClaimsCache(
+                this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
+                this.customClaimsProvider,
+                this.loggerFactory);
+        this.container.registerSingleton("ClaimsCache", cache);
     }
 }

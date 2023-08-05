@@ -106,7 +106,7 @@ public final class ClaimsCache {
             // Deserialize the data
             var mapper = new ObjectMapper();
             var data = mapper.readValue(claimsText, ObjectNode.class);
-            var custom = this.customClaimsProvider.deserialize(data.get("custom"));
+            var custom = this.customClaimsProvider.deserializeFromCache(data.get("custom"));
 
             // Output debug info
             this.debugLogger.debug(

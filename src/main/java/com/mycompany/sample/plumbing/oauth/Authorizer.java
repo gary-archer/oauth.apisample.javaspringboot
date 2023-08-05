@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 
 /*
- * An authorizer abstraction that could be used for both Entry Point APIs and Microservices
+ * An authorizer abstraction to validate a JWT access token and return claims
  */
 public interface Authorizer {
 

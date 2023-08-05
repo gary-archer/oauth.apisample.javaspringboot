@@ -1,6 +1,5 @@
 package com.mycompany.sample.plumbing.claims;
 
-import org.jose4j.jwt.JwtClaims;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /*
@@ -9,26 +8,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class CustomClaimsProvider {
 
     /*
-     * When using the StandardAuthorizer this is overridden to read claims from a received JWT
+     * Look up custom claims when details are not available in the cache, such as for a new access token
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims getFromPayload(final JwtClaims payload) {
+    public CustomClaims lookupForNewAccessToken(final String accessToken, final BaseClaims baseClaims) {
         return new CustomClaims();
     }
 
     /*
-     * When using the ClaimsCaching authorizer this gets custom claims when a token is first received
+     * When custom claims are in the cache, deserialize them into an object
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims getFromLookup(final String accessToken, final BaseClaims baseClaims) {
-        return new CustomClaims();
-    }
-
-    /*
-     * When using the ClaimsCaching authorizer this manages deserialization from the cache
-     */
-    @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public CustomClaims deserialize(final JsonNode data) {
+    public CustomClaims deserializeFromCache(final JsonNode data) {
         return CustomClaims.importData(data);
     }
 }

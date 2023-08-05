@@ -32,12 +32,9 @@
     }
   },
   "oauth": {
-    "issuer":         "testissuer.com",
-    "audience":       "api.mycompany.com",
-    "jwksEndpoint":   "https://login.authsamples-dev.com:447/.well-known/jwks.json",
-    "claimsStrategy": "apiLookup",
-    "claimsCache": {
-      "timeToLiveMinutes":  15
-    }
+    "issuer":                       "testissuer.com",
+    "audience":                     "api.mycompany.com",
+    "jwksEndpoint":                 "https://login.authsamples-dev.com:447/.well-known/jwks.json",
+    "claimsCacheTimeToLiveMinutes": 15
   }
 }
