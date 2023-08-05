@@ -1,7 +1,7 @@
 package com.mycompany.sample.plumbing.claims;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.jose4j.jwt.JwtClaims;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /*
  * A class to deal with domain specific claims, needed for business authorization

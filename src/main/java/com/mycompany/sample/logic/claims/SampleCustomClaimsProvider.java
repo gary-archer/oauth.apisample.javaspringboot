@@ -1,9 +1,9 @@
 package com.mycompany.sample.logic.claims;
 
-import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import org.jose4j.jwt.JwtClaims;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
+import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaimsProvider;
 
@@ -19,7 +19,7 @@ public final class SampleCustomClaimsProvider extends CustomClaimsProvider {
     public CustomClaims lookupForNewAccessToken(final String accessToken, final JwtClaims jwtClaims) {
 
         var subject = ClaimsReader.getStringClaim(jwtClaims, "sub");
-        var isAdmin =subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91");
+        var isAdmin = subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91");
         if (isAdmin) {
 
             // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions

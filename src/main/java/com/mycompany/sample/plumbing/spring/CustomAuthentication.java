@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
-import com.mycompany.sample.plumbing.claims.ClaimsReader;
 
 /*
  * A helper class to enable us to return the security principal in Spring Security terms
@@ -74,6 +73,6 @@ public final class CustomAuthentication implements Authentication {
      */
     @Override
     public String getName() {
-        return ClaimsReader.getStringClaim(this.claims.getJwtClaims(), "sub");
+        return this.claims.getSubject();
     }
 }

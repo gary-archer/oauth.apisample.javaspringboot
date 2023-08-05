@@ -10,7 +10,6 @@ import lombok.Getter;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsPrincipal implements AuthenticatedPrincipal {
 
-    @Getter
     private final JwtClaims jwtClaims;
 
     @Getter

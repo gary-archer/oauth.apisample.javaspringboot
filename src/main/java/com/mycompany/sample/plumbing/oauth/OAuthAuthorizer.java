@@ -54,7 +54,7 @@ public final class OAuthAuthorizer implements Authorizer {
             return new ClaimsPrincipal(jwtClaims, cachedClaims.getCustom());
         }
 
-        // In Cognito we cannot issue custom claims so the API looks them up when the access token is first received
+        // Look up custom claims not in the JWT access token when it is first received
         var customClaims = customClaimsProvider.lookupForNewAccessToken(accessToken, jwtClaims);
         var claimsToCache = new CachedClaims(customClaims);
 

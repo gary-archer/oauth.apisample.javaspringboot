@@ -1,14 +1,13 @@
 package com.mycompany.sample.host.controllers;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mycompany.sample.logic.entities.ClientUserInfo;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
+import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*

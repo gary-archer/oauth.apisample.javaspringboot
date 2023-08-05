@@ -1,11 +1,11 @@
 package com.mycompany.sample.plumbing.claims;
 
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
  * A helper class to make claims objects injectable

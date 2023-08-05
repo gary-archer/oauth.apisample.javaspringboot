@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,7 @@ import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
-import com.mycompany.sample.plumbing.claims.CustomClaims;
+import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
