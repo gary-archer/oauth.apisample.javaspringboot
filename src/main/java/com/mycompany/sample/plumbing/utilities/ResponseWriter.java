@@ -14,31 +14,20 @@ public final class ResponseWriter {
      */
     public void writeFilterExceptionResponse(final HttpServletResponse response, final ClientError clientError) {
 
-        this.addErrorResponseHeaders(response);
-        this.setErrorResponseBody(response, clientError);
-    }
-
-    /*
-     * Write error headers to the response
-     */
-    private void addErrorResponseHeaders(final HttpServletResponse response) {
-
         // Indicate a JSON response
         response.setHeader("Content-Type", "application/json");
 
-        // Add 401 related errors if required
+        // Add the standards based header if required
         final var unauthorizedStatus = 401;
-        if (response.getStatus() == unauthorizedStatus) {
-            response.setHeader("WWW-Authenticate", "Bearer");
+        if (response.getStatus() == unauthorizedStatus && clientError != null) {
+
+            var wwwAuthenticateHeader = String.format("Bearer realm=\"%s\", error=\"%s\", error_description=\"%s\"",
+                    "mycompany.com", clientError.getErrorCode(), clientError.getMessage());
+            response.setHeader("WWW-Authenticate", wwwAuthenticateHeader);
         }
-    }
-
-    /*
-     * Write response body details
-     */
-    private void setErrorResponseBody(final HttpServletResponse response, final ClientError clientError) {
-
         try {
+
+            // Also add a more client friendly JSON response with the same fields
             response.setStatus(response.getStatus());
             response.getWriter().write(clientError.toResponseFormat().toString());
 

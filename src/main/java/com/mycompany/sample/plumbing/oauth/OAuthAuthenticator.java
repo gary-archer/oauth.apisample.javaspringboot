@@ -1,5 +1,9 @@
 package com.mycompany.sample.plumbing.oauth;
 
+import com.mycompany.sample.plumbing.claims.ClaimsReader;
+import com.mycompany.sample.plumbing.errors.ErrorCodes;
+import com.mycompany.sample.plumbing.errors.ErrorFactory;
+import java.util.Arrays;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jwt.JwtClaims;
@@ -7,6 +11,7 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
@@ -15,7 +20,7 @@ import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
 
 /*
- * The entry point for calls to the Authorization Server
+ * The entry point for OAuth related logic
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
@@ -58,7 +63,19 @@ public class OAuthAuthenticator {
 
             // Validate the token and get its claims
             var jwtConsumer = builder.build();
-            return jwtConsumer.processToClaims(accessToken);
+            var claims = jwtConsumer.processToClaims(accessToken);
+
+            // The sample API requires the same scope for all endpoints, and it is enforced here
+            var scopes = ClaimsReader.getStringClaim(claims, "scope").split(" ");
+            var foundScope = Arrays.stream(scopes).filter(s -> s.contains("investments")).findFirst();
+            if (!foundScope.isPresent()) {
+                throw ErrorFactory.createClientError(
+                        HttpStatus.FORBIDDEN,
+                        ErrorCodes.INSUFFICIENT_SCOPE,
+                        "Access to this API endpoint is forbidden");
+            }
+
+            return claims;
 
         } catch (InvalidJwtException ex) {
 

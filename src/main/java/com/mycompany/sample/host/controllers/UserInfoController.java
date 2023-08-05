@@ -10,7 +10,6 @@ import com.mycompany.sample.logic.entities.SampleCustomClaims;
 import com.mycompany.sample.plumbing.claims.BaseClaims;
 import com.mycompany.sample.plumbing.claims.CustomClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
 
 /*
  * A simple controller to return user info to the caller
@@ -41,10 +40,6 @@ public class UserInfoController {
     @GetMapping(value = "")
     public CompletableFuture<ClientUserInfo> getUserClaims() {
 
-        // First check scopes
-        ScopeVerifier.enforce(this.baseClaims.getScopes(), "profile");
-
-        // Next return the user info
         var userInfo = new ClientUserInfo();
         userInfo.setRole(this.customClaims.getUserRole());
         userInfo.setRegions(this.customClaims.getUserRegions());

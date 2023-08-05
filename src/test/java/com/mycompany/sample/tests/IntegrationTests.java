@@ -162,7 +162,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("unauthorized", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
     }
 
     /*

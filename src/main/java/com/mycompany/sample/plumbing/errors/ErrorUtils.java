@@ -93,57 +93,6 @@ public final class ErrorUtils {
     }
 
     /*
-     * Handle exceptions during user info lookup when we may have error details
-     */
-    public static RuntimeException fromUserInfoError(
-            final int status,
-            final @Nullable ObjectNode responseData,
-            final String url) {
-
-        // Collect error parts to get details
-        var parts = new ArrayList<String>();
-        parts.add("User info lookup failed");
-        parts.add(String.format("Status: %d", status));
-        if (responseData != null) {
-            var errorCodeNode = responseData.get("error");
-            if (errorCodeNode != null) {
-                parts.add(String.format("Code: %s", errorCodeNode.asText()));
-            }
-            var errorDescriptionNode = responseData.get("error_description");
-            if (errorDescriptionNode != null) {
-                parts.add(String.format("Code: %s", errorDescriptionNode.asText()));
-            }
-        }
-        parts.add(String.format("URL: %s", url));
-        var details = String.join(", ", parts);
-
-        // Report 401 errors where the access token is rejected
-        if (status == HttpStatus.UNAUTHORIZED.value()) {
-            return ErrorFactory.createClient401Error(details);
-        }
-
-        var error = ErrorFactory.createServerError(ErrorCodes.USERINFO_FAILURE, "User info lookup failed");
-        error.setDetails(new TextNode(details));
-        return error;
-    }
-
-    /*
-     * Handle connectivity exceptions during user info lookup
-     */
-    public static ServerError fromUserInfoError(final Throwable ex, final String url) {
-
-        // Handle rethrown errors
-        if (ex instanceof ServerError) {
-            return (ServerError) ex;
-        }
-        if (ex instanceof ClientError) {
-            throw (ClientError) ex;
-        }
-
-        return ErrorFactory.createServerError(ErrorCodes.USERINFO_FAILURE, "User info lookup failed", ex);
-    }
-
-    /*
      * The error thrown if we cannot find an expected claim during OAuth processing
      */
     public static ClientError fromMissingClaim(final String claimName) {

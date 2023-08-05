@@ -16,7 +16,6 @@ import com.mycompany.sample.logic.services.CompanyService;
 import com.mycompany.sample.plumbing.claims.BaseClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.plumbing.oauth.ScopeVerifier;
 
 /*
  * A controller to return company related info to the caller
@@ -44,10 +43,6 @@ public class CompanyController {
     @GetMapping(value = "")
     public CompletableFuture<List<Company>> getCompanyList() {
 
-        // First check scopes
-        ScopeVerifier.enforce(this.claims.getScopes(), "investments");
-
-        // Next return filtered data based on claims
         return this.service.getCompanyList();
     }
 
@@ -58,10 +53,7 @@ public class CompanyController {
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(
             @PathVariable("companyId") final String companyId) {
 
-        // First check scopes
-        ScopeVerifier.enforce(this.claims.getScopes(), "investments");
-
-        // Throw a 400 error if we have an invalid id
+        // Throw a 400 error if we have a malformed ID
         var idValue = Ints.tryParse(companyId);
         if (idValue == null || idValue <= 0) {
             throw ErrorFactory.createClientError(
