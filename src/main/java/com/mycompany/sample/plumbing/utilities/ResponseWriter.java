@@ -10,7 +10,7 @@ import com.mycompany.sample.plumbing.errors.ClientError;
 public final class ResponseWriter {
 
     /*
-     * Handle 500 errors in Spring filters
+     * Handle errors in the OAuth filter
      */
     public void writeFilterExceptionResponse(final HttpServletResponse response, final ClientError clientError) {
 

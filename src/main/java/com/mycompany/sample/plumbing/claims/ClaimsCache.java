@@ -69,10 +69,7 @@ public class ClaimsCache {
             }
 
             // Serialize the data
-            var mapper = new ObjectMapper();
-            var data = mapper.createObjectNode();
-            data.set("extra", claims.exportData());
-            var claimsText = data.toString();
+            var claimsJson = claims.exportData().toString();
 
             // Output debug info
             this.debugLogger.debug(String.format(
@@ -82,7 +79,7 @@ public class ClaimsCache {
 
             // Do the write
             final var futureExpiryMilliseconds = (epochSeconds + secondsToCache) * 1000;
-            cache.invoke(accessTokenHash, e -> e.setValue(claimsText).setExpiryTime(futureExpiryMilliseconds));
+            cache.invoke(accessTokenHash, e -> e.setValue(claimsJson).setExpiryTime(futureExpiryMilliseconds));
         }
     }
 
@@ -105,7 +102,7 @@ public class ClaimsCache {
             // Deserialize the data
             var mapper = new ObjectMapper();
             var data = mapper.readValue(claimsText, ObjectNode.class);
-            var claims = this.extraClaimsProvider.deserializeFromCache(data.get("extra"));
+            var claims = this.extraClaimsProvider.deserializeFromCache(data);
 
             // Output debug info
             this.debugLogger.debug(

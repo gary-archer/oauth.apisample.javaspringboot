@@ -30,7 +30,7 @@ public class UserInfoController {
     }
 
     /*
-     * Some or all of these values can be returned to API clients when required
+     * Return user attributes that are not stored in the authorization server that the UI needs
      */
     @GetMapping(value = "")
     public CompletableFuture<ClientUserInfo> getUserInfo() {

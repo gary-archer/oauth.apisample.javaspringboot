@@ -17,11 +17,10 @@ public class ExtraClaims {
     }
 
     /*
-     * This can be overridden by derived classes to export real extra claims
+     * This can be overridden by derived classes when saving claims to a cache
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
     public ObjectNode exportData() {
-
         var mapper = new ObjectMapper();
         return mapper.createObjectNode();
     }
