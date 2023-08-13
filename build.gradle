@@ -1,0 +1,85 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.0'
+    id "com.adarshr.test-logger" version "3.2.0"
+}
+
+group = 'oauth.apisample.javaspringboot'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    // API dependency versions
+    spring_boot_starter_version = '3.1.2'
+    spring_security_version = '6.1.2'
+    jose4j_version = '0.9.3'
+    cache2k_version = '1.6.0.Final'
+    commons_codec_version = '1.15'
+    jackson_version = '2.14.0'
+    async_file_version = '1.1.2'
+    logback_version = '7.2'
+    lombok_version = '1.18.24'
+    guava_version = '32.0.0-jre'
+    gethostname4j_version = '1.0.0'
+
+    // Test dependency versions
+    junit_jupiter_version = '5.9.0'
+    junit_platform_suite_version = '1.9.0'
+}
+
+dependencies {
+
+    // Spring dependencies
+    implementation "org.springframework.boot:spring-boot-starter-web:$spring_boot_starter_version"
+    implementation "org.springframework.security:spring-security-config:$spring_security_version"
+    implementation "org.springframework.security:spring-security-web:$spring_security_version"
+
+    // OAuth and caching dependencies
+    implementation "org.bitbucket.b_c:jose4j:$jose4j_version"
+    implementation "org.cache2k:cache2k-base-bom:$cache2k_version"
+    implementation "commons-codec:commons-codec:$commons_codec_version"
+
+    // Jackson dependencies
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+
+    // Utilities
+    implementation "com.github.javasync:AsyncFileRw:$async_file_version"
+    implementation "net.logstash.logback:logstash-logback-encoder:$logback_version"
+    implementation "com.google.guava:guava:$guava_version"
+    implementation "com.kstruct:gethostname4j:$gethostname4j_version"
+
+    // Prevent a CVE by including a newer version of this dependency than Spring uses
+    implementation 'org.yaml:snakeyaml:2.0'
+
+    // Compiler dependencies
+    compileOnly "org.projectlombok:lombok:$lombok_version"
+    annotationProcessor "org.projectlombok:lombok:$lombok_version"
+
+    // Test dependencies
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
+    testImplementation "org.junit.platform:junit-platform-suite-engine:$junit_platform_suite_version"
+
+    // Test compiler dependencies
+    testCompileOnly "org.projectlombok:lombok:$lombok_version"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombok_version"
+}
+
+test {
+    useJUnitPlatform()
+    include '**/IntegrationTests.class'
+    testLogging.showStandardStreams = true
+}
+
+// In Intellij select "Build, Execution, Deployment > Build Tools > gradle > Run Tests using: Intellij IDEA"
+tasks.register('loadtest', Test) {
+    useJUnitPlatform()
+    include '**/LoadTest.class'
+    testLogging.showStandardStreams = true
+}

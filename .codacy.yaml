@@ -1,0 +1,8 @@
+---
+exclude_paths: [
+    '*',
+    'data/**',
+    'deployment/**',
+    'gradle/**',
+    'images/**'
+]
