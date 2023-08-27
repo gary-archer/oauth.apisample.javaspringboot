@@ -80,6 +80,7 @@ public final class MockAuthorizationServer {
         claims.setStringClaim("scope", options.getScope());
         claims.setSubject(options.getSubject());
         claims.setStringClaim("manager_id", options.getManagerId());
+        claims.setStringClaim("role", options.getRole());
         claims.setExpirationTimeMinutesInTheFuture(options.getExpiryMinutes());
 
         var jws = new JsonWebSignature();

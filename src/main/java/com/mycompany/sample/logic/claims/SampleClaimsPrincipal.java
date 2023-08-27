@@ -6,7 +6,7 @@ import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.ExtraClaims;
 
 /*
- * Manages claims that should be issued to the access token, ensure that it is locked down
+ * Manages claims that should be issued to the access token, to ensure that it is locked down
  * When the authorization server does not support this, look up such values from extra claims
  */
 public final class SampleClaimsPrincipal extends ClaimsPrincipal {

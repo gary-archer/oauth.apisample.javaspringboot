@@ -51,16 +51,16 @@ public final class OAuthAuthorizer implements Authorizer {
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
         var extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
         if (extraClaims != null) {
-            return new ClaimsPrincipal(jwtClaims, extraClaims);
+            return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
         }
 
         // Look up extra claims not in the JWT access token when the token is first received
-        extraClaims = extraClaimsProvider.lookupExtraClaims(jwtClaims);
+        extraClaims = this.extraClaimsProvider.lookupExtraClaims(jwtClaims);
 
         // Cache the extra claims for subsequent requests with the same access token
         this.cache.setExtraUserClaims(accessTokenHash, extraClaims, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims used by the API's authorization logic
-        return new ClaimsPrincipal(jwtClaims, extraClaims);
+        return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
     }
 }

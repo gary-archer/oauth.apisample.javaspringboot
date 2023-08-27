@@ -2,6 +2,7 @@ package com.mycompany.sample.logic.claims;
 
 import org.jose4j.jwt.JwtClaims;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mycompany.sample.logic.repositories.UserRepository;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.ExtraClaims;
@@ -12,52 +13,30 @@ import com.mycompany.sample.plumbing.claims.ExtraClaimsProvider;
  */
 public final class SampleExtraClaimsProvider extends ExtraClaimsProvider {
 
+    private final UserRepository userRepository;
+
+    public SampleExtraClaimsProvider(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     /*
      * Get additional claims from the API's own database
      */
     @Override
     public ExtraClaims lookupExtraClaims(final JwtClaims jwtClaims) {
 
-        // First get values from the token, or look them up when they are not received
-        boolean lookedUp = false;
-        String managerId = null;
-        String role = null;
-        if (jwtClaims.hasClaim("manager_id") && jwtClaims.hasClaim("role")) {
+        // First, see which claims are included in access tokens
+        if (jwtClaims.hasClaim("manager_id")) {
 
-            managerId = ClaimsReader.getStringClaim(jwtClaims, "manager_id");
-            role = ClaimsReader.getStringClaim(jwtClaims, "role");
+            // The best model is to receive a useful user identity in access tokens, along with the user role
+            var managerId = ClaimsReader.getStringClaim(jwtClaims, "manager_id");
+            return this.userRepository.getClaimsForManagerId(managerId);
 
         } else {
 
-            lookedUp = true;
+            // For AWS Cognito, the API has to map the subject to its own user identity and look up all custom claims
             var subject = ClaimsReader.getStringClaim(jwtClaims, "sub");
-            if (subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91")) {
-                managerId = "20116";
-                role = "admin";
-            } else {
-                managerId = "10345";
-                role = "user";
-            }
-        }
-
-        // A real API would use a database, but this API uses a mock implementation
-        if (managerId.equals("20116")) {
-
-            // These claims are used for the guestadmin@mycompany.com user account
-            var extraClaims = new SampleExtraClaims("Global Manager", new String[]{"Europe", "USA", "Asia"});
-            if (lookedUp) {
-                extraClaims.addTokenClaims(managerId, role);
-            }
-            return extraClaims;
-
-        } else {
-
-            // These claims are used for the guestuser@mycompany.com user account
-            var extraClaims = new SampleExtraClaims("Regional Manager", new String[]{"USA"});
-            if (lookedUp) {
-                extraClaims.addTokenClaims(managerId, role);
-            }
-            return extraClaims;
+            return this.userRepository.getClaimsForSubject(subject);
         }
     }
 

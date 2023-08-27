@@ -32,6 +32,7 @@ public class CompanyService {
     private final SampleClaimsPrincipal claims;
 
     public CompanyService(final CompanyRepository repository, final ClaimsPrincipal claims) {
+
         this.repository = repository;
         this.claims = (SampleClaimsPrincipal) claims;
     }

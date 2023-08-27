@@ -46,14 +46,14 @@ public final class SampleExtraClaims extends ExtraClaims {
 
             var managerId = managerIdNode.asText();
             var role = roleNode.asText();
-            claims.addTokenClaims(managerId, role);
+            claims.addMainClaims(managerId, role);
         }
 
         return claims;
     }
 
     /*
-     * Claims that are always cached
+     * Construct with Claims that are always looked up from the API's own data
      */
     public SampleExtraClaims(final String title, final String[] regions) {
         this.title = title;
@@ -61,9 +61,10 @@ public final class SampleExtraClaims extends ExtraClaims {
     }
 
     /*
-     * Claims that are only cached when they cannot be issued to access tokens
+     * These values should be issued to the access token and store in the JWT claims
+     * When not supported by the authorization server they are stored in this class instead
      */
-    public void addTokenClaims(final String managerId, final String role) {
+    public void addMainClaims(final String managerId, final String role) {
         this.managerId = managerId;
         this.role = role;
     }
