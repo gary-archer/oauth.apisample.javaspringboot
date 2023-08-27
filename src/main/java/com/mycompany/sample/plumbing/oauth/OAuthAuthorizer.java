@@ -8,6 +8,7 @@ import com.mycompany.sample.plumbing.claims.ClaimsCache;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.claims.ExtraClaimsProvider;
+import com.mycompany.sample.plumbing.claims.TokenClaims;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -51,7 +52,7 @@ public final class OAuthAuthorizer implements Authorizer {
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
         var extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
         if (extraClaims != null) {
-            return new ClaimsPrincipal(jwtClaims, extraClaims);
+            return new ClaimsPrincipal(new TokenClaims(jwtClaims), extraClaims);
         }
 
         // Look up extra claims not in the JWT access token when the token is first received
@@ -61,6 +62,6 @@ public final class OAuthAuthorizer implements Authorizer {
         this.cache.setExtraUserClaims(accessTokenHash, extraClaims, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims used by the API's authorization logic
-        return new ClaimsPrincipal(jwtClaims, extraClaims);
+        return new ClaimsPrincipal(new TokenClaims(jwtClaims), extraClaims);
     }
 }

@@ -45,7 +45,7 @@ public final class CustomAuthorizationFilter extends OncePerRequestFilter {
             var claims = authorizer.execute(request);
 
             // Log who called the API
-            logEntry.setIdentity(claims.getSubject());
+            logEntry.setIdentity(claims.getTokenClaims().getSubject());
 
             // Update the Spring security context with the claims
             SecurityContextHolder.getContext().setAuthentication(new CustomAuthentication(claims));
