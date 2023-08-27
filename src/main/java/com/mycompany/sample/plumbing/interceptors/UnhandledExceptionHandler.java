@@ -84,8 +84,6 @@ public final class UnhandledExceptionHandler {
      */
     private ClientError handleError(final Throwable ex, final LogEntryImpl logEntry) {
 
-        System.out.println(ex);
-
         // Get the error into a known object
         var error = ErrorUtils.fromException(ex);
         if (error instanceof ServerError) {

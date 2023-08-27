@@ -34,7 +34,6 @@ public final class UserRepository {
         if (subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91")) {
 
             // These claims are used for the guestadmin@mycompany.com user account
-            System.out.println("USING ADMIN");
             var claims = new SampleExtraClaims("Global Manager", new String[]{"Europe", "USA", "Asia"});
             claims.addMainClaims("20116", "admin");
             return claims;
@@ -42,7 +41,6 @@ public final class UserRepository {
         } else {
 
             // These claims are used for the guestuser@mycompany.com user account
-            System.out.println("USING USER");
             var claims = new SampleExtraClaims("Regional Manager", new String[]{"USA"});
             claims.addMainClaims("10345", "user");
             return claims;
