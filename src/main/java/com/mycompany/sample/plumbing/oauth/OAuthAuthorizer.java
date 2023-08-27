@@ -55,7 +55,7 @@ public final class OAuthAuthorizer implements Authorizer {
         }
 
         // Look up extra claims not in the JWT access token when the token is first received
-        extraClaims = extraClaimsProvider.lookupBusinessClaims(accessToken, jwtClaims);
+        extraClaims = extraClaimsProvider.lookupExtraClaims(jwtClaims);
 
         // Cache the extra claims for subsequent requests with the same access token
         this.cache.setExtraUserClaims(accessTokenHash, extraClaims, ClaimsReader.getExpiryClaim(jwtClaims));

@@ -10,9 +10,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.mycompany.sample.logic.claims.SampleClaimsPrincipal;
+import com.mycompany.sample.logic.claims.SampleExtraClaims;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
-import com.mycompany.sample.logic.entities.SampleExtraClaims;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
@@ -28,11 +29,11 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyService {
 
     private final CompanyRepository repository;
-    private final SampleExtraClaims claims;
+    private final SampleClaimsPrincipal claims;
 
     public CompanyService(final CompanyRepository repository, final ClaimsPrincipal claims) {
         this.repository = repository;
-        this.claims = (SampleExtraClaims) claims.getExtraClaims();
+        this.claims = (SampleClaimsPrincipal) claims;
     }
 
     /*
@@ -77,7 +78,8 @@ public class CompanyService {
             return true;
         }
 
-        return Arrays.stream(this.claims.getRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
+        var extraClaims = (SampleExtraClaims) this.claims.getExtraClaims();
+        return Arrays.stream(extraClaims.getRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
     }
 
     /*

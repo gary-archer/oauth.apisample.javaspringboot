@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.mycompany.sample.logic.claims.SampleExtraClaims;
 import com.mycompany.sample.logic.entities.ClientUserInfo;
-import com.mycompany.sample.logic.entities.SampleExtraClaims;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
@@ -35,7 +35,7 @@ public class UserInfoController {
     @GetMapping(value = "")
     public CompletableFuture<ClientUserInfo> getUserInfo() {
         var userInfo = new ClientUserInfo();
-        userInfo.setRole(this.extraClaims.getRole());
+        userInfo.setTitle(this.extraClaims.getTitle());
         userInfo.setRegions(this.extraClaims.getRegions());
         return CompletableFuture.completedFuture(userInfo);
     }

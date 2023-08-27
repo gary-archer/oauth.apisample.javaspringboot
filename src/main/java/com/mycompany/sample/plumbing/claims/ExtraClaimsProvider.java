@@ -12,8 +12,16 @@ public class ExtraClaimsProvider {
      * Get additional claims from the API's own database
      */
     @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public ExtraClaims lookupBusinessClaims(final String accessToken, final JwtClaims jwtClaims) {
+    public ExtraClaims lookupExtraClaims(final JwtClaims jwtClaims) {
         return new ExtraClaims();
+    }
+
+    /*
+     * Create a claims principal that can manage claims lookup workarounds
+     */
+    @SuppressWarnings(value = "checkstyle:DesignForExtension")
+    public ClaimsPrincipal createClaimsPrincipal(final JwtClaims jwtClaims, final ExtraClaims extraClaims) {
+        return new ClaimsPrincipal(jwtClaims, extraClaims);
     }
 
     /*

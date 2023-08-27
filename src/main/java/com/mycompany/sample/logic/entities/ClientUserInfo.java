@@ -4,13 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /*
- * OAuth user info for returning to clients for display
+ * User info from the API's own data, returned to clients for display
  */
 public class ClientUserInfo {
 
     @Getter
     @Setter
-    private String role;
+    private String title;
 
     @Getter
     @Setter
