@@ -49,7 +49,7 @@ public final class OAuthAuthorizer implements Authorizer {
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        var extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
+        var extraClaims = this.cache.getExtraUserClaims(accessTokenHash, this.extraClaimsProvider);
         if (extraClaims != null) {
             return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
         }

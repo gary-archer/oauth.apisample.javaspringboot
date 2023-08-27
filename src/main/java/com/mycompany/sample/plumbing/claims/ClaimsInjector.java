@@ -16,7 +16,7 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 public class ClaimsInjector {
 
     /*
-     * Get claims from the security context
+     * Return claims from the security context
      */
     @Bean
     @Scope(value = CustomRequestScope.NAME)

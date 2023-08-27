@@ -21,16 +21,11 @@ public class ClaimsCache {
 
     private final Cache<String, String> cache;
     private final int timeToLiveMinutes;
-    private final ExtraClaimsProvider extraClaimsProvider;
     private final Logger debugLogger;
 
-    public ClaimsCache(
-            final int timeToLiveMinutes,
-            final ExtraClaimsProvider extraClaimsProvider,
-            final LoggerFactory loggerFactory) {
+    public ClaimsCache(final int timeToLiveMinutes, final LoggerFactory loggerFactory) {
 
         this.timeToLiveMinutes = timeToLiveMinutes;
-        this.extraClaimsProvider = extraClaimsProvider;
         this.debugLogger = loggerFactory.getDevelopmentLogger(ClaimsCache.class);
 
         // Output expiry debug messages here if required
@@ -87,7 +82,7 @@ public class ClaimsCache {
      * Get claims from the cache for this token's hash, or return null if not found
      * Almost simultaneous requests from the same user could return null for the same token
      */
-    public ExtraClaims getExtraUserClaims(final String accessTokenHash) {
+    public ExtraClaims getExtraUserClaims(final String accessTokenHash, final ExtraClaimsProvider extraClaimsProvider) {
 
         // Return null if there are no cached claims
         var claimsText = cache.get(accessTokenHash);
@@ -102,7 +97,7 @@ public class ClaimsCache {
             // Deserialize the data
             var mapper = new ObjectMapper();
             var data = mapper.readValue(claimsText, ObjectNode.class);
-            var claims = this.extraClaimsProvider.deserializeFromCache(data);
+            var claims = extraClaimsProvider.deserializeFromCache(data);
 
             // Output debug info
             this.debugLogger.debug(

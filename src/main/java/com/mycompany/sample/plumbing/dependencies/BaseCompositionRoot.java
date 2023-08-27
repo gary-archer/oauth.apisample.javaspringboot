@@ -22,7 +22,7 @@ public final class BaseCompositionRoot {
 
     public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
-        this.extraClaimsProvider = null;
+        this.extraClaimsProvider = new ExtraClaimsProvider();
     }
 
     /*
@@ -35,9 +35,9 @@ public final class BaseCompositionRoot {
     }
 
     /*
-     * Receive an object for providing extra claims
+     * Optionally provide an object for retrieving extra claims
      */
-    public BaseCompositionRoot withClaimsProvider(final ExtraClaimsProvider extraClaimsProvider) {
+    public BaseCompositionRoot withExtraClaimsProvider(final ExtraClaimsProvider extraClaimsProvider) {
         this.extraClaimsProvider = extraClaimsProvider;
         return this;
     }
@@ -105,10 +105,9 @@ public final class BaseCompositionRoot {
         // Register an object to provide extra claims
         this.container.registerSingleton("ExtraClaimsProvider", this.extraClaimsProvider);
 
-        // Register a cache for extra claims the the API's own data
+        // Register a cache for extra claims from the API's own data
         var cache = new ClaimsCache(
                 this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
-                this.extraClaimsProvider,
                 this.loggerFactory);
         this.container.registerSingleton("ClaimsCache", cache);
     }

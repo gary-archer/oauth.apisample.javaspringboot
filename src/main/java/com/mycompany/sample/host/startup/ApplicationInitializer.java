@@ -8,7 +8,6 @@ import org.springframework.util.StringUtils;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
 import com.mycompany.sample.logic.claims.SampleExtraClaimsProvider;
-import com.mycompany.sample.logic.repositories.UserRepository;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
 import com.mycompany.sample.plumbing.dependencies.BaseCompositionRoot;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
@@ -53,7 +52,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         // Register common code dependencies
         new BaseCompositionRoot(container)
                 .useOAuth(configuration.getOauth())
-                .withClaimsProvider(new SampleExtraClaimsProvider(new UserRepository()))
+                .withExtraClaimsProvider(new SampleExtraClaimsProvider(container))
                 .withLogging(configuration.getLogging(), loggerFactory)
                 .register();
 

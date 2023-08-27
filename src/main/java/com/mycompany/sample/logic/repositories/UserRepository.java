@@ -1,10 +1,15 @@
 package com.mycompany.sample.logic.repositories;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.mycompany.sample.logic.claims.SampleExtraClaims;
 
 /*
  * A repository that returns hard coded data, whereas a real implementation would use a database lookup
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class UserRepository {
 
     /*
