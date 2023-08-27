@@ -73,6 +73,6 @@ public final class CustomAuthentication implements Authentication {
      */
     @Override
     public String getName() {
-        return this.claims.getTokenClaims().getSubject();
+        return this.claims.getSubject();
     }
 }

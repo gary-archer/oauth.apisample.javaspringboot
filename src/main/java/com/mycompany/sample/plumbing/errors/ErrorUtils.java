@@ -89,7 +89,7 @@ public final class ErrorUtils {
                 if (ex.getClass() == InvalidJwtSignatureException.class) {
                     errorMessage = "Invalid JWS Signature";
                 }
-                var message = String.format("%s : %s", error.getErrorCode(), errorMessage);
+                var message = String.format("%s : %s",error.getErrorCode(), errorMessage);
                 context.append(message);
             }
 

@@ -1,5 +1,6 @@
 package com.mycompany.sample.plumbing.claims;
 
+import org.jose4j.jwt.JwtClaims;
 import org.springframework.security.core.AuthenticatedPrincipal;
 import lombok.Getter;
 
@@ -9,15 +10,21 @@ import lombok.Getter;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsPrincipal implements AuthenticatedPrincipal {
 
-    @Getter
-    private final TokenClaims tokenClaims;
+    private final JwtClaims jwtClaims;
 
     @Getter
     private final ExtraClaims extraClaims;
 
-    public ClaimsPrincipal(final TokenClaims tokenClaims, final ExtraClaims extraClaims) {
-        this.tokenClaims = tokenClaims;
+    public ClaimsPrincipal(final JwtClaims jwtClaims, final ExtraClaims extraClaims) {
+        this.jwtClaims = jwtClaims;
         this.extraClaims = extraClaims;
+    }
+
+    /*
+     * Return the subject claim
+     */
+    public String getSubject() {
+        return ClaimsReader.getStringClaim(this.jwtClaims, "sub");
     }
 
     /*
@@ -25,6 +32,6 @@ public class ClaimsPrincipal implements AuthenticatedPrincipal {
      */
     @Override
     public String getName() {
-        return this.tokenClaims.getSubject();
+        return this.getSubject();
     }
 }

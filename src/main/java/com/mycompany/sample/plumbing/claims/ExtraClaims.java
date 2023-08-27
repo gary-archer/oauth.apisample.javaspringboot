@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /*
- * Represents finer grained business permissions that you do not want to issue to access tokens
- * Such values are usually best managed in the business data and not the authorization server
+ * Claims that you cannot, or do not want to, manage in the authorization server
  */
 public class ExtraClaims {
 
