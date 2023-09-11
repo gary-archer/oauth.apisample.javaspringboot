@@ -1,0 +1,43 @@
+#
+# The Kubernetes resources for the final API, which serves business data to the SPA
+#
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: finalapi
+  labels:
+    app: finalapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finalapi
+  template:
+    metadata:
+      labels:
+        app: finalapi
+    spec:
+      containers:
+      - name: finalapi
+        image: $DOCKER_IMAGE
+        volumeMounts:
+          - name: api-config
+            mountPath: /usr/api/api.config.json
+            subPath: api.config.json
+            readOnly: true
+      volumes:
+        - name: api-config
+          configMap:
+            name: api-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: finalapi-svc
+spec:
+  selector:
+    app: finalapi
+  ports:
+  - name: http
+    protocol: "TCP"
+    port: 8000
