@@ -34,7 +34,7 @@ public class JsonFileReader {
 
                 throw ErrorFactory.createServerError(
                         SampleErrorCodes.FILE_READ_ERROR,
-                        "Problem encountered mapping file data",
+                        "Problem encountered deserializing file data",
                         mapException);
             }
         });

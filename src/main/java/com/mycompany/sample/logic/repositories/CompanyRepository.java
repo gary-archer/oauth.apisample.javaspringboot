@@ -2,6 +2,7 @@ package com.mycompany.sample.logic.repositories;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -12,9 +13,10 @@ import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.utilities.JsonFileReader;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.logging.LogEntry;
+import com.mycompany.sample.plumbing.logging.PerformanceBreakdown;
 
 /*
- * The repository should be able to use simple code to do async processing
+ * The repository to load data
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -60,8 +62,77 @@ public class CompanyRepository {
         // Start recording the time taken for data access
         var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyTransactions");
 
-        // Since there are multiple async calls, use an operation class to wrap them
-        var operation = new GetTransactionsOperation(this.jsonReader, companyId, breakdown);
-        return operation.execute();
+        // Do the async work, which is a little unreadable in Java, due to a missing await keyword
+        return this.jsonReader.readFile("data/companyList.json", Company[].class)
+                .handle((companies, companiesException) ->
+                        this.getAndFilterCompanies(
+                                companyId,
+                                companies,
+                                breakdown,
+                                companiesException))
+                .thenCompose(foundCompany ->
+                        this.jsonReader.readFile("data/companyTransactions.json", CompanyTransactions[].class)
+                        .handle((transactions, transactionsException) ->
+                                this.getAndFilterTransactions(
+                                        companyId,
+                                        foundCompany,
+                                        transactions,
+                                        breakdown,
+                                        transactionsException)));
+    }
+
+    /*
+     * Run the first async operation
+     */
+    private Company getAndFilterCompanies(
+            final int companyId,
+            final Company[] companiesData,
+            final PerformanceBreakdown breakdown,
+            final Throwable ex) {
+
+        // End the performance breakdown for the case when there is an error during the companies read
+        if (ex != null) {
+            breakdown.close();
+            throw ErrorUtils.fromException(ex);
+        }
+
+        // Find the requested company and return it
+        var companies = Arrays.stream(companiesData).toList();
+        var found = companies.stream().filter(c -> c.getId() == companyId).findFirst();
+        return found.orElse(null);
+    }
+
+    /*
+     * Run the next async operation, using the results of the first
+     */
+    private CompanyTransactions getAndFilterTransactions(
+            final int companyId,
+            final Company foundCompany,
+            final CompanyTransactions[] transactionsData,
+            final PerformanceBreakdown breakdown,
+            final Throwable ex) {
+
+        // End the performance breakdown for the case when there is an error during the transactions read
+        if (ex != null) {
+            breakdown.close();
+            throw ErrorUtils.fromException(ex);
+        }
+
+        CompanyTransactions result = null;
+        if (foundCompany != null) {
+
+            // Find the transactions for the requested company
+            Optional<CompanyTransactions> foundTransactions =
+                    Arrays.stream(transactionsData).filter(t -> t.getId() == companyId).findFirst();
+            if (foundTransactions.isPresent()) {
+
+                // Return the result for the success case
+                result = foundTransactions.get();
+                result.setCompany(foundCompany);
+            }
+        }
+
+        breakdown.close();
+        return result;
     }
 }
