@@ -245,7 +245,7 @@ public class LoadTest {
     private CompletableFuture<ApiResponse> executeApiRequest(
             final Supplier<CompletableFuture<ApiResponse>> resultCallback) {
 
-        Function<ApiResponse, CompletableFuture<ApiResponse>> callback = response -> {
+        return resultCallback.get().thenCompose(response -> {
 
             // Handle read errors
             if (response.getStatusCode() >= 200 && response.getStatusCode() <= 299) {
@@ -261,9 +261,7 @@ public class LoadTest {
             }
 
             return completedFuture(response);
-        };
-
-        return resultCallback.get().thenCompose(callback);
+        });
     }
 
     /*

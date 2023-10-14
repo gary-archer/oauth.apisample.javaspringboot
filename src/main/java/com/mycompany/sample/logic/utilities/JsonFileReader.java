@@ -3,7 +3,6 @@ package com.mycompany.sample.logic.utilities;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -25,10 +24,10 @@ public class JsonFileReader {
      */
     public <T> CompletableFuture<T> readFile(final String resourcePath, final Class<T> runtimeType) {
 
-        Function<String, CompletableFuture<T>> callback = json -> {
+        return this.readJsonFromFile(resourcePath).thenCompose(json -> {
 
             try {
-                var mapper = this.createObjectMapper();
+                var mapper = new ObjectMapper();
                 return completedFuture(mapper.readValue(json, runtimeType));
 
             } catch (Throwable mapException) {
@@ -38,17 +37,7 @@ public class JsonFileReader {
                         "Problem encountered mapping file data",
                         mapException);
             }
-        };
-
-        return this.readJsonFromFile(resourcePath)
-           .thenCompose(callback);
-    }
-
-    /*
-     * Create a mapper and potentially set serialization properties
-     */
-    private ObjectMapper createObjectMapper() {
-        return new ObjectMapper();
+        });
     }
 
     /*
@@ -56,13 +45,10 @@ public class JsonFileReader {
      */
     private CompletableFuture<String> readJsonFromFile(final String filePath) {
 
-        Function<byte[], CompletableFuture<String>> callback = bytes ->
-            completedFuture(new String(bytes));
-
         try {
 
             var path = Paths.get(filePath);
-            return AsyncFiles.readAllBytes(path).thenCompose(callback);
+            return AsyncFiles.readAllBytes(path).thenCompose(bytes -> completedFuture(new String(bytes)));
 
         } catch (Throwable ex) {
 

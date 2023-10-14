@@ -3,7 +3,6 @@ package com.mycompany.sample.logic.repositories;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -37,22 +36,20 @@ public class CompanyRepository {
 
         var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyList");
 
-        BiFunction<Company[], Throwable, List<Company>> callback = (data, ex) -> {
-
-            // End the performance breakdown
-            breakdown.close();
-
-            // Handle read errors
-            if (ex != null) {
-                throw ErrorUtils.fromException(ex);
-            }
-
-            // Return the result
-            return Arrays.stream(data).collect(Collectors.toList());
-        };
-
         return this.jsonReader.readFile("data/companyList.json", Company[].class)
-            .handle(callback);
+            .handle((data, ex) -> {
+
+                // End the performance breakdown
+                breakdown.close();
+
+                // Handle read errors
+                if (ex != null) {
+                    throw ErrorUtils.fromException(ex);
+                }
+
+                // Return the result
+                return Arrays.stream(data).collect(Collectors.toList());
+            });
     }
 
     /*

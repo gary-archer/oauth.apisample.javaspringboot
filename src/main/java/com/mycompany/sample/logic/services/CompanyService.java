@@ -4,7 +4,6 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -38,35 +37,29 @@ public class CompanyService {
     }
 
     /*
-     * Forward to the repository to get the company list
+     * Get a collection and filter on authorized items
      */
     public CompletableFuture<List<Company>> getCompanyList() {
 
-        // Filter on authorized items
-        Function<List<Company>, CompletableFuture<List<Company>>> callback = data ->
-            completedFuture(data.stream()
-                .filter(this::isUserAuthorizedForCompany)
-                .collect(Collectors.toList()));
-
-        return this.repository.getCompanyList().thenCompose(callback);
+        return this.repository.getCompanyList().thenCompose(data ->
+                completedFuture(data.stream()
+                    .filter(this::isUserAuthorizedForCompany)
+                    .collect(Collectors.toList())));
     }
 
     /*
-     * Forward to the repository to get the company transactions
+     * Get an individual object and deny access to unauthorized items
      */
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
 
-        // Deny access to individual items
-        Function<CompanyTransactions, CompletableFuture<CompanyTransactions>> callback = data -> {
+        return this.repository.getCompanyTransactions(companyId).thenCompose(data -> {
 
             if (data == null || !this.isUserAuthorizedForCompany(data.getCompany())) {
                 throw this.unauthorizedError(companyId);
             }
 
             return completedFuture(data);
-        };
-
-        return this.repository.getCompanyTransactions(companyId).thenCompose(callback);
+        });
     }
 
     /*

@@ -85,8 +85,8 @@ public final class ApiClient {
         var client = HttpClient.newBuilder()
                 .build();
 
-        // Handle the response
-        BiFunction<HttpResponse<String>, Throwable, ApiResponse> callback = (response, ex) -> {
+        // Send the request
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).handle((response, ex) -> {
 
             // Record the time taken in all cases
             metrics.setMillisecondsTaken(Duration.between(metrics.getStartTime(), Instant.now()).toMillis());
@@ -99,10 +99,7 @@ public final class ApiClient {
 
             // Return both success and error responses received from the API
             return new ApiResponse(response, metrics);
-        };
-
-        // Send the request
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).handle(callback);
+        });
     }
 
     /*
