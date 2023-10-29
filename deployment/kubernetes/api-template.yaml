@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
         app: finalapi
+        spiffe.io/spire-managed-identity: 'true'
+      annotations:
+        inject.istio.io/templates: 'sidecar,spire'
     spec:
       containers:
       - name: finalapi
