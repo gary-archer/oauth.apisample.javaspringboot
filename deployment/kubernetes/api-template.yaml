@@ -1,6 +1,11 @@
 #
 # The Kubernetes resources for the final API, which serves business data to the SPA
 #
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: finalapi
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
