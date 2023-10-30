@@ -25,6 +25,7 @@ spec:
       annotations:
         inject.istio.io/templates: 'sidecar,spire'
     spec:
+      serviceAccountName: finalapi
       containers:
       - name: finalapi
         image: $DOCKER_IMAGE
