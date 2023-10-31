@@ -1,6 +1,11 @@
 #
 # The Kubernetes resources for the final API, which serves business data to the SPA
 #
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: finalapi
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -16,7 +21,11 @@ spec:
     metadata:
       labels:
         app: finalapi
+        spiffe.io/spire-managed-identity: 'true'
+      annotations:
+        inject.istio.io/templates: 'sidecar,spire'
     spec:
+      serviceAccountName: finalapi
       containers:
       - name: finalapi
         image: $DOCKER_IMAGE
