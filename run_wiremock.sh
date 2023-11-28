@@ -18,7 +18,7 @@ curl -O -s $WIREMOCK_DOWNLOAD_URL
 #
 # Run Wiremock over HTTPS in this terminal
 # On Linux ensure that you have first granted Java the permissions to listen on port 447:
-# - sudo setcap 'cap_net_bind_service=+ep' /usr/lib/jvm/zulu-17-amd64/bin/java
+# - sudo setcap 'cap_net_bind_service=+ep' /usr/lib/jvm/zulu-21-amd64/bin/java
 #
 java -jar $WIREMOCK_JAR_FILE \
 --https-port 447 \

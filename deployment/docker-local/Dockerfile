@@ -1,9 +1,9 @@
-FROM azul/zulu-openjdk-debian:17-jre-latest
+FROM azul/zulu-openjdk-debian:21-jre-latest
 
 # Configure trusted root certificate authorities
 COPY certs/authsamples-dev.ca.pem /usr/local/share/certificates/trusted.ca.crt
 RUN update-ca-certificates
-RUN /usr/lib/jvm/zulu17/bin/keytool -import -alias internalroot.ca -cacerts -file /usr/local/share/certificates/trusted.ca.crt -storepass changeit -noprompt
+RUN /usr/lib/jvm/zulu21/bin/keytool -import -alias internalroot.ca -cacerts -file /usr/local/share/certificates/trusted.ca.crt -storepass changeit -noprompt
 
 # Copy libraries and other files into our docker image
 WORKDIR /usr/api
