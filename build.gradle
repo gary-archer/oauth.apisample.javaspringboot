@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.1.0'
+    id 'org.springframework.boot' version '3.2.0'
     id "com.adarshr.test-logger" version "3.2.0"
 }
 
 group = 'oauth.apisample.javaspringboot'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = '21'
 
 repositories {
     mavenCentral()
@@ -14,15 +14,15 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '3.1.5'
-    spring_security_version = '6.1.5'
+    spring_boot_starter_version = '3.2.0'
+    spring_security_version = '6.2.0'
     jose4j_version = '0.9.3'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
     jackson_version = '2.14.0'
     async_file_version = '1.1.2'
     logback_version = '7.2'
-    lombok_version = '1.18.24'
+    lombok_version = '1.18.30'
     guava_version = '32.0.0-jre'
     gethostname4j_version = '1.0.0'
 
