@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import com.mycompany.sample.host.configuration.ApiConfiguration;
 import com.mycompany.sample.host.configuration.Configuration;
@@ -48,6 +49,9 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         // Register our custom scope
         var container = context.getBeanFactory();
         container.registerScope(CustomRequestScope.NAME, new CustomRequestScope());
+
+        // Enable the SecurityContextHolder to be used across multiple request threads
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 
         // Register common code dependencies
         new BaseCompositionRoot(container)
