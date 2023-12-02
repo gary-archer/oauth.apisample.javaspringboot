@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mycompany.sample.logic.claims.SampleExtraClaims;
 import com.mycompany.sample.logic.entities.ClientUserInfo;
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
+import com.mycompany.sample.plumbing.claims.ClaimsPrincipalHolder;
 import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
@@ -20,13 +20,13 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class UserInfoController {
 
-    private final SampleExtraClaims extraClaims;
+    private final ClaimsPrincipalHolder claimsHolder;
 
     /*
      * Claims are injected into the controller after OAuth processing
      */
-    public UserInfoController(final ClaimsPrincipal claims) {
-        this.extraClaims = (SampleExtraClaims) claims.getExtraClaims();
+    public UserInfoController(final ClaimsPrincipalHolder claimsHolder) {
+        this.claimsHolder = claimsHolder;
     }
 
     /*
@@ -34,9 +34,12 @@ public class UserInfoController {
      */
     @GetMapping(value = "")
     public CompletableFuture<ClientUserInfo> getUserInfo() {
+
+        var extraClaims = (SampleExtraClaims) this.claimsHolder.getClaims().getExtraClaims();
+
         var userInfo = new ClientUserInfo();
-        userInfo.setTitle(this.extraClaims.getTitle());
-        userInfo.setRegions(this.extraClaims.getRegions());
+        userInfo.setTitle(extraClaims.getTitle());
+        userInfo.setRegions(extraClaims.getRegions());
         return CompletableFuture.completedFuture(userInfo);
     }
 }

@@ -42,7 +42,7 @@ Follow the [Technical Support Queries](https://authguidance.com/2019/08/02/intel
 
 ## Commands
 
-First ensure that a Java 17+ SDK is installed.
+First ensure that a Java 21+ SDK is installed.
 
 ### Run the API
 
@@ -96,7 +96,7 @@ Then run integration tests and a load test:
 
 ## Programming Languages
 
-* Java 17 and Spring Boot 3 are used to implement the REST API
+* Java 21 and Spring Boot 3 are used to implement the REST API
 
 ## Infrastructure
 

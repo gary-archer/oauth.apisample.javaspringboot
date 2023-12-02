@@ -15,7 +15,7 @@ import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
+import com.mycompany.sample.plumbing.claims.ClaimsPrincipalHolder;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -28,12 +28,11 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyService {
 
     private final CompanyRepository repository;
-    private final SampleClaimsPrincipal claims;
+    private final ClaimsPrincipalHolder claimsHolder;
 
-    public CompanyService(final CompanyRepository repository, final ClaimsPrincipal claims) {
-
+    public CompanyService(final CompanyRepository repository, final ClaimsPrincipalHolder claimsHolder) {
         this.repository = repository;
-        this.claims = (SampleClaimsPrincipal) claims;
+        this.claimsHolder = claimsHolder;
     }
 
     /*
@@ -67,20 +66,22 @@ public class CompanyService {
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 
+        var claims = (SampleClaimsPrincipal) this.claimsHolder.getClaims();
+
         // The admin role is granted access to all resources
-        var isAdmin = this.claims.getRole().equalsIgnoreCase("admin");
+        var isAdmin = claims.getRole().equalsIgnoreCase("admin");
         if (isAdmin) {
             return true;
         }
 
         // Unknown roles are granted no access to resources
-        var isUser = this.claims.getRole().equalsIgnoreCase("user");
+        var isUser = claims.getRole().equalsIgnoreCase("user");
         if (!isUser) {
             return false;
         }
 
         // For the user role, authorize based on a business rule that links the user to regional data
-        var extraClaims = (SampleExtraClaims) this.claims.getExtraClaims();
+        var extraClaims = (SampleExtraClaims) claims.getExtraClaims();
         return Arrays.stream(extraClaims.getRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
     }
 
