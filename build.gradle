@@ -1,12 +1,11 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
-    id "com.adarshr.test-logger" version "3.2.0"
+    id "com.adarshr.test-logger" version "4.0.0"
 }
 
 group = 'oauth.apisample.javaspringboot'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '21'
 
 repositories {
     mavenCentral()
@@ -54,9 +53,6 @@ dependencies {
     implementation "com.google.guava:guava:$guava_version"
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
 
-    // Prevent a CVE by including a newer version of this dependency than Spring uses
-    implementation 'org.yaml:snakeyaml:2.0'
-
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
     annotationProcessor "org.projectlombok:lombok:$lombok_version"
@@ -69,6 +65,10 @@ dependencies {
     // Test compiler dependencies
     testCompileOnly "org.projectlombok:lombok:$lombok_version"
     testAnnotationProcessor "org.projectlombok:lombok:$lombok_version"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
 }
 
 test {
