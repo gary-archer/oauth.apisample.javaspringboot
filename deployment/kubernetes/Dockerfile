@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-debian:17-jre-latest
+FROM azul/zulu-openjdk-debian:21-jre-latest
 
 # Copy libraries and other files into our docker image
 WORKDIR /usr/api
