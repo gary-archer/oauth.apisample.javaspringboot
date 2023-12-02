@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /*
- * A holder object created when Spring initializes and updated per request after the authorizer runs
+ * A holder object initially created when Spring initializes
+ * The custom authorizer updates its value during an API request
+ * The updated value can then be accessed from any async thread during the request lifecycle
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
