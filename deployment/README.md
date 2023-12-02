@@ -31,10 +31,10 @@ cd deployment/docker-local
 
 ## Kubernetes Local
 
-Scripts invoked using parent scripts from the [Cloud Native Local](https://github.com/gary-archer/oauth.cloudnative.local) project.\
+Scripts invoked using parent scripts from a **Cloud Native Local** project.\
 This runs an end-to-end SPA and API setup in a local Kubernetes in Docker (KIND) cluster.
 
 ## Kubernetes AWS
 
-Scripts invoked using parent scripts from the [Cloud Native AWS](https://github.com/gary-archer/oauth.cloudnative.aws) project.\
+Scripts invoked using parent scripts from a **Cloud Native AWS** project.\
 This runs an end-to-end SPA and API setup in a cloud EKS cluster.
