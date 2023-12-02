@@ -49,6 +49,7 @@ public final class CustomAuthorizationFilter extends OncePerRequestFilter {
 
             // Update the Spring security context with the claims
             SecurityContextHolder.getContext().setAuthentication(new CustomAuthentication(claims));
+            System.out.println("*** Filter has set authentication: " + claims.getExtraClaims().exportData().toPrettyString());
 
             // Move on to business logic
             filterChain.doFilter(request, response);

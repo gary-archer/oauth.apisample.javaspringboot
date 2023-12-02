@@ -32,6 +32,7 @@ public class CompanyController {
      */
     public CompanyController(final CompanyService service) {
         this.service = service;
+        System.out.println("*** CompanyController created");
     }
 
     /*

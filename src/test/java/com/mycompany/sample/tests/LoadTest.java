@@ -3,6 +3,7 @@ package com.mycompany.sample.tests;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -285,10 +286,13 @@ public class LoadTest {
             errorId = errorBody.get("id").asText();
         }
 
+        var formatter = new DateTimeFormatterBuilder().appendInstant(0).toFormatter();
+        var startTimeFormatted = formatter.format(response.getMetrics().getStartTime());
+
         var values = new String[]{
                 Strings.padEnd(response.getMetrics().getOperation(), 25, ' '),
                 Strings.padEnd(response.getMetrics().getCorrelationId(), 38, ' '),
-                Strings.padEnd(response.getMetrics().getStartTime().toString(), 30, ' '),
+                Strings.padEnd(startTimeFormatted, 30, ' '),
                 Strings.padEnd(String.valueOf(response.getMetrics().getMillisecondsTaken()), 21, ' '),
                 Strings.padEnd(String.valueOf(response.getStatusCode()), 14, ' '),
                 Strings.padEnd(errorCode, 24, ' '),

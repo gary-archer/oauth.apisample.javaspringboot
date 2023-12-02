@@ -3,6 +3,7 @@ package com.mycompany.sample.plumbing.interceptors;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -46,7 +47,15 @@ public final class UnhandledExceptionHandler {
 
         // Add error details to logs and get the error to return to the client
         var clientError = this.handleError(ex, logEntry);
-        return new ResponseEntity<>(clientError.toResponseFormat().toString(), clientError.getStatusCode());
+        var result = new ResponseEntity<>(clientError.toResponseFormat().toString(), clientError.getStatusCode());
+
+        // For this error type, the failure occurs early, and logging interceptors do not fire
+        // Therefore output the log entry here, with basic data
+        if (ex instanceof UnsatisfiedDependencyException) {
+            logEntry.write();
+        }
+
+        return result;
     }
 
     /*
