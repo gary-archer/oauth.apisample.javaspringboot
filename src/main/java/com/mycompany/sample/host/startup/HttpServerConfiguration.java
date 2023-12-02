@@ -1,9 +1,13 @@
 package com.mycompany.sample.host.startup;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,7 +20,7 @@ import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
  */
 @Configuration
 @SuppressWarnings(value = "checkstyle:DesignForExtension")
-public class HttpServerConfiguration {
+public class HttpServerConfiguration implements AsyncConfigurer {
 
     private final ConfigurableApplicationContext context;
 
@@ -59,5 +63,10 @@ public class HttpServerConfiguration {
                 .sessionManagement(AbstractHttpConfigurer::disable);
 
         return http.build();
+    }
+
+    @Override
+    public Executor getAsyncExecutor() {
+        return new DelegatingSecurityContextExecutorService(Executors.newFixedThreadPool(5));
     }
 }

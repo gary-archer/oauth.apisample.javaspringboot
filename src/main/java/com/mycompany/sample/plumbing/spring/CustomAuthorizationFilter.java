@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import com.mycompany.sample.plumbing.claims.ClaimsPrincipalHolder;
 import com.mycompany.sample.plumbing.interceptors.UnhandledExceptionHandler;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
 import com.mycompany.sample.plumbing.oauth.Authorizer;
@@ -47,9 +48,11 @@ public final class CustomAuthorizationFilter extends OncePerRequestFilter {
             // Log who called the API
             logEntry.setIdentity(claims.getSubject());
 
-            // Update the Spring security context with the claims
+            // Update the request scoped injectable object's inner contents
+            container.getBean(ClaimsPrincipalHolder.class).setClaims(claims);
+
+            // Also update Spring security  so that authorization annotations work as expected
             SecurityContextHolder.getContext().setAuthentication(new CustomAuthentication(claims));
-            System.out.println("*** Filter has set authentication: " + claims.getExtraClaims().exportData().toPrettyString());
 
             // Move on to business logic
             filterChain.doFilter(request, response);

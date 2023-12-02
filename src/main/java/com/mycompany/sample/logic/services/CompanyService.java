@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import com.mycompany.sample.plumbing.claims.ClaimsAccessor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
+import com.mycompany.sample.plumbing.claims.ClaimsPrincipalHolder;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -28,20 +28,17 @@ import com.mycompany.sample.plumbing.errors.ErrorFactory;
 public class CompanyService {
 
     private final CompanyRepository repository;
-    private final ClaimsAccessor claimsAccessor;
-    private SampleClaimsPrincipal claims;
+    private final ClaimsPrincipalHolder claimsHolder;
 
-    public CompanyService(final CompanyRepository repository, final ClaimsAccessor claimsAccessor) {
+    public CompanyService(final CompanyRepository repository, final ClaimsPrincipalHolder claimsHolder) {
         this.repository = repository;
-        this.claimsAccessor = claimsAccessor;
+        this.claimsHolder = claimsHolder;
     }
 
     /*
      * Get a collection and filter on authorized items
      */
     public CompletableFuture<List<Company>> getCompanyList() {
-
-        this.claims = (SampleClaimsPrincipal) claimsAccessor.getMyPrincipal();
 
         return this.repository.getCompanyList().thenCompose(data ->
                 completedFuture(data.stream()
@@ -53,8 +50,6 @@ public class CompanyService {
      * Get an individual object and deny access to unauthorized items
      */
     public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
-
-        this.claims = (SampleClaimsPrincipal) claimsAccessor.getMyPrincipal();
 
         return this.repository.getCompanyTransactions(companyId).thenCompose(data -> {
 
@@ -71,8 +66,10 @@ public class CompanyService {
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 
+        var claims = (SampleClaimsPrincipal) this.claimsHolder.getClaims();
+
         // The admin role is granted access to all resources
-        var isAdmin = this.claims.getRole().equalsIgnoreCase("admin");
+        var isAdmin = claims.getRole().equalsIgnoreCase("admin");
         if (isAdmin) {
             return true;
         }
