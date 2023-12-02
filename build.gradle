@@ -67,17 +67,28 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:$lombok_version"
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.release = 21
+// Set the Java version
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
+// Make warnings visible
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-Xlint:deprecation'
+}
+
+// Make tests run only the integration tests
 test {
     useJUnitPlatform()
     include '**/IntegrationTests.class'
     testLogging.showStandardStreams = true
 }
 
-// In Intellij select "Build, Execution, Deployment > Build Tools > gradle > Run Tests using: Intellij IDEA"
+// Add a separate task for load tests
+// To run tests In Intellij select this option:
+// - Build, Execution, Deployment > Build Tools > gradle > Run Tests using: Intellij IDEA
 tasks.register('loadtest', Test) {
     useJUnitPlatform()
     include '**/LoadTest.class'

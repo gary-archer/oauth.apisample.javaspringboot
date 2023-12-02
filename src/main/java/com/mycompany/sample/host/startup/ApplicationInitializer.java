@@ -1,7 +1,8 @@
 package com.mycompany.sample.host.startup;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
@@ -75,11 +76,11 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         if (configuration.isUseProxy()) {
             try {
 
-                var url = new URL(configuration.getProxyUrl());
+                var url = new URI(configuration.getProxyUrl()).toURL();
                 System.setProperty("https.proxyHost", url.getHost());
                 System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
 
-            } catch (MalformedURLException ex) {
+            } catch (MalformedURLException | URISyntaxException ex) {
 
                 var message = String.format("Unable to parse proxy URL %s", configuration.getProxyUrl());
                 throw new IllegalStateException(message, ex);
