@@ -1,9 +1,7 @@
 package com.mycompany.sample.logic.services;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +28,10 @@ public class CompanyService {
     private final CompanyRepository repository;
     private final ClaimsPrincipalHolder claimsHolder;
 
+    /*
+     * The claims holder may be injected into the service before OAuth processing
+     * The OAuth filter then runs before any methods are called
+     */
     public CompanyService(final CompanyRepository repository, final ClaimsPrincipalHolder claimsHolder) {
         this.repository = repository;
         this.claimsHolder = claimsHolder;
@@ -38,27 +40,26 @@ public class CompanyService {
     /*
      * Get a collection and filter on authorized items
      */
-    public CompletableFuture<List<Company>> getCompanyList() {
+    public List<Company> getCompanyList() {
 
-        return this.repository.getCompanyList().thenCompose(data ->
-                completedFuture(data.stream()
-                    .filter(this::isUserAuthorizedForCompany)
-                    .collect(Collectors.toList())));
+        var companies = this.repository.getCompanyList();
+        return companies.stream()
+            .filter(this::isUserAuthorizedForCompany)
+            .collect(Collectors.toList());
     }
 
     /*
      * Get an individual object and deny access to unauthorized items
      */
-    public CompletableFuture<CompanyTransactions> getCompanyTransactions(final int companyId) {
+    public CompanyTransactions getCompanyTransactions(final int companyId) {
 
-        return this.repository.getCompanyTransactions(companyId).thenCompose(data -> {
+        var transactions = this.repository.getCompanyTransactions(companyId);
 
-            if (data == null || !this.isUserAuthorizedForCompany(data.getCompany())) {
-                throw this.unauthorizedError(companyId);
-            }
+        if (transactions == null || !this.isUserAuthorizedForCompany(transactions.getCompany())) {
+            throw this.unauthorizedError(companyId);
+        }
 
-            return completedFuture(data);
-        });
+        return transactions;
     }
 
     /*

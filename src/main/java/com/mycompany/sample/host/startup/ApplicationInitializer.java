@@ -37,7 +37,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
 
         // First load our configuration file
         var reader = new JsonFileReader();
-        var configuration = reader.readFile("api.config.json", Configuration.class).join();
+        var configuration = reader.readFile("api.config.json", Configuration.class);
 
         // Initialise logging from configuration settings
         loggerFactory.configure(configuration.getLogging());

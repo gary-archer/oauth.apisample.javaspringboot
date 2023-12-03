@@ -1,7 +1,6 @@
 package com.mycompany.sample.host.controllers;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,7 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
 /*
- * A controller to return company related info to the caller
+ * A controller to return company related secure data to the caller
  */
 @RestController()
 @Scope(value = CustomRequestScope.NAME)
@@ -38,7 +37,7 @@ public class CompanyController {
      * Return a list of companies
      */
     @GetMapping(value = "")
-    public CompletableFuture<List<Company>> getCompanyList() {
+    public List<Company> getCompanyList() {
         return this.service.getCompanyList();
     }
 
@@ -46,7 +45,7 @@ public class CompanyController {
      * Return a composite object containing company transactions
      */
     @GetMapping(value = "{companyId}/transactions")
-    public CompletableFuture<CompanyTransactions> getCompanyTransactions(
+    public CompanyTransactions getCompanyTransactions(
             @PathVariable("companyId") final String companyId) {
 
         // Throw a 400 error if we have a malformed ID
