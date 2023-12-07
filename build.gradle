@@ -19,15 +19,14 @@ ext {
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.15'
     jackson_version = '2.14.0'
-    async_file_version = '1.1.2'
-    logback_version = '7.2'
+    logback_version = '7.4'
     lombok_version = '1.18.30'
     guava_version = '32.0.0-jre'
     gethostname4j_version = '1.0.0'
 
     // Test dependency versions
-    junit_jupiter_version = '5.9.0'
-    junit_platform_suite_version = '1.9.0'
+    junit_jupiter_version = '5.10.1'
+    junit_platform_suite_version = '1.10.1'
 }
 
 dependencies {
@@ -48,7 +47,6 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
 
     // Utilities
-    implementation "com.github.javasync:AsyncFileRw:$async_file_version"
     implementation "net.logstash.logback:logstash-logback-encoder:$logback_version"
     implementation "com.google.guava:guava:$guava_version"
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"

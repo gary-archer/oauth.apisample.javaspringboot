@@ -1,7 +1,7 @@
 package com.mycompany.sample.logic.utilities;
 
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.javaync.io.AsyncFiles;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -45,7 +45,7 @@ public class JsonFileReader {
         try {
 
             var path = Paths.get(filePath);
-            var bytes = AsyncFiles.readAllBytes(path).join();
+            var bytes = Files.readAllBytes(path);
             return new String(bytes);
 
         } catch (Throwable ex) {
