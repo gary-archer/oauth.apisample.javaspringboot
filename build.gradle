@@ -36,18 +36,21 @@ dependencies {
     implementation "org.springframework.security:spring-security-config:$spring_security_version"
     implementation "org.springframework.security:spring-security-web:$spring_security_version"
 
-    // OAuth and caching dependencies
+    // OAuth and related cachin
     implementation "org.bitbucket.b_c:jose4j:$jose4j_version"
     implementation "org.cache2k:cache2k-base-bom:$cache2k_version"
     implementation "commons-codec:commons-codec:$commons_codec_version"
 
-    // Jackson dependencies
+    // JSON handling
     implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
 
-    // Utilities
+    // Logging, where the classic dependency prevents Spring Boot security warnings
     implementation "net.logstash.logback:logstash-logback-encoder:$logback_version"
+    implementation "ch.qos.logback:logback-classic:1.4.14"
+
+    // Utilities
     implementation "com.google.guava:guava:$guava_version"
     implementation "com.kstruct:gethostname4j:$gethostname4j_version"
 
