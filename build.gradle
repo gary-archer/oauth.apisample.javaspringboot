@@ -15,13 +15,13 @@ ext {
     // API dependency versions
     spring_boot_starter_version = '3.2.0'
     spring_security_version = '6.2.0'
-    jose4j_version = '0.9.3'
+    jose4j_version = '0.9.4'
     cache2k_version = '1.6.0.Final'
-    commons_codec_version = '1.15'
-    jackson_version = '2.14.0'
+    commons_codec_version = '1.16.0'
+    jackson_version = '2.16.0'
     logback_version = '7.4'
     lombok_version = '1.18.30'
-    guava_version = '32.0.0-jre'
+    guava_version = '32.1.3-jre'
     gethostname4j_version = '1.0.0'
 
     // Test dependency versions
