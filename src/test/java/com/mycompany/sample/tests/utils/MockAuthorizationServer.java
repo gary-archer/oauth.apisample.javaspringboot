@@ -63,7 +63,7 @@ public final class MockAuthorizationServer {
 
     /*
      * Issue an access token with a user and other values for testing
-     * The access tokens for testing must use the same scopes and claims as the real authorization server
+     * The access tokens for testing must match the structure of those issued by the real authorization server
      * https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
      */
     public String issueAccessToken(final MockTokenOptions options) throws JoseException {
