@@ -89,11 +89,16 @@ test {
 }
 
 // Add a separate task for load tests
-// To run tests In Intellij select this option:
+// https://docs.gradle.org/8.1.1/userguide/upgrading_version_8.html#test_task_default_classpath
+//
+// To run the load test In Intellij select this option:
 // - Build, Execution, Deployment > Build Tools > gradle > Run Tests using: Intellij IDEA
+//
 tasks.register('loadtest', Test) {
     useJUnitPlatform()
     include '**/LoadTest.class'
+    testClassesDirs = testing.suites.test.sources.output.classesDirs
+    classpath = testing.suites.test.sources.runtimeClasspath
     testLogging.showStandardStreams = true
     outputs.upToDateWhen { false }
 }
