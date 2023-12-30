@@ -86,4 +86,4 @@ cp deployment/environments/dev/api.config.json ./api.config.json
 #
 # Indicate success
 #
-echo "Start tests via './gradlew test --rerun-tasks' or './gradlew loadtest --rerun-tasks' ..."
+echo "Start tests via './gradlew test' or './gradlew loadtest' ..."

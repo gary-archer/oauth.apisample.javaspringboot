@@ -10,8 +10,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # Download the Wiremock JAR file
 #
 echo 'Downloading Wiremock standalone server ...'
-WIREMOCK_JAR_FILE='wiremock-jre8-standalone-2.35.1.jar'
-WIREMOCK_DOWNLOAD_URL="https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-jre8-standalone/2.35.1/$WIREMOCK_JAR_FILE"
+WIREMOCK_VERSION='3.3.1'
+WIREMOCK_JAR_FILE="wiremock-standalone-$WIREMOCK_VERSION.jar"
+WIREMOCK_DOWNLOAD_URL="https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/$WIREMOCK_VERSION/$WIREMOCK_JAR_FILE"
 rm $WIREMOCK_JAR_FILE 2>/dev/null
 curl -O -s $WIREMOCK_DOWNLOAD_URL
 

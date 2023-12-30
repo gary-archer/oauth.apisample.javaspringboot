@@ -83,8 +83,8 @@ Stop the API, then re-run it with a test configuration:
 Then run integration tests and a load test:
 
 ```bash
-./gradlew test --rerun-tasks
-./gradlew loadtest --rerun-tasks
+./gradlew test
+./gradlew loadtest
 ```
 
 ## Further Details
