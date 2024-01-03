@@ -1,7 +1,8 @@
 package com.mycompany.sample.tests;
 
 import java.util.UUID;
-import org.jose4j.jwk.RsaJwkGenerator;
+import org.jose4j.jwk.EcJwkGenerator;
+import org.jose4j.keys.EllipticCurves;
 import org.junit.jupiter.api.*;
 import org.junit.platform.suite.api.Suite;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -160,7 +161,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test, issued with a malicious key
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
-        var maliciousJwk = RsaJwkGenerator.generateJwk(2048);
+        var maliciousJwk = EcJwkGenerator.generateJwk(EllipticCurves.P256);;
         var accessToken = authorizationServer.issueAccessToken(jwtOptions, maliciousJwk);
 
         // Call the API and ensure a 401 response

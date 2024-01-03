@@ -18,6 +18,11 @@ public class OAuthConfiguration {
     @Setter
     private String audience;
 
+    // The expected algorithm in JWT access tokens received
+    @Getter
+    @Setter
+    private String algorithm;
+
     // A required scope to call the API
     @Getter
     @Setter

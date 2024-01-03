@@ -34,6 +34,7 @@
   "oauth": {
     "issuer":                       "https://login.authsamples-dev.com",
     "audience":                     "api.mycompany.com",
+    "algorithm":                    "ES256",
     "scope":                        "investments",
     "jwksEndpoint":                 "https://login.authsamples-dev.com:447/.well-known/jwks.json",
     "claimsCacheTimeToLiveMinutes": 15
