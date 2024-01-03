@@ -34,6 +34,7 @@
   "oauth": {
     "issuer":                       "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
     "audience":                     "",
+    "algorithm":                    "RS256",
     "scope":                        "https://api.authsamples.com/investments",
     "jwksEndpoint":                 "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
     "claimsCacheTimeToLiveMinutes": 15

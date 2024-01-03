@@ -2,7 +2,6 @@ package com.mycompany.sample.plumbing.oauth;
 
 import java.util.Arrays;
 import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -52,7 +51,7 @@ public class AccessTokenValidator {
                 .setVerificationKeyResolver(this.jwksResolver)
                 .setJwsAlgorithmConstraints(
                     AlgorithmConstraints.ConstraintType.PERMIT,
-                    AlgorithmIdentifiers.RSA_USING_SHA256
+                    this.configuration.getAlgorithm()
                 )
                 .setExpectedIssuer(this.configuration.getIssuer());
 
@@ -68,7 +67,7 @@ public class AccessTokenValidator {
             // The sample API requires the same scope for all endpoints, and it is enforced here
             var scopes = ClaimsReader.getStringClaim(claims, "scope").split(" ");
             var foundScope = Arrays.stream(scopes).filter(s -> s.contains(this.configuration.getScope())).findFirst();
-            if (!foundScope.isPresent()) {
+            if (foundScope.isEmpty()) {
                 throw ErrorFactory.createClientError(
                         HttpStatus.FORBIDDEN,
                         ErrorCodes.INSUFFICIENT_SCOPE,

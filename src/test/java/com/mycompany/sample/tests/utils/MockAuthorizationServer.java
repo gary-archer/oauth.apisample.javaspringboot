@@ -5,12 +5,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.UUID;
+import org.jose4j.jwk.EcJwkGenerator;
+import org.jose4j.jwk.EllipticCurveJsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
-import org.jose4j.jwk.RsaJsonWebKey;
-import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.keys.EllipticCurves;
 import org.jose4j.lang.JoseException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -24,7 +25,7 @@ import com.mycompany.sample.logic.claims.CustomClaimNames;
 public final class MockAuthorizationServer {
 
     private final String adminBaseUrl;
-    private RsaJsonWebKey jwk;
+    private EllipticCurveJsonWebKey jwk;
     private String keyId;
 
     public MockAuthorizationServer() {
@@ -44,10 +45,10 @@ public final class MockAuthorizationServer {
     public void start() throws JoseException {
 
         // Generate a JSON Web Key for our token issuing
-        this.jwk = RsaJwkGenerator.generateJwk(2048);
+        this.jwk = EcJwkGenerator.generateJwk(EllipticCurves.P256);
         this.keyId = UUID.randomUUID().toString();
         this.jwk.setKeyId(this.keyId);
-        this.jwk.setAlgorithm("RS256");
+        this.jwk.setAlgorithm("ES256");
 
         // Publish the public keys at a JWKS URI
         var jsonWebKeySet = new JsonWebKeySet(this.jwk);
@@ -73,7 +74,7 @@ public final class MockAuthorizationServer {
     /*
      * An overload to allow a malicious key to be tested
      */
-    public String issueAccessToken(final MockTokenOptions options, final RsaJsonWebKey jwk) throws JoseException {
+    public String issueAccessToken(final MockTokenOptions options, final EllipticCurveJsonWebKey jwk) throws JoseException {
 
         var claims = new JwtClaims();
         claims.setIssuer(options.getIssuer());
@@ -86,7 +87,7 @@ public final class MockAuthorizationServer {
 
         var jws = new JsonWebSignature();
         jws.setKeyIdHeaderValue(this.keyId);
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.ECDSA_USING_P256_CURVE_AND_SHA256);
         jws.setPayload(claims.toJson());
         jws.setKey(jwk.getPrivateKey());
         return jws.getCompactSerialization();
