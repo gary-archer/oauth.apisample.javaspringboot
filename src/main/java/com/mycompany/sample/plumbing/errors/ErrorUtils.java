@@ -99,14 +99,15 @@ public final class ErrorUtils {
 
     /*
      * The error thrown if we cannot find an expected claim during OAuth processing
+     * This is the same underlying problem as a missing scope and typically caused by incorrect configuration
      */
     public static ClientError fromMissingClaim(final String claimName) {
 
         var message = String.format("Missing claim in input: '%s'", claimName);
         return ErrorFactory.createClientErrorWithContext(
                 HttpStatus.BAD_REQUEST,
-                ErrorCodes.CLAIMS_FAILURE,
-                "Authorization data not found",
+                ErrorCodes.INSUFFICIENT_SCOPE,
+                "The token does not contain sufficient scope for this API",
                 new TextNode(message));
     }
 

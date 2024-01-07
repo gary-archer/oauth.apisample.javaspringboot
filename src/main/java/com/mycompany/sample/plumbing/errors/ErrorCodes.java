@@ -10,8 +10,6 @@ public final class ErrorCodes {
 
     public static final String INVALID_TOKEN = "invalid_token";
 
-    public static final String CLAIMS_FAILURE = "claims_failure";
-
     public static final String TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR = "jwks_download_failure";
 
     public static final String INSUFFICIENT_SCOPE = "insufficient_scope";
