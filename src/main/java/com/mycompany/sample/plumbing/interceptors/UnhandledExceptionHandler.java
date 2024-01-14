@@ -14,7 +14,7 @@ import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorUtils;
 import com.mycompany.sample.plumbing.errors.ServerError;
 import com.mycompany.sample.plumbing.logging.LogEntryImpl;
-import com.mycompany.sample.plumbing.utilities.ResponseWriter;
+import com.mycompany.sample.plumbing.utilities.ResponseErrorWriter;
 
 /*
  * A central point of exception handling
@@ -84,7 +84,7 @@ public final class UnhandledExceptionHandler {
         CustomRequestScope.removeAll();
 
         // Return error responses to the caller
-        var writer = new ResponseWriter();
+        var writer = new ResponseErrorWriter();
         writer.writeFilterExceptionResponse(response, clientError);
     }
 

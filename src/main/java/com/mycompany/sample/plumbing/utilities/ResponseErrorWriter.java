@@ -7,7 +7,7 @@ import com.mycompany.sample.plumbing.errors.ClientError;
 /*
  * A utility class to manage serializing error responses
  */
-public final class ResponseWriter {
+public final class ResponseErrorWriter {
 
     /*
      * This blog's examples use a JSON response to provide client friendly OAuth errors
