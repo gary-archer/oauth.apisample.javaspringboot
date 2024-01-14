@@ -10,24 +10,16 @@ import com.mycompany.sample.plumbing.errors.ClientError;
 public final class ResponseWriter {
 
     /*
-     * Handle errors in the OAuth filter
+     * This blog's examples use a JSON response to provide client friendly OAuth errors
+     * When required, such as to inform clients how to integrate, a www-authenticate header can be added here
+     * - https://datatracker.ietf.org/doc/html/rfc6750#section-3
      */
     public void writeFilterExceptionResponse(final HttpServletResponse response, final ClientError clientError) {
 
-        // Indicate a JSON response
         response.setHeader("content-type", "application/json");
 
-        // Add the standards based header if required
-        final var unauthorizedStatus = 401;
-        if (response.getStatus() == unauthorizedStatus && clientError != null) {
-
-            var wwwAuthenticateHeader = String.format("Bearer realm=\"%s\", error=\"%s\", error_description=\"%s\"",
-                    "mycompany.com", clientError.getErrorCode(), clientError.getMessage());
-            response.setHeader("www-authenticate", wwwAuthenticateHeader);
-        }
         try {
 
-            // Also add a more client friendly JSON response with the same fields
             response.setStatus(response.getStatus());
             response.getWriter().write(clientError.toResponseFormat().toString());
 
