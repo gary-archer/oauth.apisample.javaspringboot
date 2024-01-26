@@ -41,14 +41,14 @@ public final class UserRepository {
      */
     public SampleExtraClaims getClaimsForSubject(final String subject) {
 
-        if (subject.equals("77a97e5b-b748-45e5-bb6f-658e85b2df91")) {
+        if (subject.equals("d3d64319-1f84-42bb-92cb-5883793c50dc")) {
 
             // These claims are used for the guestadmin@mycompany.com user account
             var claims = new SampleExtraClaims("Global Manager", new String[]{"Europe", "USA", "Asia"});
             claims.addCoreClaims("20116", "admin");
             return claims;
 
-        } else if (subject.equals("a6b404b1-98af-41a2-8e7f-e4061dc0bf86")) {
+        } else if (subject.equals("06e3c525-33d1-47ec-97be-03d8affc3726")) {
 
             // These claims are used for the guestuser@mycompany.com user account
             var claims = new SampleExtraClaims("Regional Manager", new String[]{"USA"});
