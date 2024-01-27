@@ -7,13 +7,14 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.mycompany.sample.logic.claims.SampleClaimsPrincipal;
+import com.mycompany.sample.logic.claims.CustomClaimNames;
 import com.mycompany.sample.logic.claims.SampleExtraClaims;
 import com.mycompany.sample.logic.entities.Company;
 import com.mycompany.sample.logic.entities.CompanyTransactions;
 import com.mycompany.sample.logic.errors.SampleErrorCodes;
 import com.mycompany.sample.logic.repositories.CompanyRepository;
 import com.mycompany.sample.plumbing.claims.ClaimsPrincipalHolder;
+import com.mycompany.sample.plumbing.claims.ClaimsReader;
 import com.mycompany.sample.plumbing.errors.ClientError;
 import com.mycompany.sample.plumbing.errors.ErrorFactory;
 
@@ -67,17 +68,16 @@ public class CompanyService {
      */
     private boolean isUserAuthorizedForCompany(final Company company) {
 
-        var claims = (SampleClaimsPrincipal) this.claimsHolder.getClaims();
+        var claims = this.claimsHolder.getClaims();
+        var role = ClaimsReader.getStringClaim(claims.getJwtClaims(), CustomClaimNames.Role).toUpperCase();
 
         // The admin role is granted access to all resources
-        var isAdmin = claims.getRole().equalsIgnoreCase("admin");
-        if (isAdmin) {
+        if (role.equals("ADMIN")) {
             return true;
         }
 
         // Unknown roles are granted no access to resources
-        var isUser = claims.getRole().equalsIgnoreCase("user");
-        if (!isUser) {
+        if (!role.equals("USER")) {
             return false;
         }
 

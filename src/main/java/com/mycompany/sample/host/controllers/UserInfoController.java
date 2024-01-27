@@ -11,7 +11,7 @@ import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
 
 /*
  * Return user info from the business data to the client
- * Clients instead call the authorization server's user info endpoint to get OAuth user attributes
+ * These values are separate to the core identity data returned from the OAuth user info endpoint
  */
 @RestController
 @Scope(value = CustomRequestScope.NAME)
