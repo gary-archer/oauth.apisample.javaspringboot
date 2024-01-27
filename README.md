@@ -102,5 +102,5 @@ Then run integration tests and a load test:
 
 * The Tomcat web server hosts the API over SSL
 * AWS Cognito is used as the default Authorization Server
-* The [jose4j library](https://bitbucket.org/b_c/jose4j/wiki/Home) is used to manage in memory validation of JWTs
+* The [jose4j](https://bitbucket.org/b_c/jose4j/wiki/Home) library is used to manage in memory validation of JWTs
 * The project includes API deployment resources for Docker and Kubernetes
