@@ -42,7 +42,10 @@ Follow the [Technical Support Queries](https://authguidance.com/2019/08/02/intel
 
 ## Commands
 
-First ensure that a Java 21+ SDK is installed.
+### Prerequisites
+
+- Ensure that a Java 21+ SDK is installed
+- Integration tests run Wiremock in Docker, so ensure that Docker is installed
 
 ### Run the API
 
@@ -66,7 +69,7 @@ Then call an endpoint over port 446:
 curl -k https://apilocal.authsamples-dev.com:446/investments/companies
 ```
 
-Configure SSL trust by running this command:
+Then configure SSL trust by running this command:
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
