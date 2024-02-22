@@ -3,6 +3,7 @@ resources
 certs
 build
 bin
+logs
 .idea
 .gradle
 .settings
