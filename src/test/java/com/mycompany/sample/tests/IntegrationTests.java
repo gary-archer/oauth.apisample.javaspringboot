@@ -30,7 +30,7 @@ public class IntegrationTests {
     public static void setupSuite() throws Throwable {
 
         // Uncomment to view HTTPS requests initiated from tests in an HTTP proxy
-        // var url = new URL("http://127.0.0.1:8888");
+        // var url = new java.net.URL("http://127.0.0.1:8888");
         // System.setProperty("https.proxyHost", url.getHost());
         // System.setProperty("https.proxyPort", String.valueOf(url.getPort()));
 
