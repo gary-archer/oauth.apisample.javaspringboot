@@ -33,7 +33,7 @@ fi
 #
 # Build the Docker container
 #
-docker build --no-cache -f deployment/kubernetes/Dockerfile -t "$DOCKER_IMAGE" .
+docker build --no-cache -f deployment/shared/Dockerfile -t "$DOCKER_IMAGE" .
 if [ $? -ne 0 ]; then
   echo '*** API docker build problem encountered'
   exit 1
