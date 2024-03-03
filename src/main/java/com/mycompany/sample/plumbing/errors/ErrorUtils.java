@@ -2,8 +2,10 @@ package com.mycompany.sample.plumbing.errors;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import org.jose4j.jwt.consumer.ErrorCodeValidator;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.InvalidJwtSignatureException;
+import org.jose4j.lang.UnresolvableKeyException;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.node.TextNode;
 
@@ -62,7 +64,6 @@ public final class ErrorUtils {
 
         // First collect details from the exception, but without sensitive JWT details
         var parts = new ArrayList<String>();
-        parts.add("Access token validation failed");
 
         var ioException = ErrorUtils.getIOException(ex);
         if (ioException != null) {
@@ -80,15 +81,11 @@ public final class ErrorUtils {
 
         } else {
 
-            // Collect log information about the JWT exception but do not capture any confidential details
             var context = new StringBuilder();
             var errors = ex.getErrorDetails();
             for (var error: errors) {
 
-                var errorMessage = error.getErrorMessage();
-                if (ex.getClass() == InvalidJwtSignatureException.class) {
-                    errorMessage = "Invalid JWS Signature";
-                }
+                var errorMessage = getSanitizedErrorMessage(ex, error);
                 var message = String.format("%s : %s", error.getErrorCode(), errorMessage);
                 context.append(message);
             }
@@ -177,6 +174,22 @@ public final class ErrorUtils {
         }
 
         return null;
+    }
+
+    /*
+     * Some jose4j error messages include JWTs, so avoid including these in error logs
+     */
+    private static String getSanitizedErrorMessage(final Exception ex, final ErrorCodeValidator.Error error) {
+
+        if (ex.getClass() == InvalidJwtSignatureException.class) {
+            return "Invalid JWS Signature";
+        }
+
+        if (ex.getCause() != null && ex.getCause().getClass() == UnresolvableKeyException.class) {
+            return "Unable to find a suitable verification key";
+        }
+
+        return error.getErrorMessage();
     }
 
     /*
