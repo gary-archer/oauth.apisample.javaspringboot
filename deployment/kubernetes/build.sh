@@ -43,7 +43,7 @@ fi
 # Push the API docker image
 #
 if [ "$DOCKER_REPOSITORY" == "" ]; then
-  kind load docker-image "$DOCKER_IMAGE" --name oauth
+  kind load docker-image "$DOCKER_IMAGE" --name $CLUSTER_NAME
 else
   docker image push "$DOCKER_IMAGE"
 fi
