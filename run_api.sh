@@ -24,7 +24,9 @@ if [ ! -d './logs' ]; then
 fi
 
 #
-# Run the API's JAR file'
+# Run the API's JAR file
+# If required, first grant permissions to listen on a privileged port:
+# - sudo setcap 'cap_net_bind_service=+ep' /usr/lib/jvm/zulu-21-amd64/bin/java
 #
 java -jar build/libs/sampleapi-0.0.1-SNAPSHOT.jar
 if [ $? -ne 0 ]; then
