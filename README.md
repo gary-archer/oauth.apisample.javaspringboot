@@ -6,7 +6,7 @@
 
 ## Behaviour
 
-The final OAuth secured Java API code sample, referenced in my blog at https://authguidance.com:
+The final OAuth secured Java API code sample:
 
 - The API has a fictional business area of `investments`, but simply returns hard coded data
 - The API takes finer control over OAuth and claims to enable the best security with good manageability
@@ -36,7 +36,7 @@ This ensures no concurrency problems, and error rehearsal is used to ensure usef
 ### API is Supportable
 
 API logs can be analysed in use case based manner by running Elasticsearch SQL and Lucene queries.\
-Follow the [Technical Support Queries](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/) for some people friendly examples:
+Follow the [Technical Support Queries](https://apisandclients.com/posts/api-technical-support-analysis) for some people friendly examples:
 
 ![Support Queries](./images/support-queries.png)
 
@@ -92,9 +92,9 @@ Then run integration tests and a load test:
 
 ## Further Details
 
-* See the [API Journey - Server Side](https://authguidance.com/api-journey-server-side/) for further information on the API behaviour
-* See the [Overview Page](https://authguidance.com/java-spring-boot-api-overview/) for further details on running the API
-* See the [OAuth Integration Page](https://authguidance.com/java-spring-boot-api-coding-key-points/) for the security implementation
+* See the [API Journey - Server Side](https://apisandclients.com/posts/api-journey-server-side) for further information on the API behaviour
+* See the [Overview Page](https://apisandclients.com/posts/java-spring-boot-api-overview) for further details on running the API
+* See the [OAuth Integration Page](https://apisandclients.com/posts/spring-boot-api-oauth-integration) for the security implementation
 
 
 ## Programming Languages
