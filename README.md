@@ -78,6 +78,8 @@ sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./cer
 Clean up after testing with this command:
 
 ```bash
+sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass changeit -noprompt
+
 ```
 
 ### Test the API
