@@ -60,19 +60,24 @@ Then run the API in isolation with this command:
 Configure DNS by adding these domains to your hosts file:
 
 ```text
-127.0.0.1 localhost apilocal.authsamples-dev.com login.authsamples-dev.com
+127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
 ```
 
 Then call an endpoint over port 446:
 
 ```bash
-curl -k https://apilocal.authsamples-dev.com:446/investments/companies
+curl -k https://api.authsamples-dev.com:446/investments/companies
 ```
 
 Then configure SSL trust by running this command:
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
+```
+
+Clean up after testing with this command:
+
+```bash
 ```
 
 ### Test the API

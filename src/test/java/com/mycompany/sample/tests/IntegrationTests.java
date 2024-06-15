@@ -39,7 +39,7 @@ public class IntegrationTests {
         authorizationServer.start();
 
         // Create the API client
-        String apiBaseUrl = "https://apilocal.authsamples-dev.com:446";
+        String apiBaseUrl = "https://api.authsamples-dev.com:446";
         var sessionId = UUID.randomUUID().toString();
         apiClient = new ApiClient(apiBaseUrl, "IntegrationTests", sessionId);
     }

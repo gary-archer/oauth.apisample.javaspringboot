@@ -1,9 +1,8 @@
-version: '3.8'
 services:
 
   finalapi:
     image: finaljavaapi:latest
-    hostname: apilocal.authsamples-dev.com
+    hostname: api.authsamples-dev.com
     ports:
       - 446:8000
     volumes:
