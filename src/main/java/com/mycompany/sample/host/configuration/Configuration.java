@@ -1,7 +1,7 @@
-package com.mycompany.sample.host.configuration;
+package com.authsamples.api.host.configuration;
 
-import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
+import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
+import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 

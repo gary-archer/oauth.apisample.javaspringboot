@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.configuration;
+package com.authsamples.api.plumbing.configuration;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.startup;
+package com.authsamples.api.host.startup;
 
 /*
  * Fixed paths to resources

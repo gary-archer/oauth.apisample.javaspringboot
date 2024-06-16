@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.startup;
+package com.authsamples.api.host.startup;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -7,13 +7,13 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.host.configuration.ApiConfiguration;
-import com.mycompany.sample.host.configuration.Configuration;
-import com.mycompany.sample.logic.claims.SampleExtraClaimsProvider;
-import com.mycompany.sample.logic.utilities.JsonFileReader;
-import com.mycompany.sample.plumbing.dependencies.BaseCompositionRoot;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.logging.LoggerFactory;
+import com.authsamples.api.host.configuration.ApiConfiguration;
+import com.authsamples.api.host.configuration.Configuration;
+import com.authsamples.api.logic.claims.SampleExtraClaimsProvider;
+import com.authsamples.api.logic.utilities.JsonFileReader;
+import com.authsamples.api.plumbing.dependencies.BaseCompositionRoot;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.plumbing.logging.LoggerFactory;
 
 /*
  * Override startup to customize behaviour

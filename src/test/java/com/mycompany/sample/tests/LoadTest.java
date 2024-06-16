@@ -1,4 +1,4 @@
-package com.mycompany.sample.tests;
+package com.authsamples.api.tests;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.time.Duration;
@@ -16,7 +16,7 @@ import org.junit.platform.suite.api.Suite;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
-import com.mycompany.sample.tests.utils.*;
+import com.authsamples.api.tests.utils.*;
 
 /*
  * A basic load test to ensure that the API behaves correctly when there are concurrent requests

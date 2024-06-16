@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.startup;
+package com.authsamples.api.host.startup;
 
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import com.mycompany.sample.plumbing.spring.CustomAuthorizationFilter;
+import com.authsamples.api.plumbing.spring.CustomAuthorizationFilter;
 
 /*
  * A class to manage OAuth security configuration for the REST API

@@ -1,8 +1,8 @@
-package com.mycompany.sample.plumbing.utilities;
+package com.authsamples.api.plumbing.utilities;
 
 import java.io.IOException;
 import jakarta.servlet.http.HttpServletResponse;
-import com.mycompany.sample.plumbing.errors.ClientError;
+import com.authsamples.api.plumbing.errors.ClientError;
 
 /*
  * A utility class to manage serializing error responses

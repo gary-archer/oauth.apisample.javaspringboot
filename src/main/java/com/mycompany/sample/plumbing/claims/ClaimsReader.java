@@ -1,9 +1,9 @@
-package com.mycompany.sample.plumbing.claims;
+package com.authsamples.api.plumbing.claims;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.errors.ErrorUtils;
+import com.authsamples.api.plumbing.errors.ErrorUtils;
 
 /*
  * A utility to read claims defensively

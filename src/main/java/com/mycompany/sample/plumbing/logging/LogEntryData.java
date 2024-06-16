@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.logging;
+package com.authsamples.api.plumbing.logging;
 
 import java.time.Instant;
 import java.util.ArrayList;

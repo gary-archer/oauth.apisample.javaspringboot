@@ -18,7 +18,7 @@
     },
     "development": {
       "level": "info",
-      "namespace": "com.mycompany.sample",
+      "namespace": "com.authsamples.api",
       "overrideLevels": {
         "ClaimsCache": "info"
       }

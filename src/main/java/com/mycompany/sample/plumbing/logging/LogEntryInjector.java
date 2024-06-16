@@ -1,10 +1,10 @@
-package com.mycompany.sample.plumbing.logging;
+package com.authsamples.api.plumbing.logging;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 
 /*
  * A utility to use Spring's mechanism to ensure that the log entry is only created once per request

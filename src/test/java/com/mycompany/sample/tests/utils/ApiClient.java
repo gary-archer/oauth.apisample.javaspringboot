@@ -1,4 +1,4 @@
-package com.mycompany.sample.tests.utils;
+package com.authsamples.api.tests.utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -73,12 +73,12 @@ public final class ApiClient {
                 .method(options.getMethod(), HttpRequest.BodyPublishers.noBody())
                 .uri(this.stringToUri(operationUrl))
                 .headers("Authorization", String.format("Bearer %s", options.getAccessToken()))
-                .headers("x-mycompany-api-client", this.clientName)
-                .headers("x-mycompany-session-id", this.sessionId)
-                .headers("x-mycompany-correlation-id", correlationId);
+                .headers("x-authsamples-api-client", this.clientName)
+                .headers("x-authsamples-session-id", this.sessionId)
+                .headers("x-authsamples-correlation-id", correlationId);
 
         if (options.getRehearseException()) {
-            requestBuilder.headers("x-mycompany-test-exception", "SampleApi");
+            requestBuilder.headers("x-authsamples-test-exception", "SampleApi");
         }
 
         var request = requestBuilder.build();

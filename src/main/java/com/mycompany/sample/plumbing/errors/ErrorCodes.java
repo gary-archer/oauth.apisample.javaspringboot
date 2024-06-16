@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.errors;
+package com.authsamples.api.plumbing.errors;
 
 /*
  * Error codes that could be used by multiple APIs

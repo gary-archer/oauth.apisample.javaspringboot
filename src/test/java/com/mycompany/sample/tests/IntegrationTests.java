@@ -1,4 +1,4 @@
-package com.mycompany.sample.tests;
+package com.authsamples.api.tests;
 
 import java.util.UUID;
 import org.jose4j.jwk.EcJwkGenerator;
@@ -8,10 +8,10 @@ import org.junit.platform.suite.api.Suite;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mycompany.sample.tests.utils.ApiClient;
-import com.mycompany.sample.tests.utils.ApiRequestOptions;
-import com.mycompany.sample.tests.utils.MockAuthorizationServer;
-import com.mycompany.sample.tests.utils.MockTokenOptions;
+import com.authsamples.api.tests.utils.ApiClient;
+import com.authsamples.api.tests.utils.ApiRequestOptions;
+import com.authsamples.api.tests.utils.MockAuthorizationServer;
+import com.authsamples.api.tests.utils.MockTokenOptions;
 
 /*
  * Test the API in isolation, without any dependencies on real access tokens

@@ -1,4 +1,4 @@
-package com.mycompany.sample.logic.errors;
+package com.authsamples.api.logic.errors;
 
 /*
  * Error codes specific to the sample API

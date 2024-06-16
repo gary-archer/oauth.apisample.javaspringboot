@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.errors;
+package com.authsamples.api.plumbing.errors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;

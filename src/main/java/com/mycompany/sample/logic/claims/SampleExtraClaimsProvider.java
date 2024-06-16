@@ -1,13 +1,13 @@
-package com.mycompany.sample.logic.claims;
+package com.authsamples.api.logic.claims;
 
 import org.jose4j.jwt.JwtClaims;
 import org.springframework.beans.factory.BeanFactory;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mycompany.sample.logic.repositories.UserRepository;
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
-import com.mycompany.sample.plumbing.claims.ClaimsReader;
-import com.mycompany.sample.plumbing.claims.ExtraClaims;
-import com.mycompany.sample.plumbing.claims.ExtraClaimsProvider;
+import com.authsamples.api.logic.repositories.UserRepository;
+import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
+import com.authsamples.api.plumbing.claims.ClaimsReader;
+import com.authsamples.api.plumbing.claims.ExtraClaims;
+import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
 
 /*
  * Add extra claims that you cannot, or do not want to, manage in the authorization server

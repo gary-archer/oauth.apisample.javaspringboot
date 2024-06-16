@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.logging;
+package com.authsamples.api.plumbing.logging;
 
 import org.slf4j.Logger;
 import ch.qos.logback.classic.Level;
@@ -10,9 +10,9 @@ import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.plumbing.errors.ErrorUtils;
-import com.mycompany.sample.plumbing.errors.ServerError;
+import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
+import com.authsamples.api.plumbing.errors.ErrorUtils;
+import com.authsamples.api.plumbing.errors.ServerError;
 
 /*
  * A custom logger factory to wrap the default one and give us greater control over output

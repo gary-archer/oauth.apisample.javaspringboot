@@ -1,9 +1,9 @@
-package com.mycompany.sample;
+package com.authsamples.api;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import com.mycompany.sample.host.startup.ApplicationInitializer;
-import com.mycompany.sample.plumbing.logging.LoggerFactoryBuilder;
+import com.authsamples.api.host.startup.ApplicationInitializer;
+import com.authsamples.api.plumbing.logging.LoggerFactoryBuilder;
 
 /*
  * The application entry point

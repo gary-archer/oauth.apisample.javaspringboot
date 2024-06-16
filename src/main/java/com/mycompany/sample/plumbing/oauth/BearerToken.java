@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.oauth;
+package com.authsamples.api.plumbing.oauth;
 
 import jakarta.servlet.http.HttpServletRequest;
 

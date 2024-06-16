@@ -1,15 +1,15 @@
-package com.mycompany.sample.plumbing.oauth;
+package com.authsamples.api.plumbing.oauth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import com.mycompany.sample.plumbing.claims.ClaimsCache;
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipal;
-import com.mycompany.sample.plumbing.claims.ClaimsReader;
-import com.mycompany.sample.plumbing.claims.ExtraClaimsProvider;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
+import com.authsamples.api.plumbing.claims.ClaimsCache;
+import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
+import com.authsamples.api.plumbing.claims.ClaimsReader;
+import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.plumbing.errors.ErrorFactory;
 
 /*
  * A class to create the claims principal at the start of every secured request

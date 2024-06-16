@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.logging;
+package com.authsamples.api.plumbing.logging;
 
 import java.util.Map;
 import java.util.UUID;
@@ -11,8 +11,8 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kstruct.gethostname4j.Hostname;
-import com.mycompany.sample.plumbing.errors.ClientError;
-import com.mycompany.sample.plumbing.errors.ServerError;
+import com.authsamples.api.plumbing.errors.ClientError;
+import com.authsamples.api.plumbing.errors.ServerError;
 
 /*
  * Each API request writes a structured log entry containing fields we will query by
@@ -68,13 +68,13 @@ public final class LogEntryImpl implements LogEntry {
             this.data.setPath(this.getRequestPath(request));
 
             // Our callers can supply a custom header so that we can keep track of who is calling each API
-            var callingApplicationName = request.getHeader("x-mycompany-api-client");
+            var callingApplicationName = request.getHeader("x-authsamples-api-client");
             if (StringUtils.hasLength(callingApplicationName)) {
                 this.data.setClientApplicationName(callingApplicationName);
             }
 
             // Use the correlation id from request headers or create one
-            var correlationId = request.getHeader("x-mycompany-correlation-id");
+            var correlationId = request.getHeader("x-authsamples-correlation-id");
             if (StringUtils.hasLength(correlationId)) {
                 this.data.setCorrelationId(correlationId);
             } else {
@@ -82,7 +82,7 @@ public final class LogEntryImpl implements LogEntry {
             }
 
             // Log an optional session id if supplied
-            var sessionId = request.getHeader("x-mycompany-session-id");
+            var sessionId = request.getHeader("x-authsamples-session-id");
             if (StringUtils.hasLength(sessionId)) {
                 this.data.setSessionId(sessionId);
             }

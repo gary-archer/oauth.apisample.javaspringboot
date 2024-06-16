@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.controllers;
+package com.authsamples.api.host.controllers;
 
 import java.util.List;
 import org.springframework.context.annotation.Scope;
@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.common.primitives.Ints;
-import com.mycompany.sample.logic.entities.Company;
-import com.mycompany.sample.logic.entities.CompanyTransactions;
-import com.mycompany.sample.logic.errors.SampleErrorCodes;
-import com.mycompany.sample.logic.services.CompanyService;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
+import com.authsamples.api.logic.entities.Company;
+import com.authsamples.api.logic.entities.CompanyTransactions;
+import com.authsamples.api.logic.errors.SampleErrorCodes;
+import com.authsamples.api.logic.services.CompanyService;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.plumbing.errors.ErrorFactory;
 
 /*
  * A controller to return company related secure data to the caller

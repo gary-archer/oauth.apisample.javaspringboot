@@ -1,4 +1,4 @@
-package com.mycompany.sample.logic.claims;
+package com.authsamples.api.logic.claims;
 
 /*
  * Custom claims used in the API's authorization, or for user identification

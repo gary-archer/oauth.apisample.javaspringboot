@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.claims;
+package com.authsamples.api.plumbing.claims;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

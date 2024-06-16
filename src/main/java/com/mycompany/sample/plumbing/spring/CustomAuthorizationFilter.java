@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.spring;
+package com.authsamples.api.plumbing.spring;
 
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipalHolder;
-import com.mycompany.sample.plumbing.interceptors.UnhandledExceptionHandler;
-import com.mycompany.sample.plumbing.logging.LogEntryImpl;
-import com.mycompany.sample.plumbing.oauth.Authorizer;
+import com.authsamples.api.plumbing.claims.ClaimsPrincipalHolder;
+import com.authsamples.api.plumbing.interceptors.UnhandledExceptionHandler;
+import com.authsamples.api.plumbing.logging.LogEntryImpl;
+import com.authsamples.api.plumbing.oauth.Authorizer;
 
 /*
  * A custom OAuth API filter to allow us to take full control of authorization handling

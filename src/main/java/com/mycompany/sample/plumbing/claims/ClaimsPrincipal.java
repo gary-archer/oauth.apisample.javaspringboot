@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.claims;
+package com.authsamples.api.plumbing.claims;
 
 import org.jose4j.jwt.JwtClaims;
 import org.springframework.security.core.AuthenticatedPrincipal;

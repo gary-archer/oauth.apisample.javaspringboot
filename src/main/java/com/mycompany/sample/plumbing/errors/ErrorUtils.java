@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.errors;
+package com.authsamples.api.plumbing.errors;
 
 import java.io.IOException;
 import java.util.ArrayList;

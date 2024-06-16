@@ -1,4 +1,4 @@
-package com.mycompany.sample.tests.utils;
+package com.authsamples.api.tests.utils;
 
 import lombok.Getter;
 import lombok.Setter;

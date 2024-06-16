@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.errors;
+package com.authsamples.api.plumbing.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;

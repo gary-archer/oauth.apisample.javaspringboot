@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.logging;
+package com.authsamples.api.plumbing.logging;
 
 /*
  * A simple builder class to expose a segregated interface

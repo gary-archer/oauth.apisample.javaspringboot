@@ -1,13 +1,13 @@
-package com.mycompany.sample.host.controllers;
+package com.authsamples.api.host.controllers;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.mycompany.sample.logic.claims.SampleExtraClaims;
-import com.mycompany.sample.logic.entities.ClientUserInfo;
-import com.mycompany.sample.plumbing.claims.ClaimsPrincipalHolder;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.logic.claims.SampleExtraClaims;
+import com.authsamples.api.logic.entities.ClientUserInfo;
+import com.authsamples.api.plumbing.claims.ClaimsPrincipalHolder;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 
 /*
  * Return user info from the business data to the client

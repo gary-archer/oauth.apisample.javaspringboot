@@ -1,12 +1,12 @@
-package com.mycompany.sample.plumbing.interceptors;
+package com.authsamples.api.plumbing.interceptors;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
-import com.mycompany.sample.plumbing.errors.ErrorCodes;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
+import com.authsamples.api.plumbing.errors.ErrorCodes;
+import com.authsamples.api.plumbing.errors.ErrorFactory;
 
 /*
  * A class to process custom headers to enable testers to control non functional behaviour
@@ -29,7 +29,7 @@ public final class CustomHeaderInterceptor implements HandlerInterceptor {
         final @NonNull HttpServletResponse response,
         final @NonNull Object handler) {
 
-        var apiToBreak = request.getHeader("x-mycompany-test-exception");
+        var apiToBreak = request.getHeader("x-authsamples-test-exception");
         if (StringUtils.hasLength(apiToBreak)) {
             if (apiToBreak.equalsIgnoreCase(this.apiName)) {
                 throw ErrorFactory.createServerError(

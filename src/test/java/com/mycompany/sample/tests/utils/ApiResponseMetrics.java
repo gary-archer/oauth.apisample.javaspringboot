@@ -1,4 +1,4 @@
-package com.mycompany.sample.tests.utils;
+package com.authsamples.api.tests.utils;
 
 import java.time.Instant;
 import lombok.Getter;

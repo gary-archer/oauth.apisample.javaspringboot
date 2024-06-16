@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.dependencies;
+package com.authsamples.api.plumbing.dependencies;
 
 import java.util.HashMap;
 import java.util.Map;

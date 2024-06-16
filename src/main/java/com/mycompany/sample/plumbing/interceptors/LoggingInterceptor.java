@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.interceptors;
+package com.authsamples.api.plumbing.interceptors;
 
 import java.util.Map;
 import jakarta.servlet.DispatcherType;
@@ -9,8 +9,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.logging.LogEntryImpl;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.plumbing.logging.LogEntryImpl;
 
 /*
  * Do custom logging of requests for support purposes

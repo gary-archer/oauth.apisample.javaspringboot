@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.logging;
+package com.authsamples.api.plumbing.logging;
 
 import ch.qos.logback.classic.Level;
 import lombok.Getter;

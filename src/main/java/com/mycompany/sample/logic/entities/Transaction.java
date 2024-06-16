@@ -1,4 +1,4 @@
-package com.mycompany.sample.logic.entities;
+package com.authsamples.api.logic.entities;
 
 import lombok.Getter;
 import lombok.Setter;

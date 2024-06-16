@@ -1,4 +1,4 @@
-package com.mycompany.sample.host.configuration;
+package com.authsamples.api.host.configuration;
 
 import lombok.Getter;
 import lombok.Setter;

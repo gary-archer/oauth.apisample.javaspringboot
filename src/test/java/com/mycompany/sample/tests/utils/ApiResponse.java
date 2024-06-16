@@ -1,4 +1,4 @@
-package com.mycompany.sample.tests.utils;
+package com.authsamples.api.tests.utils;
 
 import java.net.http.HttpResponse;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.oauth;
+package com.authsamples.api.plumbing.oauth;
 
 import java.util.Arrays;
 import org.jose4j.jwa.AlgorithmConstraints;
@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import com.mycompany.sample.plumbing.claims.ClaimsReader;
-import com.mycompany.sample.plumbing.configuration.OAuthConfiguration;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.errors.ErrorCodes;
-import com.mycompany.sample.plumbing.errors.ErrorFactory;
-import com.mycompany.sample.plumbing.errors.ErrorUtils;
-import com.mycompany.sample.plumbing.logging.LogEntry;
+import com.authsamples.api.plumbing.claims.ClaimsReader;
+import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.plumbing.errors.ErrorCodes;
+import com.authsamples.api.plumbing.errors.ErrorFactory;
+import com.authsamples.api.plumbing.errors.ErrorUtils;
+import com.authsamples.api.plumbing.logging.LogEntry;
 
 /*
  * A class to deal with OAuth JWT access token validation

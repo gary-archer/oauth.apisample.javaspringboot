@@ -1,4 +1,4 @@
-package com.mycompany.sample.plumbing.interceptors;
+package com.authsamples.api.plumbing.interceptors;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import com.mycompany.sample.plumbing.configuration.LoggingConfiguration;
-import com.mycompany.sample.plumbing.dependencies.CustomRequestScope;
-import com.mycompany.sample.plumbing.errors.ClientError;
-import com.mycompany.sample.plumbing.errors.ErrorUtils;
-import com.mycompany.sample.plumbing.errors.ServerError;
-import com.mycompany.sample.plumbing.logging.LogEntryImpl;
-import com.mycompany.sample.plumbing.utilities.ResponseErrorWriter;
+import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
+import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
+import com.authsamples.api.plumbing.errors.ClientError;
+import com.authsamples.api.plumbing.errors.ErrorUtils;
+import com.authsamples.api.plumbing.errors.ServerError;
+import com.authsamples.api.plumbing.logging.LogEntryImpl;
+import com.authsamples.api.plumbing.utilities.ResponseErrorWriter;
 
 /*
  * A central point of exception handling

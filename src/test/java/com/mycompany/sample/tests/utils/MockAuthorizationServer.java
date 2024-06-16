@@ -1,4 +1,4 @@
-package com.mycompany.sample.tests.utils;
+package com.authsamples.api.tests.utils;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,7 +17,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mycompany.sample.logic.claims.CustomClaimNames;
+import com.authsamples.api.logic.claims.CustomClaimNames;
 
 /*
  * A mock authorization server implemented with wiremock and a JOSE library
