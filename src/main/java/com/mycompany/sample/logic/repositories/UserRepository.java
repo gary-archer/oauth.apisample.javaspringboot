@@ -20,12 +20,12 @@ public final class UserRepository {
 
         if (managerId.equals("20116")) {
 
-            // These claims are used for the guestadmin@mycompany.com user account
+            // These claims are used for the guestadmin@example.com user account
             return new SampleExtraClaims("Global Manager", new String[]{"Europe", "USA", "Asia"});
 
         } else if (managerId.equals("10345")) {
 
-            // These claims are used for the guestuser@mycompany.com user account
+            // These claims are used for the guestuser@example.com user account
             return new SampleExtraClaims("Regional Manager", new String[]{"USA"});
 
         } else {

@@ -33,7 +33,7 @@
   },
   "oauth": {
     "issuer":                       "https://login.authsamples-dev.com",
-    "audience":                     "api.mycompany.com",
+    "audience":                     "api.authsamples.com",
     "algorithm":                    "ES256",
     "scope":                        "investments",
     "jwksEndpoint":                 "https://login.authsamples-dev.com:447/.well-known/jwks.json",

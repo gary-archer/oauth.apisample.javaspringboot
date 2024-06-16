@@ -11,7 +11,7 @@ public class MockTokenOptions {
 
     @Getter
     @Setter
-    private String audience = "api.mycompany.com";
+    private String audience = "api.authsamples.com";
 
     @Getter
     @Setter
