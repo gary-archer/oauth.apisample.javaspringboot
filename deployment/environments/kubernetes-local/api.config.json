@@ -25,7 +25,7 @@
     }
   },
   "oauth": {
-    "issuer":                       "https://login.mycluster.com/oauth/v2/oauth-anonymous",
+    "issuer":                       "https://login.authsamples-k8s-dev.com/oauth/v2/oauth-anonymous",
     "audience":                     "api.authsamples.com",
     "algorithm":                    "ES256",
     "scope":                        "investments",
