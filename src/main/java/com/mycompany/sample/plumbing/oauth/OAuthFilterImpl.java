@@ -16,13 +16,13 @@ import com.authsamples.api.plumbing.errors.ErrorFactory;
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
-public final class OAuthAuthorizer implements Authorizer {
+public final class OAuthFilterImpl implements OAuthFilter {
 
     private final ClaimsCache cache;
     private final AccessTokenValidator tokenValidator;
     private final ExtraClaimsProvider extraClaimsProvider;
 
-    public OAuthAuthorizer(
+    public OAuthFilterImpl(
             final ClaimsCache cache,
             final AccessTokenValidator tokenValidator,
             final ExtraClaimsProvider extraClaimsProvider) {

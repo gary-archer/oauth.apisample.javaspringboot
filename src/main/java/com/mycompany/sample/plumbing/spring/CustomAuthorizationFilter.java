@@ -11,7 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.authsamples.api.plumbing.claims.ClaimsPrincipalHolder;
 import com.authsamples.api.plumbing.interceptors.UnhandledExceptionHandler;
 import com.authsamples.api.plumbing.logging.LogEntryImpl;
-import com.authsamples.api.plumbing.oauth.Authorizer;
+import com.authsamples.api.plumbing.oauth.OAuthFilter;
 
 /*
  * A custom OAuth API filter to allow us to take full control of authorization handling
@@ -39,11 +39,11 @@ public final class CustomAuthorizationFilter extends OncePerRequestFilter {
             var logEntry = this.container.getBean(LogEntryImpl.class);
             logEntry.start(request);
 
-            // Get the authorizer for this HTTP request
-            var authorizer = this.container.getBean(Authorizer.class);
+            // Get the OAuth filter for this HTTP request
+            var oauthFilter = this.container.getBean(OAuthFilter.class);
 
             // Do the OAuth work in plain Java classes and return our customised claims
-            var claims = authorizer.execute(request);
+            var claims = oauthFilter.execute(request);
 
             // Log who called the API
             logEntry.setIdentity(claims.getSubject());

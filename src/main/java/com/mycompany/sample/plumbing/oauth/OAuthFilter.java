@@ -6,7 +6,7 @@ import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
 /*
  * An authorizer abstraction to validate a JWT access token and return claims
  */
-public interface Authorizer {
+public interface OAuthFilter {
 
     ClaimsPrincipal execute(HttpServletRequest request);
 }
