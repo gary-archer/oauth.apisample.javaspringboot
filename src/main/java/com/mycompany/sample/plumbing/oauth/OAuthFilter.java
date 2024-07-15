@@ -4,9 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
 
 /*
- * An authorizer abstraction to validate a JWT access token and return claims
+ * An abstraction for doing the OAuth work to validate a JWT access token and return claims
  */
 public interface OAuthFilter {
-
     ClaimsPrincipal execute(HttpServletRequest request);
 }
