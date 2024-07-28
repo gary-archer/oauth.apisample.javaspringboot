@@ -72,7 +72,7 @@ curl -k https://api.authsamples-dev.com:446/investments/companies
 Then configure SSL trust by running this command:
 
 ```bash
-sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.pem -storepass changeit -noprompt
+sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.crt -storepass changeit -noprompt
 ```
 
 Clean up after testing with this command:
