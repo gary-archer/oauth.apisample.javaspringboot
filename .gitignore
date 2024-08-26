@@ -1,0 +1,16 @@
+.DS_Store
+resources
+certs
+build
+bin
+logs
+.idea
+.gradle
+.settings
+*.iws
+*.iml
+*.ipr
+*.jar
+.classpath
+.factorypath
+.project
