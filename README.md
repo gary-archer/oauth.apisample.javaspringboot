@@ -4,52 +4,45 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot?targetFile=build.gradle)
 
-## Behaviour
+The final OAuth secured Java API code sample, which returns mock `investments` data:
 
-The final OAuth secured Java API code sample:
+- The API takes finer control over claims-based authorization to enable security with good manageability.
+- The API uses structured logging and log aggregation, for the best supportability.
 
-- The API has a fictional business area of `investments`, but simply returns hard coded data
-- The API takes finer control over OAuth and claims to enable the best security with good manageability
-- The API uses structured logging and log aggregation, for the best supportability
-
-### API integrates with UI Clients
+### API Serves Frontend Clients
 
 The API can run as part of an OAuth end-to-end setup, to serve my blog's UI code samples.\
-Running the API in this manner forces it to be consumer focused to its clients:
+Running the API in this manner forces it to be consumer-focused to its clients:
 
 ![SPA and API](./images/spa-and-api.png)
 
-### API can be Productively Tested
+### API Security is Testable
 
-The API's clients are UIs, which get user level access tokens by running an OpenID Connect code flow.\
-For productive test driven development, the API instead mocks the Authorization Server:
+The API's clients are UIs, which get user-level access tokens by running an OpenID Connect code flow.\
+For productive test-driven development, the API instead mocks the authorization server:
 
 ![Test Driven Development](./images/tests.png)
 
-### API can be Load Tested
+### API is Load Testable
 
-A basic load test uses Completable Futures to fire 5 parallel requests at a time at the API.\
-This ensures no concurrency problems, and error rehearsal is used to ensure useful error responses:
+A basic load test fires batches of concurrent requests at the API.\
+This further verifies reliability and the correctness of API logs.
 
 ![Load Test](./images/loadtest.png)
 
 ### API is Supportable
 
-API logs can be analysed in use case based manner by running Elasticsearch SQL and Lucene queries.\
-Follow the [Technical Support Queries](https://apisandclients.com/posts/api-technical-support-analysis) for some people friendly examples:
+You can aggregate API logs to Elasticsearch and run [Technical Support Queries](https://apisandclients.com/posts/api-technical-support-analysis).
+
 
 ![Support Queries](./images/support-queries.png)
 
-## Commands
+## How to Run the API
 
-### Prerequisites
+- Install a Java 21+ SDK.
+- Also install Docker to run integration tests that use Wiremock.
 
-- Ensure that a Java 21+ SDK is installed
-- Integration tests run Wiremock in Docker, so ensure that Docker is installed
-
-### Run the API
-
-Then run the API in isolation with this command:
+Then run the API with this command:
 
 ```bash
 ./start.sh
@@ -57,7 +50,7 @@ Then run the API in isolation with this command:
 
 ### Configure DNS and SSL
 
-Configure DNS by adding these domains to your hosts file:
+Add these domains to your hosts file to configure DNS:
 
 ```text
 127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
@@ -69,7 +62,7 @@ Then call an endpoint over port 446:
 curl -k https://api.authsamples-dev.com:446/investments/companies
 ```
 
-Then configure SSL trust by running this command:
+Then configure [Java SSL trust](https://apisandclients.com/posts/developer-ssl-setup#trusting-a-root-certificate-in-java-apis) for the root CA at `./certs/authsamples-dev.ca.crt`.
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.crt -storepass changeit -noprompt
@@ -99,18 +92,17 @@ Then run integration tests and a load test:
 
 ## Further Details
 
-* See the [API Journey - Server Side](https://apisandclients.com/posts/api-journey-server-side) for further information on the API behaviour
-* See the [Overview Page](https://apisandclients.com/posts/java-spring-boot-api-overview) for further details on running the API
-* See the [OAuth Integration Page](https://apisandclients.com/posts/spring-boot-api-oauth-integration) for the security implementation
-
+* See the [API Journey - Server Side](https://apisandclients.com/posts/api-journey-server-side) for further information on the API's behaviour.
+* See the [Overview Page](https://apisandclients.com/posts/java-spring-boot-api-overview) for further details on how to run the API.
+* See the [OAuth Integration Page](https://apisandclients.com/posts/spring-boot-api-oauth-integration) for some implementation details.
 
 ## Programming Languages
 
-* Java 21 and Spring Boot 3 are used to implement the REST API
+* The API uses Java 21 and Spring Boot 3.
 
 ## Infrastructure
 
-* The Tomcat web server hosts the API over SSL
-* AWS Cognito is used as the default Authorization Server
-* The [jose4j](https://bitbucket.org/b_c/jose4j/wiki/Home) library is used to manage in memory validation of JWTs
-* The project includes API deployment resources for Docker and Kubernetes
+* Tomcat is the HTTP server that hosts the API endpoints.
+* AWS Cognito is the API's default authorization server.
+* The [jose4j](https://bitbucket.org/b_c/jose4j/wiki/Home) library manages in-memory JWT validation.
+* The project includes API deployment resources for Docker and Kubernetes.
