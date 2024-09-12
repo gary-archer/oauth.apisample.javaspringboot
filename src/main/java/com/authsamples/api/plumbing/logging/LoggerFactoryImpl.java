@@ -6,7 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.rolling.RollingFileAppender;
-import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
+import ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -263,7 +263,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         policy.setMaxHistory(maxFiles);
 
         // Set size details and complete the rolling policy
-        var triggerPolicy = new SizeAndTimeBasedFNATP<ILoggingEvent>();
+        var triggerPolicy = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<ILoggingEvent>();
         triggerPolicy.setMaxFileSize(fileSize);
         policy.setTimeBasedFileNamingAndTriggeringPolicy(triggerPolicy);
         policy.start();
