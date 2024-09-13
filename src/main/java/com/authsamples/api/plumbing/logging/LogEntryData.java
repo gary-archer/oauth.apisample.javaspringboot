@@ -136,7 +136,6 @@ public final class LogEntryData {
         this.outputString(x -> data.put("errorCode", x), this.errorCode);
         this.outputNumber(x -> data.put("errorId", x), this.errorId);
         this.outputNumberForce(x -> data.put("millisecondsTaken", x), this.millisecondsTaken);
-        this.outputNumberForce(x -> data.put("millisecondsThreshold", x), this.performanceThresholdMilliseconds);
         this.outputString(x -> data.put("correlationId", x), this.correlationId);
         this.outputString(x -> data.put("sessionId", x), this.sessionId);
 
