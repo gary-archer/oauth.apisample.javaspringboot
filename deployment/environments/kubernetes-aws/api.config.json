@@ -7,7 +7,7 @@
     "proxyUrl": ""
   },
   "logging": {
-    "apiName": "SampleApi",
+    "apiName": "FinalApi",
     "production": {
       "level": "info",
       "performanceThresholdMilliseconds": 500,

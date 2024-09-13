@@ -10,7 +10,7 @@ import com.authsamples.api.plumbing.logging.LoggerFactoryBuilder;
  */
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 @SpringBootApplication
-public class SampleApiApplication {
+public class FinalApiApplication {
 
     /*
      * The entry point method which starts the app
@@ -23,7 +23,7 @@ public class SampleApiApplication {
         try {
 
             // Run the app
-            new SpringApplicationBuilder(SampleApiApplication.class)
+            new SpringApplicationBuilder(FinalApiApplication.class)
                 .initializers(new ApplicationInitializer(loggerFactory))
                 .run(args);
 

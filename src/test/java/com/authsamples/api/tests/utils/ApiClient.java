@@ -78,7 +78,7 @@ public final class ApiClient {
                 .headers("x-authsamples-correlation-id", correlationId);
 
         if (options.getRehearseException()) {
-            requestBuilder.headers("x-authsamples-test-exception", "SampleApi");
+            requestBuilder.headers("x-authsamples-test-exception", "FinalApi");
         }
 
         var request = requestBuilder.build();

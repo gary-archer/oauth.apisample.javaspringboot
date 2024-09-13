@@ -7,7 +7,7 @@
     "proxyUrl": "http://host.docker.internal:8888"
   },
   "logging": {
-    "apiName": "SampleApi",
+    "apiName": "FinalApi",
     "production": {
       "level": "info",
       "performanceThresholdMilliseconds": 500,
