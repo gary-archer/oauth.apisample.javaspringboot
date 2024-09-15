@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.common.primitives.Ints;
 import com.authsamples.api.logic.entities.Company;
 import com.authsamples.api.logic.entities.CompanyTransactions;
 import com.authsamples.api.logic.errors.SampleErrorCodes;
 import com.authsamples.api.logic.services.CompanyService;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
+import com.google.common.primitives.Ints;
 
 /*
  * A controller to return company related secure data to the caller

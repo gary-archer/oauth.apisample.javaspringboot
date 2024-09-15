@@ -5,9 +5,9 @@ import java.nio.file.Paths;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.authsamples.api.logic.errors.SampleErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
  * A utility class to manage async reading of JSON text file data into objects

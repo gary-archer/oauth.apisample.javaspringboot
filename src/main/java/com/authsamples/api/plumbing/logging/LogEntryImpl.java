@@ -9,10 +9,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.kstruct.gethostname4j.Hostname;
 import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ServerError;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.kstruct.gethostname4j.Hostname;
 
 /*
  * Each API request writes a structured log entry containing fields we will query by

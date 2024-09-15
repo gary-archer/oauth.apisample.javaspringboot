@@ -1,11 +1,11 @@
 package com.authsamples.api.logic.claims;
 
 import java.util.ArrayList;
+import com.authsamples.api.plumbing.claims.ExtraClaims;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.authsamples.api.plumbing.claims.ExtraClaims;
 import lombok.Getter;
 
 /*

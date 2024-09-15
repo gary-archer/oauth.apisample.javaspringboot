@@ -9,10 +9,10 @@ import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
 import com.authsamples.api.plumbing.errors.ServerError;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /*
  * A custom logger factory to wrap the default one and give us greater control over output
