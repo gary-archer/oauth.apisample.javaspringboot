@@ -70,7 +70,7 @@ public final class LogEntryImpl implements LogEntry {
             // Our callers can supply a custom header so that we can keep track of who is calling each API
             var callingApplicationName = request.getHeader("x-authsamples-api-client");
             if (StringUtils.hasLength(callingApplicationName)) {
-                this.data.setClientApplicationName(callingApplicationName);
+                this.data.setClientName(callingApplicationName);
             }
 
             // Use the correlation id from request headers or create one

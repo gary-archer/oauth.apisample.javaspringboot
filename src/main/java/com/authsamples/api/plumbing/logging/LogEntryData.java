@@ -41,7 +41,7 @@ public final class LogEntryData {
     private String resourceId;
 
     // The application that called the API
-    private String clientApplicationName;
+    private String clientName;
 
     // The subject claim from the OAuth 2.0 access token
     private String userId;
@@ -90,7 +90,7 @@ public final class LogEntryData {
         this.method = "";
         this.path = "";
         this.resourceId = "";
-        this.clientApplicationName = "";
+        this.clientName = "";
         this.userId = "";
         this.statusCode = 0;
         this.millisecondsTaken = 0;
@@ -130,7 +130,7 @@ public final class LogEntryData {
         this.outputString(x -> data.put("method", x), this.method);
         this.outputString(x -> data.put("path", x), this.path);
         this.outputString(x -> data.put("resourceId", x), this.resourceId);
-        this.outputString(x -> data.put("clientApplicationName", x), this.clientApplicationName);
+        this.outputString(x -> data.put("clientName", x), this.clientName);
         this.outputString(x -> data.put("userId", x), this.userId);
         this.outputNumber(x -> data.put("statusCode", x), this.statusCode);
         this.outputString(x -> data.put("errorCode", x), this.errorCode);
