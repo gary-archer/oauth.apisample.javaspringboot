@@ -32,7 +32,7 @@ This further verifies reliability and the correctness of API logs.
 
 ### API is Supportable
 
-You can aggregate API logs to Elasticsearch and run [Technical Support Queries](https://apisandclients.com/posts/api-technical-support-analysis).
+You can aggregate API logs to Elasticsearch and run [Technical Support Queries](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/api-technical-support-analysis.mdx).
 
 
 ![Support Queries](./images/support-queries.png)
@@ -62,7 +62,7 @@ Then call an endpoint over port 446:
 curl -k https://api.authsamples-dev.com:446/investments/companies
 ```
 
-Then configure [Java SSL trust](https://apisandclients.com/posts/developer-ssl-setup#trusting-a-root-certificate-in-java-apis) for the root CA at `./certs/authsamples-dev.ca.crt`.
+Then configure [Java SSL trust](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl-setup.mdx#trusting-a-root-certificate-in-java-apis) for the root CA at `./certs/authsamples-dev.ca.crt`.
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.crt -storepass changeit -noprompt
@@ -92,9 +92,9 @@ Then run integration tests and a load test:
 
 ## Further Details
 
-* See the [API Journey - Server Side](https://apisandclients.com/posts/api-journey-server-side) for further information on the API's behaviour.
-* See the [Overview Page](https://apisandclients.com/posts/java-spring-boot-api-overview) for further details on how to run the API.
-* See the [OAuth Integration Page](https://apisandclients.com/posts/spring-boot-api-oauth-integration) for some implementation details.
+* See the [API Journey - Server Side](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/api-journey-server-side.mdx) for further information on the API's behaviour.
+* See the [Overview Page](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/java-spring-boot-api-overview.mdx) for further details on how to run the API.
+* See the [OAuth Integration Page](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/spring-boot-api-oauth-integration.mdx) for some implementation details.
 
 ## Programming Languages
 
