@@ -6,5 +6,5 @@ services:
     ports:
       - 446:8000
     volumes:
-      - ../environments/docker-local/api.config.json:/usr/api/api.config.json
+      - ../environments/docker/api.config.json:/usr/api/api.config.json
       - ../../certs/authsamples-dev.ssl.p12:/usr/api/certs/authsamples-dev.ssl.p12
