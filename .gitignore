@@ -1,6 +1,7 @@
 .DS_Store
 resources
-certs
+certs/*.p12
+certs/*.crt
 build
 bin
 logs

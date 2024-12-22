@@ -37,32 +37,31 @@ You can aggregate API logs to Elasticsearch and run [Technical Support Queries](
 
 ![Support Queries](./images/support-queries.png)
 
-## How to Run the API
+## Local Development Quick Start
 
-- Install a Java 21+ SDK.
-- Also install Docker to run integration tests that use Wiremock.
-
-Then run the API with this command:
-
-```bash
-./start.sh
-```
+To run the code sample locally you must configure some infrastructure before you run the code.
 
 ### Configure DNS and SSL
 
-Add these domains to your hosts file to configure DNS:
+Configure custom development domains by adding these DNS entries to your hosts file:
 
-```text
+```bash
 127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
 ```
 
-Then call an endpoint over port 446:
+Install OpenSSL if required, then create a folder in which to create development certificates for the SPA:
 
 ```bash
-curl -k https://api.authsamples-dev.com:446/investments/companies
+export SECRETS_FOLDER='~/secrets'
+mkdir ~/secrets
+./certs/create.sh
 ```
 
-Then configure [Java SSL trust](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl-setup.mdx#trusting-a-root-certificate-in-java-apis) for the root CA at `./certs/authsamples-dev.ca.crt`.
+If required, configure [Java SSL trust](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl-setup.mdx#trusting-a-root-certificate-in-java-apis) for the root CA at the following location:
+
+```text
+./certs/authsamples-dev.ca.crt
+```
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.crt -storepass changeit -noprompt
@@ -72,7 +71,17 @@ Clean up after testing with this command:
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass changeit -noprompt
+```
 
+### Run the Code
+
+- Install a Java 21+ SDK.
+- Also install Docker to run integration tests that use Wiremock.
+
+Then run the API with this command:
+
+```bash
+./start.sh
 ```
 
 ### Test the API
