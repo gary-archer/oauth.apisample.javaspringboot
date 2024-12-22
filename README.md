@@ -63,6 +63,8 @@ If required, configure [Java SSL trust](https://github.com/gary-archer/oauth.blo
 ./certs/authsamples-dev.ca.crt
 ```
 
+You can do so by running the following command:
+
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.crt -storepass changeit -noprompt
 ```
