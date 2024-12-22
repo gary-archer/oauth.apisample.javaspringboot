@@ -17,7 +17,6 @@ cp deployment/environments/dev/api.config.json ./api.config.json
 #
 ./certs/create.sh
 if [ $? -ne 0 ]; then
-  read -n 1
   exit 1
 fi
 
