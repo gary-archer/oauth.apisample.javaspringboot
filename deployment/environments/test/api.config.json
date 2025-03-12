@@ -17,7 +17,7 @@
       },
       {
         "type": "file",
-        "filePrefix": "api",
+        "filePrefix": "api-investments",
         "dirname": "./logs",
         "totalLogSizeMB": "1024",
         "maxFiles": "100"
