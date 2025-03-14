@@ -13,20 +13,20 @@ repositories {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '3.4.1'
-    spring_security_version = '6.4.2'
+    spring_boot_starter_version = '3.4.3'
+    spring_security_version = '6.4.3'
     jose4j_version = '0.9.6'
     cache2k_version = '1.6.0.Final'
-    commons_codec_version = '1.16.1'
-    jackson_version = '2.17.0'
-    logback_version = '1.5.15'
-    lombok_version = '1.18.32'
-    guava_version = '33.1.0-jre'
+    commons_codec_version = '1.18.0'
+    jackson_version = '2.18.3'
+    logback_version = '1.5.17'
+    lombok_version = '1.18.36'
+    guava_version = '33.4.0-jre'
     gethostname4j_version = '1.0.0'
 
     // Test dependency versions
-    junit_jupiter_version = '5.10.2'
-    junit_platform_suite_version = '1.10.2'
+    junit_jupiter_version = '5.12.0'
+    junit_platform_suite_version = '1.12.0'
 }
 
 dependencies {
