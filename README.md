@@ -33,7 +33,7 @@ This further verifies reliability and the correctness of API logs.
 You can aggregate API logs to Elasticsearch and run [Technical Support Queries](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/api-technical-support-analysis.mdx).
 
 
-![Support Queries](./images/support-queries.png)
+![Support Queries](./images/support-queries.jpg)
 
 ## Local Development Quick Start
 
