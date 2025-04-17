@@ -75,7 +75,7 @@ sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass 
 
 ### Run the Code
 
-- Install a Java 21+ SDK.
+- Install a Java 24+ SDK.
 - Also install Docker to run integration tests that use Wiremock.
 
 Then run the API with this command:
