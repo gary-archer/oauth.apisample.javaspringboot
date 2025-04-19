@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
     id 'org.springframework.boot' version '3.2.0'
     id "com.adarshr.test-logger" version "4.0.0"
 }
@@ -20,7 +21,7 @@ ext {
     commons_codec_version = '1.18.0'
     jackson_version = '2.18.3'
     logback_version = '1.5.17'
-    lombok_version = '1.18.36'
+    lombok_version = '1.18.38'
     guava_version = '33.4.0-jre'
     gethostname4j_version = '1.0.0'
 
@@ -72,6 +73,14 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(24))
     }
+}
+
+// Required for Java 24
+application {
+    mainClass = 'com.authsamples.api.FinalApiApplication'
+    applicationDefaultJvmArgs = [
+        '--enable-native-access=ALL-UNNAMED',
+    ]
 }
 
 // Make warnings visible
