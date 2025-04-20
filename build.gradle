@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
     id 'org.springframework.boot' version '3.2.0'
     id "com.adarshr.test-logger" version "4.0.0"
 }
@@ -10,12 +9,19 @@ version = '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://repo.spring.io/milestone'
+    }
+}
+
+springBoot {
+    mainClass = 'com.authsamples.api.FinalApiApplication'
 }
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '3.4.4'
-    spring_security_version = '6.4.4'
+    spring_boot_starter_version = '3.5.0-M3'
+    spring_security_version = '6.5.0-M3'
     jose4j_version = '0.9.6'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.18.0'
@@ -73,14 +79,6 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(24))
     }
-}
-
-// Required for Java 24
-application {
-    mainClass = 'com.authsamples.api.FinalApiApplication'
-    applicationDefaultJvmArgs = [
-        '--enable-native-access=ALL-UNNAMED',
-    ]
 }
 
 // Make warnings visible
