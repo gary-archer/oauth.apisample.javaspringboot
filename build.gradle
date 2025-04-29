@@ -20,8 +20,8 @@ springBoot {
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '3.5.0-M3'
-    spring_security_version = '6.5.0-M3'
+    spring_boot_starter_version = '3.5.0-RC1'
+    spring_security_version = '6.5.0-RC1'
     jose4j_version = '0.9.6'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.18.0'
