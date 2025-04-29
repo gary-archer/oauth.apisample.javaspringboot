@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import com.authsamples.api.plumbing.spring.CustomAuthorizationFilter;
 
 /*
@@ -37,7 +37,7 @@ public class SecurityConfiguration {
         var authorizationFilter = new CustomAuthorizationFilter(container);
 
         http
-                .securityMatcher(new AntPathRequestMatcher(ResourcePaths.ALL))
+                .securityMatcher(PathPatternRequestMatcher.withDefaults().matcher(ResourcePaths.ALL))
                 .authorizeHttpRequests(authorize ->
 
                         // This seems to be required in Spring Boot 3, is using async calls during a request
