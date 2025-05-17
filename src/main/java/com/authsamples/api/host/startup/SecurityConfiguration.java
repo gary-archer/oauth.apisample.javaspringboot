@@ -1,6 +1,5 @@
 package com.authsamples.api.host.startup;
 
-import jakarta.servlet.DispatcherType;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,15 +36,10 @@ public class SecurityConfiguration {
         var authorizationFilter = new CustomAuthorizationFilter(container);
 
         http
+                // OAuth security for the API is applied via these settings
                 .securityMatcher(PathPatternRequestMatcher.withDefaults().matcher(ResourcePaths.ALL))
                 .authorizeHttpRequests(authorize ->
-
-                        // This seems to be required in Spring Boot 3, is using async calls during a request
-                        // https://github.com/spring-projects/spring-security/issues/11962
-                        authorize.dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
-
-                        // The OAuth security for the API is applied via these settings
-                        .anyRequest().authenticated()
+                        authorize.anyRequest().authenticated()
                 )
                 .addFilterBefore(authorizationFilter, AbstractPreAuthenticatedProcessingFilter.class)
 
