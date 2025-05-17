@@ -18,7 +18,7 @@ fi
 #
 # Build the code
 #
-./gradlew bootJar
+./gradlew bootJar --warning-mode all
 if [ $? -ne 0 ]; then
   echo 'Java API build problem encountered'
   exit 1
