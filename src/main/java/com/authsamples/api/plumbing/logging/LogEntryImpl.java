@@ -1,5 +1,7 @@
 package com.authsamples.api.plumbing.logging;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.UUID;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +14,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ServerError;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.kstruct.gethostname4j.Hostname;
 
 /*
  * Each API request writes a structured log entry containing fields we will query by
@@ -48,7 +49,7 @@ public final class LogEntryImpl implements LogEntry {
         // Initialise log data
         this.data = new LogEntryData();
         this.data.setApiName(apiName);
-        this.data.setHostName(Hostname.getHostname());
+        this.data.setHostName(this.getHostName());
         this.data.setPerformanceThresholdMilliseconds(performanceThresholdMilliseconds);
     }
 
@@ -176,6 +177,18 @@ public final class LogEntryImpl implements LogEntry {
      */
     public void write() {
         this.writeDataItem(this.data);
+    }
+
+    /*
+     * Try to get the local computer's host name
+     */
+    private String getHostName() {
+
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException ex) {
+            return "";
+        }
     }
 
     /*

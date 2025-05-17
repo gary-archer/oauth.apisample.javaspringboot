@@ -29,7 +29,6 @@ ext {
     logback_version = '1.5.18'
     lombok_version = '1.18.38'
     guava_version = '33.4.0-jre'
-    gethostname4j_version = '1.0.0'
 
     // Test dependency versions
     junit_jupiter_version = '5.12.0'
@@ -58,7 +57,6 @@ dependencies {
 
     // Utilities
     implementation "com.google.guava:guava:$guava_version"
-    implementation "com.kstruct:gethostname4j:$gethostname4j_version"
 
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
