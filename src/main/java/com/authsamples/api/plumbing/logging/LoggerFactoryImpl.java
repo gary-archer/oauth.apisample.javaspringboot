@@ -1,5 +1,6 @@
 package com.authsamples.api.plumbing.logging;
 
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import org.slf4j.Logger;
 import ch.qos.logback.classic.Level;
@@ -140,10 +141,13 @@ public final class LoggerFactoryImpl implements LoggerFactory {
             layout.setContext(context);
             layout.start();
 
+            var encoder = new LayoutWrappingEncoder<ILoggingEvent>();
+            encoder.setLayout(layout);
+
             // Create an appender that uses the layout
             var appender = new ConsoleAppender<ILoggingEvent>();
             appender.setContext(context);
-            appender.setLayout(layout);
+            appender.setEncoder(encoder);
             appender.start();
 
             // Update the logger with the appender
@@ -215,10 +219,13 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         layout.setContext(context);
         layout.start();
 
+        var encoder = new LayoutWrappingEncoder<ILoggingEvent>();
+        encoder.setLayout(layout);
+
         // Create an appender that uses the layout
         var appender = new ConsoleAppender<ILoggingEvent>();
         appender.setContext(context);
-        appender.setLayout(layout);
+        appender.setEncoder(encoder);
         appender.start();
 
         // Return it
@@ -271,9 +278,12 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         layout.setContext(context);
         layout.start();
 
+        var encoder = new LayoutWrappingEncoder<ILoggingEvent>();
+        encoder.setLayout(layout);
+
         // Set the policy against the appender
         appender.setRollingPolicy(policy);
-        appender.setLayout(layout);
+        appender.setEncoder(encoder);
         appender.start();
 
         // Return it
