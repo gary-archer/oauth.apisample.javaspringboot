@@ -1,5 +1,6 @@
 package com.authsamples.api.plumbing.logging;
 
+import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import org.slf4j.Logger;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -255,17 +256,13 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var appender = new RollingFileAppender<ILoggingEvent>();
         appender.setContext(context);
 
-        // Configure its rolling policy
-        var policy = new TimeBasedRollingPolicy<ILoggingEvent>();
+        // Configure the size and time for log files
+        var policy = new SizeAndTimeBasedRollingPolicy<ILoggingEvent>();
         policy.setContext(context);
         policy.setParent(appender);
         policy.setFileNamePattern(filePattern);
         policy.setMaxHistory(maxFiles);
-
-        // Set size details and complete the rolling policy
-        var triggerPolicy = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<ILoggingEvent>();
-        triggerPolicy.setMaxFileSize(fileSize);
-        policy.setTimeBasedFileNamingAndTriggeringPolicy(triggerPolicy);
+        policy.setMaxFileSize(fileSize);
         policy.start();
 
         // The log data is bare JSON without any logback fields
