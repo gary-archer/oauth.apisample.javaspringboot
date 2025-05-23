@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-debian:21-jre-latest
+FROM azul/zulu-openjdk-debian:24-jre-latest
 
 WORKDIR /usr/api
 COPY build/libs/finalapi-0.0.1-SNAPSHOT.jar /usr/api/

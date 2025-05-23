@@ -6,8 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.rolling.RollingFileAppender;
-import ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy;
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
@@ -134,15 +133,13 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var logger = context.getLogger(PRODUCTION_LOGGER_NAME);
         if (logger.isAdditive()) {
 
-            // Configure the JSON layout
-            var layout = new BareJsonLoggingLayout(true);
-            layout.setContext(context);
-            layout.start();
+            // Use a JSON encoder
+            var encoder = new BareJsonEncoder(true);
 
-            // Create an appender that uses the layout
+            // Create an appender that uses the encoder
             var appender = new ConsoleAppender<ILoggingEvent>();
             appender.setContext(context);
-            appender.setLayout(layout);
+            appender.setEncoder(encoder);
             appender.start();
 
             // Update the logger with the appender
@@ -196,7 +193,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     }
 
     /*
-     * Create a custom appender for outputting production log data to the console on a developer PC
+     * Create a custom appender for outputting log data to the console on a developer PC
      */
     private ConsoleAppender<ILoggingEvent> createProductionConsoleAppender(
             final JsonNode appendersConfig,
@@ -210,14 +207,12 @@ public final class LoggerFactoryImpl implements LoggerFactory {
 
         // The log data is bare JSON without any logback fields, and can use pretty printing for readability
         var prettyPrint = consoleAppenderConfig.get("prettyPrint").asBoolean(false);
-        var layout = new BareJsonLoggingLayout(prettyPrint);
-        layout.setContext(context);
-        layout.start();
+        var encoder = new BareJsonEncoder(prettyPrint);
 
-        // Create an appender that uses the layout
+        // Create an appender that uses the encoder
         var appender = new ConsoleAppender<ILoggingEvent>();
         appender.setContext(context);
-        appender.setLayout(layout);
+        appender.setEncoder(encoder);
         appender.start();
 
         // Return it
@@ -255,28 +250,21 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var appender = new RollingFileAppender<ILoggingEvent>();
         appender.setContext(context);
 
-        // Configure its rolling policy
-        var policy = new TimeBasedRollingPolicy<ILoggingEvent>();
+        // Configure the size and time for log files
+        var policy = new SizeAndTimeBasedRollingPolicy<ILoggingEvent>();
         policy.setContext(context);
         policy.setParent(appender);
         policy.setFileNamePattern(filePattern);
         policy.setMaxHistory(maxFiles);
-
-        // Set size details and complete the rolling policy
-        var triggerPolicy = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<ILoggingEvent>();
-        triggerPolicy.setMaxFileSize(fileSize);
-        policy.setTimeBasedFileNamingAndTriggeringPolicy(triggerPolicy);
+        policy.setMaxFileSize(fileSize);
         policy.start();
 
-        // The log data is bare JSON without any logback fields
-        // It uses a JSON object per line, which works better with log shippers
-        var layout = new BareJsonLoggingLayout(false);
-        layout.setContext(context);
-        layout.start();
+        // The log data uses a JSON object per line to support integration with log shippers
+        var encoder = new BareJsonEncoder(false);
 
-        // Set the policy against the appender
+        // Set appender details
         appender.setRollingPolicy(policy);
-        appender.setLayout(layout);
+        appender.setEncoder(encoder);
         appender.start();
 
         // Return it

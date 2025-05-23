@@ -9,20 +9,26 @@ version = '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven {
+        url = 'https://repo.spring.io/milestone'
+    }
+}
+
+springBoot {
+    mainClass = 'com.authsamples.api.FinalApiApplication'
 }
 
 ext {
     // API dependency versions
-    spring_boot_starter_version = '3.4.4'
-    spring_security_version = '6.4.4'
+    spring_boot_starter_version = '3.5.0'
+    spring_security_version = '6.5.0'
     jose4j_version = '0.9.6'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.18.0'
     jackson_version = '2.18.3'
-    logback_version = '1.5.17'
-    lombok_version = '1.18.36'
+    logback_version = '1.5.18'
+    lombok_version = '1.18.38'
     guava_version = '33.4.0-jre'
-    gethostname4j_version = '1.0.0'
 
     // Test dependency versions
     junit_jupiter_version = '5.12.0'
@@ -51,7 +57,6 @@ dependencies {
 
     // Utilities
     implementation "com.google.guava:guava:$guava_version"
-    implementation "com.kstruct:gethostname4j:$gethostname4j_version"
 
     // Compiler dependencies
     compileOnly "org.projectlombok:lombok:$lombok_version"
@@ -70,7 +75,7 @@ dependencies {
 // Set the Java version
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(24))
     }
 }
 
