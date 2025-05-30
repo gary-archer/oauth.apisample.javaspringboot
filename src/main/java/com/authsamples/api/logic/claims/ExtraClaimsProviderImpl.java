@@ -3,28 +3,28 @@ package com.authsamples.api.logic.claims;
 import org.jose4j.jwt.JwtClaims;
 import org.springframework.beans.factory.BeanFactory;
 import com.authsamples.api.logic.repositories.UserRepository;
-import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
 import com.authsamples.api.plumbing.claims.ClaimsReader;
-import com.authsamples.api.plumbing.claims.ExtraClaims;
 import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.authsamples.api.plumbing.errors.ErrorCodes;
+import com.authsamples.api.plumbing.errors.ErrorFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
  * Add extra claims that you cannot, or do not want to, manage in the authorization server
  */
-public final class SampleExtraClaimsProvider extends ExtraClaimsProvider {
+public final class ExtraClaimsProviderImpl implements ExtraClaimsProvider {
 
     private final BeanFactory container;
 
-    public SampleExtraClaimsProvider(final BeanFactory container) {
+    public ExtraClaimsProviderImpl(final BeanFactory container) {
         this.container = container;
     }
 
     /*
-     * Get additional claims from the API's own database
+     * Get extra claims from the API's own data
      */
-    @Override
-    public ExtraClaims lookupExtraClaims(final JwtClaims jwtClaims) {
+    public Object lookupExtraClaims(final JwtClaims jwtClaims) {
 
         // Get an object to look up user information
         var userRepository = this.container.getBean(UserRepository.class);
@@ -35,18 +35,18 @@ public final class SampleExtraClaimsProvider extends ExtraClaimsProvider {
     }
 
     /*
-     * Create a claims principal containing all claims
+     * Get extra claims from the cache
      */
-    @Override
-    public ClaimsPrincipal createClaimsPrincipal(final JwtClaims jwtClaims, final ExtraClaims extraClaims) {
-        return new ClaimsPrincipal(jwtClaims, extraClaims);
-    }
+    public Object deserializeFromCache(final String json) {
 
-    /*
-     * Deserialize extra claims after they have been read from the cache
-     */
-    @Override
-    public ExtraClaims deserializeFromCache(final JsonNode claimsNode) {
-        return SampleExtraClaims.importData(claimsNode);
+        try {
+
+            var mapper = new ObjectMapper();
+            return mapper.readValue(json, ExtraClaims.class);
+
+        } catch (JsonProcessingException ex) {
+
+            throw ErrorFactory.createServerError(ErrorCodes.JSON_PARSE_ERROR, "Unable to parse extra claims", ex);
+        }
     }
 }

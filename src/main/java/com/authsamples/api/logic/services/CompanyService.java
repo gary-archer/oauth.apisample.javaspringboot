@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.authsamples.api.logic.claims.CustomClaimNames;
-import com.authsamples.api.logic.claims.SampleExtraClaims;
+import com.authsamples.api.logic.claims.ExtraClaims;
 import com.authsamples.api.logic.entities.Company;
 import com.authsamples.api.logic.entities.CompanyTransactions;
 import com.authsamples.api.logic.errors.SampleErrorCodes;
@@ -82,7 +82,7 @@ public class CompanyService {
         }
 
         // For the user role, authorize based on a business rule that links the user to regional data
-        var extraClaims = (SampleExtraClaims) claims.getExtraClaims();
+        var extraClaims = (ExtraClaims) claims.getExtraClaims();
         return Arrays.stream(extraClaims.getRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
     }
 

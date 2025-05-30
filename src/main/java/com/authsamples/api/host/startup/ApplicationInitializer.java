@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import com.authsamples.api.host.configuration.ApiConfiguration;
 import com.authsamples.api.host.configuration.Configuration;
-import com.authsamples.api.logic.claims.SampleExtraClaimsProvider;
+import com.authsamples.api.logic.claims.ExtraClaimsProviderImpl;
 import com.authsamples.api.logic.utilities.JsonFileReader;
 import com.authsamples.api.plumbing.dependencies.BaseCompositionRoot;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
@@ -57,7 +57,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         // Register common code dependencies
         new BaseCompositionRoot(container)
                 .useOAuth(configuration.getOauth())
-                .withExtraClaimsProvider(new SampleExtraClaimsProvider(container))
+                .withExtraClaimsProvider(new ExtraClaimsProviderImpl(container))
                 .withLogging(configuration.getLogging(), loggerFactory)
                 .register();
 

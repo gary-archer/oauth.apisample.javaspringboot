@@ -10,8 +10,8 @@ import org.springframework.util.StringUtils;
 import com.authsamples.api.plumbing.errors.ErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /*
  * A singleton in memory claims cache for our API
@@ -36,7 +36,7 @@ public class ClaimsCache {
         // Output expiry debug messages here if required
         CacheEntryExpiredListener<String, String> listener = (cache, cacheEntry) -> {
             var message = String.format(
-                    "Expired token has been removed from the cache (hash: %s)",
+                    "Expired entry has been removed from the cache (hash: %s)",
                     cacheEntry.getKey());
             this.debugLogger.debug(message);
         };
@@ -53,7 +53,7 @@ public class ClaimsCache {
     /*
      * Add claims to the cache until the token's time to live
      */
-    public void setExtraUserClaims(final String accessTokenHash, final ExtraClaims claims, final int expiry) {
+    public void setExtraUserClaims(final String accessTokenHash, final Object claims, final int expiry) {
 
         // Use the exp field to work out the token expiry time
         var epochSeconds = Instant.now().getEpochSecond();
@@ -68,12 +68,22 @@ public class ClaimsCache {
                 secondsToCache = maxExpirySeconds;
             }
 
-            // Serialize the data
-            var claimsJson = claims.exportData().toString();
+            // Serialize the claims to JSON
+            String claimsJson;
+            try {
+
+                claimsJson = new ObjectMapper().writeValueAsString(claims);
+
+            } catch (JsonProcessingException ex) {
+
+                throw ErrorFactory.createServerError(
+                        ErrorCodes.JSON_SERIALIZE_ERROR,
+                        "Unable to serialize extra claims");
+            }
 
             // Output debug info
             this.debugLogger.debug(String.format(
-                    "Adding token to claims cache for %d seconds (hash: %s)",
+                    "Adding entry to claims cache for %d seconds (hash: %s)",
                     secondsToCache,
                     accessTokenHash));
 
@@ -87,37 +97,24 @@ public class ClaimsCache {
      * Get claims from the cache for this token's hash, or return null if not found
      * Almost simultaneous requests from the same user could return null for the same token
      */
-    public ExtraClaims getExtraUserClaims(final String accessTokenHash) {
+    public Object getExtraUserClaims(final String accessTokenHash) {
 
         // Return null if there are no cached claims
-        var claimsText = cache.get(accessTokenHash);
-        if (!StringUtils.hasLength(claimsText)) {
+        var claimsJson = cache.get(accessTokenHash);
+        if (!StringUtils.hasLength(claimsJson)) {
             this.debugLogger.debug(
-                    String.format("New token will be added to claims cache (hash: %s)", accessTokenHash));
+                    String.format("New entry will be added to claims cache (hash: %s)", accessTokenHash));
             return null;
         }
 
-        try {
+        // Deserialize the data
+        var claims = this.extraClaimsProvider.deserializeFromCache(claimsJson);
 
-            // Deserialize the data
-            var mapper = new ObjectMapper();
-            var data = mapper.readValue(claimsText, ObjectNode.class);
-            var claims = this.extraClaimsProvider.deserializeFromCache(data);
+        // Output debug info
+        this.debugLogger.debug(
+                String.format("Found existing entry in claims cache (hash: %s)", accessTokenHash));
 
-            // Output debug info
-            this.debugLogger.debug(
-                    String.format("Found existing token in claims cache (hash: %s)", accessTokenHash));
-
-            // Return the result
-            return claims;
-
-        } catch (Throwable ex) {
-
-            // Report error details
-            throw ErrorFactory.createServerError(
-                    ErrorCodes.JSON_PARSE_ERROR,
-                    "Problem encountered parsing JSON claims data",
-                    ex);
-        }
+        // Return the result
+        return claims;
     }
 }
