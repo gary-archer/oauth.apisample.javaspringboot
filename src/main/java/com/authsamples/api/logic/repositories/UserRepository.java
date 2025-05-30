@@ -31,7 +31,7 @@ public final class UserRepository {
         } else {
 
             // Use empty claims for unrecognized users
-            return new ExtraClaims("", new String[]{});
+            return new ExtraClaims();
         }
     }
 }
