@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.authsamples.api.logic.claims.SampleExtraClaims;
+import com.authsamples.api.logic.claims.ExtraClaims;
 import com.authsamples.api.logic.entities.ClientUserInfo;
 import com.authsamples.api.plumbing.claims.ClaimsPrincipalHolder;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
@@ -30,12 +30,12 @@ public class UserInfoController {
     }
 
     /*
-     * Return user attributes that are not stored in the authorization server that the UI needs
+     * Return user attributes that are not stored in the authorization server to the client
      */
     @GetMapping(value = "")
     public ClientUserInfo getUserInfo() {
 
-        var extraClaims = (SampleExtraClaims) this.claimsHolder.getClaims().getExtraClaims();
+        var extraClaims = (ExtraClaims) this.claimsHolder.getClaims().getExtraClaims();
 
         var userInfo = new ClientUserInfo();
         userInfo.setTitle(extraClaims.getTitle());

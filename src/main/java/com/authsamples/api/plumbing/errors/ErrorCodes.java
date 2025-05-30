@@ -14,6 +14,8 @@ public final class ErrorCodes {
 
     public static final String INSUFFICIENT_SCOPE = "insufficient_scope";
 
+    public static final String JSON_SERIALIZE_ERROR = "json_serialize_error";
+
     public static final String JSON_PARSE_ERROR = "json_parse_error";
 
     public static final String EXCEPTION_SIMULATION = "exception_simulation";

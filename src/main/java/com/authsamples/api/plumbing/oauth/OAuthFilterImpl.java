@@ -49,9 +49,9 @@ public final class OAuthFilterImpl implements OAuthFilter {
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        var extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
+        Object extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
         if (extraClaims != null) {
-            return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
+            return new ClaimsPrincipal(jwtClaims, extraClaims);
         }
 
         // Look up extra claims not in the JWT access token when the token is first received
@@ -61,6 +61,6 @@ public final class OAuthFilterImpl implements OAuthFilter {
         this.cache.setExtraUserClaims(accessTokenHash, extraClaims, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims used by the API's authorization logic
-        return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
+        return new ClaimsPrincipal(jwtClaims, extraClaims);
     }
 }

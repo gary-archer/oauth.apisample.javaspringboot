@@ -22,7 +22,6 @@ public final class BaseCompositionRoot {
 
     public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
-        this.extraClaimsProvider = new ExtraClaimsProvider();
     }
 
     /*

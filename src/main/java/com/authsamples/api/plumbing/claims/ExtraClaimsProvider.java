@@ -1,34 +1,19 @@
 package com.authsamples.api.plumbing.claims;
 
 import org.jose4j.jwt.JwtClaims;
-import com.fasterxml.jackson.databind.JsonNode;
 
 /*
  * Add extra claims that you cannot, or do not want to, manage in the authorization server
  */
-public class ExtraClaimsProvider {
+public interface ExtraClaimsProvider {
 
     /*
-     * Get additional claims from the API's own database
+     * Get extra claims from the API's own data
      */
-    @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public ExtraClaims lookupExtraClaims(final JwtClaims jwtClaims) {
-        return new ExtraClaims();
-    }
+    Object lookupExtraClaims(JwtClaims jwtClaims);
 
     /*
-     * Create a claims principal that manages lookups across both token claims and extra claims
+     * Get extra claims from the cache
      */
-    @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public ClaimsPrincipal createClaimsPrincipal(final JwtClaims jwtClaims, final ExtraClaims extraClaims) {
-        return new ClaimsPrincipal(jwtClaims, extraClaims);
-    }
-
-    /*
-     * Deserialize extra claims after they have been read from the cache
-     */
-    @SuppressWarnings(value = "checkstyle:DesignForExtension")
-    public ExtraClaims deserializeFromCache(final JsonNode data) {
-        return ExtraClaims.importData(data);
-    }
+    Object deserializeFromCache(String json);
 }
