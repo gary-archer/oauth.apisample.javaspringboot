@@ -16,7 +16,7 @@ public final class UserRepository {
      * Receive the manager ID in the access token, as a useful API identity, then look up extra claims
      * This is the preferred model, since it locks down the access token and provides the most useful API user identity
      */
-    public ExtraClaims getClaimsForManagerId(final String managerId) {
+    public ExtraClaims getUserInfoForManagerId(final String managerId) {
 
         if (managerId.equals("20116")) {
 

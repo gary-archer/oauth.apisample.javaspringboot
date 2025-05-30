@@ -31,7 +31,7 @@ public final class ExtraClaimsProviderImpl implements ExtraClaimsProvider {
 
         // The manager ID is a business user identity from which other claims can be looked up
         var managerId = ClaimsReader.getStringClaim(jwtClaims, CustomClaimNames.ManagerId);
-        return userRepository.getClaimsForManagerId(managerId);
+        return userRepository.getUserInfoForManagerId(managerId);
     }
 
     /*
