@@ -15,9 +15,9 @@ import org.jose4j.keys.EllipticCurves;
 import org.jose4j.lang.JoseException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import com.authsamples.api.logic.claims.CustomClaimNames;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.authsamples.api.logic.claims.CustomClaimNames;
 
 /*
  * A mock authorization server implemented with wiremock and a JOSE library
@@ -74,7 +74,9 @@ public final class MockAuthorizationServer {
     /*
      * An overload to allow a malicious key to be tested
      */
-    public String issueAccessToken(final MockTokenOptions options, final EllipticCurveJsonWebKey jwk) throws JoseException {
+    public String issueAccessToken(
+            final MockTokenOptions options,
+            final EllipticCurveJsonWebKey jwk) throws JoseException {
 
         var claims = new JwtClaims();
         claims.setIssuer(options.getIssuer());

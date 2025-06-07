@@ -5,13 +5,13 @@ import org.jose4j.jwk.EcJwkGenerator;
 import org.jose4j.keys.EllipticCurves;
 import org.junit.jupiter.api.*;
 import org.junit.platform.suite.api.Suite;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.authsamples.api.tests.utils.ApiClient;
 import com.authsamples.api.tests.utils.ApiRequestOptions;
 import com.authsamples.api.tests.utils.MockAuthorizationServer;
 import com.authsamples.api.tests.utils.MockTokenOptions;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /*
  * Test the API in isolation, without any dependencies on real access tokens
@@ -161,7 +161,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test, issued with a malicious key
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
-        var maliciousJwk = EcJwkGenerator.generateJwk(EllipticCurves.P256);;
+        var maliciousJwk = EcJwkGenerator.generateJwk(EllipticCurves.P256);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions, maliciousJwk);
 
         // Call the API and ensure a 401 response
