@@ -14,14 +14,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.Suite;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import com.authsamples.api.tests.utils.ApiClient;
 import com.authsamples.api.tests.utils.ApiRequestOptions;
 import com.authsamples.api.tests.utils.ApiResponse;
 import com.authsamples.api.tests.utils.MockAuthorizationServer;
 import com.authsamples.api.tests.utils.MockTokenOptions;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Strings;
 
 /*
  * A basic load test to ensure that the API behaves correctly when there are concurrent requests
