@@ -4,7 +4,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import com.authsamples.api.host.configuration.ApiConfiguration;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.interceptors.CustomHeaderInterceptor;
 import com.authsamples.api.plumbing.interceptors.LoggingInterceptor;
@@ -19,7 +18,6 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
     private final ConfigurableApplicationContext context;
 
     public InterceptorConfiguration(
-            final ApiConfiguration apiConfiguration,
             final LoggingConfiguration loggingConfiguration,
             final ConfigurableApplicationContext context) {
 

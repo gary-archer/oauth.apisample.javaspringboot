@@ -9,13 +9,6 @@ import lombok.Setter;
  */
 public class ApiResponseMetrics {
 
-    public ApiResponseMetrics(final String operation) {
-        this.operation = operation;
-        this.startTime = null;
-        this.correlationId = "";
-        this.millisecondsTaken = 0;
-    }
-
     @Getter
     private String operation;
 
@@ -30,4 +23,11 @@ public class ApiResponseMetrics {
     @Getter
     @Setter
     private long millisecondsTaken;
+
+    public ApiResponseMetrics(final String operation) {
+        this.operation = operation;
+        this.startTime = null;
+        this.correlationId = "";
+        this.millisecondsTaken = 0;
+    }
 }

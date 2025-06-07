@@ -5,8 +5,8 @@ package com.authsamples.api.host.startup;
  */
 public final class ResourcePaths {
 
+    public static final String ALL = "/investments/**";
+
     private ResourcePaths() {
     }
-
-    public static final String ALL = "/investments/**";
 }

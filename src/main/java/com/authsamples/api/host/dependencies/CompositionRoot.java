@@ -7,7 +7,6 @@ import com.authsamples.api.host.configuration.Configuration;
 import com.authsamples.api.plumbing.claims.ClaimsCache;
 import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
-import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 
 /*
@@ -20,7 +19,6 @@ public final class CompositionRoot {
     private ExtraClaimsProvider extraClaimsProvider;
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
-    private OAuthConfiguration apiConfiguration;
 
     public CompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;

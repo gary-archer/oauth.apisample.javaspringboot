@@ -8,12 +8,6 @@ import lombok.Getter;
  */
 public final class ApiResponse {
 
-    public ApiResponse(final HttpResponse<String> response, final ApiResponseMetrics metrics) {
-        this.statusCode = response.statusCode();
-        this.body = response.body();
-        this.metrics = metrics;
-    }
-
     @Getter
     private final int statusCode;
 
@@ -22,4 +16,10 @@ public final class ApiResponse {
 
     @Getter
     private final ApiResponseMetrics metrics;
+
+    public ApiResponse(final HttpResponse<String> response, final ApiResponseMetrics metrics) {
+        this.statusCode = response.statusCode();
+        this.body = response.body();
+        this.metrics = metrics;
+    }
 }

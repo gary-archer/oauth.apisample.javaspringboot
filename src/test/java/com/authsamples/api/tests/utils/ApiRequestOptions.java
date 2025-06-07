@@ -8,11 +8,6 @@ import lombok.Setter;
  */
 public final class ApiRequestOptions {
 
-    public ApiRequestOptions(final String accessToken) {
-        this.accessToken = accessToken;
-        this.rehearseException = false;
-    }
-
     @Getter
     private String accessToken;
 
@@ -27,4 +22,9 @@ public final class ApiRequestOptions {
     @Getter
     @Setter
     private Boolean rehearseException;
+
+    public ApiRequestOptions(final String accessToken) {
+        this.accessToken = accessToken;
+        this.rehearseException = false;
+    }
 }
