@@ -176,15 +176,14 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var overrideLevels = developmentLogConfig.get("overrideLevels");
         if (overrideLevels != null) {
 
-            var fields = overrideLevels.fields();
-            while (fields.hasNext()) {
+            var properties = overrideLevels.properties();
+            for (var property : properties) {
 
                 // Read the class name and log level
-                var field = fields.next();
-                var name = field.getKey();
-                var level = Level.toLevel(field.getValue().asText().toUpperCase(), Level.INFO);
+                var name = property.getKey();
+                var level = Level.toLevel(property.getValue().asText().toUpperCase(), Level.INFO);
 
-                // Add to our data
+                // Configure the logger
                 String loggerName = String.format("%s.%s", this.developmentNamespace, name);
                 var logger = context.getLogger(loggerName);
                 logger.setLevel(level);
