@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.Suite;
@@ -99,6 +100,9 @@ public class LoadTest {
 
         // Send the main body of requests
         sendLoadTestRequests(accessTokens);
+
+        // Assert that the load test rehearsed 3 errors
+        Assertions.assertEquals(3, errorCount, "Unexpected error count");
 
         // Show a summary end message to finish
         var millisecondsTaken = Duration.between(startTime, Instant.now()).toMillis();
