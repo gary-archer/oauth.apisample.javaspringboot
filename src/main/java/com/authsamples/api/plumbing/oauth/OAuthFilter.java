@@ -16,16 +16,16 @@ import com.authsamples.api.plumbing.errors.ErrorFactory;
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
-public final class OAuthFilter<T> {
+public final class OAuthFilter {
 
-    private final ClaimsCache<T> cache;
+    private final ClaimsCache cache;
     private final AccessTokenValidator tokenValidator;
-    private final ExtraClaimsProvider<T> extraClaimsProvider;
+    private final ExtraClaimsProvider extraClaimsProvider;
 
     public OAuthFilter(
-            final ClaimsCache<T> cache,
+            final ClaimsCache cache,
             final AccessTokenValidator tokenValidator,
-            final ExtraClaimsProvider<T> extraClaimsProvider) {
+            final ExtraClaimsProvider extraClaimsProvider) {
 
         this.cache = cache;
         this.tokenValidator = tokenValidator;
@@ -35,7 +35,7 @@ public final class OAuthFilter<T> {
     /*
      * Validate the OAuth access token and then look up other claims
      */
-    public ClaimsPrincipal<T> execute(final HttpServletRequest request) {
+    public ClaimsPrincipal execute(final HttpServletRequest request) {
 
         // First read the access token
         String accessToken = BearerToken.read(request);
@@ -48,7 +48,7 @@ public final class OAuthFilter<T> {
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        T extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
+        var extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
         if (extraClaims != null) {
             return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
         }

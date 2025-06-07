@@ -1,24 +1,37 @@
 package com.authsamples.api.plumbing.claims;
 
 import org.jose4j.jwt.JwtClaims;
+import lombok.Getter;
 
 /*
- * An interface for the claims principal
+ * The concrete claims for this API
  */
-public interface ClaimsPrincipal<T> {
+public class ClaimsPrincipal {
 
     /*
-     * Return token claims
+     * Verifiable claims from the access token
      */
-    JwtClaims getJwtClaims();
+    @Getter
+    private final JwtClaims jwtClaims;
 
     /*
-     * Return extra claims
+     * Additional authorization values that the API's business logic also treats like claims
      */
-    T getExtraClaims();
+    @Getter
+    private final ExtraClaims extraClaims;
 
     /*
-     * Return the subject claim
+     * The OAuth filter constructs the claims principal
      */
-    String getSubject();
+    public ClaimsPrincipal(final JwtClaims jwtClaims, final ExtraClaims extraClaims) {
+        this.jwtClaims = jwtClaims;
+        this.extraClaims = extraClaims;
+    }
+
+    /*
+     * Return the subject claim as an anonymous user identifier
+     */
+    public String getSubject() {
+        return ClaimsReader.getStringClaim(this.jwtClaims, "sub");
+    }
 }

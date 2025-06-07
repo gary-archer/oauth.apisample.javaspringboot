@@ -1,4 +1,4 @@
-package com.authsamples.api.logic.claims;
+package com.authsamples.api.plumbing.claims;
 
 /*
  * Custom claims issued to access tokens

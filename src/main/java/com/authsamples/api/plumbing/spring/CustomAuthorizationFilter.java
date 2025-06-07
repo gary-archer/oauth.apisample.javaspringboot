@@ -6,7 +6,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.core.ResolvableType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.authsamples.api.plumbing.interceptors.UnhandledExceptionHandler;
@@ -30,7 +29,6 @@ public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
      * Do the work of the authorization
      */
     @Override
-    @SuppressWarnings("unchecked")
     protected void doFilterInternal(
             final HttpServletRequest request,
             final HttpServletResponse response,
@@ -42,7 +40,7 @@ public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
             logEntry.start(request);
 
             // Get the OAuth filter for this HTTP request
-            var oauthFilter = (OAuthFilter<T>) this.resolveGenericType(OAuthFilter.class);
+            var oauthFilter = this.container.getBean(OAuthFilter.class);
 
             // Do the OAuth work in plain Java classes and return our customised claims
             var claimsPrincipal = oauthFilter.execute(request);
@@ -51,11 +49,11 @@ public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
             logEntry.setIdentity(claimsPrincipal.getSubject());
 
             // Update the request scoped injectable object's inner contents
-            var holder = (ClaimsPrincipalHolder<T>) this.resolveGenericType(ClaimsPrincipalHolder.class);
+            var holder = this.container.getBean(ClaimsPrincipalHolder.class);
             holder.setClaims(claimsPrincipal);
 
             // Also update Spring security
-            SecurityContextHolder.getContext().setAuthentication(new CustomAuthentication<T>(claimsPrincipal));
+            SecurityContextHolder.getContext().setAuthentication(new CustomAuthentication(claimsPrincipal));
 
             // Move on to business logic
             filterChain.doFilter(request, response);
@@ -66,14 +64,5 @@ public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
             var handler = this.container.getBean(UnhandledExceptionHandler.class);
             handler.handleFilterException(request, response, ex);
         }
-    }
-
-    /*
-     * Resolve a generic type from the DI container
-     */
-    public <T2> Object resolveGenericType(final Class<T2> typeToResolve) {
-
-        var type = ResolvableType.forClassWithGenerics(typeToResolve, Object.class);
-        return this.container.getBeanProvider(type).getObject();
     }
 }

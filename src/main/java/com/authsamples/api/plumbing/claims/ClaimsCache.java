@@ -16,15 +16,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /*
  * A singleton in memory claims cache for our API
  */
-public class ClaimsCache<T> {
+public class ClaimsCache {
 
     private final Cache<String, String> cache;
-    private final ExtraClaimsProvider<T> extraClaimsProvider;
+    private final ExtraClaimsProvider extraClaimsProvider;
     private final int timeToLiveMinutes;
     private final Logger debugLogger;
 
     public ClaimsCache(
-            final ExtraClaimsProvider<T> extraClaimsProvider,
+            final ExtraClaimsProvider extraClaimsProvider,
             final int timeToLiveMinutes,
             final LoggerFactory loggerFactory) {
 
@@ -52,7 +52,7 @@ public class ClaimsCache<T> {
     /*
      * Add claims to the cache until the token's time to live
      */
-    public void setExtraUserClaims(final String accessTokenHash, final T claims, final int expiry) {
+    public void setExtraUserClaims(final String accessTokenHash, final ExtraClaims claims, final int expiry) {
 
         // Use the exp field to work out the token expiry time
         var epochSeconds = Instant.now().getEpochSecond();
@@ -96,7 +96,7 @@ public class ClaimsCache<T> {
      * Get claims from the cache for this token's hash, or return null if not found
      * Almost simultaneous requests from the same user could return null for the same token
      */
-    public T getExtraUserClaims(final String accessTokenHash) {
+    public ExtraClaims getExtraUserClaims(final String accessTokenHash) {
 
         // Return null if there are no cached claims
         var claimsJson = cache.get(accessTokenHash);

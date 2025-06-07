@@ -9,8 +9,8 @@ import org.springframework.util.StringUtils;
 import com.authsamples.api.host.configuration.ApiConfiguration;
 import com.authsamples.api.host.configuration.Configuration;
 import com.authsamples.api.host.dependencies.CompositionRoot;
-import com.authsamples.api.logic.claims.ExtraClaimsProviderImpl;
 import com.authsamples.api.logic.utilities.JsonFileReader;
+import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 
@@ -53,7 +53,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         // Register dependencies with the container
         new CompositionRoot(container)
                 .addConfiguration(configuration)
-                .addExtraClaimsProvider(new ExtraClaimsProviderImpl(container))
+                .addExtraClaimsProvider(new ExtraClaimsProvider(container))
                 .addLogging(configuration.getLogging(), loggerFactory)
                 .register();
     }

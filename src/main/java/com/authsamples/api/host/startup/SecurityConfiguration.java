@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
-import com.authsamples.api.logic.claims.ExtraClaims;
+import com.authsamples.api.plumbing.claims.ExtraClaims;
 import com.authsamples.api.plumbing.spring.CustomAuthorizationFilter;
 
 /*

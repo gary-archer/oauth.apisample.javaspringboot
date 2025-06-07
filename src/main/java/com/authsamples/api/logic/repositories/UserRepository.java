@@ -3,7 +3,7 @@ package com.authsamples.api.logic.repositories;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import com.authsamples.api.logic.claims.ExtraClaims;
+import com.authsamples.api.plumbing.claims.ExtraClaims;
 
 /*
  * A repository that returns hard coded data, whereas a real implementation would use a database lookup

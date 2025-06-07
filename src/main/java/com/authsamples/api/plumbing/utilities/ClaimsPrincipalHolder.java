@@ -13,9 +13,9 @@ import lombok.Setter;
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
-public class ClaimsPrincipalHolder<T> {
+public class ClaimsPrincipalHolder {
 
     @Getter
     @Setter
-    private ClaimsPrincipal<T> claims;
+    private ClaimsPrincipal claims;
 }

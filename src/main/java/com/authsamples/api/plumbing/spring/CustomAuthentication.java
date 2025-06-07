@@ -9,14 +9,14 @@ import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
 /*
  * A helper class to enable us to return the security principal in Spring Security terms
  */
-public final class CustomAuthentication<T> implements Authentication {
+public final class CustomAuthentication implements Authentication {
 
-    private final ClaimsPrincipal<T> claims;
+    private final ClaimsPrincipal claims;
 
     /*
      * Construct from the results of authorizer processing
      */
-    public CustomAuthentication(final ClaimsPrincipal<T> claims) {
+    public CustomAuthentication(final ClaimsPrincipal claims) {
         this.claims = claims;
     }
 

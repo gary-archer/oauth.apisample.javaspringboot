@@ -7,13 +7,12 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.authsamples.api.logic.claims.CustomClaimNames;
-import com.authsamples.api.logic.claims.ExtraClaims;
 import com.authsamples.api.logic.entities.Company;
 import com.authsamples.api.logic.entities.CompanyTransactions;
 import com.authsamples.api.logic.errors.ErrorCodes;
 import com.authsamples.api.logic.repositories.CompanyRepository;
 import com.authsamples.api.plumbing.claims.ClaimsReader;
+import com.authsamples.api.plumbing.claims.CustomClaimNames;
 import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
@@ -26,13 +25,13 @@ import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
 public class CompanyService {
 
     private final CompanyRepository repository;
-    private final ClaimsPrincipalHolder<ExtraClaims> claimsHolder;
+    private final ClaimsPrincipalHolder claimsHolder;
 
     /*
      * The claims holder may be injected into the service before OAuth processing
      * The OAuth filter then runs before any methods are called
      */
-    public CompanyService(final CompanyRepository repository, final ClaimsPrincipalHolder<ExtraClaims> claimsHolder) {
+    public CompanyService(final CompanyRepository repository, final ClaimsPrincipalHolder claimsHolder) {
         this.repository = repository;
         this.claimsHolder = claimsHolder;
     }

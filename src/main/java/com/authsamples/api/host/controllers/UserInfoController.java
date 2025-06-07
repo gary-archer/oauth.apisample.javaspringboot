@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.authsamples.api.logic.claims.ExtraClaims;
 import com.authsamples.api.logic.entities.ClientUserInfo;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
@@ -18,13 +17,13 @@ import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
 @RequestMapping(value = "investments/userinfo")
 public class UserInfoController {
 
-    private final ClaimsPrincipalHolder<ExtraClaims> claimsHolder;
+    private final ClaimsPrincipalHolder claimsHolder;
 
     /*
      * The claims holder may be injected into the controller before OAuth processing
      * The OAuth filter then runs before any methods are called
      */
-    public UserInfoController(final ClaimsPrincipalHolder<ExtraClaims> claimsHolder) {
+    public UserInfoController(final ClaimsPrincipalHolder claimsHolder) {
         this.claimsHolder = claimsHolder;
     }
 
