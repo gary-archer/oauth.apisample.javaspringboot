@@ -9,14 +9,14 @@ import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
 /*
  * A helper class to enable us to return the security principal in Spring Security terms
  */
-public final class CustomAuthentication implements Authentication {
+public final class CustomAuthentication<T> implements Authentication {
 
-    private final ClaimsPrincipal claims;
+    private final ClaimsPrincipal<T> claims;
 
     /*
      * Construct from the results of authorizer processing
      */
-    public CustomAuthentication(final ClaimsPrincipal claims) {
+    public CustomAuthentication(final ClaimsPrincipal<T> claims) {
         this.claims = claims;
     }
 
@@ -29,7 +29,7 @@ public final class CustomAuthentication implements Authentication {
     }
 
     /*
-     * We do not want to return a credential
+     * The example API does not need to return a credential
      */
     @Override
     public Object getCredentials() {
@@ -37,7 +37,7 @@ public final class CustomAuthentication implements Authentication {
     }
 
     /*
-     * We do not want to return details other than the principal above
+     * The example API does not need to return details
      */
     @Override
     public Object getDetails() {
@@ -61,14 +61,14 @@ public final class CustomAuthentication implements Authentication {
     }
 
     /*
-     * This is not relevant for our scenario
+     * This is not relevant for the example API
      */
     @Override
     public void setAuthenticated(final boolean b) throws IllegalArgumentException {
     }
 
     /*
-     * Return the subject claim as the technical user name
+     * Return the subject claim as the technical user identity
      */
     @Override
     public String getName() {

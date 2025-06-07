@@ -5,15 +5,20 @@ import org.jose4j.jwt.JwtClaims;
 /*
  * Add extra claims that you cannot, or do not want to, manage in the authorization server
  */
-public interface ExtraClaimsProvider {
+public interface ExtraClaimsProvider<T> {
 
     /*
      * Get extra claims from the API's own data
      */
-    Object lookupExtraClaims(JwtClaims jwtClaims);
+    T lookupExtraClaims(JwtClaims jwtClaims);
 
     /*
-     * Get extra claims from the cache
+     * Create a custom claims principal
      */
-    Object deserializeFromCache(String json);
+    ClaimsPrincipal<T> createClaimsPrincipal(JwtClaims jwtClaims, Object extraClaims);
+
+    /*
+     * Load extra claims from the cache
+     */
+    T deserializeFromCache(String json);
 }

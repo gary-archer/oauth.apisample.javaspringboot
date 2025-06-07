@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import com.authsamples.api.logic.claims.ExtraClaims;
 import com.authsamples.api.plumbing.spring.CustomAuthorizationFilter;
 
 /*
@@ -32,7 +33,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
 
         var container = this.context.getBeanFactory();
-        var authorizationFilter = new CustomAuthorizationFilter(container);
+        var authorizationFilter = new CustomAuthorizationFilter<ExtraClaims>(container);
 
         http
                 // OAuth security for the API is applied via these settings
@@ -42,7 +43,7 @@ public class SecurityConfiguration {
                 )
                 .addFilterBefore(authorizationFilter, AbstractPreAuthenticatedProcessingFilter.class)
 
-                // Disable web host and API gateway concerns
+                // Disable web host and API gateway concerns, which the API does not implement
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(AbstractHttpConfigurer::disable)

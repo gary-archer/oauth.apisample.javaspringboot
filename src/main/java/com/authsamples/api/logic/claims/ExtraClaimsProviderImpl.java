@@ -35,7 +35,14 @@ public final class ExtraClaimsProviderImpl implements ExtraClaimsProvider {
     }
 
     /*
-     * Get extra claims from the cache
+     * Create a custom claims principal
+     */
+    public CustomClaimsPrincipal createClaimsPrincipal(final JwtClaims jwtClaims, final Object extraClaims) {
+        return new CustomClaimsPrincipal(jwtClaims, (ExtraClaims) extraClaims);
+    }
+
+    /*
+     * Load extra claims from the cache
      */
     public Object deserializeFromCache(final String json) {
 

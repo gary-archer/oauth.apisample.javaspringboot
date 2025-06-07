@@ -16,16 +16,16 @@ import com.authsamples.api.plumbing.errors.ErrorFactory;
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
-public final class OAuthFilter {
+public final class OAuthFilter<T> {
 
-    private final ClaimsCache cache;
+    private final ClaimsCache<T> cache;
     private final AccessTokenValidator tokenValidator;
-    private final ExtraClaimsProvider extraClaimsProvider;
+    private final ExtraClaimsProvider<T> extraClaimsProvider;
 
     public OAuthFilter(
-            final ClaimsCache cache,
+            final ClaimsCache<T> cache,
             final AccessTokenValidator tokenValidator,
-            final ExtraClaimsProvider extraClaimsProvider) {
+            final ExtraClaimsProvider<T> extraClaimsProvider) {
 
         this.cache = cache;
         this.tokenValidator = tokenValidator;
@@ -35,7 +35,7 @@ public final class OAuthFilter {
     /*
      * Validate the OAuth access token and then look up other claims
      */
-    public ClaimsPrincipal execute(final HttpServletRequest request) {
+    public ClaimsPrincipal<T> execute(final HttpServletRequest request) {
 
         // First read the access token
         String accessToken = BearerToken.read(request);
@@ -48,9 +48,9 @@ public final class OAuthFilter {
 
         // If cached results already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        Object extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
+        T extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
         if (extraClaims != null) {
-            return new ClaimsPrincipal(jwtClaims, extraClaims);
+            return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
         }
 
         // Look up extra claims not in the JWT access token when the token is first received
@@ -60,6 +60,6 @@ public final class OAuthFilter {
         this.cache.setExtraUserClaims(accessTokenHash, extraClaims, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims used by the API's authorization logic
-        return new ClaimsPrincipal(jwtClaims, extraClaims);
+        return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
     }
 }
