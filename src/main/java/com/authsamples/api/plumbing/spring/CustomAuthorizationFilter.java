@@ -51,7 +51,7 @@ public final class CustomAuthorizationFilter extends OncePerRequestFilter {
             // Update the request scoped injectable object's inner contents
             container.getBean(ClaimsPrincipalHolder.class).setClaims(claims);
 
-            // Also update Spring security  so that authorization annotations work as expected
+            // Also update Spring security
             SecurityContextHolder.getContext().setAuthentication(new CustomAuthentication(claims));
 
             // Move on to business logic

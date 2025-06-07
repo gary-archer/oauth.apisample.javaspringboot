@@ -50,9 +50,6 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var container = context.getBeanFactory();
         container.registerScope(CustomRequestScope.NAME, new CustomRequestScope());
 
-        // Enable the SecurityContextHolder to be used across multiple request threads
-        // SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
-
         // Register dependencies
         new CompositionRoot(container)
                 .addConfiguration(configuration)
