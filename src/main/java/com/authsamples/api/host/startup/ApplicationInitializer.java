@@ -50,7 +50,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         var container = context.getBeanFactory();
         container.registerScope(CustomRequestScope.NAME, new CustomRequestScope());
 
-        // Register dependencies
+        // Register dependencies with the container
         new CompositionRoot(container)
                 .addConfiguration(configuration)
                 .addExtraClaimsProvider(new ExtraClaimsProviderImpl(container))

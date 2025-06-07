@@ -1,7 +1,7 @@
 package com.authsamples.api.plumbing.errors;
 
 /*
- * Error codes used by base classes
+ * Error codes used by plumbing classes
  */
 public final class BaseErrorCodes {
 

@@ -20,6 +20,9 @@ public final class CompositionRoot {
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
 
+    /*
+     * Receive the DI container
+     */
     public CompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
     }
@@ -33,7 +36,7 @@ public final class CompositionRoot {
     }
 
     /*
-     * Receive an object for retrieving extra claims
+     * Receive an object that customizes the claims principal
      */
     public CompositionRoot addExtraClaimsProvider(final ExtraClaimsProvider extraClaimsProvider) {
         this.extraClaimsProvider = extraClaimsProvider;
@@ -41,7 +44,7 @@ public final class CompositionRoot {
     }
 
     /*
-     * Receive the logging configuration so that we can create objects related to logging and error handling
+     * Receive the logging configuration
      */
     public CompositionRoot addLogging(
             final LoggingConfiguration loggingConfiguration,
