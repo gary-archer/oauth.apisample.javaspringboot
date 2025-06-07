@@ -23,7 +23,6 @@ import com.authsamples.api.plumbing.logging.LogEntry;
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class AccessTokenValidator {
 
     private final OAuthConfiguration configuration;

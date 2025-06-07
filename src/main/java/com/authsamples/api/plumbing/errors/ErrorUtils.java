@@ -137,7 +137,6 @@ public final class ErrorUtils {
     /*
      * Get the error as an IClientError derived error if applicable
      */
-    @SuppressWarnings("PMD.CollapsibleIfStatements")
     private static ClientError tryConvertToClientError(final Throwable ex) {
 
         // Already handled 500 errors

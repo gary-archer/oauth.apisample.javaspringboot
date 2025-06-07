@@ -7,7 +7,6 @@ import lombok.Getter;
 /*
  * The total set of claims for this API
  */
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsPrincipal implements AuthenticatedPrincipal {
 
     /*

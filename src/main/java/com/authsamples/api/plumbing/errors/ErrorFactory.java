@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.TextNode;
 /*
  * An error factory class that returns the interface rather than the concrete type
  */
-@SuppressWarnings("PMD.ClassNamingConventions")
 public final class ErrorFactory {
 
     private ErrorFactory() {

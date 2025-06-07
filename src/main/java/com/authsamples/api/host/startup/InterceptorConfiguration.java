@@ -13,7 +13,6 @@ import com.authsamples.api.plumbing.interceptors.LoggingInterceptor;
  * Manages configuration of cross-cutting concerns in interceptors
  */
 @Configuration
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class InterceptorConfiguration implements WebMvcConfigurer {
 
     private final LoggingConfiguration loggingConfiguration;

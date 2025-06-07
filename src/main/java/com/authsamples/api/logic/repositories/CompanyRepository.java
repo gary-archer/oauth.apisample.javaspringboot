@@ -17,7 +17,6 @@ import com.authsamples.api.plumbing.logging.LogEntry;
  */
 @Repository
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyRepository {
 
     private final JsonFileReader jsonReader;

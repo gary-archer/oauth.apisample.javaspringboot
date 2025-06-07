@@ -14,7 +14,6 @@ import com.authsamples.api.plumbing.spring.CustomAuthorizationFilter;
  * A class to manage OAuth security configuration for the REST API
  */
 @Configuration
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class SecurityConfiguration {
 
     private final ConfigurableApplicationContext context;

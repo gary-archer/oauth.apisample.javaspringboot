@@ -16,7 +16,6 @@ import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 @RestController
 @Scope(value = CustomRequestScope.NAME)
 @RequestMapping(value = "investments/userinfo")
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class UserInfoController {
 
     private final ClaimsPrincipalHolder claimsHolder;

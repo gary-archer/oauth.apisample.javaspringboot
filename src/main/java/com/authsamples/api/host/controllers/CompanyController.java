@@ -21,7 +21,6 @@ import com.google.common.primitives.Ints;
 @RestController()
 @Scope(value = CustomRequestScope.NAME)
 @RequestMapping(value = "investments/companies")
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyController {
 
     private final CompanyService service;

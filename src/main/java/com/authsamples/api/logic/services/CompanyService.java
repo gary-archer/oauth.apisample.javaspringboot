@@ -23,7 +23,6 @@ import com.authsamples.api.plumbing.errors.ErrorFactory;
  */
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CompanyService {
 
     private final CompanyRepository repository;

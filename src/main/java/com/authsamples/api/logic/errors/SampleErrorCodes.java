@@ -3,7 +3,6 @@ package com.authsamples.api.logic.errors;
 /*
  * Error codes specific to the sample API
  */
-@SuppressWarnings("PMD.ClassNamingConventions")
 public final class SampleErrorCodes {
 
     public static final String INVALID_COMPANY_ID = "invalid_company_id";

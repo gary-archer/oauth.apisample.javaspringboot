@@ -3,7 +3,6 @@ package com.authsamples.api.plumbing.logging;
 /*
  * A simple builder class to expose a segregated interface
  */
-@SuppressWarnings("PMD.ClassNamingConventions")
 public final class LoggerFactoryBuilder {
 
     private LoggerFactoryBuilder() {

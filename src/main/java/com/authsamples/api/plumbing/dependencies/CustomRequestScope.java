@@ -14,7 +14,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * This enables data to move across threads after an async operation
  * This gives us a request scope equivalent to C# and NodeJS API technology stacks
  */
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class CustomRequestScope implements Scope {
 
     public static final String NAME = "CustomRequestScope";
@@ -49,7 +48,6 @@ public class CustomRequestScope implements Scope {
     /*
      * We are not doing any object disposal
      */
-    @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
     @Override
     public void registerDestructionCallback(
             final @NonNull String name,

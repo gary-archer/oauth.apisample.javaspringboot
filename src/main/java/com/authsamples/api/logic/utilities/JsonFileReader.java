@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class JsonFileReader {
 
     /*

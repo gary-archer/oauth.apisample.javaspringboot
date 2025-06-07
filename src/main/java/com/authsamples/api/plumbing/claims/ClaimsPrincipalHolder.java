@@ -13,7 +13,6 @@ import lombok.Setter;
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsPrincipalHolder {
 
     @Getter

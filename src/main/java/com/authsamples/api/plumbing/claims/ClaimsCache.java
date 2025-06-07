@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /*
  * A singleton in memory claims cache for our API
  */
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class ClaimsCache {
 
     private final Cache<String, String> cache;

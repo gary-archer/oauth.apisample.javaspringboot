@@ -12,7 +12,6 @@ import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-@SuppressWarnings(value = "checkstyle:DesignForExtension")
 public class LogEntryInjector {
 
     private final LoggerFactoryImpl loggerFactory;

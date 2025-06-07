@@ -22,7 +22,6 @@ public final class CustomHeaderInterceptor implements HandlerInterceptor {
     /*
      * Check for a known custom header and throw an exception if required
      */
-    @SuppressWarnings("PMD.CollapsibleIfStatements")
     @Override
     public boolean preHandle(
         final @NonNull HttpServletRequest request,

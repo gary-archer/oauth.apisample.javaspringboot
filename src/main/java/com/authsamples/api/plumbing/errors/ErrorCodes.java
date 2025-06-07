@@ -3,7 +3,6 @@ package com.authsamples.api.plumbing.errors;
 /*
  * Error codes that could be used by multiple APIs
  */
-@SuppressWarnings("PMD.ClassNamingConventions")
 public final class ErrorCodes {
 
     public static final String SERVER_ERROR = "server_error";
