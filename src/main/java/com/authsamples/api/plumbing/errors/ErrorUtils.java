@@ -43,7 +43,7 @@ public final class ErrorUtils {
             final String errorCode,
             final String message) {
 
-        var defaultErrorCode = ErrorCodes.SERVER_ERROR;
+        var defaultErrorCode = BaseErrorCodes.SERVER_ERROR;
         var defaultMessage = "An unexpected exception occurred in the API";
 
         // Create a default error and set a default technical message
@@ -70,7 +70,7 @@ public final class ErrorUtils {
 
             // Report problems downloading token signing keys
             var error = ErrorFactory.createServerError(
-                    ErrorCodes.TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR,
+                    BaseErrorCodes.TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR,
                     "Problem downloading token signing keys", ex);
 
             parts.add(ErrorUtils.getExceptionDetailsMessage(ioException));
@@ -103,7 +103,7 @@ public final class ErrorUtils {
         var message = String.format("Missing claim in input: '%s'", claimName);
         return ErrorFactory.createClientErrorWithContext(
                 HttpStatus.BAD_REQUEST,
-                ErrorCodes.INSUFFICIENT_SCOPE,
+                BaseErrorCodes.INSUFFICIENT_SCOPE,
                 "The token does not contain sufficient scope for this API",
                 new TextNode(message));
     }

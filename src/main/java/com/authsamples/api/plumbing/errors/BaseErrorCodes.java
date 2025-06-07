@@ -1,9 +1,9 @@
 package com.authsamples.api.plumbing.errors;
 
 /*
- * Error codes that could be used by multiple APIs
+ * Error codes used by base classes
  */
-public final class ErrorCodes {
+public final class BaseErrorCodes {
 
     public static final String SERVER_ERROR = "server_error";
 
@@ -19,6 +19,6 @@ public final class ErrorCodes {
 
     public static final String EXCEPTION_SIMULATION = "exception_simulation";
 
-    private ErrorCodes() {
+    private BaseErrorCodes() {
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.authsamples.api.logic.entities.Company;
 import com.authsamples.api.logic.entities.CompanyTransactions;
-import com.authsamples.api.logic.errors.SampleErrorCodes;
+import com.authsamples.api.logic.errors.ErrorCodes;
 import com.authsamples.api.logic.services.CompanyService;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
@@ -52,7 +52,7 @@ public class CompanyController {
         if (idValue == null || idValue <= 0) {
             throw ErrorFactory.createClientError(
                     HttpStatus.BAD_REQUEST,
-                    SampleErrorCodes.INVALID_COMPANY_ID,
+                    ErrorCodes.INVALID_COMPANY_ID,
                     "The company ID must be a positive numeric integer");
         }
 

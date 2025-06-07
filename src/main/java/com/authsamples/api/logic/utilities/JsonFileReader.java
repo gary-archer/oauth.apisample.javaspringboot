@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import com.authsamples.api.logic.errors.SampleErrorCodes;
+import com.authsamples.api.logic.errors.ErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +29,7 @@ public class JsonFileReader {
         } catch (Throwable mapException) {
 
             throw ErrorFactory.createServerError(
-                    SampleErrorCodes.FILE_READ_ERROR,
+                    ErrorCodes.FILE_READ_ERROR,
                     "Problem encountered deserializing file data",
                     mapException);
         }
@@ -50,7 +50,7 @@ public class JsonFileReader {
         } catch (Throwable ex) {
 
             throw ErrorFactory.createServerError(
-                    SampleErrorCodes.FILE_READ_ERROR,
+                    ErrorCodes.FILE_READ_ERROR,
                     "Problem encountered reading file data",
                     ex);
         }

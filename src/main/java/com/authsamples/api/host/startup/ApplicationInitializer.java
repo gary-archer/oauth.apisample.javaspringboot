@@ -5,13 +5,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import com.authsamples.api.host.configuration.ApiConfiguration;
 import com.authsamples.api.host.configuration.Configuration;
+import com.authsamples.api.host.dependencies.CompositionRoot;
 import com.authsamples.api.logic.claims.ExtraClaimsProviderImpl;
 import com.authsamples.api.logic.utilities.JsonFileReader;
-import com.authsamples.api.plumbing.dependencies.BaseCompositionRoot;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 
@@ -52,17 +51,14 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         container.registerScope(CustomRequestScope.NAME, new CustomRequestScope());
 
         // Enable the SecurityContextHolder to be used across multiple request threads
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+        // SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 
-        // Register common code dependencies
-        new BaseCompositionRoot(container)
-                .useOAuth(configuration.getOauth())
-                .withExtraClaimsProvider(new ExtraClaimsProviderImpl(container))
-                .withLogging(configuration.getLogging(), loggerFactory)
+        // Register dependencies
+        new CompositionRoot(container)
+                .addConfiguration(configuration)
+                .addExtraClaimsProvider(new ExtraClaimsProviderImpl(container))
+                .addLogging(configuration.getLogging(), loggerFactory)
                 .register();
-
-        // Register this app's specific dependencies
-        container.registerSingleton("ApiConfiguration", configuration.getApi());
     }
 
     /*

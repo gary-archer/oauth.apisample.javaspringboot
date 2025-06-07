@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
-import com.authsamples.api.plumbing.errors.ErrorCodes;
+import com.authsamples.api.plumbing.errors.BaseErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 
 /*
@@ -32,7 +32,7 @@ public final class CustomHeaderInterceptor implements HandlerInterceptor {
         if (StringUtils.hasLength(apiToBreak)) {
             if (apiToBreak.equalsIgnoreCase(this.apiName)) {
                 throw ErrorFactory.createServerError(
-                    ErrorCodes.EXCEPTION_SIMULATION, "An exception was simulated in the API");
+                    BaseErrorCodes.EXCEPTION_SIMULATION, "An exception was simulated in the API");
 
             }
         }

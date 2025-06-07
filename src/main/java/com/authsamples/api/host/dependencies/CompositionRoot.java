@@ -1,8 +1,9 @@
-package com.authsamples.api.plumbing.dependencies;
+package com.authsamples.api.host.dependencies;
 
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import com.authsamples.api.host.configuration.Configuration;
 import com.authsamples.api.plumbing.claims.ClaimsCache;
 import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
@@ -10,33 +11,33 @@ import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 
 /*
- * A class to manage composing core API behaviour
+ * Dependency injection composition
  */
-public final class BaseCompositionRoot {
+public final class CompositionRoot {
 
     private final ConfigurableListableBeanFactory container;
-    private OAuthConfiguration oauthConfiguration;
+    private Configuration configuration;
     private ExtraClaimsProvider extraClaimsProvider;
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
+    private OAuthConfiguration apiConfiguration;
 
-    public BaseCompositionRoot(final ConfigurableListableBeanFactory container) {
+    public CompositionRoot(final ConfigurableListableBeanFactory container) {
         this.container = container;
     }
 
     /*
-     * Indicate that we're using OAuth and receive the configuration
+     * Receive configuration
      */
-    public BaseCompositionRoot useOAuth(final OAuthConfiguration oauthConfiguration) {
-
-        this.oauthConfiguration = oauthConfiguration;
+    public CompositionRoot addConfiguration(final Configuration configuration) {
+        this.configuration = configuration;
         return this;
     }
 
     /*
-     * Optionally provide an object for retrieving extra claims
+     * Receive an object for retrieving extra claims
      */
-    public BaseCompositionRoot withExtraClaimsProvider(final ExtraClaimsProvider extraClaimsProvider) {
+    public CompositionRoot addExtraClaimsProvider(final ExtraClaimsProvider extraClaimsProvider) {
         this.extraClaimsProvider = extraClaimsProvider;
         return this;
     }
@@ -44,7 +45,7 @@ public final class BaseCompositionRoot {
     /*
      * Receive the logging configuration so that we can create objects related to logging and error handling
      */
-    public BaseCompositionRoot withLogging(
+    public CompositionRoot addLogging(
             final LoggingConfiguration loggingConfiguration,
             final LoggerFactory loggerFactory) {
 
@@ -54,7 +55,7 @@ public final class BaseCompositionRoot {
     }
 
     /*
-     * Register and return the authorizer
+     * Register objects that cannot be managed simply by a Spring annotation
      */
     public void register() {
 
@@ -64,10 +65,13 @@ public final class BaseCompositionRoot {
         // Register runtime dependencies for OAuth and claims handling
         this.registerOAuthDependencies();
         this.registerClaimsDependencies();
+
+        // Register objects needed by application logic
+        this.registerApplicationDependencies();
     }
 
     /*
-     * Register dependencies used for logging and error handling, which are natural singletons
+     * Register dependencies used for logging and error handling
      */
     private void registerLoggingDependencies() {
 
@@ -82,11 +86,11 @@ public final class BaseCompositionRoot {
 
         try {
 
-            // Register the configuration
-            this.container.registerSingleton("OAuthConfiguration", this.oauthConfiguration);
+            // Register the OAuth configuration
+            this.container.registerSingleton("OAuthConfiguration", this.configuration.getOauth());
 
             // Register a global object that caches JWKS keys
-            var httpsJkws = new HttpsJwks(this.oauthConfiguration.getJwksEndpoint());
+            var httpsJkws = new HttpsJwks(this.configuration.getOauth().getJwksEndpoint());
             var jwksKeyResolver = new HttpsJwksVerificationKeyResolver(httpsJkws);
             this.container.registerSingleton("JwksResolver", jwksKeyResolver);
 
@@ -107,8 +111,15 @@ public final class BaseCompositionRoot {
         // Register a cache for extra claims from the API's own data
         var cache = new ClaimsCache(
                 this.extraClaimsProvider,
-                this.oauthConfiguration.getClaimsCacheTimeToLiveMinutes(),
+                this.configuration.getOauth().getClaimsCacheTimeToLiveMinutes(),
                 this.loggerFactory);
         this.container.registerSingleton("ClaimsCache", cache);
+    }
+
+    /*
+     * Register objects used by application logic
+     */
+    private void registerApplicationDependencies() {
+        container.registerSingleton("ApiConfiguration", this.configuration.getApi());
     }
 }

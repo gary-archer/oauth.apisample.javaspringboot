@@ -11,7 +11,7 @@ import com.authsamples.api.logic.claims.CustomClaimNames;
 import com.authsamples.api.logic.claims.ExtraClaims;
 import com.authsamples.api.logic.entities.Company;
 import com.authsamples.api.logic.entities.CompanyTransactions;
-import com.authsamples.api.logic.errors.SampleErrorCodes;
+import com.authsamples.api.logic.errors.ErrorCodes;
 import com.authsamples.api.logic.repositories.CompanyRepository;
 import com.authsamples.api.plumbing.claims.ClaimsPrincipalHolder;
 import com.authsamples.api.plumbing.claims.ClaimsReader;
@@ -93,7 +93,7 @@ public class CompanyService {
         var message = String.format("Transactions for company %d were not found for this user", companyId);
         return ErrorFactory.createClientError(
                 HttpStatus.NOT_FOUND,
-                SampleErrorCodes.COMPANY_NOT_FOUND,
+                ErrorCodes.COMPANY_NOT_FOUND,
                 message);
     }
 }

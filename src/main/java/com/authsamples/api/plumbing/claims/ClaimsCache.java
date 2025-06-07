@@ -7,7 +7,7 @@ import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
-import com.authsamples.api.plumbing.errors.ErrorCodes;
+import com.authsamples.api.plumbing.errors.BaseErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -76,7 +76,7 @@ public class ClaimsCache {
             } catch (JsonProcessingException ex) {
 
                 throw ErrorFactory.createServerError(
-                        ErrorCodes.JSON_SERIALIZE_ERROR,
+                        BaseErrorCodes.JSON_SERIALIZE_ERROR,
                         "Unable to serialize extra claims");
             }
 

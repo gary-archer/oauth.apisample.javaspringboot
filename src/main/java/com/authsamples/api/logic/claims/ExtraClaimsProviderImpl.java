@@ -5,7 +5,7 @@ import org.springframework.beans.factory.BeanFactory;
 import com.authsamples.api.logic.repositories.UserRepository;
 import com.authsamples.api.plumbing.claims.ClaimsReader;
 import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
-import com.authsamples.api.plumbing.errors.ErrorCodes;
+import com.authsamples.api.plumbing.errors.BaseErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +46,7 @@ public final class ExtraClaimsProviderImpl implements ExtraClaimsProvider {
 
         } catch (JsonProcessingException ex) {
 
-            throw ErrorFactory.createServerError(ErrorCodes.JSON_PARSE_ERROR, "Unable to parse extra claims", ex);
+            throw ErrorFactory.createServerError(BaseErrorCodes.JSON_PARSE_ERROR, "Unable to parse extra claims", ex);
         }
     }
 }

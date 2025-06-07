@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 import com.authsamples.api.plumbing.claims.ClaimsReader;
 import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
-import com.authsamples.api.plumbing.errors.ErrorCodes;
+import com.authsamples.api.plumbing.errors.BaseErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
 import com.authsamples.api.plumbing.logging.LogEntry;
@@ -69,7 +69,7 @@ public class AccessTokenValidator {
             if (foundScope.isEmpty()) {
                 throw ErrorFactory.createClientError(
                         HttpStatus.FORBIDDEN,
-                        ErrorCodes.INSUFFICIENT_SCOPE,
+                        BaseErrorCodes.INSUFFICIENT_SCOPE,
                         "The token does not contain sufficient scope for this API");
             }
 

@@ -63,7 +63,7 @@ public final class ErrorFactory {
 
         var error = new ClientErrorImpl(
                 HttpStatus.UNAUTHORIZED,
-                ErrorCodes.INVALID_TOKEN,
+                BaseErrorCodes.INVALID_TOKEN,
                 "Missing, invalid or expired access token");
 
         if (StringUtils.hasLength(reason)) {

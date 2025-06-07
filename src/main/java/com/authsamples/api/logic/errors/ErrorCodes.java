@@ -1,9 +1,9 @@
 package com.authsamples.api.logic.errors;
 
 /*
- * Error codes specific to the sample API
+ * Error codes specific to the API logic
  */
-public final class SampleErrorCodes {
+public final class ErrorCodes {
 
     public static final String INVALID_COMPANY_ID = "invalid_company_id";
 
@@ -11,6 +11,6 @@ public final class SampleErrorCodes {
 
     public static final String FILE_READ_ERROR = "file_read_error";
 
-    private SampleErrorCodes() {
+    private ErrorCodes() {
     }
 }
