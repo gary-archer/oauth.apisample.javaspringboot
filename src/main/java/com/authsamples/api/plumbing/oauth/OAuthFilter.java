@@ -50,7 +50,7 @@ public final class OAuthFilter {
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
         var extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
         if (extraClaims != null) {
-            return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
+            return new ClaimsPrincipal(jwtClaims, extraClaims);
         }
 
         // Look up extra claims not in the JWT access token when the token is first received
@@ -60,6 +60,6 @@ public final class OAuthFilter {
         this.cache.setExtraUserClaims(accessTokenHash, extraClaims, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims used by the API's authorization logic
-        return this.extraClaimsProvider.createClaimsPrincipal(jwtClaims, extraClaims);
+        return new ClaimsPrincipal(jwtClaims, extraClaims);
     }
 }

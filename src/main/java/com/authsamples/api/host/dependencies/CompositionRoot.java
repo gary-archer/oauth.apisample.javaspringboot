@@ -111,7 +111,6 @@ public final class CompositionRoot {
 
         // Register a cache for extra claims from the API's own data
         var cache = new ClaimsCache(
-                this.extraClaimsProvider,
                 this.configuration.getOauth().getClaimsCacheTimeToLiveMinutes(),
                 this.loggerFactory);
         this.container.registerSingleton("ClaimsCache", cache);

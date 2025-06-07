@@ -6,34 +6,26 @@ import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
 import org.cache2k.event.CacheEntryExpiredListener;
 import org.slf4j.Logger;
-import org.springframework.util.StringUtils;
-import com.authsamples.api.plumbing.errors.BaseErrorCodes;
-import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
  * A singleton in memory claims cache for our API
  */
 public class ClaimsCache {
 
-    private final Cache<String, String> cache;
-    private final ExtraClaimsProvider extraClaimsProvider;
+    private final Cache<String, ExtraClaims> cache;
     private final int timeToLiveMinutes;
     private final Logger debugLogger;
 
     public ClaimsCache(
-            final ExtraClaimsProvider extraClaimsProvider,
             final int timeToLiveMinutes,
             final LoggerFactory loggerFactory) {
 
-        this.extraClaimsProvider = extraClaimsProvider;
         this.timeToLiveMinutes = timeToLiveMinutes;
         this.debugLogger = loggerFactory.getDevelopmentLogger(ClaimsCache.class);
 
         // Output expiry debug messages here if required
-        CacheEntryExpiredListener<String, String> listener = (cache, cacheEntry) -> {
+        CacheEntryExpiredListener<String, ExtraClaims> listener = (cache, cacheEntry) -> {
             var message = String.format(
                     "Expired entry has been removed from the cache (hash: %s)",
                     cacheEntry.getKey());
@@ -41,7 +33,7 @@ public class ClaimsCache {
         };
 
         // Create the cache with a default token expiry time
-        this.cache = new Cache2kBuilder<String, String>() {
+        this.cache = new Cache2kBuilder<String, ExtraClaims>() {
         }
                 .name("claims")
                 .expireAfterWrite(timeToLiveMinutes, TimeUnit.MINUTES)
@@ -67,19 +59,6 @@ public class ClaimsCache {
                 secondsToCache = maxExpirySeconds;
             }
 
-            // Serialize the claims to JSON
-            String claimsJson;
-            try {
-
-                claimsJson = new ObjectMapper().writeValueAsString(claims);
-
-            } catch (JsonProcessingException ex) {
-
-                throw ErrorFactory.createServerError(
-                        BaseErrorCodes.JSON_SERIALIZE_ERROR,
-                        "Unable to serialize extra claims");
-            }
-
             // Output debug info
             this.debugLogger.debug(String.format(
                     "Adding entry to claims cache for %d seconds (hash: %s)",
@@ -88,7 +67,7 @@ public class ClaimsCache {
 
             // Do the write
             final var futureExpiryMilliseconds = (epochSeconds + secondsToCache) * 1000;
-            cache.invoke(accessTokenHash, e -> e.setValue(claimsJson).setExpiryTime(futureExpiryMilliseconds));
+            cache.invoke(accessTokenHash, e -> e.setValue(claims).setExpiryTime(futureExpiryMilliseconds));
         }
     }
 
@@ -99,15 +78,12 @@ public class ClaimsCache {
     public ExtraClaims getExtraUserClaims(final String accessTokenHash) {
 
         // Return null if there are no cached claims
-        var claimsJson = cache.get(accessTokenHash);
-        if (!StringUtils.hasLength(claimsJson)) {
+        var claims = cache.get(accessTokenHash);
+        if (claims == null) {
             this.debugLogger.debug(
                     String.format("New entry will be added to claims cache (hash: %s)", accessTokenHash));
             return null;
         }
-
-        // Deserialize the data
-        var claims = this.extraClaimsProvider.deserializeFromCache(claimsJson);
 
         // Output debug info
         this.debugLogger.debug(
