@@ -1,6 +1,6 @@
 # Final Java Spring Boot API
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/30cc55f623f4476aa3c08ffd490a492e)](https://app.codacy.com/gh/gary-archer/oauth.apisample.javaspringboot?utm_source=github.com&utm_medium=referral&utm_content=gary-archer/oauth.apisample.javaspringboot&utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d53806f11b754e5bafee8a4f298bb60c)](https://app.codacy.com/gh/gary-archer/oauth.apisample.javaspringboot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/gary-archer/oauth.apisample.javaspringboot?targetFile=build.gradle)
 
