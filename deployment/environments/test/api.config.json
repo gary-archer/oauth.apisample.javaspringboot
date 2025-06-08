@@ -1,0 +1,42 @@
+{
+  "api": {
+    "port": 446,
+    "sslCertificateFileName": "./certs/authsamples-dev.ssl.p12",
+    "sslCertificatePassword": "Password1",
+    "useProxy": false,
+    "proxyUrl": "http://127.0.0.1:8888"
+  },
+  "logging": {
+    "apiName": "FinalApi",
+    "production": {
+      "level": "info",
+      "performanceThresholdMilliseconds": 500,
+      "appenders": [{
+        "type": "console",
+        "prettyPrint": true
+      },
+      {
+        "type": "file",
+        "filePrefix": "api-final",
+        "dirname": "./logs",
+        "totalLogSizeMB": "1024",
+        "maxFiles": "100"
+      }]
+    },
+    "development": {
+      "level": "info",
+      "namespace": "com.authsamples.api",
+      "overrideLevels": {
+        "ClaimsCache": "info"
+      }
+    }
+  },
+  "oauth": {
+    "issuer":                       "https://login.authsamples-dev.com",
+    "audience":                     "api.authsamples.com",
+    "algorithm":                    "ES256",
+    "scope":                        "investments",
+    "jwksEndpoint":                 "https://login.authsamples-dev.com:447/.well-known/jwks.json",
+    "claimsCacheTimeToLiveMinutes": 15
+  }
+}

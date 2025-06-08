@@ -1,0 +1,17 @@
+.DS_Store
+resources
+certs/*.p12
+certs/*.crt
+build
+bin
+logs
+.idea
+.gradle
+.settings
+*.iws
+*.iml
+*.ipr
+*.jar
+.classpath
+.factorypath
+.project

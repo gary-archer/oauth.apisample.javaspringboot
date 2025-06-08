@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  
+  #
+  # Spin up an instance of Wiremock to hsot a JWKS URI for testing
+  #
+  wiremock:
+    image: wiremock/wiremock:latest
+    ports:
+      - 447:447
+    volumes:
+      - ../../../certs/authsamples-dev.ssl.p12:/certs/authsamples-dev.ssl.p12
+    environment:
+      WIREMOCK_OPTIONS: >
+        --root-dir test/integration
+         --https-port 447
+         --disable-http
+         --https-keystore /certs/authsamples-dev.ssl.p12
+         --keystore-type pkcs12
+         --keystore-password Password1
+         --key-manager-password Password1
