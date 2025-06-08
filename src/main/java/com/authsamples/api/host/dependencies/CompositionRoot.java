@@ -10,7 +10,7 @@ import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 
 /*
- * Dependency injection composition
+ * A class to manage dependency injection composition at application startup
  */
 public final class CompositionRoot {
 
@@ -109,7 +109,7 @@ public final class CompositionRoot {
         // Register an object to provide extra authorization values
         this.container.registerSingleton("ExtraClaimsProvider", this.extraValuesProvider);
 
-        // Register a cache for extra claims from the API's own data
+        // Register a cache for extra values from the API's own data
         var timeToLive = this.configuration.getOauth().getClaimsCacheTimeToLiveMinutes();
         var cache = new ExtraValuesCache(timeToLive, this.loggerFactory);
         this.container.registerSingleton("ClaimsCache", cache);

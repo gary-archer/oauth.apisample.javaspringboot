@@ -12,7 +12,7 @@ import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 
 /*
- * A class to create the claims principal at the start of every secured request
+ * A class to create the claims principal at the start of every API request
  */
 @Component
 @Scope(value = CustomRequestScope.NAME)
@@ -33,7 +33,7 @@ public final class OAuthFilter {
     }
 
     /*
-     * Validate the OAuth access token and then look up other claims
+     * Validate the OAuth access token and then look up other values
      */
     public ClaimsPrincipal execute(final HttpServletRequest request) {
 

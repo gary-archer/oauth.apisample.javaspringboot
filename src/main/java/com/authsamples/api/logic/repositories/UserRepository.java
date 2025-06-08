@@ -13,24 +13,23 @@ import com.authsamples.api.plumbing.claims.ExtraValues;
 public final class UserRepository {
 
     /*
-     * Receive the manager ID in the access token, as a useful API identity, then look up extra claims
-     * This is the preferred model, since it locks down the access token and provides the most useful API user identity
+     * Receive the manager ID in the access token, as a useful API identity, then look up extra authorization values
      */
     public ExtraValues getUserInfoForManagerId(final String managerId) {
 
         if (managerId.equals("20116")) {
 
-            // These claims are used for the guestadmin@example.com user account
+            // These values are used for the guestadmin@example.com user account
             return new ExtraValues("Global Manager", new String[]{"Europe", "USA", "Asia"});
 
         } else if (managerId.equals("10345")) {
 
-            // These claims are used for the guestuser@example.com user account
+            // These values are used for the guestuser@example.com user account
             return new ExtraValues("Regional Manager", new String[]{"USA"});
 
         } else {
 
-            // Use empty claims for unrecognized users
+            // Use empty values for unrecognized users
             return new ExtraValues();
         }
     }
