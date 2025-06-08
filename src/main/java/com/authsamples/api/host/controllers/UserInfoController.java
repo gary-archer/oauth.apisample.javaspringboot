@@ -9,8 +9,7 @@ import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
 
 /*
- * Return user info from the business data to the client
- * These values are separate to the core identity data returned from the OAuth user info endpoint
+ * This user info is separate to the OpenID Connect user info that returns core user attributes
  */
 @RestController
 @Scope(value = CustomRequestScope.NAME)
@@ -20,7 +19,7 @@ public class UserInfoController {
     private final ClaimsPrincipalHolder claimsHolder;
 
     /*
-     * The claims holder may be injected into the controller before OAuth processing
+     * The claims holder may be injected into the controller before the OAuth filter runs
      * The OAuth filter then runs before any methods are called
      */
     public UserInfoController(final ClaimsPrincipalHolder claimsHolder) {
@@ -28,16 +27,16 @@ public class UserInfoController {
     }
 
     /*
-     * Return user attributes that are not stored in the authorization server to the client
+     * Return product specific user info from the API to clients
      */
     @GetMapping(value = "")
     public ClientUserInfo getUserInfo() {
 
-        var extraClaims = this.claimsHolder.getClaims().getExtraClaims();
+        var extraValues = this.claimsHolder.getClaims().getExtraValues();
 
         var userInfo = new ClientUserInfo();
-        userInfo.setTitle(extraClaims.getTitle());
-        userInfo.setRegions(extraClaims.getRegions());
+        userInfo.setTitle(extraValues.getTitle());
+        userInfo.setRegions(extraValues.getRegions());
         return userInfo;
     }
 }

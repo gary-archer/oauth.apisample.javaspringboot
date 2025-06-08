@@ -4,7 +4,7 @@ import org.jose4j.jwt.JwtClaims;
 import lombok.Getter;
 
 /*
- * The concrete claims for this API
+ * The claims for this API
  */
 public class ClaimsPrincipal {
 
@@ -18,14 +18,14 @@ public class ClaimsPrincipal {
      * Additional authorization values that the API's business logic also treats like claims
      */
     @Getter
-    private final ExtraClaims extraClaims;
+    private final ExtraValues extraValues;
 
     /*
      * The OAuth filter constructs the claims principal
      */
-    public ClaimsPrincipal(final JwtClaims jwtClaims, final ExtraClaims extraClaims) {
+    public ClaimsPrincipal(final JwtClaims jwtClaims, final ExtraValues extraClaims) {
         this.jwtClaims = jwtClaims;
-        this.extraClaims = extraClaims;
+        this.extraValues = extraClaims;
     }
 
     /*

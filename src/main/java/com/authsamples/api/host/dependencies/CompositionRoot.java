@@ -4,8 +4,8 @@ import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.authsamples.api.host.configuration.Configuration;
-import com.authsamples.api.plumbing.claims.ClaimsCache;
-import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
+import com.authsamples.api.plumbing.claims.ExtraValuesCache;
+import com.authsamples.api.plumbing.claims.ExtraValuesProvider;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 
@@ -16,7 +16,7 @@ public final class CompositionRoot {
 
     private final ConfigurableListableBeanFactory container;
     private Configuration configuration;
-    private ExtraClaimsProvider extraClaimsProvider;
+    private ExtraValuesProvider extraValuesProvider;
     private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
 
@@ -38,8 +38,8 @@ public final class CompositionRoot {
     /*
      * Receive an object that customizes the claims principal
      */
-    public CompositionRoot addExtraClaimsProvider(final ExtraClaimsProvider extraClaimsProvider) {
-        this.extraClaimsProvider = extraClaimsProvider;
+    public CompositionRoot addExtraValuesProvider(final ExtraValuesProvider extraValuesProvider) {
+        this.extraValuesProvider = extraValuesProvider;
         return this;
     }
 
@@ -106,13 +106,12 @@ public final class CompositionRoot {
      */
     private void registerClaimsDependencies() {
 
-        // Register an object to provide extra claims
-        this.container.registerSingleton("ExtraClaimsProvider", this.extraClaimsProvider);
+        // Register an object to provide extra authorization values
+        this.container.registerSingleton("ExtraClaimsProvider", this.extraValuesProvider);
 
         // Register a cache for extra claims from the API's own data
-        var cache = new ClaimsCache(
-                this.configuration.getOauth().getClaimsCacheTimeToLiveMinutes(),
-                this.loggerFactory);
+        var timeToLive = this.configuration.getOauth().getClaimsCacheTimeToLiveMinutes();
+        var cache = new ExtraValuesCache(timeToLive, this.loggerFactory);
         this.container.registerSingleton("ClaimsCache", cache);
     }
 

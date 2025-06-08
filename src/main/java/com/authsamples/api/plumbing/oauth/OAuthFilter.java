@@ -4,10 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import com.authsamples.api.plumbing.claims.ClaimsCache;
 import com.authsamples.api.plumbing.claims.ClaimsPrincipal;
 import com.authsamples.api.plumbing.claims.ClaimsReader;
-import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
+import com.authsamples.api.plumbing.claims.ExtraValuesCache;
+import com.authsamples.api.plumbing.claims.ExtraValuesProvider;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
 
@@ -18,18 +18,18 @@ import com.authsamples.api.plumbing.errors.ErrorFactory;
 @Scope(value = CustomRequestScope.NAME)
 public final class OAuthFilter {
 
-    private final ClaimsCache cache;
+    private final ExtraValuesCache cache;
     private final AccessTokenValidator tokenValidator;
-    private final ExtraClaimsProvider extraClaimsProvider;
+    private final ExtraValuesProvider extraValuesProvider;
 
     public OAuthFilter(
-            final ClaimsCache cache,
+            final ExtraValuesCache cache,
             final AccessTokenValidator tokenValidator,
-            final ExtraClaimsProvider extraClaimsProvider) {
+            final ExtraValuesProvider extraValuesProvider) {
 
         this.cache = cache;
         this.tokenValidator = tokenValidator;
-        this.extraClaimsProvider = extraClaimsProvider;
+        this.extraValuesProvider = extraValuesProvider;
     }
 
     /*
@@ -43,23 +43,23 @@ public final class OAuthFilter {
             throw ErrorFactory.createClient401Error("No access token was supplied in the bearer header");
         }
 
-        // On every API request we validate the JWT, in a zero trust manner
+        // Validate the JWT access token on every API request, in a zero trust manner
         var jwtClaims = this.tokenValidator.execute(accessToken);
 
-        // If cached results already exist for this token then return them immediately
+        // If cached extra values already exist for this token then return them immediately
         String accessTokenHash = DigestUtils.sha256Hex(accessToken);
-        var extraClaims = this.cache.getExtraUserClaims(accessTokenHash);
-        if (extraClaims != null) {
-            return new ClaimsPrincipal(jwtClaims, extraClaims);
+        var extraValues = this.cache.getItem(accessTokenHash);
+        if (extraValues != null) {
+            return new ClaimsPrincipal(jwtClaims, extraValues);
         }
 
-        // Look up extra claims not in the JWT access token when the token is first received
-        extraClaims = this.extraClaimsProvider.lookupExtraClaims(jwtClaims);
+        // Look up extra authorization values not in the JWT
+        extraValues = this.extraValuesProvider.lookupExtraValues(jwtClaims);
 
-        // Cache the extra claims for subsequent requests with the same access token
-        this.cache.setExtraUserClaims(accessTokenHash, extraClaims, ClaimsReader.getExpiryClaim(jwtClaims));
+        // Cache the extra values for subsequent requests with the same access token
+        this.cache.setItem(accessTokenHash, extraValues, ClaimsReader.getExpiryClaim(jwtClaims));
 
         // Return the final claims used by the API's authorization logic
-        return new ClaimsPrincipal(jwtClaims, extraClaims);
+        return new ClaimsPrincipal(jwtClaims, extraValues);
     }
 }

@@ -3,9 +3,9 @@ package com.authsamples.api.plumbing.claims;
 import lombok.Getter;
 
 /*
- * Represents extra claims not received in access tokens
+ * Represents extra authorization values not received in access tokens
  */
-public final class ExtraClaims {
+public final class ExtraValues {
 
     @Getter
     private final String title;
@@ -16,15 +16,15 @@ public final class ExtraClaims {
     /*
      * A default constructor for Jackson deserialization
      */
-    public ExtraClaims() {
+    public ExtraValues() {
         title = "";
         regions = new String[0];
     }
 
     /*
-     * Construct with Claims that are always looked up from the API's own data
+     * Construct with values from the API's own data
      */
-    public ExtraClaims(final String title, final String[] regions) {
+    public ExtraValues(final String title, final String[] regions) {
         this.title = title;
         this.regions = regions;
     }

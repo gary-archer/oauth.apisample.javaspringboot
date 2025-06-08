@@ -79,9 +79,9 @@ public class CompanyService {
             return false;
         }
 
-        // For the user role, authorize based on a business rule that links the user to regional data
-        var extraClaims = claims.getExtraClaims();
-        return Arrays.stream(extraClaims.getRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
+        // Apply a business rule that links the user's regions to the region of a company resource
+        var extraValues = claims.getExtraValues();
+        return Arrays.stream(extraValues.getRegions()).anyMatch(ur -> ur.equals(company.getRegion()));
     }
 
     /*

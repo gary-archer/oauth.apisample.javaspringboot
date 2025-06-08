@@ -232,8 +232,8 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         }
 
         // Get settings
-        final var defaultFileLimit = 100;
-        final var defaultSizeLimit = 1024;
+        var defaultFileLimit = 100;
+        var defaultSizeLimit = 1024;
         var maxFiles = fileAppenderConfig.get("maxFiles").asInt(defaultFileLimit);
         var totalLogSizeMB = fileAppenderConfig.get("totalLogSizeMB").asInt(defaultSizeLimit);
         var filePrefix = fileAppenderConfig.get("filePrefix").asText();
