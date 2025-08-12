@@ -2,6 +2,7 @@
 resources
 certs/*.p12
 certs/*.crt
+certs/*.key
 build
 bin
 logs
