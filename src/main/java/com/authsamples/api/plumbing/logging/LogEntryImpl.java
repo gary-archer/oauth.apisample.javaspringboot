@@ -16,8 +16,7 @@ import com.authsamples.api.plumbing.errors.ServerError;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /*
- * Each API request writes a structured log entry containing fields we will query by
- * This class contains the behaviour and can be injected into business logic if required
+ * A log entry collects data during an API request and outputs it at the end
  */
 public final class LogEntryImpl implements LogEntry {
 

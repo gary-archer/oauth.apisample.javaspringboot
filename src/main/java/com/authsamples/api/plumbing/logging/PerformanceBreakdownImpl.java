@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /*
- * The full implementation class
+ * Performs basic timing of expensive subtasks
  */
 public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
 
@@ -70,7 +70,7 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
             data.set("details", this.details);
         }
 
-        if (this.children.size() > 0) {
+        if (!this.children.isEmpty()) {
 
             var childNodes = mapper.createArrayNode();
             for (var child : this.children) {
