@@ -8,21 +8,27 @@
   },
   "logging": {
     "apiName": "FinalApi",
-    "production": {
-      "level": "info",
-      "performanceThresholdMilliseconds": 500,
-      "appenders": [{
-        "type": "console",
-        "prettyPrint": false
-      }]
-    },
-    "development": {
-      "level": "info",
-      "namespace": "com.authsamples.api",
-      "overrideLevels": {
-        "ClaimsCache": "info"
+    "loggers": [
+      {
+        "type": "request",
+        "performanceThresholdMilliseconds": 500,
+        "appenders": [
+          {
+            "type": "console",
+            "prettyPrint": true
+          }
+        ]
+      },
+      {
+        "type": "audit",
+        "appenders": [
+          {
+            "type": "console",
+            "prettyPrint": true
+          }
+        ]
       }
-    }
+    ]
   },
   "oauth": {
     "issuer":                       "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9",
