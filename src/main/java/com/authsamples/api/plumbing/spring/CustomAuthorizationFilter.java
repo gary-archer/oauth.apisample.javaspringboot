@@ -1,17 +1,25 @@
 package com.authsamples.api.plumbing.spring;
 
 import java.io.IOException;
+import java.util.Arrays;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import com.authsamples.api.plumbing.claims.ClaimsReader;
+import com.authsamples.api.plumbing.claims.CustomClaimNames;
+import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
+import com.authsamples.api.plumbing.errors.BaseErrorCodes;
+import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.authsamples.api.plumbing.interceptors.UnhandledExceptionHandler;
 import com.authsamples.api.plumbing.logging.LogEntryImpl;
 import com.authsamples.api.plumbing.oauth.OAuthFilter;
 import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
  * A custom OAuth API filter to allow us to take full control of authorization handling
@@ -20,9 +28,12 @@ import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
 public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
 
     private final BeanFactory container;
+    private final String requiredScope;
 
     public CustomAuthorizationFilter(final BeanFactory container) {
+
         this.container = container;
+        this.requiredScope = this.container.getBean(OAuthConfiguration.class).getScope();
     }
 
     /*
@@ -42,13 +53,27 @@ public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
             // Get the OAuth filter for this HTTP request
             var oauthFilter = this.container.getBean(OAuthFilter.class);
 
-            // Do the OAuth work in plain Java classes and return our customised claims
+            // Do the OAuth work in plain Java classes and get customised claims
             var claimsPrincipal = oauthFilter.execute(request);
 
-            // Log who called the API
-            logEntry.setIdentity(claimsPrincipal.getSubject());
+            // Include selected token details in audit logs
+            var scopes = ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), "scope").split(" ");
+            var mapper = new ObjectMapper();
+            var claims = mapper.createObjectNode();
+            claims.put("managerId", ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), CustomClaimNames.ManagerId));
+            claims.put("role", ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), CustomClaimNames.Role));
+            logEntry.setIdentity(claimsPrincipal.getSubject(), Arrays.stream(scopes).toList(), null);
 
-            // Update the request scoped injectable object's inner contents
+            // The sample API requires the same scope for all endpoints, and it is enforced here
+            var foundScope = Arrays.stream(scopes).filter(s -> s.contains(this.requiredScope)).findFirst();
+            if (foundScope.isEmpty()) {
+                throw ErrorFactory.createClientError(
+                        HttpStatus.FORBIDDEN,
+                        BaseErrorCodes.INSUFFICIENT_SCOPE,
+                        "The token does not contain sufficient scope for this API");
+            }
+
+            // Update the holder object's data so that we can use constructor injection for the claims principal
             var holder = this.container.getBean(ClaimsPrincipalHolder.class);
             holder.setClaims(claimsPrincipal);
 

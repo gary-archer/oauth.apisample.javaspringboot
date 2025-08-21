@@ -2,6 +2,7 @@ package com.authsamples.api.plumbing.logging;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -76,7 +77,7 @@ public final class LogEntryData {
     private ArrayList<JsonNode> infoData;
 
     // The OAuth scopes from the access token
-    private ArrayList<String> scope;
+    private List<String> scope;
 
     // The OAuth claims from the access token
     private ObjectNode claims;
@@ -120,7 +121,7 @@ public final class LogEntryData {
     /*
      * Output technical support details for troubleshooting but without sensitive data
      */
-    public ObjectNode ToRequestLog() {
+    public ObjectNode toRequestLog() {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
@@ -179,7 +180,7 @@ public final class LogEntryData {
 
         if (!this.scope.isEmpty()) {
             var scopeNode = mapper.createArrayNode();
-            for(var scopeItem: this.scope) {
+            for (var scopeItem: this.scope) {
                 data.put("scope", scopeItem);
             }
             data.set("scope", scopeNode);

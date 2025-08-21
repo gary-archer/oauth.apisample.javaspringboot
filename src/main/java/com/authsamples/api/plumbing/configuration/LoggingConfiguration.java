@@ -15,9 +15,5 @@ public final class LoggingConfiguration {
 
     @Getter
     @Setter
-    private ObjectNode production;
-
-    @Getter
-    @Setter
-    private ObjectNode development;
+    private ObjectNode loggers;
 }

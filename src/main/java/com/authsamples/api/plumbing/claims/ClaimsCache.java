@@ -20,14 +20,17 @@ public class ClaimsCache {
     public ClaimsCache(final int timeToLiveMinutes, final LoggerFactory loggerFactory) {
 
         this.timeToLiveMinutes = timeToLiveMinutes;
-        this.debugLogger = loggerFactory.getDevelopmentLogger(ClaimsCache.class);
+        this.debugLogger = loggerFactory.getDebugLogger(ClaimsCache.class);
 
         // Output expiry debug messages here if required
         CacheEntryExpiredListener<String, ExtraClaims> listener = (cache, cacheEntry) -> {
             var message = String.format(
                     "Expired item has been removed from the cache (hash: %s)",
                     cacheEntry.getKey());
-            this.debugLogger.debug(message);
+
+            if (this.debugLogger != null) {
+                this.debugLogger.debug(message);
+            }
         };
 
         // Create the cache with a default entry expiry time
@@ -55,10 +58,12 @@ public class ClaimsCache {
                 secondsToCache = maxExpirySeconds;
             }
 
-            this.debugLogger.debug(String.format(
-                    "Adding item to cache for %d seconds (hash: %s)",
-                    secondsToCache,
-                    accessTokenHash));
+            if (this.debugLogger != null) {
+                this.debugLogger.debug(String.format(
+                        "Adding item to cache for %d seconds (hash: %s)",
+                        secondsToCache,
+                        accessTokenHash));
+            }
 
             var futureExpiryMilliseconds = (epochSeconds + secondsToCache) * 1000;
             cache.invoke(accessTokenHash, e -> e.setValue(claims).setExpiryTime(futureExpiryMilliseconds));
@@ -72,13 +77,16 @@ public class ClaimsCache {
 
         var claims = cache.get(accessTokenHash);
         if (claims == null) {
-            this.debugLogger.debug(
-                    String.format("New item will be added to cache (hash: %s)", accessTokenHash));
-            return null;
+
+            if (this.debugLogger != null) {
+                return null;
+            }
         }
 
-        this.debugLogger.debug(
-                String.format("Found existing item in cache (hash: %s)", accessTokenHash));
+        if (this.debugLogger != null) {
+            this.debugLogger.debug(
+                    String.format("Found existing item in cache (hash: %s)", accessTokenHash));
+        }
 
         return claims;
     }

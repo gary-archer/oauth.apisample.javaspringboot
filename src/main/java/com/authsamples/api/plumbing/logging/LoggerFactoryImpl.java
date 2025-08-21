@@ -44,6 +44,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         // Store the name, which will enable this API's logs to be distinguished from other APIs
         this.apiName = configuration.getApiName();
 
+        /*
         // Initialise the production logger
         var prodConfiguration = configuration.getProduction();
         this.configureProductionLogger(prodConfiguration);
@@ -51,6 +52,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         // Initialise any development loggers
         var devConfiguration = configuration.getDevelopment();
         this.configureDevelopmentLoggers(devConfiguration);
+        */
     }
 
     /*
@@ -66,17 +68,33 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var error = (ServerError) ErrorUtils.fromException(exception);
 
         // Write it as a log entry
-        var logEntry = new LogEntryImpl(this.apiName, this.getProductionLogger());
+        var logEntry = new LogEntryImpl(this.apiName);
         logEntry.setOperationName("startup");
         logEntry.setServerError(error);
-        logEntry.write();
+        // logEntry.write();
     }
 
     /*
-     * Get a logger per class for tracing debug statements on a developer PC
+     * Get the fixed request logger
      */
     @Override
-    public Logger getDevelopmentLogger(final Class type) {
+    public Logger getRequestLogger() {
+        return null;
+    }
+
+    /*
+     * Get the fixed audit logger
+     */
+    @Override
+    public Logger getAuditLogger() {
+        return null;
+    }
+
+    /*
+     * Get a logger per class for local debugging
+     */
+    @Override
+    public Logger getDebugLogger(final Class type) {
         String loggerName = String.format("%s.%s", this.developmentNamespace, type.getSimpleName());
         return org.slf4j.LoggerFactory.getLogger(loggerName);
     }
@@ -85,11 +103,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Use the logging configuration to create a log entry the first time it is asked for during an API request
      */
     public LogEntryImpl createLogEntry() {
-
-        return new LogEntryImpl(
-                this.apiName,
-                this.getProductionLogger(),
-                this.performanceThresholdMilliseconds);
+        return new LogEntryImpl(this.apiName, this.performanceThresholdMilliseconds);
     }
 
     /*
