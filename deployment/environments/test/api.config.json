@@ -19,7 +19,7 @@
           },
           {
             "type": "file",
-            "filePrefix": "api-final",
+            "filePrefix": "request",
             "dirname": "./logs",
             "totalLogSizeMB": "1024",
             "maxFiles": "100"
@@ -31,7 +31,7 @@
         "appenders": [
           {
             "type": "file",
-            "filePrefix": "api-final",
+            "filePrefix": "audit",
             "dirname": "./logs",
             "totalLogSizeMB": "1024",
             "maxFiles": "100"
