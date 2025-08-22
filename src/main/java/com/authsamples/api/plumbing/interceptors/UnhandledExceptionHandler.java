@@ -57,7 +57,6 @@ public final class UnhandledExceptionHandler {
         // Therefore output the log entry here, with basic data
         if (ex instanceof UnsatisfiedDependencyException) {
 
-            // Output the request log
             var requestLogger = loggerFactory.getRequestLogger();
             if (requestLogger != null) {
                 requestLogger.info("info", logEntry.getRequestLog());
@@ -92,6 +91,12 @@ public final class UnhandledExceptionHandler {
         var requestLogger = loggerFactory.getRequestLogger();
         if (requestLogger != null) {
             requestLogger.info("info", logEntry.getRequestLog());
+        }
+
+        // Output the audit log
+        var auditLogger = loggerFactory.getAuditLogger();
+        if (auditLogger != null) {
+            auditLogger.info("info", logEntry.getAuditLog());
         }
 
         // Clean up per request dependencies

@@ -1,7 +1,7 @@
 package com.authsamples.api.plumbing.logging;
 
-import org.slf4j.Logger;
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
@@ -12,19 +12,19 @@ import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
 import com.authsamples.api.plumbing.errors.ServerError;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /*
  * A custom logger factory to wrap the default one and give us greater control over output
  */
 public final class LoggerFactoryImpl implements LoggerFactory {
 
-    // Invent a specific named logger, which we will use to implement our production logging design
-    private static final String PRODUCTION_LOGGER_NAME = "PRODUCTION_LOGGER";
-
     private String apiName;
     private int performanceThresholdMilliseconds;
     private String developmentNamespace;
-
+    private boolean isInitialized;
+    private boolean hasRequestLogger;
+    private boolean hasAuditLogger;
 
     /*
      * Set logging defaults when constructed
@@ -34,6 +34,9 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         this.apiName = "";
         this.performanceThresholdMilliseconds = 1000;
         this.developmentNamespace = "";
+        this.isInitialized = false;
+        this.hasRequestLogger = false;
+        this.hasAuditLogger = false;
     }
 
     /*
@@ -41,18 +44,26 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      */
     public void configure(final LoggingConfiguration configuration) {
 
-        // Store the name, which will enable this API's logs to be distinguished from other APIs
         this.apiName = configuration.getApiName();
 
-        /*
-        // Initialise the production logger
-        var prodConfiguration = configuration.getProduction();
-        this.configureProductionLogger(prodConfiguration);
+        // Create the fixed request logger
+        var requestLogConfig = this.findArrayElementByType(configuration.getLoggers(), "request");
+        if (requestLogConfig != null) {
+            this.createRequestLogger(requestLogConfig);
+        }
 
-        // Initialise any development loggers
-        var devConfiguration = configuration.getDevelopment();
-        this.configureDevelopmentLoggers(devConfiguration);
-        */
+        // Create the fixed audit logger
+        var auditLogConfig = this.findArrayElementByType(configuration.getLoggers(), "audit");
+        if (auditLogConfig != null) {
+            this.createAuditLogger(auditLogConfig);
+        }
+
+        var debugLogConfig = this.findArrayElementByType(configuration.getLoggers(), "debug");
+        if (debugLogConfig != null) {
+            this.createDebugLoggers(debugLogConfig);
+        }
+
+        this.isInitialized = true;
     }
 
     /*
@@ -61,8 +72,8 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     @Override
     public void logStartupError(final Throwable exception) {
 
-        // Ensure that there is a production logger
-        this.configureDefaultProductionLogger();
+        // Create a request logger if required
+        var startupLogger = this.getStartupLogger();
 
         // Get the error
         var error = (ServerError) ErrorUtils.fromException(exception);
@@ -71,14 +82,21 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var logEntry = new LogEntryImpl(this.apiName);
         logEntry.setOperationName("startup");
         logEntry.setServerError(error);
-        // logEntry.write();
+
+        // Output the data
+        startupLogger.info("info", logEntry.getRequestLog());
     }
 
     /*
      * Get the fixed request logger
      */
     @Override
-    public Logger getRequestLogger() {
+    public org.slf4j.Logger getRequestLogger() {
+
+        if (this.hasRequestLogger) {
+            return org.slf4j.LoggerFactory.getLogger("request");
+        }
+
         return null;
     }
 
@@ -86,7 +104,12 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Get the fixed audit logger
      */
     @Override
-    public Logger getAuditLogger() {
+    public org.slf4j.Logger getAuditLogger() {
+
+        if (this.hasAuditLogger) {
+            return org.slf4j.LoggerFactory.getLogger("audit");
+        }
+
         return null;
     }
 
@@ -94,7 +117,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Get a logger per class for local debugging
      */
     @Override
-    public Logger getDebugLogger(final Class type) {
+    public org.slf4j.Logger getDebugLogger(final Class type) {
         String loggerName = String.format("%s.%s", this.developmentNamespace, type.getSimpleName());
         return org.slf4j.LoggerFactory.getLogger(loggerName);
     }
@@ -107,119 +130,74 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     }
 
     /*
-     * Create the production logger, which logs a bare JSON object
+     * Add an always on request logger for technical support details
      */
-    private void configureProductionLogger(final JsonNode productionLogConfig) {
+    private void createRequestLogger(final JsonNode requestLogConfig) {
 
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
-        // Get the production logger and turn off inheritance so that it no longer uses text logging
-        var logger = context.getLogger(PRODUCTION_LOGGER_NAME);
+        // Get the logger and disable the default text logging
+        var logger = context.getLogger("request");
         logger.setAdditive(false);
+        logger.setLevel(Level.INFO);
+        this.performanceThresholdMilliseconds = requestLogConfig.get("performanceThresholdMilliseconds").asInt();
 
-        // Create the logger based on configuration
-        var prodLevelNode = productionLogConfig.get("level");
-        this.performanceThresholdMilliseconds = productionLogConfig.get("performanceThresholdMilliseconds").asInt();
-        var prodLevel = Level.toLevel(prodLevelNode.asText().toUpperCase(), Level.INFO);
-        logger.setLevel(prodLevel);
+        // Add appenders to the logger
+        createAppenders(logger, context, requestLogConfig.get("appenders"));
+        this.hasRequestLogger = true;
+    }
+
+    /*
+     * Add an always on audit logger for technical support details
+     */
+    private void createAuditLogger(final JsonNode auditLogConfig) {
+
+        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
+
+        // Get the logger and disable the default text logging
+        var logger = context.getLogger("audit");
+        logger.setAdditive(false);
+        logger.setLevel(Level.INFO);
+
+        // Add appenders to the logger
+        createAppenders(logger, context, auditLogConfig.get("appenders"));
+        this.hasAuditLogger = true;
+    }
+
+    /*
+     * Add appenders from configuration
+     */
+    private void createAppenders(
+            final Logger logger,
+            final LoggerContext context,
+            final JsonNode appendersConfig) {
 
         // Add the console appender if required
-        var appendersConfig = productionLogConfig.get("appenders");
-        var consoleAppender = this.createProductionConsoleAppender(appendersConfig, context);
-        if (consoleAppender != null) {
-            logger.addAppender(consoleAppender);
-        }
+        if (appendersConfig != null && appendersConfig.isArray()) {
 
-        // Add the file appender if required
-        var fileAppender = this.createProductionFileAppender(appendersConfig, context);
-        if (fileAppender != null) {
-            logger.addAppender(fileAppender);
-        }
-    }
+            var consoleConfig = this.findArrayElementByType((ArrayNode) appendersConfig, "console");
+            if (consoleConfig != null) {
+                var consoleAppender = this.createConsoleAppender(consoleConfig, context);
+                logger.addAppender(consoleAppender);
+            }
 
-    /*
-     * Create a logger for errors before the system has been initialized
-     */
-    private void configureDefaultProductionLogger() {
-
-        // The logger is additive when the above method has not been called yet
-        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
-        var logger = context.getLogger(PRODUCTION_LOGGER_NAME);
-        if (logger.isAdditive()) {
-
-            // Use a JSON encoder
-            var encoder = new BareJsonEncoder(true);
-
-            // Create an appender that uses the encoder
-            var appender = new ConsoleAppender<ILoggingEvent>();
-            appender.setContext(context);
-            appender.setEncoder(encoder);
-            appender.start();
-
-            // Update the logger with the appender
-            logger.setAdditive(false);
-            logger.addAppender(appender);
-        }
-    }
-
-    /*
-     * Get the production logger
-     */
-    private Logger getProductionLogger() {
-        return org.slf4j.LoggerFactory.getLogger(PRODUCTION_LOGGER_NAME);
-    }
-
-    /*
-     * In our samples, developer loggers only output to the console
-     */
-    private void configureDevelopmentLoggers(final JsonNode developmentLogConfig) {
-
-        // Get details
-        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
-
-        // Set the namespace for development logging
-        this.developmentNamespace = developmentLogConfig.get("namespace").asText();
-
-        // Set the root log level, which will be the default for all loggers per class
-        var devLevelNode = developmentLogConfig.get("level");
-        var devLevel = Level.toLevel(devLevelNode.asText().toUpperCase(), Level.INFO);
-        var rootLogger = context.getLogger(this.developmentNamespace);
-        rootLogger.setLevel(devLevel);
-
-        // Set override levels
-        var overrideLevels = developmentLogConfig.get("overrideLevels");
-        if (overrideLevels != null) {
-
-            var properties = overrideLevels.properties();
-            for (var property : properties) {
-
-                // Read the class name and log level
-                var name = property.getKey();
-                var level = Level.toLevel(property.getValue().asText().toUpperCase(), Level.INFO);
-
-                // Configure the logger
-                String loggerName = String.format("%s.%s", this.developmentNamespace, name);
-                var logger = context.getLogger(loggerName);
-                logger.setLevel(level);
+            var fileConfig = this.findArrayElementByType((ArrayNode) appendersConfig, "file");
+            if (fileConfig != null) {
+                var fileAppender = this.createFileAppender(fileConfig, context);
+                logger.addAppender(fileAppender);
             }
         }
     }
 
     /*
-     * Create a custom appender for outputting log data to the console on a developer PC
+     * Create a JSON console appender
      */
-    private ConsoleAppender<ILoggingEvent> createProductionConsoleAppender(
-            final JsonNode appendersConfig,
+    private ConsoleAppender<ILoggingEvent> createConsoleAppender(
+            final JsonNode config,
             final LoggerContext context) {
 
-        // If appenders are configured but no console appender then don't create one
-        var consoleAppenderConfig = this.findAppenderByType(appendersConfig, "console");
-        if (appendersConfig != null && consoleAppenderConfig == null) {
-            return null;
-        }
-
         // The log data is bare JSON without any logback fields, and can use pretty printing for readability
-        var prettyPrint = consoleAppenderConfig.get("prettyPrint").asBoolean(false);
+        var prettyPrint = config.get("prettyPrint").asBoolean(false);
         var encoder = new BareJsonEncoder(prettyPrint);
 
         // Create an appender that uses the encoder
@@ -233,25 +211,19 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     }
 
     /*
-     * Create a custom appender that writes production logs as a single line of text, suitable for log shippers
+     * Create a JSON file appender
      */
-    private RollingFileAppender<ILoggingEvent> createProductionFileAppender(
-            final JsonNode appendersConfig,
+    private RollingFileAppender<ILoggingEvent> createFileAppender(
+            final JsonNode config,
             final LoggerContext context) {
-
-        // See if there is a file appender
-        var fileAppenderConfig = this.findAppenderByType(appendersConfig, "file");
-        if (fileAppenderConfig == null) {
-            return null;
-        }
 
         // Get settings
         var defaultFileLimit = 100;
         var defaultSizeLimit = 1024;
-        var maxFiles = fileAppenderConfig.get("maxFiles").asInt(defaultFileLimit);
-        var totalLogSizeMB = fileAppenderConfig.get("totalLogSizeMB").asInt(defaultSizeLimit);
-        var filePrefix = fileAppenderConfig.get("filePrefix").asText();
-        var logFolder = fileAppenderConfig.get("dirname").asText();
+        var maxFiles = config.get("maxFiles").asInt(defaultFileLimit);
+        var totalLogSizeMB = config.get("totalLogSizeMB").asInt(defaultSizeLimit);
+        var filePrefix = config.get("filePrefix").asText();
+        var logFolder = config.get("dirname").asText();
 
         // Set the file pattern to the date
         var filePattern = String.format("./%s/%s.%%d{yyyy-MM-dd}.%%i.log", logFolder, filePrefix);
@@ -285,24 +257,83 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     }
 
     /*
-     * Find an appender and return its configuration section if found
+     * Do an object array lookup
      */
-    private JsonNode findAppenderByType(final JsonNode appendersConfig, final String typeToFind) {
+    private JsonNode findArrayElementByType(final ArrayNode array, final String key) {
 
-        if (appendersConfig == null) {
-            return null;
-        }
+        var items = array.elements();
+        while (items.hasNext()) {
 
-        var appenders = appendersConfig.elements();
-        while (appenders.hasNext()) {
-
-            var appender = appenders.next();
-            var type = appender.get("type").asText();
-            if (type.equals(typeToFind)) {
-                return appender;
+            var item = items.next();
+            var type = item.get("type").asText();
+            if (type.equals(key)) {
+                return item;
             }
         }
 
         return null;
+    }
+
+    /*
+     * Create a default logger for startup errors if required
+     */
+    private org.slf4j.Logger getStartupLogger() {
+
+        // Use the request logger if possible
+        if (this.isInitialized) {
+            return this.getRequestLogger();
+        }
+
+        // Otherwise create a startup logger
+        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
+        var logger = context.getLogger("startup");
+        var encoder = new BareJsonEncoder(true);
+
+        // Create an appender that uses the encoder
+        var appender = new ConsoleAppender<ILoggingEvent>();
+        appender.setContext(context);
+        appender.setEncoder(encoder);
+        appender.start();
+
+        // Update the logger with the appender
+        logger.setAdditive(false);
+        logger.addAppender(appender);
+        return logger;
+    }
+
+    /*
+     * The esxample's debug loggers output to the console as plain text
+     */
+    private void createDebugLoggers(final JsonNode debugLogConfig) {
+
+        // Get details
+        LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
+
+        // Set the namespace for development logging
+        this.developmentNamespace = debugLogConfig.get("namespace").asText();
+
+        // Set the root log level, which will be the default for all loggers per class
+        var devLevelNode = debugLogConfig.get("level");
+        var devLevel = Level.toLevel(devLevelNode.asText().toUpperCase(), Level.INFO);
+        var rootLogger = context.getLogger(this.developmentNamespace);
+        rootLogger.setLevel(devLevel);
+
+        // Set override levels
+        var overrideLevels = debugLogConfig.get("overrideLevels");
+        if (overrideLevels != null) {
+
+            var properties = overrideLevels.properties();
+            for (var property : properties) {
+
+                // Read the class name and log level
+                var name = property.getKey();
+                var level = Level.toLevel(property.getValue().asText().toUpperCase(), Level.INFO);
+
+                // Configure the logger
+                String loggerName = String.format("%s.%s", this.developmentNamespace, name);
+                var logger = context.getLogger(loggerName);
+                logger.setLevel(level);
+            }
+        }
     }
 }
