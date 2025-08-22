@@ -33,7 +33,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
 
         var container = this.context.getBeanFactory();
-        var authenticationFilter = new CustomAuthenticationFilter<ExtraClaims>(container);
+        var authenticationFilter = new CustomAuthenticationFilter(container);
 
         http
                 // OAuth security for the API is applied via these settings

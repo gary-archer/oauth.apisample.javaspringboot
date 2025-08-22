@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /*
  * A custom authentication filter to take finer control over processing of tokens and claims
  */
-public final class CustomAuthenticationFilter<T> extends OncePerRequestFilter {
+public final class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private final BeanFactory container;
     private final String requiredScope;
