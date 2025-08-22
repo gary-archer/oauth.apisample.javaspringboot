@@ -2,6 +2,7 @@ package com.authsamples.api.plumbing.logging;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,8 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 
 /*
- * Each API request writes a structured log entry containing fields we will query by
- * It also writes JSON blobs whose fields are not designed to be queried
+ * Log data collected during the lifetime of an API request
  */
 @Data
 public final class LogEntryData {
@@ -76,12 +76,17 @@ public final class LogEntryData {
     // Can be populated in scenarios when extra text is useful
     private ArrayList<JsonNode> infoData;
 
+    // The OAuth scopes from the access token
+    private List<String> scope;
+
+    // The OAuth claims from the access token
+    private ObjectNode claims;
+
     /*
      * Give fields default values
      */
     public LogEntryData() {
 
-        // Queryable fields
         this.id = UUID.randomUUID().toString();
         this.utcTime = Instant.now();
         this.apiName = "";
@@ -99,11 +104,11 @@ public final class LogEntryData {
         this.errorId = 0;
         this.correlationId = "";
         this.sessionId = "";
-
-        // Objects
         this.performance = new PerformanceBreakdownImpl("total");
         this.errorData = null;
         this.infoData = new ArrayList<>();
+        this.scope = new ArrayList<>();
+        this.claims = null;
     }
 
     /*
@@ -114,14 +119,14 @@ public final class LogEntryData {
     }
 
     /*
-     * Produce the output format
+     * Output technical support details for troubleshooting but without sensitive data
      */
-    public ObjectNode toLogFormat() {
+    public ObjectNode toRequestLog() {
 
         var mapper = new ObjectMapper();
         var data = mapper.createObjectNode();
 
-        // Add queryable informational fields
+        data.put("type", "request");
         this.outputString(x -> data.put("id", x), this.id);
         this.outputString(x -> data.put("utcTime", x), this.utcTime.toString());
         this.outputString(x -> data.put("apiName", x), this.apiName);
@@ -139,12 +144,52 @@ public final class LogEntryData {
         this.outputString(x -> data.put("correlationId", x), this.correlationId);
         this.outputString(x -> data.put("sessionId", x), this.sessionId);
 
-        // Add JSON text data
         this.outputPerformance(data);
         this.outputError(data);
         this.outputInfo(mapper, data);
+        return data;
+    }
 
-        // Return the JSON object
+    /*
+     * Output audit logs for security visibility but without troubleshooting data
+     */
+    public ObjectNode toAuditLog() {
+
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+
+        data.put("type", "audit");
+        this.outputString(x -> data.put("id", x), this.id);
+        this.outputString(x -> data.put("utcTime", x), this.utcTime.toString());
+        this.outputString(x -> data.put("apiName", x), this.apiName);
+        this.outputString(x -> data.put("operationName", x), this.operationName);
+        this.outputString(x -> data.put("hostName", x), this.hostName);
+        this.outputString(x -> data.put("method", x), this.method);
+        this.outputString(x -> data.put("path", x), this.path);
+        this.outputString(x -> data.put("resourceId", x), this.resourceId);
+        this.outputString(x -> data.put("clientName", x), this.clientName);
+        this.outputString(x -> data.put("userId", x), this.userId);
+        this.outputNumber(x -> data.put("statusCode", x), this.statusCode);
+        this.outputString(x -> data.put("errorCode", x), this.errorCode);
+        this.outputString(x -> data.put("correlationId", x), this.correlationId);
+        this.outputString(x -> data.put("sessionId", x), this.sessionId);
+
+        var isAuthenticated = !this.userId.isEmpty();
+        data.put("isAuthenticated", isAuthenticated);
+        data.put("isAuthorized", isAuthenticated && (this.statusCode >= 200 && this.statusCode <= 299));
+
+        if (!this.scope.isEmpty()) {
+            var scopeNode = mapper.createArrayNode();
+            for (var scopeItem: this.scope) {
+                scopeNode.add(scopeItem);
+            }
+            data.set("scope", scopeNode);
+        }
+
+        if (this.claims != null) {
+            data.set("claims", claims);
+        }
+
         return data;
     }
 
@@ -160,7 +205,7 @@ public final class LogEntryData {
      */
     private void outputString(final Consumer<String> setter, final String value) {
 
-        if (value != null && value.length() > 0) {
+        if (value != null && !value.isEmpty()) {
             setter.accept(value);
         }
     }

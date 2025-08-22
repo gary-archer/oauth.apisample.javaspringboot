@@ -1,6 +1,6 @@
 package com.authsamples.api.plumbing.configuration;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +15,5 @@ public final class LoggingConfiguration {
 
     @Getter
     @Setter
-    private ObjectNode production;
-
-    @Getter
-    @Setter
-    private ObjectNode development;
+    private ArrayNode loggers;
 }

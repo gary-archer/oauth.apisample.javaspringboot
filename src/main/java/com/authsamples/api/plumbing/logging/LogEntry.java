@@ -3,7 +3,7 @@ package com.authsamples.api.plumbing.logging;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /*
- * An abstraction that logic classes can use to add to the current production log context
+ * A log entry collects data during an API request and outputs it at the end
  */
 public interface LogEntry {
 

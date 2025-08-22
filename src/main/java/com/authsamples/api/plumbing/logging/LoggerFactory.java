@@ -14,6 +14,12 @@ public interface LoggerFactory {
     // Handle startup errors
     void logStartupError(Throwable exception);
 
-    // Get a named debug text logger for a developer PC
-    Logger getDevelopmentLogger(Class type);
+    // Get the fixed request logger
+    Logger getRequestLogger();
+
+    // Get the fixed audit logger
+    Logger getAuditLogger();
+
+    // Get a named debug logger
+    Logger getDebugLogger(Class type);
 }

@@ -2,11 +2,11 @@ package com.authsamples.api.plumbing.logging;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -14,14 +14,13 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ServerError;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /*
- * Each API request writes a structured log entry containing fields we will query by
- * This class contains the behaviour and can be injected into business logic if required
+ * A log entry collects data during an API request and outputs it at the end
  */
 public final class LogEntryImpl implements LogEntry {
 
-    private final Logger logger;
     private final LogEntryData data;
     private boolean started;
     private boolean finished;
@@ -29,24 +28,18 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * The default constructor
      */
-    public LogEntryImpl(final String apiName, final Logger logger) {
-        this(apiName, logger, 1000);
+    public LogEntryImpl(final String apiName) {
+        this(apiName, 1000);
     }
 
     /*
      * The main constructor
      */
-    public LogEntryImpl(
-            final String apiName,
-            final Logger logger,
-            final int performanceThresholdMilliseconds) {
+    public LogEntryImpl(final String apiName, final int performanceThresholdMilliseconds) {
 
-        // Store the logger and initialise state
-        this.logger = logger;
         this.started = false;
         this.finished = false;
 
-        // Initialise log data
         this.data = new LogEntryData();
         this.data.setApiName(apiName);
         this.data.setHostName(this.getHostName());
@@ -98,10 +91,16 @@ public final class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Add identity details for secured requests
+     * Audit identity details for secured requests
      */
-    public void setIdentity(final String subject) {
+    public void setIdentity(
+            final String subject,
+            final List<String> scope,
+            final ObjectNode claims) {
+
         this.data.setUserId(subject);
+        this.data.setScope(scope);
+        this.data.setClaims(claims);
     }
 
     /*
@@ -173,10 +172,17 @@ public final class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Output the data
+     * Get the request data to output to logs for a support team
      */
-    public void write() {
-        this.writeDataItem(this.data);
+    public ObjectNode getRequestLog() {
+        return this.data.toRequestLog();
+    }
+
+    /*
+     * Get the audit data to output to logs for a security team
+     */
+    public ObjectNode getAuditLog() {
+        return this.data.toAuditLog();
     }
 
     /*
@@ -239,18 +245,6 @@ public final class LogEntryImpl implements LogEntry {
 
         } catch (Throwable ex) {
             return null;
-        }
-    }
-
-    /*
-     * Write a single data item by sending the object node to the BareJsonLoggingLayout
-     */
-    private void writeDataItem(final LogEntryData item) {
-
-        if (this.data.isError()) {
-            this.logger.error("error", item.toLogFormat());
-        } else {
-            this.logger.info("info", item.toLogFormat());
         }
     }
 }

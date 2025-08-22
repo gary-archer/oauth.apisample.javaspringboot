@@ -1,20 +1,15 @@
 package com.authsamples.api.plumbing.oauth;
 
-import java.util.Arrays;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import com.authsamples.api.plumbing.claims.ClaimsReader;
 import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
-import com.authsamples.api.plumbing.errors.BaseErrorCodes;
-import com.authsamples.api.plumbing.errors.ErrorFactory;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
 import com.authsamples.api.plumbing.logging.LogEntry;
 
@@ -61,19 +56,7 @@ public class AccessTokenValidator {
 
             // Validate the token and get its claims
             var jwtConsumer = builder.build();
-            var claims = jwtConsumer.processToClaims(accessToken);
-
-            // The sample API requires the same scope for all endpoints, and it is enforced here
-            var scopes = ClaimsReader.getStringClaim(claims, "scope").split(" ");
-            var foundScope = Arrays.stream(scopes).filter(s -> s.contains(this.configuration.getScope())).findFirst();
-            if (foundScope.isEmpty()) {
-                throw ErrorFactory.createClientError(
-                        HttpStatus.FORBIDDEN,
-                        BaseErrorCodes.INSUFFICIENT_SCOPE,
-                        "The token does not contain sufficient scope for this API");
-            }
-
-            return claims;
+            return jwtConsumer.processToClaims(accessToken);
 
         } catch (InvalidJwtException ex) {
 

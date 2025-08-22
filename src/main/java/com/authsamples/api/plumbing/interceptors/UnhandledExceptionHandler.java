@@ -14,6 +14,7 @@ import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
 import com.authsamples.api.plumbing.errors.ServerError;
 import com.authsamples.api.plumbing.logging.LogEntryImpl;
+import com.authsamples.api.plumbing.logging.LoggerFactory;
 import com.authsamples.api.plumbing.utilities.ResponseErrorWriter;
 
 /*
@@ -24,16 +25,19 @@ public final class UnhandledExceptionHandler {
 
     private final BeanFactory container;
     private final String apiName;
+    private final LoggerFactory loggerFactory;
 
     /*
      * The exception handler requires the name of the API
      */
     public UnhandledExceptionHandler(
             final BeanFactory container,
-            final LoggingConfiguration configuration) {
+            final LoggingConfiguration configuration,
+            final LoggerFactory loggerFactory) {
 
         this.container = container;
         this.apiName = configuration.getApiName();
+        this.loggerFactory = loggerFactory;
     }
 
     /*
@@ -52,7 +56,11 @@ public final class UnhandledExceptionHandler {
         // For this error type, the failure occurs early, and logging interceptors do not fire
         // Therefore output the log entry here, with basic data
         if (ex instanceof UnsatisfiedDependencyException) {
-            logEntry.write();
+
+            var requestLogger = loggerFactory.getRequestLogger();
+            if (requestLogger != null) {
+                requestLogger.info("info", logEntry.getRequestLog());
+            }
         }
 
         return result;
@@ -78,7 +86,18 @@ public final class UnhandledExceptionHandler {
         // Finish logging of failed requests
         var handlerMappings = this.container.getBean(RequestMappingHandlerMapping.class);
         logEntry.end(request, response, handlerMappings);
-        logEntry.write();
+
+        // Output the request log
+        var requestLogger = loggerFactory.getRequestLogger();
+        if (requestLogger != null) {
+            requestLogger.info("info", logEntry.getRequestLog());
+        }
+
+        // Output the audit log
+        var auditLogger = loggerFactory.getAuditLogger();
+        if (auditLogger != null) {
+            auditLogger.info("info", logEntry.getAuditLog());
+        }
 
         // Clean up per request dependencies
         CustomRequestScope.removeAll();

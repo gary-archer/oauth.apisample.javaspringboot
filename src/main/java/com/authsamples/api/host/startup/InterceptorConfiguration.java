@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.interceptors.CustomHeaderInterceptor;
 import com.authsamples.api.plumbing.interceptors.LoggingInterceptor;
+import com.authsamples.api.plumbing.logging.LoggerFactory;
 
 /*
  * Manages configuration of cross-cutting concerns in interceptors
@@ -15,13 +16,16 @@ import com.authsamples.api.plumbing.interceptors.LoggingInterceptor;
 public class InterceptorConfiguration implements WebMvcConfigurer {
 
     private final LoggingConfiguration loggingConfiguration;
+    private final LoggerFactory loggerFactory;
     private final ConfigurableApplicationContext context;
 
     public InterceptorConfiguration(
             final LoggingConfiguration loggingConfiguration,
+            final LoggerFactory loggerFactory,
             final ConfigurableApplicationContext context) {
 
         this.loggingConfiguration = loggingConfiguration;
+        this.loggerFactory = loggerFactory;
         this.context = context;
     }
 
@@ -32,7 +36,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
     public void addInterceptors(final InterceptorRegistry registry) {
 
         // Add the logging interceptor
-        var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory());
+        var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory(), this.loggerFactory);
         registry.addInterceptor(loggingInterceptor)
                 .addPathPatterns(ResourcePaths.ALL);
 
