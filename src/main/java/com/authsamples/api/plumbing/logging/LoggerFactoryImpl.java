@@ -22,7 +22,6 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     private String apiName;
     private int performanceThresholdMilliseconds;
     private String developmentNamespace;
-    private boolean isInitialized;
     private boolean hasRequestLogger;
     private boolean hasAuditLogger;
 
@@ -34,7 +33,6 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         this.apiName = "";
         this.performanceThresholdMilliseconds = 1000;
         this.developmentNamespace = "";
-        this.isInitialized = false;
         this.hasRequestLogger = false;
         this.hasAuditLogger = false;
     }
@@ -62,8 +60,6 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         if (debugLogConfig != null) {
             this.createDebugLoggers(debugLogConfig);
         }
-
-        this.isInitialized = true;
     }
 
     /*
@@ -280,13 +276,13 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     private org.slf4j.Logger getStartupLogger() {
 
         // Use the request logger if possible
-        if (this.isInitialized) {
+        if (this.hasRequestLogger) {
             return this.getRequestLogger();
         }
 
-        // Otherwise create a startup logger
+        // Otherwise create a default request logger
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
-        var logger = context.getLogger("startup");
+        var logger = context.getLogger("request");
         var encoder = new BareJsonEncoder(true);
 
         // Create an appender that uses the encoder
