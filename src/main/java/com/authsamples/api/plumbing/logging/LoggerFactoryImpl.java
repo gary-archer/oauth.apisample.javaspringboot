@@ -283,7 +283,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         // Otherwise create a default request logger
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
         var logger = context.getLogger("request");
-        var encoder = new BareJsonEncoder(true);
+        var encoder = new BareJsonEncoder(false);
 
         // Create an appender that uses the encoder
         var appender = new ConsoleAppender<ILoggingEvent>();
