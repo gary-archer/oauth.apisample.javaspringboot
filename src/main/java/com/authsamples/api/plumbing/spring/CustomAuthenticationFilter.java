@@ -22,15 +22,14 @@ import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
- * A custom OAuth API filter to allow us to take full control of authorization handling
- * This enables us to plug in a specialist OAuth library while still fitting into an overall Spring API
+ * A custom authentication filter to take finer control over processing of tokens and claims
  */
-public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
+public final class CustomAuthenticationFilter<T> extends OncePerRequestFilter {
 
     private final BeanFactory container;
     private final String requiredScope;
 
-    public CustomAuthorizationFilter(final BeanFactory container) {
+    public CustomAuthenticationFilter(final BeanFactory container) {
 
         this.container = container;
         this.requiredScope = this.container.getBean(OAuthConfiguration.class).getScope();
