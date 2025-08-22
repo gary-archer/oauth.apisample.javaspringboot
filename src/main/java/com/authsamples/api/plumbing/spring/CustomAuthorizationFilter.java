@@ -62,7 +62,7 @@ public final class CustomAuthorizationFilter<T> extends OncePerRequestFilter {
             var claims = mapper.createObjectNode();
             claims.put("managerId", ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), CustomClaimNames.ManagerId));
             claims.put("role", ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), CustomClaimNames.Role));
-            logEntry.setIdentity(claimsPrincipal.getSubject(), Arrays.stream(scopes).toList(), null);
+            logEntry.setIdentity(claimsPrincipal.getSubject(), Arrays.stream(scopes).toList(), claims);
 
             // The sample API requires the same scope for all endpoints, and it is enforced here
             var foundScope = Arrays.stream(scopes).filter(s -> s.contains(this.requiredScope)).findFirst();

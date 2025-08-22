@@ -30,6 +30,10 @@
         "type": "audit",
         "appenders": [
           {
+            "type": "console",
+            "prettyPrint": true
+          },
+          {
             "type": "file",
             "filePrefix": "audit",
             "dirname": "./logs",

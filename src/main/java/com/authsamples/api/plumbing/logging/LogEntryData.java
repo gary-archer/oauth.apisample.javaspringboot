@@ -181,7 +181,7 @@ public final class LogEntryData {
         if (!this.scope.isEmpty()) {
             var scopeNode = mapper.createArrayNode();
             for (var scopeItem: this.scope) {
-                data.put("scope", scopeItem);
+                scopeNode.add(scopeItem);
             }
             data.set("scope", scopeNode);
         }
