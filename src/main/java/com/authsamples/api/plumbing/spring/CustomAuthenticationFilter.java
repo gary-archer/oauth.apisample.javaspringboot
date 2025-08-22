@@ -36,7 +36,7 @@ public final class CustomAuthenticationFilter<T> extends OncePerRequestFilter {
     }
 
     /*
-     * Do the work of the authorization
+     * Do the main work to process tokens, claims and log identity details
      */
     @Override
     protected void doFilterInternal(
