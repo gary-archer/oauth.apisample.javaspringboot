@@ -75,7 +75,7 @@ dependencies {
 // Set the Java version
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
