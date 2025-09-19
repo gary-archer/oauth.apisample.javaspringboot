@@ -75,7 +75,7 @@ sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass 
 
 ### Run the Code
 
-- Install a Java 21+ SDK.
+- Install a Java 25+ SDK.
 - Also install Docker to run integration tests that use Wiremock.
 
 Then run the API with this command:
@@ -107,7 +107,7 @@ Then run integration tests and a load test:
 
 ## Programming Languages
 
-* The API uses Java 21 and Spring Boot 3.
+* The API uses Java 25 and Spring Boot 3.
 
 ## Infrastructure
 
