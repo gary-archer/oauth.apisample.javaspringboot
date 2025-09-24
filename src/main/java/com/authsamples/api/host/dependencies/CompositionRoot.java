@@ -6,7 +6,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.authsamples.api.host.configuration.Configuration;
 import com.authsamples.api.plumbing.claims.ClaimsCache;
 import com.authsamples.api.plumbing.claims.ExtraClaimsProvider;
-import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.logging.LoggerFactory;
 
 /*
@@ -17,7 +16,6 @@ public final class CompositionRoot {
     private final ConfigurableListableBeanFactory container;
     private Configuration configuration;
     private ExtraClaimsProvider extraClaimsProvider;
-    private LoggingConfiguration loggingConfiguration;
     private LoggerFactory loggerFactory;
 
     /*
@@ -38,11 +36,8 @@ public final class CompositionRoot {
     /*
      * Receive the logging configuration
      */
-    public CompositionRoot addLogging(
-            final LoggingConfiguration loggingConfiguration,
-            final LoggerFactory loggerFactory) {
+    public CompositionRoot addLogging(final LoggerFactory loggerFactory) {
 
-        this.loggingConfiguration = loggingConfiguration;
         this.loggerFactory = loggerFactory;
         return this;
     }
@@ -76,7 +71,7 @@ public final class CompositionRoot {
      */
     private void registerLoggingDependencies() {
 
-        this.container.registerSingleton("LoggingConfiguration", this.loggingConfiguration);
+        this.container.registerSingleton("LoggingConfiguration", this.configuration.getLogging());
         this.container.registerSingleton("LoggerFactory", this.loggerFactory);
     }
 

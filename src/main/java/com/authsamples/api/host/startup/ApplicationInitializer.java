@@ -42,7 +42,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         loggerFactory.configure(configuration.getLogging());
 
         // Configure API listening details
-        this.configurePort(configuration.getApi());
+        this.configureHttpListener(configuration.getApi());
         this.configureHttpDebugging(configuration.getApi());
         this.configureSsl(configuration);
 
@@ -53,16 +53,23 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
         // Register dependencies with the container
         new CompositionRoot(container)
                 .addConfiguration(configuration)
-                .addLogging(configuration.getLogging(), loggerFactory)
+                .addLogging(loggerFactory)
                 .addExtraClaimsProvider(new ExtraClaimsProviderImpl(container))
                 .register();
     }
 
     /*
-     * Set the HTTP/S port from configuration
+     * Set the port from configuration and activate HTTP/2 if we run locally
+     * In real deployments like Kubernetes the API uses HTTP and can use a service mesh for TLS
      */
-    private void configurePort(final ApiConfiguration configuration) {
+    private void configureHttpListener(final ApiConfiguration configuration) {
+
         System.setProperty("server.port", Integer.toString(configuration.getPort()));
+        if (StringUtils.hasLength(configuration.getSslCertificateFileName())
+                && StringUtils.hasLength(configuration.getSslCertificatePassword())) {
+
+            System.setProperty("server.http2.enabled", "true");
+        }
     }
 
     /*
