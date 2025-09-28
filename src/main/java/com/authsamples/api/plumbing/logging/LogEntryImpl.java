@@ -62,13 +62,13 @@ public final class LogEntryImpl implements LogEntry {
             this.data.setPath(this.getRequestPath(request));
 
             // Our callers can supply a custom header so that we can keep track of who is calling each API
-            var callingApplicationName = request.getHeader("x-authsamples-api-client");
+            var callingApplicationName = request.getHeader("authsamples-api-client");
             if (StringUtils.hasLength(callingApplicationName)) {
                 this.data.setClientName(callingApplicationName);
             }
 
             // Use the correlation id from request headers or create one
-            var correlationId = request.getHeader("x-authsamples-correlation-id");
+            var correlationId = request.getHeader("authsamples-correlation-id");
             if (StringUtils.hasLength(correlationId)) {
                 this.data.setCorrelationId(correlationId);
             } else {
@@ -76,7 +76,7 @@ public final class LogEntryImpl implements LogEntry {
             }
 
             // Log an optional session id if supplied
-            var sessionId = request.getHeader("x-authsamples-session-id");
+            var sessionId = request.getHeader("authsamples-session-id");
             if (StringUtils.hasLength(sessionId)) {
                 this.data.setSessionId(sessionId);
             }

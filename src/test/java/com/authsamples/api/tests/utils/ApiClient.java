@@ -72,12 +72,12 @@ public final class ApiClient {
                 .method(options.getMethod(), HttpRequest.BodyPublishers.noBody())
                 .uri(this.stringToUri(operationUrl))
                 .headers("Authorization", String.format("Bearer %s", options.getAccessToken()))
-                .headers("x-authsamples-api-client", this.clientName)
-                .headers("x-authsamples-session-id", this.sessionId)
-                .headers("x-authsamples-correlation-id", correlationId);
+                .headers("authsamples-api-client", this.clientName)
+                .headers("authsamples-session-id", this.sessionId)
+                .headers("authsamples-correlation-id", correlationId);
 
         if (options.getRehearseException()) {
-            requestBuilder.headers("x-authsamples-test-exception", "FinalApi");
+            requestBuilder.headers("authsamples-test-exception", "FinalApi");
         }
 
         var request = requestBuilder.build();
