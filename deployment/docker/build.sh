@@ -27,7 +27,7 @@ fi
 #
 # Build the docker image
 #
-docker build -t finaljavaapi:latest .
+docker build --no-cache -t finaljavaapi:latest .
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API docker image'
   exit
