@@ -31,7 +31,7 @@ ext {
     guava_version = '33.5.0-jre'
 
     // Test dependency versions
-    junit_jupiter_version = '5.14.1'
+    junit_jupiter_version = '6.0.1'
     junit_platform_suite_version = '1.14.1'
 }
 
@@ -64,7 +64,7 @@ dependencies {
     // Test dependencies
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
-    testImplementation "org.junit.platform:junit-platform-suite-engine:$junit_platform_suite_version"
+    testImplementation "org.junit.platform:junit-platform-suite-engine:$junit_jupiter_version"
 
     // Test compiler dependencies
     testCompileOnly "org.projectlombok:lombok:$lombok_version"
