@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 public class Http2Configuration {
 
     public Http2Configuration() {
-        
     }
 
     @Bean
