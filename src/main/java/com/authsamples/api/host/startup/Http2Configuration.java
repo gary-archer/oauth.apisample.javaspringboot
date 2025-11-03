@@ -1,3 +1,5 @@
+package com.authsamples.api.host.startup;
+
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http2.Http2Protocol;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
