@@ -5,7 +5,6 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -31,9 +30,9 @@ public final class LoggingInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(
-            final @NonNull HttpServletRequest request,
-            final @NonNull HttpServletResponse response,
-            final @NonNull Object handler) {
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Object handler) {
 
         try {
 
@@ -69,9 +68,9 @@ public final class LoggingInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(
-            final @NonNull HttpServletRequest request,
-            final @NonNull HttpServletResponse response,
-            final @NonNull Object handler,
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Object handler,
             final Exception ex) {
 
         try {

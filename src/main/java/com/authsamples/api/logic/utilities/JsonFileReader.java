@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.authsamples.api.logic.errors.ErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 /*
  * A utility class to manage async reading of JSON text file data into objects

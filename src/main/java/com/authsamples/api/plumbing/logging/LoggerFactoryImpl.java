@@ -11,8 +11,8 @@ import ch.qos.logback.core.util.FileSize;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
 import com.authsamples.api.plumbing.errors.ServerError;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
 
 /*
  * A custom logger factory to wrap the default one and give us greater control over output
@@ -218,8 +218,8 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         var defaultSizeLimit = 1024;
         var maxFiles = config.get("maxFiles").asInt(defaultFileLimit);
         var totalLogSizeMB = config.get("totalLogSizeMB").asInt(defaultSizeLimit);
-        var filePrefix = config.get("filePrefix").asText();
-        var logFolder = config.get("dirname").asText();
+        var filePrefix = config.get("filePrefix").asString();
+        var logFolder = config.get("dirname").asString();
 
         // Set the file pattern to the date
         var filePattern = String.format("./%s/%s.%%d{yyyy-MM-dd}.%%i.log", logFolder, filePrefix);
@@ -257,11 +257,11 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      */
     private JsonNode findArrayElementByType(final ArrayNode array, final String key) {
 
-        var items = array.elements();
+        var items = array.elements().iterator();
         while (items.hasNext()) {
 
             var item = items.next();
-            var type = item.get("type").asText();
+            var type = item.get("type").asString();
             if (type.equals(key)) {
                 return item;
             }
@@ -306,11 +306,11 @@ public final class LoggerFactoryImpl implements LoggerFactory {
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
         // Set the namespace for development logging
-        this.developmentNamespace = debugLogConfig.get("namespace").asText();
+        this.developmentNamespace = debugLogConfig.get("namespace").asString();
 
         // Set the root log level, which will be the default for all loggers per class
         var devLevelNode = debugLogConfig.get("level");
-        var devLevel = Level.toLevel(devLevelNode.asText().toUpperCase(), Level.INFO);
+        var devLevel = Level.toLevel(devLevelNode.asString().toUpperCase(), Level.INFO);
         var rootLogger = context.getLogger(this.developmentNamespace);
         rootLogger.setLevel(devLevel);
 
@@ -323,7 +323,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
 
                 // Read the class name and log level
                 var name = property.getKey();
-                var level = Level.toLevel(property.getValue().asText().toUpperCase(), Level.INFO);
+                var level = Level.toLevel(property.getValue().asString().toUpperCase(), Level.INFO);
 
                 // Configure the logger
                 String loggerName = String.format("%s.%s", this.developmentNamespace, name);

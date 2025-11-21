@@ -19,7 +19,7 @@ import com.authsamples.api.plumbing.interceptors.UnhandledExceptionHandler;
 import com.authsamples.api.plumbing.logging.LogEntryImpl;
 import com.authsamples.api.plumbing.oauth.OAuthFilter;
 import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 /*
  * A custom authentication filter to take finer control over processing of tokens and claims

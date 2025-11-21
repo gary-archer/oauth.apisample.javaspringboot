@@ -16,8 +16,8 @@ import org.jose4j.lang.JoseException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.authsamples.api.plumbing.claims.CustomClaimNames;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /*
  * A mock authorization server implemented with wiremock and a JOSE library

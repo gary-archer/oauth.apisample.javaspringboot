@@ -2,9 +2,9 @@ package com.authsamples.api.plumbing.errors;
 
 import java.time.Instant;
 import org.springframework.http.HttpStatus;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /*
  * The default implementation of a server error

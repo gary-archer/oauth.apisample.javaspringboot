@@ -19,8 +19,8 @@ import com.authsamples.api.tests.utils.ApiRequestOptions;
 import com.authsamples.api.tests.utils.ApiResponse;
 import com.authsamples.api.tests.utils.MockAuthorizationServer;
 import com.authsamples.api.tests.utils.MockTokenOptions;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 
 /*
@@ -286,11 +286,11 @@ public class LoadTest {
         }
 
         if (response.getStatusCode() >= 400 && errorBody != null) {
-            errorCode = errorBody.get("code").asText();
+            errorCode = errorBody.get("code").asString();
         }
 
         if (response.getStatusCode() >= 500 && errorBody != null) {
-            errorId = errorBody.get("id").asText();
+            errorId = errorBody.get("id").asString();
         }
 
         var formatter = new DateTimeFormatterBuilder().appendInstant(0).toFormatter();

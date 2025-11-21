@@ -15,9 +15,9 @@ import com.authsamples.api.tests.utils.ApiClient;
 import com.authsamples.api.tests.utils.ApiRequestOptions;
 import com.authsamples.api.tests.utils.MockAuthorizationServer;
 import com.authsamples.api.tests.utils.MockTokenOptions;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /*
  * Test the API in isolation, without any dependencies on real access tokens
@@ -75,7 +75,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("invalid_token", errorCode.asString(), "Unexpected error code");
     }
 
     /*
@@ -101,7 +101,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("invalid_token", errorCode.asString(), "Unexpected error code");
     }
 
     /*
@@ -127,7 +127,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("invalid_token", errorCode.asString(), "Unexpected error code");
     }
 
     /*
@@ -153,7 +153,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("invalid_token", errorCode.asString(), "Unexpected error code");
     }
 
     /*
@@ -179,7 +179,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("invalid_token", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("invalid_token", errorCode.asString(), "Unexpected error code");
     }
 
     /*
@@ -205,7 +205,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("insufficient_scope", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("insufficient_scope", errorCode.asString(), "Unexpected error code");
     }
 
     /*
@@ -231,7 +231,7 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("exception_simulation", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("exception_simulation", errorCode.asString(), "Unexpected error code");
     }
 
     /*
@@ -379,6 +379,6 @@ public class IntegrationTests {
         var mapper = new ObjectMapper();
         var body = mapper.readValue(response.getBody(), ObjectNode.class);
         var errorCode = body.get("code");
-        Assertions.assertEquals("company_not_found", errorCode.asText(), "Unexpected error code");
+        Assertions.assertEquals("company_not_found", errorCode.asString(), "Unexpected error code");
     }
 }

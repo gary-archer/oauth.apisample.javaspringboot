@@ -1,6 +1,6 @@
 package com.authsamples.api.plumbing.logging;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 /*
  * A log entry collects data during an API request and outputs it at the end

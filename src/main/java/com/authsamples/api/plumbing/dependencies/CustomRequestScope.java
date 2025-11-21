@@ -5,7 +5,6 @@ import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
-import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -23,9 +22,9 @@ public class CustomRequestScope implements Scope {
      * Get an object and add to the object map so that it is only created once
      */
     @Override
-    public @NonNull Object get(
-            final @NonNull String name,
-            final @NonNull ObjectFactory<?> objectFactory) {
+    public Object get(
+            final String name,
+            final ObjectFactory<?> objectFactory) {
 
         Map<String, Object> objectMap = this.getCurrentRequestObjects();
         if (!objectMap.containsKey(name)) {
@@ -39,7 +38,7 @@ public class CustomRequestScope implements Scope {
      * Remove an object from the object map at the end of an HTTP request
      */
     @Override
-    public Object remove(final @NonNull String name) {
+    public Object remove(final String name) {
 
         Map<String, Object> objectMap = this.getCurrentRequestObjects();
         return objectMap.remove(name);
@@ -50,15 +49,15 @@ public class CustomRequestScope implements Scope {
      */
     @Override
     public void registerDestructionCallback(
-            final @NonNull String name,
-            final @NonNull Runnable runnable) {
+            final String name,
+            final Runnable runnable) {
     }
 
     /*
      * This can be an empty implementation
      */
     @Override
-    public Object resolveContextualObject(final @NonNull String name) {
+    public Object resolveContextualObject(final String name) {
         return null;
     }
 

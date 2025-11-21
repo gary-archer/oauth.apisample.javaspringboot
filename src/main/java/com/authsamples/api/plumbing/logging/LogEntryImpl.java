@@ -13,8 +13,8 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ServerError;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /*
  * A log entry collects data during an API request and outputs it at the end

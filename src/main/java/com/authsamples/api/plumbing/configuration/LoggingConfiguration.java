@@ -1,8 +1,8 @@
 package com.authsamples.api.plumbing.configuration;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
+import tools.jackson.databind.node.ArrayNode;
 
 /*
  * Logging configuration data

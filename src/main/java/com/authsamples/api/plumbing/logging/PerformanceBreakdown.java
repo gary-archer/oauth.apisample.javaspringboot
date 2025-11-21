@@ -1,6 +1,6 @@
 package com.authsamples.api.plumbing.logging;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 /*
  * Represents a time measurement within an API operation

@@ -107,7 +107,7 @@ Then run integration tests and a load test:
 
 ## Programming Languages
 
-* The API uses Java 25 and Spring Boot 3.
+* The API uses Java 25 and Spring Boot 4.
 
 ## Infrastructure
 

@@ -2,8 +2,8 @@ package com.authsamples.api.plumbing.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.StringNode;
 
 /*
  * An error factory class that returns the interface rather than the concrete type
@@ -67,7 +67,7 @@ public final class ErrorFactory {
                 "Missing, invalid or expired access token");
 
         if (StringUtils.hasLength(reason)) {
-            error.setLogContext(new TextNode(reason));
+            error.setLogContext(new StringNode(reason));
         }
 
         return error;

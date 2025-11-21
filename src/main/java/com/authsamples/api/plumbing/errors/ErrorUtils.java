@@ -7,7 +7,7 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.InvalidJwtSignatureException;
 import org.jose4j.lang.UnresolvableKeyException;
 import org.springframework.http.HttpStatus;
-import com.fasterxml.jackson.databind.node.TextNode;
+import tools.jackson.databind.node.StringNode;
 
 /*
  * A class for managing error translation into a loggable form
@@ -53,7 +53,7 @@ public final class ErrorUtils {
                 exception);
 
         // Extract details from the original exception
-        error.setDetails(new TextNode(getExceptionDetailsMessage(exception)));
+        error.setDetails(new StringNode(getExceptionDetailsMessage(exception)));
         return error;
     }
 
@@ -76,7 +76,7 @@ public final class ErrorUtils {
             parts.add(ErrorUtils.getExceptionDetailsMessage(ioException));
             parts.add(String.format("URL: %s", url));
             var details = String.join(", ", parts);
-            error.setDetails(new TextNode(details));
+            error.setDetails(new StringNode(details));
             return error;
 
         } else {
@@ -105,7 +105,7 @@ public final class ErrorUtils {
                 HttpStatus.BAD_REQUEST,
                 BaseErrorCodes.INSUFFICIENT_SCOPE,
                 "The token does not contain sufficient scope for this API",
-                new TextNode(message));
+                new StringNode(message));
     }
 
     /*
