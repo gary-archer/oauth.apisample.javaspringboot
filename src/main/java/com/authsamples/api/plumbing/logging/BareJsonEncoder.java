@@ -62,7 +62,7 @@ public final class BareJsonEncoder extends EncoderBase<ILoggingEvent> {
                 // Write a property per line and an array item per line for exception stack traces
                 var prettyPrinter = new DefaultPrettyPrinter();
                 prettyPrinter.indentArraysWith(new CustomArrayIndenter());
-                return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(data) + System.lineSeparator();
+                return mapper.writer().with(prettyPrinter).writeValueAsString(data) + System.lineSeparator();
 
             } else {
 
