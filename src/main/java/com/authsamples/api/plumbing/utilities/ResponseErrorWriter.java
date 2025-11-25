@@ -2,6 +2,7 @@ package com.authsamples.api.plumbing.utilities;
 
 import java.io.IOException;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import com.authsamples.api.plumbing.errors.ClientError;
 
 /*
@@ -10,19 +11,38 @@ import com.authsamples.api.plumbing.errors.ClientError;
 public final class ResponseErrorWriter {
 
     /*
-     * This blog's examples use a JSON response to provide client friendly OAuth errors
-     * When required, such as to inform clients how to integrate, a www-authenticate header can be added here
-     * - https://datatracker.ietf.org/doc/html/rfc6750#section-3
+     * This blog's clients read a JSON response, to handle OAuth errors in the same way as other errors
+     * Also add the standard www-authenticate header for interoperability
      */
-    public void writeFilterExceptionResponse(final HttpServletResponse response, final ClientError clientError) {
+    public void writeFilterExceptionResponse(
+            final HttpServletResponse response,
+            final ClientError error,
+            final String scope) {
 
+        response.setStatus(response.getStatus());
         response.setHeader("content-type", "application/json");
 
+        if (error.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+            response.setHeader("www-authenticate",
+                    String.format("Bearer error=\"%s\", error_description=\"%s\"",
+                            error.getErrorCode(),
+                            error.getMessage()
+                    )
+            );
+        }
+
+        if (error.getStatusCode() == HttpStatus.FORBIDDEN) {
+            response.setHeader("www-authenticate",
+                    String.format("Bearer error=\"%s\", error_description=\"%s\", scope=\"%s\"",
+                            error.getErrorCode(),
+                            error.getMessage(),
+                            scope
+                    )
+            );
+        }
+
         try {
-
-            response.setStatus(response.getStatus());
-            response.getWriter().write(clientError.toResponseFormat().toString());
-
+            response.getWriter().write(error.toResponseFormat().toString());
         } catch (IOException ex) {
             throw new IllegalStateException("IOException writing response body", ex);
         }

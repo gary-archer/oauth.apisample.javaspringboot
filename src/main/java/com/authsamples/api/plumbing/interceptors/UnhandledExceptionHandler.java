@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.authsamples.api.plumbing.configuration.LoggingConfiguration;
+import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
@@ -24,7 +25,8 @@ import com.authsamples.api.plumbing.utilities.ResponseErrorWriter;
 public final class UnhandledExceptionHandler {
 
     private final BeanFactory container;
-    private final String apiName;
+    private final LoggingConfiguration loggingConfiguration;
+    private final OAuthConfiguration oauthConfiguration;
     private final LoggerFactory loggerFactory;
 
     /*
@@ -32,11 +34,13 @@ public final class UnhandledExceptionHandler {
      */
     public UnhandledExceptionHandler(
             final BeanFactory container,
-            final LoggingConfiguration configuration,
+            final LoggingConfiguration loggingConfiguration,
+            final OAuthConfiguration oauthConfiguration,
             final LoggerFactory loggerFactory) {
 
         this.container = container;
-        this.apiName = configuration.getApiName();
+        this.loggingConfiguration = loggingConfiguration;
+        this.oauthConfiguration = oauthConfiguration;
         this.loggerFactory = loggerFactory;
     }
 
@@ -104,7 +108,7 @@ public final class UnhandledExceptionHandler {
 
         // Return error responses to the caller
         var writer = new ResponseErrorWriter();
-        writer.writeFilterExceptionResponse(response, clientError);
+        writer.writeFilterExceptionResponse(response, clientError, this.oauthConfiguration.getScope());
     }
 
     /*
@@ -119,7 +123,7 @@ public final class UnhandledExceptionHandler {
             // Handle 5xx errors
             var serverError = (ServerError) error;
             logEntry.setServerError(serverError);
-            return serverError.toClientError(this.apiName);
+            return serverError.toClientError(this.loggingConfiguration.getApiName());
 
         } else {
 
