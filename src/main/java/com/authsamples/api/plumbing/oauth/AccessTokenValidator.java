@@ -79,7 +79,7 @@ public class AccessTokenValidator {
             // For expired access tokens, add identity data to logs
             if (this.isAccessTokenExpiredError(ex)) {
 
-                var claims = this.deserializeClaims(accessToken);
+                var claims = this.decodeJwt(accessToken);
                 if (claims != null) {
                     this.logEntry.setIdentityData(this.getIdentityData(claims));
                 }
@@ -110,8 +110,8 @@ public class AccessTokenValidator {
     }
 
     /*
-     * The second condition is treated as expired, so that my expiry testing achieves the desired effect.
-     * The expiry testing adds extra characters to JWTs to cause 401 errors and simulate expiry.
+     * My expiry testing adds extra characters to JWTs to cause 401 errors and simulate expiry over time.
+     * That results in signature validation errors, which I treat as expiry to demonstrate the desired logging.
      */
     private boolean isAccessTokenExpiredError(final InvalidJwtException ex) {
 
@@ -126,9 +126,9 @@ public class AccessTokenValidator {
     }
 
     /*
-     * Deserialize claims for logging purposes
+     * Decode the JWT without validation, for logging purposes
      */
-    private JwtClaims deserializeClaims(final String accessToken) {
+    private JwtClaims decodeJwt(final String accessToken) {
 
         try {
             return new JwtConsumerBuilder()
