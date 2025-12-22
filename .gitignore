@@ -1,5 +1,5 @@
 .DS_Store
-resources
+/api.config.json
 certs/*.p12
 certs/*.crt
 certs/*.key
