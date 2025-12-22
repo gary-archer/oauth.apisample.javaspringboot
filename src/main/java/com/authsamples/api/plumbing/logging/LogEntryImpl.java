@@ -85,7 +85,7 @@ public final class LogEntryImpl implements LogEntry {
     public void setIdentityData(final IdentityLogData data) {
 
         this.data.setUserId(data.getUserId());
-        this.data.setSessionId(data.getSessionId());
+        this.data.setSessionId(data.getDelegationId());
         this.data.setClientId(data.getClientId());
         this.data.setScope(data.getScope());
         this.data.setClaims(data.getClaims());

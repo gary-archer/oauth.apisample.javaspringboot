@@ -31,7 +31,7 @@ public class LoadTest {
 
     private static MockAuthorizationServer authorizationServer;
     private static ApiClient apiClient;
-    private static String sessionId;
+    private static String delegationId;
     private static int totalCount;
     private static int errorCount;
 
@@ -57,8 +57,10 @@ public class LoadTest {
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:446";
-        sessionId = UUID.randomUUID().toString();
         apiClient = new ApiClient(apiBaseUrl);
+
+        // Create a mock delegation ID for testing
+        delegationId = UUID.randomUUID().toString();
 
         // Initialise counts
         totalCount = 0;
@@ -86,7 +88,7 @@ public class LoadTest {
         var startTime = Instant.now();
         var startMessage = String.format(
                 "%nLoad test session %s starting at %s%n",
-                sessionId,
+                delegationId,
                 startTime.toString());
         System.out.println(COLOR_BLUE + startMessage);
 
@@ -112,7 +114,7 @@ public class LoadTest {
         var millisecondsTaken = Duration.between(startTime, Instant.now()).toMillis();
         var endMessage = String.format(
                 "%nLoad test session %s completed in %s milliseconds: %d errors from %d requests%n",
-                sessionId,
+                delegationId,
                 millisecondsTaken,
                 errorCount,
                 totalCount);
@@ -129,7 +131,7 @@ public class LoadTest {
 
             var jwtOptions = new MockTokenOptions();
             jwtOptions.useStandardUser();
-            jwtOptions.setDelegationId(sessionId);
+            jwtOptions.setDelegationId(delegationId);
             var accessToken = authorizationServer.issueAccessToken(jwtOptions);
             list.add(accessToken);
         }

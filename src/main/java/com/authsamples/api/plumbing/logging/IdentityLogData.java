@@ -17,7 +17,7 @@ public class IdentityLogData {
     // The delegation ID
     @Getter
     @Setter
-    private String sessionId;
+    private String delegationId;
 
     // The client ID or name
     @Getter

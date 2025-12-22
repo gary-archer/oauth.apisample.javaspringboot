@@ -97,7 +97,7 @@ public class AccessTokenValidator {
 
         var data = new IdentityLogData();
         data.setUserId(ClaimsReader.getStringClaim(claims, "sub", false));
-        data.setSessionId(ClaimsReader.getStringClaim(claims, this.configuration.getSessionIdClaimName(), false));
+        data.setDelegationId(ClaimsReader.getStringClaim(claims, this.configuration.getDelegationIdClaimName(), false));
         data.setClientId(ClaimsReader.getStringClaim(claims, "client_id", false));
         data.setScope(ClaimsReader.getStringClaim(claims, "scope", false));
 

@@ -36,7 +36,7 @@
     "algorithm":                    "RS256",
     "scope":                        "https://api.authsamples.com/investments",
     "jwksEndpoint":                 "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9/.well-known/jwks.json",
-    "sessionIdClaimName":           "origin_jti",
+    "delegationIdClaimName":        "origin_jti",
     "claimsCacheTimeToLiveMinutes": 15
   }
 }

@@ -36,7 +36,7 @@ public class OAuthConfiguration {
     // The access token's delegation ID
     @Getter
     @Setter
-    private String sessionIdClaimName;
+    private String delegationIdClaimName;
 
     // The maximum number of minutes for which to cache claims
     @Getter
