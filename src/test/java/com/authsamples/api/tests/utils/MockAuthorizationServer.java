@@ -83,7 +83,7 @@ public final class MockAuthorizationServer {
         claims.setAudience(options.getAudience());
         claims.setStringClaim("scope", options.getScope());
         claims.setStringClaim("delegation_id", options.getDelegationId());
-        claims.setStringClaim("client_id", options.getClientId());
+        claims.setStringClaim("client_id", "TestClient");
         claims.setSubject(options.getSubject());
         claims.setStringClaim(CustomClaimNames.ManagerId, options.getManagerId());
         claims.setStringClaim(CustomClaimNames.Role, options.getRole());
