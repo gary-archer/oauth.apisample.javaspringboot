@@ -27,7 +27,7 @@ public final class CustomHeaderInterceptor implements HandlerInterceptor {
         final HttpServletResponse response,
         final Object handler) {
 
-        var apiToBreak = request.getHeader("authsamples-test-exception");
+        var apiToBreak = request.getHeader("api-exception-simulation");
         if (StringUtils.hasLength(apiToBreak)) {
             if (apiToBreak.equalsIgnoreCase(this.apiName)) {
                 throw ErrorFactory.createServerError(

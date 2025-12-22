@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.authsamples.api.plumbing.claims.ClaimsReader;
-import com.authsamples.api.plumbing.claims.CustomClaimNames;
 import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.errors.BaseErrorCodes;
 import com.authsamples.api.plumbing.errors.ErrorFactory;
@@ -19,7 +18,6 @@ import com.authsamples.api.plumbing.interceptors.UnhandledExceptionHandler;
 import com.authsamples.api.plumbing.logging.LogEntryImpl;
 import com.authsamples.api.plumbing.oauth.OAuthFilter;
 import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
-import tools.jackson.databind.ObjectMapper;
 
 /*
  * A custom authentication filter to take finer control over processing of tokens and claims
@@ -27,12 +25,12 @@ import tools.jackson.databind.ObjectMapper;
 public final class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private final BeanFactory container;
-    private final String requiredScope;
+    private final OAuthConfiguration configuration;
 
     public CustomAuthenticationFilter(final BeanFactory container) {
 
         this.container = container;
-        this.requiredScope = this.container.getBean(OAuthConfiguration.class).getScope();
+        this.configuration = this.container.getBean(OAuthConfiguration.class);
     }
 
     /*
@@ -55,16 +53,9 @@ public final class CustomAuthenticationFilter extends OncePerRequestFilter {
             // Do the OAuth work in plain Java classes and get customised claims
             var claimsPrincipal = oauthFilter.execute(request);
 
-            // Include selected token details in audit logs
-            var scopes = ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), "scope").split(" ");
-            var mapper = new ObjectMapper();
-            var claims = mapper.createObjectNode();
-            claims.put("managerId", ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), CustomClaimNames.ManagerId));
-            claims.put("role", ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), CustomClaimNames.Role));
-            logEntry.setIdentity(claimsPrincipal.getSubject(), Arrays.stream(scopes).toList(), claims);
-
             // The sample API requires the same scope for all endpoints, and it is enforced here
-            var foundScope = Arrays.stream(scopes).filter(s -> s.contains(this.requiredScope)).findFirst();
+            var scopes = ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), "scope").split(" ");
+            var foundScope = Arrays.stream(scopes).filter(s -> s.contains(this.configuration.getScope())).findFirst();
             if (foundScope.isEmpty()) {
                 throw ErrorFactory.createClientError(
                         HttpStatus.FORBIDDEN,

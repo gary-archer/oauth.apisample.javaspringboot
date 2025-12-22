@@ -8,10 +8,15 @@ import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import com.authsamples.api.plumbing.claims.ClaimsReader;
+import com.authsamples.api.plumbing.claims.CustomClaimNames;
 import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
+import com.authsamples.api.plumbing.logging.IdentityLogData;
 import com.authsamples.api.plumbing.logging.LogEntry;
+import com.authsamples.api.plumbing.logging.LogEntryImpl;
+import tools.jackson.databind.ObjectMapper;
 
 /*
  * A class to deal with OAuth JWT access token validation
@@ -22,7 +27,7 @@ public class AccessTokenValidator {
 
     private final OAuthConfiguration configuration;
     private final HttpsJwksVerificationKeyResolver jwksResolver;
-    private final LogEntry logEntry;
+    private final LogEntryImpl logEntry;
 
     public AccessTokenValidator(
             final OAuthConfiguration configuration,
@@ -31,7 +36,7 @@ public class AccessTokenValidator {
 
         this.configuration = configuration;
         this.jwksResolver = jwksResolver;
-        this.logEntry = logEntry;
+        this.logEntry = (LogEntryImpl) logEntry;
     }
 
     /*
@@ -56,12 +61,35 @@ public class AccessTokenValidator {
 
             // Validate the token and get its claims
             var jwtConsumer = builder.build();
-            return jwtConsumer.processToClaims(accessToken);
+            var claims = jwtConsumer.processToClaims(accessToken);
+
+            // Add identity data to logs
+            this.logEntry.setIdentityData(this.getIdentityData(claims));
+            return claims;
 
         } catch (InvalidJwtException ex) {
 
             // Report failures
             throw ErrorUtils.fromAccessTokenValidationError(ex, this.configuration.getJwksEndpoint());
         }
+    }
+
+    /*
+     * Collect identity data to add to logs
+     */
+    private IdentityLogData getIdentityData(final JwtClaims claims) {
+
+        var data = new IdentityLogData();
+        data.setUserId(ClaimsReader.getStringClaim(claims, "sub", false));
+        data.setSessionId(ClaimsReader.getStringClaim(claims, "session_id", false));
+        data.setClientId(ClaimsReader.getStringClaim(claims, "client_id", false));
+        data.setScope(ClaimsReader.getStringClaim(claims, "scope", false));
+
+        var mapper = new ObjectMapper();
+        var claimsData = mapper.createObjectNode();
+        claimsData.put("managerId", ClaimsReader.getStringClaim(claims, CustomClaimNames.ManagerId, false));
+        claimsData.put("role", ClaimsReader.getStringClaim(claims, CustomClaimNames.Role, false));
+        data.setClaims(claimsData);
+        return data;
     }
 }

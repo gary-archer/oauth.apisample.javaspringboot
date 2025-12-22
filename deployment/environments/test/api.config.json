@@ -46,6 +46,7 @@
     "algorithm":                    "ES256",
     "scope":                        "investments",
     "jwksEndpoint":                 "https://login.authsamples-dev.com:447/.well-known/jwks.json",
+    "sessionIdClaimName":           "delegation_id",
     "claimsCacheTimeToLiveMinutes": 15
   }
 }
