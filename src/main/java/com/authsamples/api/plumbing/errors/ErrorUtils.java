@@ -58,40 +58,44 @@ public final class ErrorUtils {
     }
 
     /*
+     * Handle JWKS download errors
+     */
+    public static RuntimeException fromJwksDownloadError(final InvalidJwtException ex, final String url) {
+
+        var parts = new ArrayList<String>();
+        var ioException = ErrorUtils.getIOException(ex);
+        if (ioException == null) {
+            return null;
+        }
+
+        // Report problems downloading token signing keys
+        var error = ErrorFactory.createServerError(
+                BaseErrorCodes.TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR,
+                "Problem downloading token signing keys", ex);
+
+        parts.add(ErrorUtils.getExceptionDetailsMessage(ioException));
+        parts.add(String.format("URL: %s", url));
+        var details = String.join(", ", parts);
+        error.setDetails(new StringNode(details));
+        return error;
+    }
+
+    /*
      * Handle token validation errors, meaning we received an invalid token
      */
     public static RuntimeException fromAccessTokenValidationError(final InvalidJwtException ex, final String url) {
 
         // First collect details from the exception, but without sensitive JWT details
-        var parts = new ArrayList<String>();
+        var context = new StringBuilder();
+        var errors = ex.getErrorDetails();
+        for (var error: errors) {
 
-        var ioException = ErrorUtils.getIOException(ex);
-        if (ioException != null) {
-
-            // Report problems downloading token signing keys
-            var error = ErrorFactory.createServerError(
-                    BaseErrorCodes.TOKEN_SIGNING_KEYS_DOWNLOAD_ERROR,
-                    "Problem downloading token signing keys", ex);
-
-            parts.add(ErrorUtils.getExceptionDetailsMessage(ioException));
-            parts.add(String.format("URL: %s", url));
-            var details = String.join(", ", parts);
-            error.setDetails(new StringNode(details));
-            return error;
-
-        } else {
-
-            var context = new StringBuilder();
-            var errors = ex.getErrorDetails();
-            for (var error: errors) {
-
-                var errorMessage = getSanitizedErrorMessage(ex, error);
-                var message = String.format("%s : %s", error.getErrorCode(), errorMessage);
-                context.append(message);
-            }
-
-            return ErrorFactory.createClient401Error(context.toString());
+            var errorMessage = getSanitizedJwtErrorMessage(ex, error);
+            var message = String.format("%s : %s", error.getErrorCode(), errorMessage);
+            context.append(message);
         }
+
+        return ErrorFactory.createClient401Error(context.toString());
     }
 
     /*
@@ -176,9 +180,9 @@ public final class ErrorUtils {
     }
 
     /*
-     * Some jose4j error messages include JWTs, so avoid including these in error logs
+     * Some jose4j error messages may include full JWTs, so avoid including these in error logs
      */
-    private static String getSanitizedErrorMessage(final Exception ex, final ErrorCodeValidator.Error error) {
+    private static String getSanitizedJwtErrorMessage(final Exception ex, final ErrorCodeValidator.Error error) {
 
         if (ex.getClass() == InvalidJwtSignatureException.class) {
             return "Invalid JWS Signature";

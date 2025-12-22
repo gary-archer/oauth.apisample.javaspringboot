@@ -2,6 +2,7 @@ package com.authsamples.api.plumbing.oauth;
 
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.ErrorCodes;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
@@ -69,7 +70,22 @@ public class AccessTokenValidator {
 
         } catch (InvalidJwtException ex) {
 
-            // Report failures
+            // See if this is a technical error downloading JSON web keys, which we report as a 500 error
+            var jwksError = ErrorUtils.fromJwksDownloadError(ex, this.configuration.getJwksEndpoint());
+            if (jwksError != null) {
+                throw jwksError;
+            }
+
+            // For expired access tokens, add identity data to logs
+            if (this.isAccessTokenExpiredError(ex)) {
+
+                var claims = this.deserializeClaims(accessToken);
+                if (claims != null) {
+                    this.logEntry.setIdentityData(this.getIdentityData(claims));
+                }
+            }
+
+            // Report 401s
             throw ErrorUtils.fromAccessTokenValidationError(ex, this.configuration.getJwksEndpoint());
         }
     }
@@ -91,5 +107,40 @@ public class AccessTokenValidator {
         claimsData.put("role", ClaimsReader.getStringClaim(claims, CustomClaimNames.Role, false));
         data.setClaims(claimsData);
         return data;
+    }
+
+    /*
+     * The second condition is treated as expired, so that my expiry testing achieves the desired effect.
+     * The expiry testing adds extra characters to JWTs to cause 401 errors and simulate expiry.
+     */
+    private boolean isAccessTokenExpiredError(final InvalidJwtException ex) {
+
+        var errors = ex.getErrorDetails();
+        for (var error: errors) {
+            if (error.getErrorCode() == ErrorCodes.EXPIRED || error.getErrorCode() == ErrorCodes.SIGNATURE_INVALID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /*
+     * Deserialize claims for logging purposes
+     */
+    private JwtClaims deserializeClaims(final String accessToken) {
+
+        try {
+            return new JwtConsumerBuilder()
+                    .setSkipAllValidators()
+                    .setDisableRequireSignature()
+                    .setSkipSignatureVerification()
+                    .build()
+                    .process(accessToken)
+                    .getJwtClaims();
+
+        } catch (InvalidJwtException _) {
+            return null;
+        }
     }
 }
