@@ -28,6 +28,7 @@ public class IntegrationTests {
 
     private static MockAuthorizationServer authorizationServer;
     private static ApiClient apiClient;
+    private static String sessionId;
 
     /*
      * Setup that runs at the start of the test run
@@ -46,8 +47,8 @@ public class IntegrationTests {
 
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:446";
-        var sessionId = UUID.randomUUID().toString();
-        apiClient = new ApiClient(apiBaseUrl, "IntegrationTests", sessionId);
+        sessionId = UUID.randomUUID().toString();
+        apiClient = new ApiClient(apiBaseUrl);
     }
 
     /*
@@ -89,6 +90,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         jwtOptions.setExpiryMinutes(-30);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
@@ -115,6 +117,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         jwtOptions.setIssuer("https://otherissuer.com");
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
@@ -141,6 +144,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         jwtOptions.setAudience("api.other.com");
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
@@ -167,6 +171,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test, issued with a malicious key
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         var maliciousJwk = EcJwkGenerator.generateJwk(EllipticCurves.P256);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions, maliciousJwk);
 
@@ -193,6 +198,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         jwtOptions.setScope("openid profile");
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
@@ -219,6 +225,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 500 response
@@ -245,6 +252,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
@@ -270,6 +278,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useAdminUser();
+        jwtOptions.setDelegationId(sessionId);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
@@ -295,6 +304,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
@@ -319,6 +329,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useAdminUser();
+        jwtOptions.setDelegationId(sessionId);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
@@ -343,6 +354,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 200 response
@@ -368,6 +380,7 @@ public class IntegrationTests {
         // Get an access token for the end user of this test
         var jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.setDelegationId(sessionId);
         var accessToken = authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API and ensure a 404 response

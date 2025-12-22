@@ -2,7 +2,6 @@ package com.authsamples.api.plumbing.logging;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.authsamples.api.plumbing.errors.ClientError;
 import com.authsamples.api.plumbing.errors.ServerError;
+import com.authsamples.api.plumbing.utilities.TextValidator;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ObjectNode;
 
@@ -61,25 +61,14 @@ public final class LogEntryImpl implements LogEntry {
             this.data.setMethod(request.getMethod());
             this.data.setPath(this.getRequestPath(request));
 
-            // Our callers can supply a custom header so that we can keep track of who is calling each API
-            var callingApplicationName = request.getHeader("authsamples-api-client");
-            if (StringUtils.hasLength(callingApplicationName)) {
-                this.data.setClientName(callingApplicationName);
-            }
-
             // Use the correlation id from request headers or create one
-            var correlationId = request.getHeader("authsamples-correlation-id");
+            var correlationId = request.getHeader("correlation-id");
             if (StringUtils.hasLength(correlationId)) {
-                this.data.setCorrelationId(correlationId);
-            } else {
-                this.data.setCorrelationId(UUID.randomUUID().toString());
+                correlationId = TextValidator.sanitize(correlationId);
             }
-
-            // Log an optional session id if supplied
-            var sessionId = request.getHeader("authsamples-session-id");
-            if (StringUtils.hasLength(sessionId)) {
-                this.data.setSessionId(sessionId);
-            }
+            this.data.setCorrelationId(StringUtils.hasLength(correlationId)
+                    ? correlationId
+                    : UUID.randomUUID().toString());
         }
     }
 
@@ -93,14 +82,13 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Audit identity details for secured requests
      */
-    public void setIdentity(
-            final String subject,
-            final List<String> scope,
-            final ObjectNode claims) {
+    public void setIdentityData(final IdentityLogData data) {
 
-        this.data.setUserId(subject);
-        this.data.setScope(scope);
-        this.data.setClaims(claims);
+        this.data.setUserId(data.getUserId());
+        this.data.setSessionId(data.getSessionId());
+        this.data.setClientId(data.getClientId());
+        this.data.setScope(data.getScope());
+        this.data.setClaims(data.getClaims());
     }
 
     /*

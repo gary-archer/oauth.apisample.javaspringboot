@@ -2,16 +2,22 @@ package com.authsamples.api.plumbing.oauth;
 
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.ErrorCodes;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import com.authsamples.api.plumbing.claims.ClaimsReader;
+import com.authsamples.api.plumbing.claims.CustomClaimNames;
 import com.authsamples.api.plumbing.configuration.OAuthConfiguration;
 import com.authsamples.api.plumbing.dependencies.CustomRequestScope;
 import com.authsamples.api.plumbing.errors.ErrorUtils;
+import com.authsamples.api.plumbing.logging.IdentityLogData;
 import com.authsamples.api.plumbing.logging.LogEntry;
+import com.authsamples.api.plumbing.logging.LogEntryImpl;
+import tools.jackson.databind.ObjectMapper;
 
 /*
  * A class to deal with OAuth JWT access token validation
@@ -22,7 +28,7 @@ public class AccessTokenValidator {
 
     private final OAuthConfiguration configuration;
     private final HttpsJwksVerificationKeyResolver jwksResolver;
-    private final LogEntry logEntry;
+    private final LogEntryImpl logEntry;
 
     public AccessTokenValidator(
             final OAuthConfiguration configuration,
@@ -31,7 +37,7 @@ public class AccessTokenValidator {
 
         this.configuration = configuration;
         this.jwksResolver = jwksResolver;
-        this.logEntry = logEntry;
+        this.logEntry = (LogEntryImpl) logEntry;
     }
 
     /*
@@ -56,12 +62,85 @@ public class AccessTokenValidator {
 
             // Validate the token and get its claims
             var jwtConsumer = builder.build();
-            return jwtConsumer.processToClaims(accessToken);
+            var claims = jwtConsumer.processToClaims(accessToken);
+
+            // Add identity data to logs
+            this.logEntry.setIdentityData(this.getIdentityData(claims));
+            return claims;
 
         } catch (InvalidJwtException ex) {
 
-            // Report failures
+            // See if this is a technical error downloading JSON web keys, which we report as a 500 error
+            var jwksError = ErrorUtils.fromJwksDownloadError(ex, this.configuration.getJwksEndpoint());
+            if (jwksError != null) {
+                throw jwksError;
+            }
+
+            // For expired access tokens, add identity data to logs
+            if (this.isAccessTokenExpiredError(ex)) {
+
+                var claims = this.decodeJwt(accessToken);
+                if (claims != null) {
+                    this.logEntry.setIdentityData(this.getIdentityData(claims));
+                }
+            }
+
+            // Report 401s
             throw ErrorUtils.fromAccessTokenValidationError(ex, this.configuration.getJwksEndpoint());
+        }
+    }
+
+    /*
+     * Collect identity data to add to logs
+     */
+    private IdentityLogData getIdentityData(final JwtClaims claims) {
+
+        var data = new IdentityLogData();
+        data.setUserId(ClaimsReader.getStringClaim(claims, "sub", false));
+        data.setSessionId(ClaimsReader.getStringClaim(claims, this.configuration.getSessionIdClaimName(), false));
+        data.setClientId(ClaimsReader.getStringClaim(claims, "client_id", false));
+        data.setScope(ClaimsReader.getStringClaim(claims, "scope", false));
+
+        var mapper = new ObjectMapper();
+        var claimsData = mapper.createObjectNode();
+        claimsData.put("managerId", ClaimsReader.getStringClaim(claims, CustomClaimNames.ManagerId, false));
+        claimsData.put("role", ClaimsReader.getStringClaim(claims, CustomClaimNames.Role, false));
+        data.setClaims(claimsData);
+        return data;
+    }
+
+    /*
+     * My expiry testing adds extra characters to JWTs to cause 401 errors and simulate expiry over time.
+     * That results in signature validation errors, which I treat as expiry to demonstrate the desired logging.
+     */
+    private boolean isAccessTokenExpiredError(final InvalidJwtException ex) {
+
+        var errors = ex.getErrorDetails();
+        for (var error: errors) {
+            if (error.getErrorCode() == ErrorCodes.EXPIRED || error.getErrorCode() == ErrorCodes.SIGNATURE_INVALID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /*
+     * Decode the JWT without validation, for logging purposes
+     */
+    private JwtClaims decodeJwt(final String accessToken) {
+
+        try {
+            return new JwtConsumerBuilder()
+                    .setSkipAllValidators()
+                    .setDisableRequireSignature()
+                    .setSkipSignatureVerification()
+                    .build()
+                    .process(accessToken)
+                    .getJwtClaims();
+
+        } catch (InvalidJwtException _) {
+            return null;
         }
     }
 }

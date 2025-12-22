@@ -2,7 +2,6 @@ package com.authsamples.api.plumbing.logging;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import lombok.Data;
@@ -31,7 +30,7 @@ public final class LogEntryData {
     // The host on which the request was processed
     private String hostName;
 
-    // The HTTP vmethod
+    // The HTTP method
     private String method;
 
     // The request path
@@ -41,7 +40,7 @@ public final class LogEntryData {
     private String resourceId;
 
     // The application that called the API
-    private String clientName;
+    private String clientId;
 
     // The subject claim from the OAuth 2.0 access token
     private String userId;
@@ -76,8 +75,8 @@ public final class LogEntryData {
     // Can be populated in scenarios when extra text is useful
     private ArrayList<JsonNode> infoData;
 
-    // The OAuth scopes from the access token
-    private List<String> scope;
+    // The OAuth scope from the access token
+    private String scope;
 
     // The OAuth claims from the access token
     private ObjectNode claims;
@@ -95,7 +94,7 @@ public final class LogEntryData {
         this.method = "";
         this.path = "";
         this.resourceId = "";
-        this.clientName = "";
+        this.clientId = "";
         this.userId = "";
         this.statusCode = 0;
         this.millisecondsTaken = 0;
@@ -107,7 +106,7 @@ public final class LogEntryData {
         this.performance = new PerformanceBreakdownImpl("total");
         this.errorData = null;
         this.infoData = new ArrayList<>();
-        this.scope = new ArrayList<>();
+        this.scope = "";
         this.claims = null;
     }
 
@@ -135,7 +134,7 @@ public final class LogEntryData {
         this.outputString(x -> data.put("method", x), this.method);
         this.outputString(x -> data.put("path", x), this.path);
         this.outputString(x -> data.put("resourceId", x), this.resourceId);
-        this.outputString(x -> data.put("clientName", x), this.clientName);
+        this.outputString(x -> data.put("clientId", x), this.clientId);
         this.outputString(x -> data.put("userId", x), this.userId);
         this.outputNumber(x -> data.put("statusCode", x), this.statusCode);
         this.outputString(x -> data.put("errorCode", x), this.errorCode);
@@ -167,7 +166,7 @@ public final class LogEntryData {
         this.outputString(x -> data.put("method", x), this.method);
         this.outputString(x -> data.put("path", x), this.path);
         this.outputString(x -> data.put("resourceId", x), this.resourceId);
-        this.outputString(x -> data.put("clientName", x), this.clientName);
+        this.outputString(x -> data.put("clientId", x), this.clientId);
         this.outputString(x -> data.put("userId", x), this.userId);
         this.outputNumber(x -> data.put("statusCode", x), this.statusCode);
         this.outputString(x -> data.put("errorCode", x), this.errorCode);
@@ -179,11 +178,7 @@ public final class LogEntryData {
         data.put("isAuthorized", isAuthenticated && (this.statusCode >= 200 && this.statusCode <= 299));
 
         if (!this.scope.isEmpty()) {
-            var scopeNode = mapper.createArrayNode();
-            for (var scopeItem: this.scope) {
-                scopeNode.add(scopeItem);
-            }
-            data.set("scope", scopeNode);
+            this.outputString(x -> data.put("scope", x), this.scope);
         }
 
         if (this.claims != null) {

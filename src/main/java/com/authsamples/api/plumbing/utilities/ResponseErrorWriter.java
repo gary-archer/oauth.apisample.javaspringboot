@@ -11,10 +11,16 @@ import com.authsamples.api.plumbing.errors.ClientError;
 public final class ResponseErrorWriter {
 
     /*
+     * Private constructor
+     */
+    private ResponseErrorWriter() {
+    }
+
+    /*
      * This blog's clients read a JSON response, to handle OAuth errors in the same way as other errors
      * Also add the standard www-authenticate header for interoperability
      */
-    public void writeFilterExceptionResponse(
+    public static void writeFilterExceptionResponse(
             final HttpServletResponse response,
             final ClientError error,
             final String scope) {

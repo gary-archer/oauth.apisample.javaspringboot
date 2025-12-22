@@ -17,11 +17,22 @@ public final class ClaimsReader {
      * Get a mandatory string claim from the claims payload
      */
     public static String getStringClaim(final JwtClaims data, final String name) {
+        return ClaimsReader.getStringClaim(data, name, true);
+    }
+
+    /*
+     * Get a string claim from the claims payload
+     */
+    public static String getStringClaim(final JwtClaims data, final String name, final boolean required) {
 
         try {
             var value = data.getClaimValue(name, String.class);
             if (!StringUtils.hasLength(value)) {
-                throw ErrorUtils.fromMissingClaim(name);
+                if (required) {
+                    throw ErrorUtils.fromMissingClaim(name);
+                } else {
+                    return "";
+                }
             }
 
             return value;

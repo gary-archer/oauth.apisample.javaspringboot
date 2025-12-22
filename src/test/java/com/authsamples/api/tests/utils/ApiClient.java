@@ -16,17 +16,10 @@ import java.util.concurrent.CompletableFuture;
 public final class ApiClient {
 
     private final String baseUrl;
-    private final String clientName;
-    private final String sessionId;
 
-    public ApiClient(
-            final String baseUrl,
-            final String clientName,
-            final String sessionId) {
+    public ApiClient(final String baseUrl) {
 
         this.baseUrl = baseUrl;
-        this.clientName = clientName;
-        this.sessionId = sessionId;
     }
 
     public CompletableFuture<ApiResponse> getUserInfoClaims(final ApiRequestOptions options) {
@@ -72,12 +65,10 @@ public final class ApiClient {
                 .method(options.getMethod(), HttpRequest.BodyPublishers.noBody())
                 .uri(this.stringToUri(operationUrl))
                 .headers("Authorization", String.format("Bearer %s", options.getAccessToken()))
-                .headers("authsamples-api-client", this.clientName)
-                .headers("authsamples-session-id", this.sessionId)
-                .headers("authsamples-correlation-id", correlationId);
+                .headers("correlation-id", correlationId);
 
         if (options.getRehearseException()) {
-            requestBuilder.headers("authsamples-test-exception", "FinalApi");
+            requestBuilder.headers("api-exception-simulation", "FinalApi");
         }
 
         var request = requestBuilder.build();

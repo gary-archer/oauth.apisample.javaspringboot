@@ -107,8 +107,7 @@ public final class UnhandledExceptionHandler {
         CustomRequestScope.removeAll();
 
         // Return error responses to the caller
-        var writer = new ResponseErrorWriter();
-        writer.writeFilterExceptionResponse(response, clientError, this.oauthConfiguration.getScope());
+        ResponseErrorWriter.writeFilterExceptionResponse(response, clientError, this.oauthConfiguration.getScope());
     }
 
     /*

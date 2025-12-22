@@ -33,6 +33,11 @@ public class OAuthConfiguration {
     @Setter
     private String jwksEndpoint;
 
+    // The access token's delegation ID
+    @Getter
+    @Setter
+    private String sessionIdClaimName;
+
     // The maximum number of minutes for which to cache claims
     @Getter
     @Setter

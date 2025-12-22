@@ -58,7 +58,7 @@ public class LoadTest {
         // Create the API client
         String apiBaseUrl = "https://api.authsamples-dev.com:446";
         sessionId = UUID.randomUUID().toString();
-        apiClient = new ApiClient(apiBaseUrl, "LoadTest", sessionId);
+        apiClient = new ApiClient(apiBaseUrl);
 
         // Initialise counts
         totalCount = 0;
@@ -129,6 +129,7 @@ public class LoadTest {
 
             var jwtOptions = new MockTokenOptions();
             jwtOptions.useStandardUser();
+            jwtOptions.setDelegationId(sessionId);
             var accessToken = authorizationServer.issueAccessToken(jwtOptions);
             list.add(accessToken);
         }
@@ -259,12 +260,12 @@ public class LoadTest {
             if (response.getStatusCode() >= 200 && response.getStatusCode() <= 299) {
 
                 // Report successful requests
-                System.out.println(COLOR_GREEN + formatMetrics(response));
+                System.out.println(COLOR_GREEN + processMetrics(response));
 
             } else {
 
                 // Report failed requests
-                System.out.println(COLOR_RED + formatMetrics(response));
+                System.out.println(COLOR_RED + processMetrics(response));
                 errorCount++;
             }
 
@@ -273,9 +274,9 @@ public class LoadTest {
     }
 
     /*
-     * Get metrics as a table row
+     * Process metrics as a table row
      */
-    private String formatMetrics(final ApiResponse response) {
+    private String processMetrics(final ApiResponse response) {
 
         ObjectNode errorBody = null;
         var errorCode = "";

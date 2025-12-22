@@ -19,6 +19,10 @@ public class MockTokenOptions {
 
     @Getter
     @Setter
+    public String delegationId = "";
+
+    @Getter
+    @Setter
     private int expiryMinutes = 15;
 
     @Getter
