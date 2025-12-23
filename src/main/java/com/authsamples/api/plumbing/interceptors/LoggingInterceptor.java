@@ -1,7 +1,6 @@
 package com.authsamples.api.plumbing.interceptors;
 
 import java.util.Map;
-import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactory;
@@ -36,21 +35,17 @@ public final class LoggingInterceptor implements HandlerInterceptor {
 
         try {
 
-            // Only run the logging interceptor during the request stage and not in the async completion stage
-            if (request.getDispatcherType().equals(DispatcherType.REQUEST)) {
+            // Get the log entry for this request
+            var logEntry = this.container.getBean(LogEntryImpl.class);
 
-                // Get the log entry for this request
-                var logEntry = this.container.getBean(LogEntryImpl.class);
+            // Call start, which will be a no-op if logging has already been started by the authorizer
+            logEntry.start(request);
 
-                // Call start, which will be a no-op if logging has already been started by the authorizer
-                logEntry.start(request);
-
-                // Record populated path segments here as the resource id
-                @SuppressWarnings("unchecked")
-                var pathVariables = (Map<String, String>)
-                        request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-                logEntry.setResourceId(pathVariables);
-            }
+            // Record populated path segments here as the resource id
+            @SuppressWarnings("unchecked")
+            var pathVariables = (Map<String, String>)
+                    request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+            logEntry.setResourceId(pathVariables);
 
         } catch (Exception filterException) {
 

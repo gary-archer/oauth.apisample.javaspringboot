@@ -20,7 +20,7 @@ public final class TextValidator {
 
         var pattern = Pattern.compile("/^[a-zA-Z0-9-]+$/i");
         var matcher = pattern.matcher(input);
-        if (matcher.find() && input.count <= 64) {
+        if (matcher.find() && input.length() <= 64) {
             System.out.println("*** PASS ***");
             return input;
         }
