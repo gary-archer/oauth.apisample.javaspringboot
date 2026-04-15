@@ -22,7 +22,7 @@ ext {
     jose4j_version = '0.9.6'
     cache2k_version = '1.6.0.Final'
     commons_codec_version = '1.19.0'
-    jackson_version = '3.1.0'
+    jackson_version = '3.1.2'
     logback_version = '1.5.32'
     lombok_version = '1.18.42'
     guava_version = '33.5.0-jre'
@@ -44,7 +44,6 @@ dependencies {
     implementation "commons-codec:commons-codec:$commons_codec_version"
 
     // JSON handling
-    // implementation "tools.jackson.core:jackson-core:$jackson_version"
     implementation "tools.jackson.core:jackson-databind:$jackson_version"
 
     // Logging framework
