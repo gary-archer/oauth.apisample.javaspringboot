@@ -98,7 +98,7 @@ public final class ServerErrorImpl extends ServerError {
     public ClientError toClientError(final String apiName) {
 
         // Set a generic client error code for the server exception
-        var error = ErrorFactory.createClientError(this.statusCode, this.errorCode, this.getMessage());
+        var error = new ClientErrorImpl(this.statusCode, this.errorCode, this.getMessage());
 
         // Also indicate which part of the system, where in logs and when the error occurred
         error.setExceptionDetails(apiName, this.instanceId, this.utcTime);
