@@ -32,6 +32,7 @@ public class LoadTest {
     private static MockAuthorizationServer authorizationServer;
     private static ApiClient apiClient;
     private static String delegationId;
+    private static int numApiRequests;
     private static int totalCount;
     private static int errorCount;
 
@@ -63,6 +64,7 @@ public class LoadTest {
         delegationId = UUID.randomUUID().toString();
 
         // Initialise counts
+        numApiRequests = 100;
         totalCount = 0;
         errorCount = 0;
     }
@@ -82,7 +84,7 @@ public class LoadTest {
     public void run() throws Throwable {
 
         // Get some access tokens to send to the API
-        var accessTokens = getAccessTokens();
+        var accessTokens = this.getAccessTokens();
 
         // Show a startup message
         var startTime = Instant.now();
@@ -105,7 +107,7 @@ public class LoadTest {
         System.out.println(COLOR_YELLOW + header);
 
         // Send the main body of requests
-        sendLoadTestRequests(accessTokens);
+        this.sendLoadTestRequests(accessTokens);
 
         // Assert that the load test rehearsed 3 errors
         Assertions.assertEquals(3, errorCount, "Unexpected error count");
@@ -145,7 +147,7 @@ public class LoadTest {
 
         // Next produce some requests that will run in parallel
         var requests = new ArrayList<Supplier<CompletableFuture<ApiResponse>>>();
-        for (int index = 0; index < 100; index++) {
+        for (int index = 0; index < numApiRequests; index++) {
 
             // Create a 401 error on request 10, by making the access token act expired
             var accessToken = accessTokens.get(index % 5);
@@ -156,21 +158,21 @@ public class LoadTest {
             // Create some futures for various API endpoints
             if (index % 5 == 0) {
 
-                requests.add(createUserInfoRequest(accessToken));
+                requests.add(this.createUserInfoRequest(accessToken));
 
             } else if (index % 5 == 1) {
 
-                requests.add(createTransactionsRequest(accessToken, 2));
+                requests.add(this.createTransactionsRequest(accessToken, 2));
 
             } else if (index % 5 == 2) {
 
                 // On request 71 try to access unauthorized data for company 3, to create a 404 error
                 var companyId = (index == 72) ? 3 : 2;
-                requests.add(createTransactionsRequest(accessToken, companyId));
+                requests.add(this.createTransactionsRequest(accessToken, companyId));
 
             } else {
 
-                requests.add(createCompaniesRequest(accessToken));
+                requests.add(this.createCompaniesRequest(accessToken));
             }
         }
 
@@ -285,7 +287,7 @@ public class LoadTest {
         var errorId   = "";
 
         if (response.getStatusCode() >= 400) {
-            errorBody = this.deserializeErrorBody(response.getBody());
+            errorBody = deserializeErrorBody(response.getBody());
         }
 
         if (response.getStatusCode() >= 400 && errorBody != null) {
