@@ -67,7 +67,7 @@ public class IntegrationTests {
     @Test
     @Order(1)
     @SuppressWarnings(value = "MethodName")
-    public void CallApi_Returns401_ForMissingJwt() throws Throwable {
+    public void CallApi_Returns401_ForMissingJwt() {
 
         // Call the API and ensure a 401 response
         var apiOptions = new ApiRequestOptions("");

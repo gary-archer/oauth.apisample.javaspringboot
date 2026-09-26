@@ -24,7 +24,7 @@ public final class ExtraClaims {
     /*
      * Construct with values from the API's own data
      */
-    public ExtraClaims(final String title, final String[] regions) {
+    public ExtraClaims(String title, String[] regions) {
         this.title = title;
         this.regions = regions;
     }

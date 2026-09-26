@@ -13,7 +13,7 @@ public final class BearerToken {
     /*
      * Try to read the access token from the authorization header
      */
-    public static String read(final HttpServletRequest request) {
+    public static String read(HttpServletRequest request) {
 
         var header = request.getHeader("Authorization");
         if (header != null) {

@@ -8,7 +8,7 @@ import tools.jackson.databind.node.ObjectNode;
  */
 public abstract class ClientError extends RuntimeException {
 
-    public ClientError(final String message) {
+    public ClientError(String message) {
         super(message);
     }
 

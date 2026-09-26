@@ -20,7 +20,7 @@ public final class ErrorUtils {
     /*
      * Return a known error from a general exception
      */
-    public static RuntimeException fromException(final Throwable exception) {
+    public static RuntimeException fromException(Throwable exception) {
 
         var serverError = ErrorUtils.tryConvertToServerError(exception);
         if (serverError != null) {
@@ -39,9 +39,9 @@ public final class ErrorUtils {
      * Create an error from an exception
      */
     public static ServerError createServerError(
-            final Throwable exception,
-            final String errorCode,
-            final String message) {
+            Throwable exception,
+            String errorCode,
+            String message) {
 
         var defaultErrorCode = BaseErrorCodes.SERVER_ERROR;
         var defaultMessage = "An unexpected exception occurred in the API";
@@ -60,7 +60,7 @@ public final class ErrorUtils {
     /*
      * Handle JWKS download errors
      */
-    public static RuntimeException fromJwksDownloadError(final InvalidJwtException ex, final String url) {
+    public static RuntimeException fromJwksDownloadError(InvalidJwtException ex, String url) {
 
         var parts = new ArrayList<String>();
         var ioException = ErrorUtils.getIOException(ex);
@@ -83,7 +83,7 @@ public final class ErrorUtils {
     /*
      * Handle token validation errors, meaning we received an invalid token
      */
-    public static RuntimeException fromAccessTokenValidationError(final InvalidJwtException ex, final String url) {
+    public static RuntimeException fromAccessTokenValidationError(InvalidJwtException ex, String url) {
 
         // First collect details from the exception, but without sensitive JWT details
         var context = new StringBuilder();
@@ -102,7 +102,7 @@ public final class ErrorUtils {
      * The error thrown if we cannot find an expected claim during OAuth processing
      * This is the same underlying problem as a missing scope and typically caused by incorrect configuration
      */
-    public static ClientError fromMissingClaim(final String claimName) {
+    public static ClientError fromMissingClaim(String claimName) {
 
         var message = String.format("Missing claim in input: '%s'", claimName);
         return ErrorFactory.createClientErrorWithContext(
@@ -115,7 +115,7 @@ public final class ErrorUtils {
     /*
      * Convert to a server error if possible
      */
-    private static ServerError tryConvertToServerError(final Throwable ex) {
+    private static ServerError tryConvertToServerError(Throwable ex) {
 
         // Already handled 500 errors
         if (ex instanceof ServerError) {
@@ -141,7 +141,7 @@ public final class ErrorUtils {
     /*
      * Get the error as an IClientError derived error if applicable
      */
-    private static ClientError tryConvertToClientError(final Throwable ex) {
+    private static ClientError tryConvertToClientError(Throwable ex) {
 
         // Already handled 500 errors
         if (ex instanceof ClientError) {
@@ -165,7 +165,7 @@ public final class ErrorUtils {
      * When downloading JWKS keys, an IO exception means we could not get JWKS keys
      * This is classified as a 500 error as opposed to a 401 error, since it is no fault of the client
      */
-    private static IOException getIOException(final Throwable ex) {
+    private static IOException getIOException(Throwable ex) {
 
         Throwable inner = ex;
         while (inner != null) {
@@ -182,7 +182,7 @@ public final class ErrorUtils {
     /*
      * Some jose4j error messages may include full JWTs, so avoid including these in error logs
      */
-    private static String getSanitizedJwtErrorMessage(final Exception ex, final ErrorCodeValidator.Error error) {
+    private static String getSanitizedJwtErrorMessage(Exception ex, ErrorCodeValidator.Error error) {
 
         if (ex.getClass() == InvalidJwtSignatureException.class) {
             return "Invalid JWS Signature";
@@ -198,7 +198,7 @@ public final class ErrorUtils {
     /*
      * Set a string version of the exception details against the server error, which will be logged
      */
-    private static String getExceptionDetailsMessage(final Throwable ex) {
+    private static String getExceptionDetailsMessage(Throwable ex) {
 
         if (ex == null) {
             return "";

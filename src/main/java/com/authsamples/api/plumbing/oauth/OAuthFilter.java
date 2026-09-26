@@ -23,9 +23,9 @@ public final class OAuthFilter {
     private final ExtraClaimsProvider extraClaimsProvider;
 
     public OAuthFilter(
-            final ClaimsCache cache,
-            final AccessTokenValidator tokenValidator,
-            final ExtraClaimsProvider extraClaimsProvider) {
+            ClaimsCache cache,
+            AccessTokenValidator tokenValidator,
+            ExtraClaimsProvider extraClaimsProvider) {
 
         this.cache = cache;
         this.tokenValidator = tokenValidator;
@@ -35,7 +35,7 @@ public final class OAuthFilter {
     /*
      * Validate the OAuth access token and then look up other values
      */
-    public ClaimsPrincipal execute(final HttpServletRequest request) {
+    public ClaimsPrincipal execute(HttpServletRequest request) {
 
         // First read the access token
         String accessToken = BearerToken.read(request);

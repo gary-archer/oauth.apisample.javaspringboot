@@ -141,7 +141,7 @@ public class LoadTest {
     /*
      * Run the main body of API requests, including some invalid requests that trigger errors
      */
-    private void sendLoadTestRequests(final List<String> accessTokens) {
+    private void sendLoadTestRequests(List<String> accessTokens) {
 
         // Next produce some requests that will run in parallel
         var requests = new ArrayList<Supplier<CompletableFuture<ApiResponse>>>();
@@ -181,7 +181,7 @@ public class LoadTest {
     /*
      * Prepare a get user info API request callback
      */
-    private Supplier<CompletableFuture<ApiResponse>> createUserInfoRequest(final String accessToken) {
+    private Supplier<CompletableFuture<ApiResponse>> createUserInfoRequest(String accessToken) {
 
         var options = new ApiRequestOptions(accessToken);
         this.initializeApiRequest(options);
@@ -191,7 +191,7 @@ public class LoadTest {
     /*
      * Prepare a get companies API request callback
      */
-    private Supplier<CompletableFuture<ApiResponse>> createCompaniesRequest(final String accessToken) {
+    private Supplier<CompletableFuture<ApiResponse>> createCompaniesRequest(String accessToken) {
 
         var options = new ApiRequestOptions(accessToken);
         this.initializeApiRequest(options);
@@ -202,8 +202,8 @@ public class LoadTest {
      * Prepare a get transactions API request callback
      */
     private Supplier<CompletableFuture<ApiResponse>> createTransactionsRequest(
-            final String accessToken,
-            final int companyId) {
+            String accessToken,
+            int companyId) {
 
         var options = new ApiRequestOptions(accessToken);
         this.initializeApiRequest(options);
@@ -213,7 +213,7 @@ public class LoadTest {
     /*
      * Set any special logic before sending an API request
      */
-    private void initializeApiRequest(final ApiRequestOptions options) {
+    private void initializeApiRequest(ApiRequestOptions options) {
 
         // On request 85 we'll simulate a 500 error via a custom header
         totalCount++;
@@ -226,7 +226,7 @@ public class LoadTest {
      * Issue API requests in batches of 5, to avoid excessive queueing on a development computer
      * By default there is a limit of 5 concurrent outgoing requests to a single host
      */
-    private void executeApiRequests(final List<Supplier<CompletableFuture<ApiResponse>>> requests) {
+    private void executeApiRequests(List<Supplier<CompletableFuture<ApiResponse>>> requests) {
 
         // Set counters
         var total = requests.size();
@@ -254,7 +254,7 @@ public class LoadTest {
      * Start execution and return a success future regardless of whether the API call succeeded
      */
     private CompletableFuture<ApiResponse> executeApiRequest(
-            final Supplier<CompletableFuture<ApiResponse>> resultCallback) {
+            Supplier<CompletableFuture<ApiResponse>> resultCallback) {
 
         return resultCallback.get().thenCompose(response -> {
 
@@ -278,7 +278,7 @@ public class LoadTest {
     /*
      * Process metrics as a table row
      */
-    private String processMetrics(final ApiResponse response) {
+    private String processMetrics(ApiResponse response) {
 
         ObjectNode errorBody = null;
         var errorCode = "";
@@ -314,7 +314,7 @@ public class LoadTest {
     /*
      * Avoid async calling code needing to use checked exceptions
      */
-    private ObjectNode deserializeErrorBody(final String body) {
+    private ObjectNode deserializeErrorBody(String body) {
 
         try {
             var mapper = new ObjectMapper();

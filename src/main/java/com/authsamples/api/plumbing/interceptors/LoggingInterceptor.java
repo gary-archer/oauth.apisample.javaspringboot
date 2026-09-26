@@ -19,7 +19,7 @@ public final class LoggingInterceptor implements HandlerInterceptor {
     private final BeanFactory container;
     private final LoggerFactory loggerFactory;
 
-    public LoggingInterceptor(final BeanFactory container, final LoggerFactory loggerFactory) {
+    public LoggingInterceptor(BeanFactory container, LoggerFactory loggerFactory) {
         this.container = container;
         this.loggerFactory = loggerFactory;
     }
@@ -28,10 +28,7 @@ public final class LoggingInterceptor implements HandlerInterceptor {
      * Do pre request handling to ensure reliability
      */
     @Override
-    public boolean preHandle(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         try {
 
@@ -63,10 +60,10 @@ public final class LoggingInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final Object handler,
-            final Exception ex) {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
+            Exception ex) {
 
         try {
 

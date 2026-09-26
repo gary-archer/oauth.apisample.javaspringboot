@@ -20,7 +20,7 @@ public class SecurityConfiguration {
 
     private final ConfigurableApplicationContext context;
 
-    public SecurityConfiguration(final ConfigurableApplicationContext context) {
+    public SecurityConfiguration(ConfigurableApplicationContext context) {
         this.context = context;
     }
 
@@ -31,7 +31,7 @@ public class SecurityConfiguration {
      * The API needs only to validate JWTs and implement claims based authorization
      */
     @Bean
-    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         var container = this.context.getBeanFactory();
         var authenticationFilter = new CustomAuthenticationFilter(container);

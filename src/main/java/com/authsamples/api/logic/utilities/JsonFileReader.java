@@ -19,7 +19,7 @@ public class JsonFileReader {
     /*
      * Read data from a file into objects
      */
-    public <T> T readFile(final String resourcePath, final Class<T> runtimeType) {
+    public <T> T readFile(String resourcePath, Class<T> runtimeType) {
 
         var json = this.readJsonFromFile(resourcePath);
         try {
@@ -39,7 +39,7 @@ public class JsonFileReader {
      * Do the work to read data from file, which will block on a virtual thread
      * The main thread of execution returns to the thread pool and handles further requests
      */
-    private String readJsonFromFile(final String filePath) {
+    private String readJsonFromFile(String filePath) {
 
         try {
 

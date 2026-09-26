@@ -23,7 +23,7 @@ public class ClaimsPrincipal {
     /*
      * The OAuth filter constructs the claims principal
      */
-    public ClaimsPrincipal(final JwtClaims jwtClaims, final ExtraClaims extraClaims) {
+    public ClaimsPrincipal(JwtClaims jwtClaims, ExtraClaims extraClaims) {
         this.jwt = jwtClaims;
         this.extra = extraClaims;
     }

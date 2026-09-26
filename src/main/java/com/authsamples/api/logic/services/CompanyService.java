@@ -31,7 +31,7 @@ public class CompanyService {
      * The claims holder may be injected into the service before OAuth processing
      * The OAuth filter then runs before any methods are called
      */
-    public CompanyService(final CompanyRepository repository, final ClaimsPrincipalHolder claimsHolder) {
+    public CompanyService(CompanyRepository repository, ClaimsPrincipalHolder claimsHolder) {
         this.repository = repository;
         this.claimsHolder = claimsHolder;
     }
@@ -50,7 +50,7 @@ public class CompanyService {
     /*
      * Get an individual object and deny access to unauthorized items
      */
-    public CompanyTransactions getCompanyTransactions(final int companyId) {
+    public CompanyTransactions getCompanyTransactions(int companyId) {
 
         var transactions = this.repository.getCompanyTransactions(companyId);
 
@@ -64,7 +64,7 @@ public class CompanyService {
     /*
      * A simple example of applying domain specific claims to items
      */
-    private boolean isUserAuthorizedForCompany(final Company company) {
+    private boolean isUserAuthorizedForCompany(Company company) {
 
         var claims = this.claimsHolder.getClaims();
         var role = ClaimsReader.getStringClaim(claims.getJwt(), CustomClaimNames.Role).toUpperCase();
@@ -86,7 +86,7 @@ public class CompanyService {
     /*
      * Return 404 for both not found items and also those that are not authorized
      */
-    private ClientError unauthorizedError(final int companyId) {
+    private ClientError unauthorizedError(int companyId) {
 
         var message = String.format("Transactions for company %d were not found for this user", companyId);
         return ErrorFactory.createClientError(

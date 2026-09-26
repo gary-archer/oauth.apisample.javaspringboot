@@ -17,12 +17,12 @@ public final class ApiClient {
 
     private final String baseUrl;
 
-    public ApiClient(final String baseUrl) {
+    public ApiClient(String baseUrl) {
 
         this.baseUrl = baseUrl;
     }
 
-    public CompletableFuture<ApiResponse> getUserInfoClaims(final ApiRequestOptions options) {
+    public CompletableFuture<ApiResponse> getUserInfoClaims(ApiRequestOptions options) {
 
         options.setMethod("GET");
         options.setPath("/investments/userinfo");
@@ -31,7 +31,7 @@ public final class ApiClient {
         return this.callApi(options, metrics);
     }
 
-    public CompletableFuture<ApiResponse> getCompanies(final ApiRequestOptions options) {
+    public CompletableFuture<ApiResponse> getCompanies(ApiRequestOptions options) {
 
         options.setMethod("GET");
         options.setPath("/investments/companies");
@@ -40,7 +40,7 @@ public final class ApiClient {
         return this.callApi(options, metrics);
     }
 
-    public CompletableFuture<ApiResponse> getCompanyTransactions(final ApiRequestOptions options, final int companyId) {
+    public CompletableFuture<ApiResponse> getCompanyTransactions(ApiRequestOptions options, int companyId) {
 
         options.setMethod("GET");
         options.setPath(String.format("/investments/companies/%d/transactions", companyId));
@@ -52,7 +52,7 @@ public final class ApiClient {
     /*
      * Parameterized code to do the async work of calling the API
      */
-    private CompletableFuture<ApiResponse> callApi(final ApiRequestOptions options, final ApiResponseMetrics metrics) {
+    private CompletableFuture<ApiResponse> callApi(ApiRequestOptions options, ApiResponseMetrics metrics) {
 
         // Initialize metrics
         var correlationId = UUID.randomUUID().toString();
@@ -95,7 +95,7 @@ public final class ApiClient {
     /*
      * Avoid async calling code needing to use checked exceptions
      */
-    private URI stringToUri(final String uri) {
+    private URI stringToUri(String uri) {
 
         try {
             return new URI(uri);

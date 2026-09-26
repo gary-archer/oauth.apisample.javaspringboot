@@ -24,7 +24,7 @@ public class ApiResponseMetrics {
     @Setter
     private long millisecondsTaken;
 
-    public ApiResponseMetrics(final String operation) {
+    public ApiResponseMetrics(String operation) {
         this.operation = operation;
         this.startTime = null;
         this.correlationId = "";

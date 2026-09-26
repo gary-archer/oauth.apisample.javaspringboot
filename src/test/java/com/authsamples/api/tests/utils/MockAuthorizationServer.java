@@ -74,7 +74,7 @@ public final class MockAuthorizationServer {
      * The access tokens for testing must match the structure of those issued by the real authorization server
      * https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
      */
-    public String issueAccessToken(final MockTokenOptions options) throws JoseException {
+    public String issueAccessToken(MockTokenOptions options) throws JoseException {
         return this.issueAccessToken(options, this.jwk);
     }
 
@@ -82,8 +82,8 @@ public final class MockAuthorizationServer {
      * An overload to allow a malicious key to be tested
      */
     public String issueAccessToken(
-            final MockTokenOptions options,
-            final EllipticCurveJsonWebKey jwk) throws JoseException {
+            MockTokenOptions options,
+            EllipticCurveJsonWebKey jwk) throws JoseException {
 
         var claims = new JwtClaims();
         claims.setIssuer(options.getIssuer());
@@ -112,7 +112,6 @@ public final class MockAuthorizationServer {
             var keyStore = KeyStore.getInstance("PKCS12");
 
             var path = Path.of("./certs/authsamples-dev.ssl.p12");
-            System.out.println(path.getRoot());
             try (var in = Files.newInputStream(path)) {
                 keyStore.load(in, password);
             }

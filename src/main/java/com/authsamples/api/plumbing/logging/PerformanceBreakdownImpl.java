@@ -26,7 +26,7 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
     /*
      * Set defaults for fields
      */
-    public PerformanceBreakdownImpl(final String name) {
+    public PerformanceBreakdownImpl(String name) {
         this.name = name;
         this.millisecondsTaken = 0;
         this.details = null;
@@ -43,7 +43,7 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
     /*
      * An overload that supports more detailed data
      */
-    public void setDetails(final JsonNode value) {
+    public void setDetails(JsonNode value) {
         this.details = value;
     }
 
@@ -87,7 +87,7 @@ public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
     /*
      * Add a child to the performance breakdown
      */
-    public PerformanceBreakdown createChild(final String name) {
+    public PerformanceBreakdown createChild(String name) {
 
         var child = new PerformanceBreakdownImpl(name);
         this.children.add(child);

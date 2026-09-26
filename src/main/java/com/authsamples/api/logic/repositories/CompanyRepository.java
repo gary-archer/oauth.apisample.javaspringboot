@@ -22,7 +22,7 @@ public class CompanyRepository {
     private final JsonFileReader jsonReader;
     private final LogEntry logEntry;
 
-    public CompanyRepository(final JsonFileReader jsonReader, final LogEntry logEntry) {
+    public CompanyRepository(JsonFileReader jsonReader, LogEntry logEntry) {
         this.jsonReader = jsonReader;
         this.logEntry = logEntry;
     }
@@ -42,7 +42,7 @@ public class CompanyRepository {
     /*
      * Read the transactions from a database, which does 2 async reads surrounded by a performance breakdown
      */
-    public CompanyTransactions getCompanyTransactions(final int companyId) {
+    public CompanyTransactions getCompanyTransactions(int companyId) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("getCompanyTransactions")) {
 
@@ -57,7 +57,7 @@ public class CompanyRepository {
     /*
      * Find and return the requested company
      */
-    private Company getAndFilterCompanies(final int companyId, final Company[] companiesData) {
+    private Company getAndFilterCompanies(int companyId, Company[] companiesData) {
 
         var companies = Arrays.stream(companiesData).toList();
         var found = companies.stream().filter(c -> c.getId() == companyId).findFirst();
@@ -68,9 +68,9 @@ public class CompanyRepository {
      * Find and return transactions for the found company
      */
     private CompanyTransactions getAndFilterTransactions(
-            final int companyId,
-            final Company foundCompany,
-            final CompanyTransactions[] transactionsData) {
+            int companyId,
+            Company foundCompany,
+            CompanyTransactions[] transactionsData) {
 
         CompanyTransactions result = null;
         if (foundCompany != null) {

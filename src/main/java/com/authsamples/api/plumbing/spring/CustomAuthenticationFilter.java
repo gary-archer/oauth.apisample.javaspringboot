@@ -27,7 +27,7 @@ public final class CustomAuthenticationFilter extends OncePerRequestFilter {
     private final BeanFactory container;
     private final OAuthConfiguration configuration;
 
-    public CustomAuthenticationFilter(final BeanFactory container) {
+    public CustomAuthenticationFilter(BeanFactory container) {
 
         this.container = container;
         this.configuration = this.container.getBean(OAuthConfiguration.class);
@@ -38,9 +38,9 @@ public final class CustomAuthenticationFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final FilterChain filterChain) throws ServletException, IOException {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
         try {
             // For secured requests, API logging starts here

@@ -17,7 +17,7 @@ public class ClaimsCache {
     private final int timeToLiveMinutes;
     private final Logger debugLogger;
 
-    public ClaimsCache(final int timeToLiveMinutes, final LoggerFactory loggerFactory) {
+    public ClaimsCache(int timeToLiveMinutes, LoggerFactory loggerFactory) {
 
         this.timeToLiveMinutes = timeToLiveMinutes;
         this.debugLogger = loggerFactory.getDebugLogger(ClaimsCache.class);
@@ -45,7 +45,7 @@ public class ClaimsCache {
     /*
      * Add an item to the cache and do not exceed the token's expiry or the configured time to live
      */
-    public void setItem(final String accessTokenHash, final ExtraClaims claims, final int expiry) {
+    public void setItem(String accessTokenHash, ExtraClaims claims, int expiry) {
 
         var epochSeconds = Instant.now().getEpochSecond();
         var secondsToCache = expiry - epochSeconds;
@@ -73,7 +73,7 @@ public class ClaimsCache {
     /*
      * Get an item from the cache for this token's hash, or return null if not found
      */
-    public ExtraClaims getItem(final String accessTokenHash) {
+    public ExtraClaims getItem(String accessTokenHash) {
 
         var claims = cache.get(accessTokenHash);
         if (claims == null) {

@@ -20,9 +20,9 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
     private final ConfigurableApplicationContext context;
 
     public InterceptorConfiguration(
-            final LoggingConfiguration loggingConfiguration,
-            final LoggerFactory loggerFactory,
-            final ConfigurableApplicationContext context) {
+            LoggingConfiguration loggingConfiguration,
+            LoggerFactory loggerFactory,
+            ConfigurableApplicationContext context) {
 
         this.loggingConfiguration = loggingConfiguration;
         this.loggerFactory = loggerFactory;
@@ -33,7 +33,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
      * Configure cross cutting concerns
      */
     @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
+    public void addInterceptors(InterceptorRegistry registry) {
 
         // Add the logging interceptor
         var loggingInterceptor = new LoggingInterceptor(this.context.getBeanFactory(), this.loggerFactory);

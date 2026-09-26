@@ -40,7 +40,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Configure logging programmatically from our JSON configuration file
      */
-    public void configure(final LoggingConfiguration configuration) {
+    public void configure(LoggingConfiguration configuration) {
 
         this.apiName = configuration.getApiName();
 
@@ -66,7 +66,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Special handling for startup errors, where loggers may not be initialized yet
      */
     @Override
-    public void logStartupError(final Throwable exception) {
+    public void logStartupError(Throwable exception) {
 
         // Create a request logger if required
         var startupLogger = this.getStartupLogger();
@@ -113,7 +113,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Get a logger per class for local debugging
      */
     @Override
-    public org.slf4j.Logger getDebugLogger(final Class type) {
+    public org.slf4j.Logger getDebugLogger(Class type) {
         String loggerName = String.format("%s.%s", this.developmentNamespace, type.getSimpleName());
         return org.slf4j.LoggerFactory.getLogger(loggerName);
     }
@@ -128,7 +128,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Add an always on request logger for technical support details
      */
-    private void createRequestLogger(final JsonNode requestLogConfig) {
+    private void createRequestLogger(JsonNode requestLogConfig) {
 
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
@@ -146,7 +146,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Add an always on audit logger for technical support details
      */
-    private void createAuditLogger(final JsonNode auditLogConfig) {
+    private void createAuditLogger(JsonNode auditLogConfig) {
 
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
 
@@ -164,9 +164,9 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Add appenders from configuration
      */
     private void createAppenders(
-            final Logger logger,
-            final LoggerContext context,
-            final JsonNode appendersConfig) {
+            Logger logger,
+            LoggerContext context,
+            JsonNode appendersConfig) {
 
         // Add the console appender if required
         if (appendersConfig != null && appendersConfig.isArray()) {
@@ -189,8 +189,8 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Create a JSON console appender
      */
     private ConsoleAppender<ILoggingEvent> createConsoleAppender(
-            final JsonNode config,
-            final LoggerContext context) {
+            JsonNode config,
+            LoggerContext context) {
 
         // The log data is bare JSON without any logback fields, and can use pretty printing for readability
         var prettyPrint = config.get("prettyPrint").asBoolean(false);
@@ -210,8 +210,8 @@ public final class LoggerFactoryImpl implements LoggerFactory {
      * Create a JSON file appender
      */
     private RollingFileAppender<ILoggingEvent> createFileAppender(
-            final JsonNode config,
-            final LoggerContext context) {
+            JsonNode config,
+            LoggerContext context) {
 
         // Get settings
         var defaultFileLimit = 100;
@@ -255,7 +255,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Do an object array lookup
      */
-    private JsonNode findArrayElementByType(final ArrayNode array, final String key) {
+    private JsonNode findArrayElementByType(ArrayNode array, String key) {
 
         var items = array.elements().iterator();
         while (items.hasNext()) {
@@ -300,7 +300,7 @@ public final class LoggerFactoryImpl implements LoggerFactory {
     /*
      * The esxample's debug loggers output to the console as plain text
      */
-    private void createDebugLoggers(final JsonNode debugLogConfig) {
+    private void createDebugLoggers(JsonNode debugLogConfig) {
 
         // Get details
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();

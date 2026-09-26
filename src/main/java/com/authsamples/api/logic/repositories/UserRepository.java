@@ -15,7 +15,7 @@ public final class UserRepository {
     /*
      * Receive the manager ID in the access token, as a useful API identity, then look up extra authorization values
      */
-    public ExtraClaims getUserInfoForManagerId(final String managerId) {
+    public ExtraClaims getUserInfoForManagerId(String managerId) {
 
         if (managerId.equals("20116")) {
 

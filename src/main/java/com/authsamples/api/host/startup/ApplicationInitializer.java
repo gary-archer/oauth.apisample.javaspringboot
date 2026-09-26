@@ -24,7 +24,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
     /*
      * Receive the logger at startup
      */
-    public ApplicationInitializer(final LoggerFactory loggerFactory) {
+    public ApplicationInitializer(LoggerFactory loggerFactory) {
         this.loggerFactory = loggerFactory;
     }
 
@@ -32,7 +32,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
      * Set properties from our JSON configuration file
      */
     @Override
-    public void initialize(final ConfigurableApplicationContext context) {
+    public void initialize(ConfigurableApplicationContext context) {
 
         // First load our configuration file
         var reader = new JsonFileReader();
@@ -62,7 +62,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
      * Set the port from configuration and activate HTTP/2 if we run locally
      * In real deployments like Kubernetes the API uses HTTP and can use a service mesh for TLS
      */
-    private void configureHttpListener(final ApiConfiguration configuration) {
+    private void configureHttpListener(ApiConfiguration configuration) {
 
         System.setProperty("server.port", Integer.toString(configuration.getPort()));
         if (StringUtils.hasLength(configuration.getSslCertificateFileName())
@@ -75,7 +75,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
     /*
      * Set up HTTP debugging if enabled, which requires the HTTP proxy's root certificate to be trusted
      */
-    private void configureHttpDebugging(final ApiConfiguration configuration) {
+    private void configureHttpDebugging(ApiConfiguration configuration) {
 
         if (configuration.isUseProxy()) {
             try {
@@ -95,7 +95,7 @@ public final class ApplicationInitializer implements ApplicationContextInitializ
     /*
      * Configure SSL certificate details
      */
-    private void configureSsl(final Configuration configuration) {
+    private void configureSsl(Configuration configuration) {
 
         if (StringUtils.hasLength(configuration.getApi().getSslCertificateFileName())
                 && StringUtils.hasLength(configuration.getApi().getSslCertificatePassword())) {

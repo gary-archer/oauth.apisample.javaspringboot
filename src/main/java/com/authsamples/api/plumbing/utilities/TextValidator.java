@@ -16,7 +16,7 @@ public final class TextValidator {
     /*
      * Sanitize input text such as correlation IDs and reject suspicious input
      */
-    public static String sanitize(final String input) {
+    public static String sanitize(String input) {
 
         var pattern = Pattern.compile("/^[a-zA-Z0-9-]+$/i");
         var matcher = pattern.matcher(input);

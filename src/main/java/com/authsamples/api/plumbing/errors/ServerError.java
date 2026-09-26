@@ -8,7 +8,7 @@ import tools.jackson.databind.node.ObjectNode;
  */
 public abstract class ServerError extends RuntimeException {
 
-    public ServerError(final String message, final Throwable cause) {
+    public ServerError(String message, Throwable cause) {
         super(message, cause);
     }
 

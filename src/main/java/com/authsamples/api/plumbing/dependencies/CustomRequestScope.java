@@ -23,8 +23,8 @@ public class CustomRequestScope implements Scope {
      */
     @Override
     public Object get(
-            final String name,
-            final ObjectFactory<?> objectFactory) {
+            String name,
+            ObjectFactory<?> objectFactory) {
 
         Map<String, Object> objectMap = this.getCurrentRequestObjects();
         if (!objectMap.containsKey(name)) {
@@ -38,7 +38,7 @@ public class CustomRequestScope implements Scope {
      * Remove an object from the object map at the end of an HTTP request
      */
     @Override
-    public Object remove(final String name) {
+    public Object remove(String name) {
 
         Map<String, Object> objectMap = this.getCurrentRequestObjects();
         return objectMap.remove(name);
@@ -49,15 +49,15 @@ public class CustomRequestScope implements Scope {
      */
     @Override
     public void registerDestructionCallback(
-            final String name,
-            final Runnable runnable) {
+            String name,
+            Runnable runnable) {
     }
 
     /*
      * This can be an empty implementation
      */
     @Override
-    public Object resolveContextualObject(final String name) {
+    public Object resolveContextualObject(String name) {
         return null;
     }
 

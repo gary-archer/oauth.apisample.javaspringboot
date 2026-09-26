@@ -30,9 +30,9 @@ public class AccessTokenValidator {
     private final LogEntryImpl logEntry;
 
     public AccessTokenValidator(
-            final OAuthConfiguration configuration,
-            final HttpsJwksVerificationKeyResolver jwksResolver,
-            final LogEntry logEntry) {
+            OAuthConfiguration configuration,
+            HttpsJwksVerificationKeyResolver jwksResolver,
+            LogEntry logEntry) {
 
         this.configuration = configuration;
         this.jwksResolver = jwksResolver;
@@ -42,7 +42,7 @@ public class AccessTokenValidator {
     /*
      * Do the work of validating the access token and returning its claims
      */
-    public JwtClaims execute(final String accessToken) {
+    public JwtClaims execute(String accessToken) {
 
         try (var breakdown = this.logEntry.createPerformanceBreakdown("tokenValidator")) {
 
@@ -83,7 +83,7 @@ public class AccessTokenValidator {
     /*
      * Collect identity data to add to logs
      */
-    private IdentityLogData getIdentityData(final JwtClaims claims) {
+    private IdentityLogData getIdentityData(JwtClaims claims) {
 
         var data = new IdentityLogData();
         data.setUserId(ClaimsReader.getStringClaim(claims, "sub", false));

@@ -9,7 +9,7 @@ import tools.jackson.core.util.DefaultPrettyPrinter;
 public final class CustomArrayIndenter implements DefaultPrettyPrinter.Indenter {
 
     @Override
-    public void writeIndentation(final JsonGenerator jsonGenerator, final int currentIndent) {
+    public void writeIndentation(JsonGenerator jsonGenerator, int currentIndent) {
 
         // Get a padded string with 2 spaces per indent level
         String indent = "  ".repeat(Math.max(0, currentIndent));

@@ -16,7 +16,7 @@ public final class CustomAuthentication implements Authentication {
     /*
      * Construct from the results of authorizer processing
      */
-    public CustomAuthentication(final ClaimsPrincipal claims) {
+    public CustomAuthentication(ClaimsPrincipal claims) {
         this.claims = claims;
     }
 
@@ -64,7 +64,7 @@ public final class CustomAuthentication implements Authentication {
      * This is not relevant for the example API
      */
     @Override
-    public void setAuthenticated(final boolean b) throws IllegalArgumentException {
+    public void setAuthenticated(boolean b) throws IllegalArgumentException {
     }
 
     /*

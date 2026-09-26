@@ -22,7 +22,7 @@ public class UserInfoController {
      * The claims holder may be injected into the controller before the OAuth filter runs
      * The OAuth filter then runs before any methods are called
      */
-    public UserInfoController(final ClaimsPrincipalHolder claimsHolder) {
+    public UserInfoController(ClaimsPrincipalHolder claimsHolder) {
         this.claimsHolder = claimsHolder;
     }
 

@@ -33,10 +33,10 @@ public final class UnhandledExceptionHandler {
      * The exception handler requires the name of the API
      */
     public UnhandledExceptionHandler(
-            final BeanFactory container,
-            final LoggingConfiguration loggingConfiguration,
-            final OAuthConfiguration oauthConfiguration,
-            final LoggerFactory loggerFactory) {
+            BeanFactory container,
+            LoggingConfiguration loggingConfiguration,
+            OAuthConfiguration oauthConfiguration,
+            LoggerFactory loggerFactory) {
 
         this.container = container;
         this.loggingConfiguration = loggingConfiguration;
@@ -48,7 +48,7 @@ public final class UnhandledExceptionHandler {
      * Process API request errors
      */
     @ExceptionHandler(value = Throwable.class)
-    public ResponseEntity<String> handleException(final HttpServletRequest request, final Throwable ex) {
+    public ResponseEntity<String> handleException(HttpServletRequest request, Throwable ex) {
 
         // Get the log entry for the current request
         var logEntry = this.container.getBean(LogEntryImpl.class);
@@ -73,10 +73,7 @@ public final class UnhandledExceptionHandler {
     /*
      * Process exceptions in filters
      */
-    public void handleFilterException(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final Throwable ex) {
+    public void handleFilterException(HttpServletRequest request, HttpServletResponse response, Throwable ex) {
 
         // Get the current log entry
         var logEntry = this.container.getBean(LogEntryImpl.class);
@@ -113,7 +110,7 @@ public final class UnhandledExceptionHandler {
     /*
      * An internal method to log the error details and return a client error to the caller
      */
-    private ClientError handleError(final Throwable ex, final LogEntryImpl logEntry) {
+    private ClientError handleError(Throwable ex, LogEntryImpl logEntry) {
 
         // Get the error into a known object
         var error = ErrorUtils.fromException(ex);

@@ -21,9 +21,9 @@ public final class ResponseErrorWriter {
      * Also add the standard www-authenticate header for interoperability
      */
     public static void writeFilterExceptionResponse(
-            final HttpServletResponse response,
-            final ClientError error,
-            final String scope) {
+            HttpServletResponse response,
+            ClientError error,
+            String scope) {
 
         response.setStatus(response.getStatus());
         response.setHeader("content-type", "application/json");

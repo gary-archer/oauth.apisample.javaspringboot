@@ -14,7 +14,7 @@ public final class CustomHeaderInterceptor implements HandlerInterceptor {
 
     private final String apiName;
 
-    public CustomHeaderInterceptor(final String apiName) {
+    public CustomHeaderInterceptor(String apiName) {
         this.apiName = apiName;
     }
 
@@ -22,10 +22,7 @@ public final class CustomHeaderInterceptor implements HandlerInterceptor {
      * Check for a known custom header and throw an exception if required
      */
     @Override
-    public boolean preHandle(
-        final HttpServletRequest request,
-        final HttpServletResponse response,
-        final Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         var apiToBreak = request.getHeader("api-exception-simulation");
         if (StringUtils.hasLength(apiToBreak)) {

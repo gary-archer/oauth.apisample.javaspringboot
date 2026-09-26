@@ -23,7 +23,7 @@ public final class ApiRequestOptions {
     @Setter
     private Boolean rehearseException;
 
-    public ApiRequestOptions(final String accessToken) {
+    public ApiRequestOptions(String accessToken) {
         this.accessToken = accessToken;
         this.rehearseException = false;
     }

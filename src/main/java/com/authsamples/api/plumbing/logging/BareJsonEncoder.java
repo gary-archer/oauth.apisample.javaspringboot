@@ -16,7 +16,7 @@ public final class BareJsonEncoder extends EncoderBase<ILoggingEvent> {
     /*
      * Use pretty printing for console output but not file output
      */
-    public BareJsonEncoder(final boolean prettyPrint) {
+    public BareJsonEncoder(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
     }
 
@@ -32,7 +32,7 @@ public final class BareJsonEncoder extends EncoderBase<ILoggingEvent> {
      * Log from the second parameter passed into method calls such as logger.info
      */
     @Override
-    public byte[] encode(final ILoggingEvent event) {
+    public byte[] encode(ILoggingEvent event) {
         var text = this.getJsonText(event);
         return text.getBytes();
     }
@@ -48,7 +48,7 @@ public final class BareJsonEncoder extends EncoderBase<ILoggingEvent> {
     /*
      * Do the work to produce JSON text from the logging event
      */
-    private String getJsonText(final ILoggingEvent event) {
+    private String getJsonText(ILoggingEvent event) {
 
         var args = event.getArgumentArray();
         if (args.length > 0) {

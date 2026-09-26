@@ -14,7 +14,7 @@ public final class LogLevel {
     @Getter
     private final Level level;
 
-    public LogLevel(final String name, final Level level) {
+    public LogLevel(String name, Level level) {
         this.name = name;
         this.level = level;
     }

@@ -17,7 +17,7 @@ public final class ApiResponse {
     @Getter
     private final ApiResponseMetrics metrics;
 
-    public ApiResponse(final HttpResponse<String> response, final ApiResponseMetrics metrics) {
+    public ApiResponse(HttpResponse<String> response, ApiResponseMetrics metrics) {
         this.statusCode = response.statusCode();
         this.body = response.body();
         this.metrics = metrics;

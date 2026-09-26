@@ -198,7 +198,7 @@ public final class LogEntryData {
     /*
      * Add a string to the output unless empty
      */
-    private void outputString(final Consumer<String> setter, final String value) {
+    private void outputString(Consumer<String> setter, String value) {
 
         if (value != null && !value.isEmpty()) {
             setter.accept(value);
@@ -208,7 +208,7 @@ public final class LogEntryData {
     /*
      * Add an integer to the output unless not set or zero
      */
-    private void outputNumber(final Consumer<Long> setter, final long value) {
+    private void outputNumber(Consumer<Long> setter, long value) {
 
         if (value > 0) {
             setter.accept(value);
@@ -218,14 +218,14 @@ public final class LogEntryData {
     /*
      * Add an integer to the output including zeros
      */
-    private void outputNumberForce(final Consumer<Long> setter, final long value) {
+    private void outputNumberForce(Consumer<Long> setter, long value) {
         setter.accept(value);
     }
 
     /*
      * Add the performance breakdown if the threshold has been exceeded
      */
-    private void outputPerformance(final ObjectNode root) {
+    private void outputPerformance(ObjectNode root) {
 
         if (this.performance.getMillisecondsTaken() >= this.performanceThresholdMilliseconds) {
             root.set("performance", this.performance.getData());
@@ -235,7 +235,7 @@ public final class LogEntryData {
     /*
      * Add error details if applicable
      */
-    private void outputError(final ObjectNode root) {
+    private void outputError(ObjectNode root) {
 
         if (this.errorData != null) {
             root.set("errorData", this.errorData);
@@ -245,7 +245,7 @@ public final class LogEntryData {
     /*
      * Add free text info details if used
      */
-    private void outputInfo(final ObjectMapper mapper, final ObjectNode root) {
+    private void outputInfo(ObjectMapper mapper, ObjectNode root) {
 
         if (!this.infoData.isEmpty()) {
             var infoNode = mapper.createArrayNode();

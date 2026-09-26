@@ -16,7 +16,7 @@ public class LogEntryInjector {
 
     private final LoggerFactoryImpl loggerFactory;
 
-    public LogEntryInjector(final LoggerFactoryImpl loggerFactory) {
+    public LogEntryInjector(LoggerFactoryImpl loggerFactory) {
         this.loggerFactory = loggerFactory;
     }
 

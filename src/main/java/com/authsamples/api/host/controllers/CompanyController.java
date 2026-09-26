@@ -28,7 +28,7 @@ public class CompanyController {
     /*
      * Claims are injected into the controller after OAuth processing
      */
-    public CompanyController(final CompanyService service) {
+    public CompanyController(CompanyService service) {
         this.service = service;
     }
 
@@ -45,7 +45,7 @@ public class CompanyController {
      */
     @GetMapping(value = "{companyId}/transactions")
     public CompanyTransactions getCompanyTransactions(
-            @PathVariable("companyId") final String companyId) {
+            @PathVariable("companyId") String companyId) {
 
         // Throw a 400 error if we have a malformed ID
         var idValue = Ints.tryParse(companyId);

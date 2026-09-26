@@ -24,14 +24,14 @@ public final class ServerErrorImpl extends ServerError {
     /*
      * Construct from an error code and user message
      */
-    public ServerErrorImpl(final String errorCode, final String userMessage) {
+    public ServerErrorImpl(String errorCode, String userMessage) {
         this(errorCode, userMessage, null);
     }
 
     /*
      * Construct from an error code and user message
      */
-    public ServerErrorImpl(final String errorCode, final String userMessage, final Throwable cause) {
+    public ServerErrorImpl(String errorCode, String userMessage, Throwable cause) {
         super(userMessage, cause);
 
         this.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -51,14 +51,14 @@ public final class ServerErrorImpl extends ServerError {
     }
 
     @Override
-    public void setDetails(final JsonNode details) {
+    public void setDetails(JsonNode details) {
         this.details = details;
     }
 
     /*
      * Return a dynamic object that can be serialized by calling toString
      */
-    public ObjectNode toLogFormat(final String apiName) {
+    public ObjectNode toLogFormat(String apiName) {
 
         var mapper = new ObjectMapper();
         var error = mapper.createObjectNode();
@@ -95,7 +95,7 @@ public final class ServerErrorImpl extends ServerError {
     /*
      * Translate to a confidential error that is returned to the API caller, with a reference to the logged details
      */
-    public ClientError toClientError(final String apiName) {
+    public ClientError toClientError(String apiName) {
 
         // Set a generic client error code for the server exception
         var error = new ClientErrorImpl(this.statusCode, this.errorCode, this.getMessage());

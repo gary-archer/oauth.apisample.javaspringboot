@@ -16,14 +16,14 @@ public final class ClaimsReader {
     /*
      * Get a mandatory string claim from the claims payload
      */
-    public static String getStringClaim(final JwtClaims data, final String name) {
+    public static String getStringClaim(JwtClaims data, String name) {
         return ClaimsReader.getStringClaim(data, name, true);
     }
 
     /*
      * Get a string claim from the claims payload
      */
-    public static String getStringClaim(final JwtClaims data, final String name, final boolean required) {
+    public static String getStringClaim(JwtClaims data, String name, boolean required) {
 
         try {
             var value = data.getClaimValue(name, String.class);
@@ -45,7 +45,7 @@ public final class ClaimsReader {
     /*
      * Get an integer claim from the claims payload
      */
-    public static int getExpiryClaim(final JwtClaims data) {
+    public static int getExpiryClaim(JwtClaims data) {
 
         try {
             return (int) data.getExpirationTime().getValue();

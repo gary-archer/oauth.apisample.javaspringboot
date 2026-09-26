@@ -15,14 +15,14 @@ public final class ExtraClaimsProviderImpl implements ExtraClaimsProvider {
 
     private final BeanFactory container;
 
-    public ExtraClaimsProviderImpl(final BeanFactory container) {
+    public ExtraClaimsProviderImpl(BeanFactory container) {
         this.container = container;
     }
 
     /*
      * Get extra values from the API's own data
      */
-    public ExtraClaims lookupExtraClaims(final JwtClaims jwtClaims) {
+    public ExtraClaims lookupExtraClaims(JwtClaims jwtClaims) {
 
         // Get an object to look up user information
         var userRepository = this.container.getBean(UserRepository.class);

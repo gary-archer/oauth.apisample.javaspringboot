@@ -28,14 +28,14 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * The default constructor
      */
-    public LogEntryImpl(final String apiName) {
+    public LogEntryImpl(String apiName) {
         this(apiName, 1000);
     }
 
     /*
      * The main constructor
      */
-    public LogEntryImpl(final String apiName, final int performanceThresholdMilliseconds) {
+    public LogEntryImpl(String apiName, int performanceThresholdMilliseconds) {
 
         this.started = false;
         this.finished = false;
@@ -49,7 +49,7 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Start collecting data before calling the API's business logic
      */
-    public void start(final HttpServletRequest request) {
+    public void start(HttpServletRequest request) {
 
         if (!this.started) {
             this.started = true;
@@ -75,14 +75,14 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Set the operation name from a string
      */
-    public void setOperationName(final String operationName) {
+    public void setOperationName(String operationName) {
         this.data.setOperationName(operationName);
     }
 
     /*
      * Audit identity details for secured requests
      */
-    public void setIdentityData(final IdentityLogData data) {
+    public void setIdentityData(IdentityLogData data) {
 
         this.data.setUserId(data.getUserId());
         this.data.setSessionId(data.getDelegationId());
@@ -95,14 +95,14 @@ public final class LogEntryImpl implements LogEntry {
      * Create a child performance breakdown when requested
      */
     @Override
-    public PerformanceBreakdown createPerformanceBreakdown(final String name) {
+    public PerformanceBreakdown createPerformanceBreakdown(String name) {
         return this.data.getPerformance().createChild(name);
     }
 
     /*
      * Set the resource id from the path segments, which is often a single id that is easy to query
      */
-    public void setResourceId(final Map<String, String> pathVariables) {
+    public void setResourceId(Map<String, String> pathVariables) {
 
         if (pathVariables != null) {
             this.data.setResourceId(String.join("/", pathVariables.values()));
@@ -112,7 +112,7 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Add a 5xx error to the log data
      */
-    public void setServerError(final ServerError error) {
+    public void setServerError(ServerError error) {
         this.data.setErrorData(error.toLogFormat(this.data.getApiName()));
         this.data.setErrorCode(error.getErrorCode());
         this.data.setErrorId(error.getInstanceId());
@@ -121,7 +121,7 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Add a 4xx error to the log data
      */
-    public void setClientError(final ClientError error) {
+    public void setClientError(ClientError error) {
         this.data.setErrorData(error.toLogFormat());
         this.data.setErrorCode(error.getErrorCode());
     }
@@ -130,7 +130,7 @@ public final class LogEntryImpl implements LogEntry {
      * Enable free text to be added to production logs, though this should be avoided in most cases
      */
     @Override
-    public void addInfo(final JsonNode info) {
+    public void addInfo(JsonNode info) {
         this.data.getInfoData().add(info);
     }
 
@@ -138,9 +138,9 @@ public final class LogEntryImpl implements LogEntry {
      * Finish collecting data at the end of the API request and write the output
      */
     public void end(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final RequestMappingHandlerMapping handlerMapping) {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            RequestMappingHandlerMapping handlerMapping) {
 
         if (!this.finished) {
             this.finished = true;
@@ -188,7 +188,7 @@ public final class LogEntryImpl implements LogEntry {
     /*
      * Return the full request path and query string to be logged
      */
-    private String getRequestPath(final HttpServletRequest request) {
+    private String getRequestPath(HttpServletRequest request) {
 
         if (!StringUtils.hasLength(request.getQueryString())) {
             return request.getRequestURI();
@@ -201,8 +201,8 @@ public final class LogEntryImpl implements LogEntry {
      * Calculate the operation name from metadata
      */
     private void setOperationName(
-            final HttpServletRequest request,
-            final RequestMappingHandlerMapping handlerMapping) {
+            HttpServletRequest request,
+            RequestMappingHandlerMapping handlerMapping) {
 
         var handlerInfo = this.getOperationHandlerInfo(request, handlerMapping);
         if (handlerInfo != null) {
@@ -215,8 +215,8 @@ public final class LogEntryImpl implements LogEntry {
      * The Spring code may throw an assertion in this case, which we will swallow
      */
     private HandlerMethod getOperationHandlerInfo(
-            final HttpServletRequest request,
-            final RequestMappingHandlerMapping handlerMapping) {
+            HttpServletRequest request,
+            RequestMappingHandlerMapping handlerMapping) {
 
         try {
 

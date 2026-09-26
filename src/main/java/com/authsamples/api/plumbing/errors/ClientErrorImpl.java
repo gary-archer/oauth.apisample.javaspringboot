@@ -20,7 +20,7 @@ public final class ClientErrorImpl extends ClientError {
     /*
      * Construct from mandatory fields
      */
-    public ClientErrorImpl(final HttpStatus statusCode, final String errorCode, final String message) {
+    public ClientErrorImpl(HttpStatus statusCode, String errorCode, String message) {
 
         // Set mandatory fields
         super(message);
@@ -37,7 +37,7 @@ public final class ClientErrorImpl extends ClientError {
     /*
      * As above but supports more detailed info
      */
-    public void setLogContext(final JsonNode context) {
+    public void setLogContext(JsonNode context) {
         this.logContext = context;
     }
 
@@ -45,7 +45,7 @@ public final class ClientErrorImpl extends ClientError {
      * When there is a 500 this is called by the exception handler
      */
     @Override
-    public void setExceptionDetails(final String area, final int instanceId, final String utcTime) {
+    public void setExceptionDetails(String area, int instanceId, String utcTime) {
         this.area = area;
         this.id = instanceId;
         this.utcTime = utcTime;
