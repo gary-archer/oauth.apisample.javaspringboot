@@ -75,10 +75,7 @@ sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass 
 
 ### Run the Code
 
-- Install a Java 25+ SDK.
-- Also install Docker to run integration tests that use Wiremock.
-
-Then run the API with this command:
+Install a Java 25+ SDK, then run the API with the following command:
 
 ```bash
 ./start.sh
@@ -95,8 +92,8 @@ Stop the API, then re-run it with a test configuration:
 Then run integration tests and a load test:
 
 ```bash
-./gradlew test
-./gradlew loadtest
+./integration_tests.sh
+./load_test.sh
 ```
 
 ## Further Details
