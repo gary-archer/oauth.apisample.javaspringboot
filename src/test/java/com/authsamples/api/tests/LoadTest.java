@@ -239,16 +239,17 @@ public class LoadTest {
         while (current < total) {
 
             // Get a batch of requests
-            var requestBatch = requests.subList(current, Math.min(current + batchSize, total));
+            var end = Math.min(current + batchSize, total);
+            var requestBatch = requests.subList(current, end);
 
             // Start each API request in the batch concurrently, and return create a collection of futures
             var batchFutures = requestBatch.stream().map(this::executeApiRequest).toList();
 
             // Wait for all requests in the batch to complete
-            CompletableFuture.allOf(batchFutures.toArray(new CompletableFuture<?>[0])).join();
+            CompletableFuture.allOf(batchFutures.toArray(CompletableFuture[]::new)).join();
 
-            // Add to results
-            current += batchSize;
+            // Move to the next batch
+            current = end;
         }
     }
 
