@@ -1,10 +1,12 @@
 package com.authsamples.api.tests.utils;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyStore;
 import java.util.UUID;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 import org.jose4j.jwk.EcJwkGenerator;
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -16,25 +18,27 @@ import org.jose4j.lang.JoseException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.authsamples.api.plumbing.claims.CustomClaimNames;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.node.ObjectNode;
+import com.sun.net.httpserver.HttpsParameters;
+import com.sun.net.httpserver.HttpsServer;
 
 /*
- * A mock authorization server implemented with wiremock and a JOSE library
+ * A mock authorization server implemented with an HTTP server and a JOSE library
  */
 public final class MockAuthorizationServer {
 
-    private final String adminBaseUrl;
+    private HttpsServer httpsServer;
     private EllipticCurveJsonWebKey jwk;
     private String keyId;
+    private String keysJson;
 
     public MockAuthorizationServer() {
 
-        this.adminBaseUrl = "https://login.authsamples-dev.com:447/__admin/mappings";
+        this.httpsServer = null;
         this.jwk = null;
         this.keyId = null;
+        this.keysJson = null;
 
-        // Reduce the library's log level
+        // Reduce the jose4j library's log level
         LoggerContext context = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
         context.getLogger("org.jose4j").setLevel(Level.WARN);
     }
@@ -52,14 +56,17 @@ public final class MockAuthorizationServer {
 
         // Publish the public keys at a JWKS URI
         var jsonWebKeySet = new JsonWebKeySet(this.jwk);
-        this.registerJsonWebWeys(jsonWebKeySet.toJson());
+        this.keysJson = jsonWebKeySet.toJson();
+
+        // Then start the HTTPS server
+        this.startHttpsServer();
     }
 
     /*
      * Free resources at the end of the test run
      */
     public void stop() {
-        this.unregisterJsonWebWeys();
+        httpsServer.stop(0);
     }
 
     /*
@@ -97,86 +104,50 @@ public final class MockAuthorizationServer {
         return jws.getCompactSerialization();
     }
 
-    /*
-     * Register our test JWKS values at the start of the test suite
-     */
-    private void registerJsonWebWeys(final String keysJson) {
-
-        var mapper = new ObjectMapper();
-
-        var data = mapper.createObjectNode();
-        data.put("id", this.keyId);
-        data.put("priority", 1);
-
-        var request = mapper.createObjectNode();
-        request.put("method", "GET");
-        request.put("url", "/.well-known/jwks.json");
-        data.set("request", request);
-
-        var response = mapper.createObjectNode();
-        response.put("status", 200);
-        response.put("body", keysJson);
-        data.set("response", response);
-
-        this.register(data);
-    }
-
-    /*
-     * Unregister our test JWKS values at the end of the test suite
-     */
-    private void unregisterJsonWebWeys() {
-        this.unregister(this.keyId);
-    }
-
-    /*
-     * Add a stubbed response to Wiremock via its Admin API
-     */
-    private void register(final ObjectNode stubbedResponse) {
-
-        HttpResponse<String> response;
-
-        try {
-            var request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString(stubbedResponse.toString()))
-                    .uri(new URI(this.adminBaseUrl))
-                    .header("content-type", "application/json")
-                    .build();
-
-            var client = HttpClient.newBuilder()
-                    .build();
-
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        } catch (Throwable ex) {
-            throw new RuntimeException(ex);
-        }
-
-        if (response.statusCode() != 201) {
-            var message = String.format("Failed to add Wiremock stub: status %d", response.statusCode());
-            throw new RuntimeException(message);
-        }
-    }
-
-    /*
-     * Delete a stubbed response from Wiremock via its Admin API
-     */
-    private void unregister(final String id) {
+    private void startHttpsServer() {
 
         try {
 
-            var url = String.format("%s/%s", this.adminBaseUrl, id);
-            var request = HttpRequest.newBuilder()
-                    .DELETE()
-                    .uri(new URI(url))
-                    .build();
+            var password = "Password1".toCharArray();
+            var keyStore = KeyStore.getInstance("PKCS12");
 
-            var client = HttpClient.newBuilder()
-                    .build();
+            var path = Path.of("./certs/authsamples-dev.ssl.p12");
+            System.out.println(path.getRoot());
+            try (var in = Files.newInputStream(path)) {
+                keyStore.load(in, password);
+            }
 
-            client.send(request, HttpResponse.BodyHandlers.ofString());
+            var kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(keyStore, password);
+
+            var sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(kmf.getKeyManagers(), null, null);
+
+            this.httpsServer = HttpsServer.create(new InetSocketAddress("login.authsamples-dev.com", 447), 0);
+
+            this.httpsServer.setHttpsConfigurator(new com.sun.net.httpserver.HttpsConfigurator(sslContext) {
+                @Override
+                public void configure(HttpsParameters params) {
+                    var sslParameters = sslContext.getDefaultSSLParameters();
+                    params.setSSLParameters(sslParameters);
+                }
+            });
+
+            this.httpsServer.createContext("/.well-known/jwks.json", exchange -> {
+
+                byte[] response = this.keysJson.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, response.length);
+
+                try (var output = exchange.getResponseBody()) {
+                    output.write(response);
+                }
+            });
+
+            this.httpsServer.start();
 
         } catch (Throwable ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("Unable to start the mock authorization server", ex);
         }
     }
 }
