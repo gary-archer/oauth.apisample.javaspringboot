@@ -119,7 +119,7 @@ public final class MockAuthorizationServer {
             var kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, password);
 
-            var sslContext = SSLContext.getInstance("TLS");
+            var sslContext = SSLContext.getInstance("TLSv1.2");
             sslContext.init(kmf.getKeyManagers(), null, null);
 
             this.httpsServer = HttpsServer.create(new InetSocketAddress("login.authsamples-dev.com", 447), 0);
