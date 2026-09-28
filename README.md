@@ -1,8 +1,3 @@
-java -jar ~Downloads/checkstyle-14.1.0-all.jar \
--c ./checkstyle.xml \
-src
-
-
 # Final Java Spring Boot API
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d53806f11b754e5bafee8a4f298bb60c)](https://app.codacy.com/gh/gary-archer/oauth.apisample.javaspringboot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
