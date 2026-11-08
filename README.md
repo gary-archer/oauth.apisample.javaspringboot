@@ -32,22 +32,22 @@ This further verifies reliability and the correctness of API logs.
 
 You can aggregate request logs and audit logs to Elasticsearch and run [Technical Support Queries](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/api-technical-support-analysis.mdx).
 
-
 ![Support Queries](./images/support-queries.jpg)
 
 ## Local Development Quick Start
 
-To run the code sample locally you must configure some infrastructure before you run the code.
+The API uses [Real World OAuth Development URLs](https://github.com/gary-archer/oauth.blog/blob/master/public/posts/developer-ssl-setup.mdx#real-world-oauth-development-urls) on a local computer.  
+You must use admin permissions to configure infrastructure before you run the code.  
 
-### Configure DNS and SSL
+### Infrastructure Setup
 
-Configure custom development domains by adding these DNS entries to your hosts file:
+Add DNS entries to your `/etc/hosts` file:
 
 ```bash
 127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
 ```
 
-Install OpenSSL 3+ if required, create a secrets folder, then create development certificates:
+Make sure OpenSSL 3+ is installed, specify a secrets folder, then create development certificates:
 
 ```bash
 export SECRETS_FOLDER="$HOME/secrets"
@@ -55,27 +55,22 @@ mkdir -p "$SECRETS_FOLDER"
 ./certs/create.sh
 ```
 
-If required, configure [Java SSL trust](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl-setup.mdx#trusting-a-root-certificate-in-java-apis) for the root CA at the following location:
-
-```text
-./certs/authsamples-dev.ca.crt
-```
-
-You can do so by running the following command:
+Ensure that a Java 25+ SDK is installed.  
+Then, configure [HTTPS Trust](https://github.com/gary-archer/oauth.blog/blob/master/public/posts/developer-ssl-setup.mdx#trusting-a-root-certificate-in-java-apis) for the development root certificate authority:
 
 ```bash
 sudo "$JAVA_HOME/bin/keytool" -import -alias authsamples.ca -cacerts -file ./certs/authsamples-dev.ca.crt -storepass changeit -noprompt
 ```
 
-Clean up after testing with this command:
+Then, grant Java access to listen on port 443, with a command of the following form:
 
 ```bash
-sudo "$JAVA_HOME/bin/keytool" -delete -alias authsamples.ca -cacerts -storepass changeit -noprompt
+sudo setcap 'cap_net_bind_service=+ep' "$JAVA_HOME/bin/java"
 ```
 
 ### Run the Code
 
-Install a Java 25+ SDK, then run the API with the following command:
+Then run the API, which does not require admin permissions:
 
 ```bash
 ./start.sh

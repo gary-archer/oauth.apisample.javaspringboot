@@ -12,8 +12,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cp deployment/environments/dev/api.config.json ./api.config.json
 
 #
-# Create SSL certificates if required and then configure Java to trust the root CA:
-# - sudo $JAVA_HOME/bin/keytool -import -alias authsamples-dev -cacerts -file ./certs/authsamples-dev.ca.crt -storepass changeit -noprompt
+# Create SSL certificates if required and then configure Java to trust the root CA
 #
 ./certs/create.sh
 if [ $? -ne 0 ]; then
