@@ -9,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.authsamples.api.logic.entities.Company;
 import com.authsamples.api.logic.entities.CompanyTransactions;
-import com.authsamples.api.logic.errors.ErrorCodes;
 import com.authsamples.api.logic.repositories.CompanyRepository;
-import com.authsamples.api.plumbing.claims.ClaimsReader;
-import com.authsamples.api.plumbing.claims.CustomClaimNames;
-import com.authsamples.api.plumbing.errors.ClientError;
-import com.authsamples.api.plumbing.errors.ErrorFactory;
-import com.authsamples.api.plumbing.utilities.ClaimsPrincipalHolder;
+import com.authsamples.api.middleware.claims.ClaimsReader;
+import com.authsamples.api.middleware.claims.CustomClaimNames;
+import com.authsamples.api.middleware.errors.ClientError;
+import com.authsamples.api.middleware.errors.ErrorCodes;
+import com.authsamples.api.middleware.errors.ErrorFactory;
+import com.authsamples.api.utilities.ClaimsPrincipalHolder;
 
 /*
  * The service class applies business authorization

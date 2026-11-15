@@ -1,0 +1,97 @@
+package com.authsamples.api.middleware.logging;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
+
+/*
+ * Performs basic timing of expensive subtasks
+ */
+public final class PerformanceBreakdownImpl implements PerformanceBreakdown {
+
+    private String name;
+    private Instant startTime;
+    private ArrayList<PerformanceBreakdownImpl> children;
+    private JsonNode details;
+
+    @Getter
+    @Setter
+    private long millisecondsTaken;
+
+    /*
+     * Set defaults for fields
+     */
+    public PerformanceBreakdownImpl(String name) {
+        this.name = name;
+        this.millisecondsTaken = 0;
+        this.details = null;
+        this.children = new ArrayList<>();
+    }
+
+    /*
+     * Start measuring
+     */
+    public void start() {
+        this.startTime = Instant.now();
+    }
+
+    /*
+     * An overload that supports more detailed data
+     */
+    public void setDetails(JsonNode value) {
+        this.details = value;
+    }
+
+    /*
+     * Stop the timer and finish the measurement, converting nanoseconds to milliseconds
+     */
+    @Override
+    public void close() {
+        this.millisecondsTaken = Duration.between(this.startTime, Instant.now()).toMillis();
+    }
+
+    /*
+     * Return the performance data in the output format
+     */
+    public ObjectNode getData() {
+
+        var mapper = new ObjectMapper();
+        var data = mapper.createObjectNode();
+
+        data.put("name", this.name);
+        data.put("millisecondsTaken", this.millisecondsTaken);
+
+        if (this.details != null) {
+            data.set("details", this.details);
+        }
+
+        if (!this.children.isEmpty()) {
+
+            var childNodes = mapper.createArrayNode();
+            for (var child : this.children) {
+                childNodes.add(child.getData());
+            }
+
+            data.set("children", childNodes);
+        }
+
+        // Return the JSON string to log
+        return data;
+    }
+
+    /*
+     * Add a child to the performance breakdown
+     */
+    public PerformanceBreakdown createChild(String name) {
+
+        var child = new PerformanceBreakdownImpl(name);
+        this.children.add(child);
+        child.start();
+        return child;
+    }
+}

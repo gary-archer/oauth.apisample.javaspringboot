@@ -17,7 +17,7 @@ import org.jose4j.keys.EllipticCurves;
 import org.jose4j.lang.JoseException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import com.authsamples.api.plumbing.claims.CustomClaimNames;
+import com.authsamples.api.middleware.claims.CustomClaimNames;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 
