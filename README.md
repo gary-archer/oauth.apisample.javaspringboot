@@ -36,12 +36,13 @@ You can aggregate request logs and audit logs to Elasticsearch and run [Technica
 
 ## Local Development Quick Start
 
-The API uses [Real World OAuth Development URLs](https://github.com/gary-archer/oauth.blog/blob/master/public/posts/developer-ssl-setup.mdx#real-world-oauth-development-urls) on a local computer.  
+Run the code sample from a terminal on Linux, macOS or Windows (with Git bash).  
+The SPA and API use [Real World OAuth Development URLs](https://github.com/gary-archer/oauth.blog/blob/master/public/posts/developer-ssl-setup.mdx#real-world-oauth-development-urls) on a local computer.  
+
+### Administrator Setup
+
 You must use admin permissions to configure infrastructure before you run the code.  
-
-### Infrastructure Setup
-
-Add DNS entries to your `/etc/hosts` file:
+First, add DNS entries to your `/etc/hosts` file:
 
 ```bash
 127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
