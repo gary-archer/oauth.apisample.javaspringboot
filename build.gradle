@@ -104,5 +104,5 @@ tasks.register('loadtest', Test) {
 
 // Run ./gradlew checkstyleMain to run code maintainability checks
 checkstyle {
-  toolVersion = '14.4.0'
+    toolVersion = '14.4.0'
 }
