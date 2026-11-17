@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import com.authsamples.api.logic.entities.Company;
 import com.authsamples.api.logic.entities.CompanyTransactions;
-import com.authsamples.api.utilities.JsonFileReader;
 import com.authsamples.api.middleware.logging.LogEntry;
+import com.authsamples.api.utilities.JsonFileReader;
 
 /*
  * The repository to load data

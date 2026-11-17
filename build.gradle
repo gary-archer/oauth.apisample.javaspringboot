@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'checkstyle'
     id 'org.springframework.boot' version '4.0.2'
     id "com.adarshr.test-logger" version "4.0.0"
 }
@@ -99,4 +100,9 @@ tasks.register('loadtest', Test) {
     classpath = testing.suites.test.sources.runtimeClasspath
     testLogging.showStandardStreams = true
     outputs.upToDateWhen { false }
+}
+
+// Run ./gradlew checkstyleMain to run code maintainability checks
+checkstyle {
+  toolVersion = '14.4.0'
 }

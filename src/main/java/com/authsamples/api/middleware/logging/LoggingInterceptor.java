@@ -9,8 +9,6 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import com.authsamples.api.dependencies.CustomRequestScope;
 import com.authsamples.api.middleware.errors.UnhandledExceptionHandler;
-import com.authsamples.api.middleware.logging.LogEntryImpl;
-import com.authsamples.api.middleware.logging.LoggerFactory;
 
 /*
  * Do custom logging of requests for support purposes

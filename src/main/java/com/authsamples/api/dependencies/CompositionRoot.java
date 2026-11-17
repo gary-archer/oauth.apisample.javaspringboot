@@ -5,7 +5,6 @@ import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import com.authsamples.api.configuration.Configuration;
 import com.authsamples.api.middleware.claims.ClaimsCache;
-import com.authsamples.api.middleware.claims.ExtraClaimsProvider;
 import com.authsamples.api.middleware.logging.LoggerFactory;
 
 /*

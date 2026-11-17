@@ -16,7 +16,6 @@ import com.authsamples.api.middleware.errors.ErrorCodes;
 import com.authsamples.api.middleware.errors.ErrorFactory;
 import com.authsamples.api.middleware.errors.UnhandledExceptionHandler;
 import com.authsamples.api.middleware.logging.LogEntryImpl;
-import com.authsamples.api.middleware.oauth.OAuthFilter;
 import com.authsamples.api.utilities.ClaimsPrincipalHolder;
 
 /*

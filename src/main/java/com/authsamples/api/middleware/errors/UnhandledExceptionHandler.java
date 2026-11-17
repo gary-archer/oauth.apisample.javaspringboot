@@ -11,9 +11,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import com.authsamples.api.configuration.LoggingConfiguration;
 import com.authsamples.api.configuration.OAuthConfiguration;
 import com.authsamples.api.dependencies.CustomRequestScope;
-import com.authsamples.api.middleware.errors.ClientError;
-import com.authsamples.api.middleware.errors.ErrorUtils;
-import com.authsamples.api.middleware.errors.ServerError;
 import com.authsamples.api.middleware.logging.LogEntryImpl;
 import com.authsamples.api.middleware.logging.LoggerFactory;
 import com.authsamples.api.utilities.ResponseErrorWriter;

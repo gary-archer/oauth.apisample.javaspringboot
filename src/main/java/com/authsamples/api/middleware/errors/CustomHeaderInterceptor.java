@@ -4,8 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
-import com.authsamples.api.middleware.errors.ErrorCodes;
-import com.authsamples.api.middleware.errors.ErrorFactory;
 
 /*
  * A class to process custom headers to enable testers to control non functional behaviour

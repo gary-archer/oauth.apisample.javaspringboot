@@ -6,8 +6,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.authsamples.api.configuration.LoggingConfiguration;
 import com.authsamples.api.middleware.errors.CustomHeaderInterceptor;
-import com.authsamples.api.middleware.logging.LoggingInterceptor;
 import com.authsamples.api.middleware.logging.LoggerFactory;
+import com.authsamples.api.middleware.logging.LoggingInterceptor;
 
 /*
  * Manages configuration of cross-cutting concerns in interceptors
